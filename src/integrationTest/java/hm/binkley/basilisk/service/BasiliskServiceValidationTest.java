@@ -6,18 +6,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.validation.ConstraintViolationException;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
-class BasiliskServiceTest {
+class BasiliskServiceValidationTest {
     @Autowired
     private BasiliskService service;
-
-    @Test
-    void shouldAcceptWords() {
-        assertThat(service.extra("foo")).isEqualTo("Uncle Bob");
-    }
 
     @Test
     void shouldRejectMissingWords() {
