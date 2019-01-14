@@ -1,5 +1,6 @@
 package hm.binkley.basilisk.store;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
@@ -14,6 +15,7 @@ class BasiliskRepositoryTest {
     @Autowired
     private BasiliskRepository repository;
 
+    @SuppressFBWarnings("NP")
     @Test
     void shouldRoundtrip() {
         final BasiliskRecord unsaved = BasiliskRecord.builder()
