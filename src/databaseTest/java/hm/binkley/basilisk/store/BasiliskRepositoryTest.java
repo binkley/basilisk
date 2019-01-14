@@ -1,4 +1,4 @@
-package hm.binkley.basilisk.database;
+package hm.binkley.basilisk.store;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
