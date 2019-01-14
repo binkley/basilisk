@@ -1,6 +1,7 @@
 package hm.binkley.basilisk.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hm.binkley.basilisk.service.BasiliskService;
 import hm.binkley.basilisk.store.BasiliskRecord;
 import hm.binkley.basilisk.store.BasiliskRepository;
@@ -16,6 +17,9 @@ import java.util.List;
 import java.util.Map;
 
 import static java.time.ZoneOffset.UTC;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
@@ -24,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest
+@WebMvcTest(BasiliskController.class)
 class BasiliskControllerTest {
     @Autowired
     private MockMvc mvc;
@@ -59,5 +63,16 @@ class BasiliskControllerTest {
                         List.of(Map.of("word", word,
                                 "when", "2011-02-03T04:05:06.007Z",
                                 "extra", "Margaret Hamilton")))));
+    }
+
+    @SuppressFBWarnings("RV")
+    @Test
+    void shouldRejectShortWords()
+            throws Exception {
+        mvc.perform(get("/basilisk/F"))
+                .andExpect(status().isIAmATeapot());
+
+        verify(repository, never()).findByWord(anyString());
+        verify(service, never()).extra(anyString());
     }
 }
