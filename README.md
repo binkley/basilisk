@@ -39,6 +39,10 @@ databaseTest`
 To run all test types, use `./gradlew check`.  To refresh the build, and force
 all tests to re-run, use `./gradlew clean check --no-build-cache`.
 
+`BasiliskServiceTest` (unit) and `BasiliskServiceValidationTest` (integration)
+are an example of splitting testing of a class to limit resources, and 
+speed up the tests.
+
 In this project, the database is an in-memory H2 instance, so is 
 self-contained and speedy; however, in production projects, it would be an 
 external database process.
@@ -91,7 +95,7 @@ basilisk:
 
 ### Spring-injected tests
 
-Most of the Spring testing annotations include
+Most of the Spring Boot testing annotations include
 `@ExtendsWith(SpringExtension.class)` for you through the magic of Spring 
 meta-annotations (one exception is `@JsonTest`).
 
@@ -111,3 +115,13 @@ class SomeTest {
     }
 }
 ```
+
+Use the Spring Boot annotation _most specific_ to your test.  This limit 
+Spring to creating/injecting only beans the beans you need, and speeds up 
+your test.  Among the choices include:
+
+- `@SpringBootTest` (use `classes` property to limit beans created); 
+  example in `BasiliskPropertiesTest`
+- `@DataJdbcTest`; example in `BasiliskRepositoryTest`
+- `@WebMvcTest` (use the `value` property to limit test to one controller);
+  example in `BasiliskControllerTest`
