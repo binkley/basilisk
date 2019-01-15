@@ -17,6 +17,6 @@ public class BasiliskService {
     private final BasiliskProperties basilisk;
 
     public String extra(@NotNull final String word) {
-        return basilisk.getExtraWord();
+        return basilisk.getExtraWord() + " is " + word;
     }
 }

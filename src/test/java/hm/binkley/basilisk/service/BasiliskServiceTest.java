@@ -13,6 +13,6 @@ class BasiliskServiceTest {
                         .extraWord("Nancy Drew")
                         .build());
 
-        assertThat(service.extra("foo")).isEqualTo("Nancy Drew");
+        assertThat(service.extra("FU")).isEqualTo("Nancy Drew is FU");
     }
 }
