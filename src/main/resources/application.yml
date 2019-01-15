@@ -21,12 +21,3 @@ spring:
 
 basilisk:
   extra-word: 'Margaret Hamilton'
-
----
-
-spring:
-  profiles:
-    active: 'broken'
-
-basilisk:
-  extra-word: 'F'

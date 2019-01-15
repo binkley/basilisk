@@ -4,6 +4,7 @@ import hm.binkley.basilisk.service.BasiliskService;
 import hm.binkley.basilisk.store.BasiliskRecord;
 import hm.binkley.basilisk.store.BasiliskRepository;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.ConstraintViolationException;
-import javax.validation.constraints.Size;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -38,7 +38,7 @@ public class BasiliskController {
 
     @GetMapping("{word}")
     public List<BasiliskResponse> getByWord(
-            @PathVariable("word") @Size(min = 3, max = 32)
+            @PathVariable("word") @Length(min = 3, max = 32)
             final String word) {
         return repository.findByWord(word).stream()
                 .map(this::from)

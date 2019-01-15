@@ -18,3 +18,22 @@ Demonstrate Java 11, Spring Boot 2, JUnit 5, et al
 
 _Please_ file GitHub issues for questions, suggestions, additions or 
 improvements! 
+
+## Examples
+
+### Configuration properties validation
+
+All Spring profiles, active or not, are validated, so this example should not
+be included in `application.yml` or no other profile will start:
+
+```yaml
+
+---
+
+spring:
+  profiles:
+    active: 'broken'
+
+basilisk:
+  extra-word: 'F'
+```
