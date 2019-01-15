@@ -141,6 +141,10 @@ tasks {
 
     check {
         dependsOn(jacocoTestCoverageVerification)
+
+        finalizedBy {
+            buildDashboard
+        }
     }
 
     bootRun {
