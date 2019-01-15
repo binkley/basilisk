@@ -1,5 +1,6 @@
 package hm.binkley.basilisk.rest;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hm.binkley.basilisk.service.BasiliskService;
@@ -9,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -61,19 +61,17 @@ class BasiliskControllerTest {
         when(service.extra(word))
                 .thenReturn("Bob Barker");
 
-        final Page<Map<String, String>> body = new PageImpl<>(List.of(
-                Map.of("word", word,
-                        "when", "2011-02-03T04:05:06.007Z",
-                        "extra", "Bob Barker")), pageable, found.size());
-
         mvc.perform(get("/basilisk")
                 .param("page", "0")
                 .param("size", "2"))
                 .andExpect(status().isOk())
                 .andExpect(header().string(
                         CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE))
-                .andExpect(content().json(
-                        objectMapper.writeValueAsString(body)));
+                .andExpect(content().json(asJson(new PageImpl<>(List.of(
+                        Map.of("word", word,
+                                "when", "2011-02-03T04:05:06.007Z",
+                                "extra", "Bob Barker")), pageable,
+                        found.size()))));
     }
 
     @Test
@@ -96,11 +94,10 @@ class BasiliskControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(header().string(
                         CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE))
-                .andExpect(content().json(
-                        objectMapper.writeValueAsString(List.of(
-                                Map.of("word", word,
-                                        "when", "2011-02-03T04:05:06.007Z",
-                                        "extra", "Margaret Hamilton")))));
+                .andExpect(content().json(asJson(List.of(
+                        Map.of("word", word,
+                                "when", "2011-02-03T04:05:06.007Z",
+                                "extra", "Margaret Hamilton")))));
     }
 
     @SuppressFBWarnings("RV")
@@ -112,5 +109,10 @@ class BasiliskControllerTest {
 
         verify(repository, never()).findByWord(anyString());
         verify(service, never()).extra(anyString());
+    }
+
+    private String asJson(final Object o)
+            throws JsonProcessingException {
+        return objectMapper.writeValueAsString(o);
     }
 }
