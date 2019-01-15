@@ -29,19 +29,22 @@ Divide your tests by what resources they use.  This speeds up testing
 individual types of tests:
 
 * Unit tests &mdash; No Spring wiring or other resources needed.  These go 
-under `src/test`; run with `./gradlew test`
+under [`src/test`](src/test); run with `./gradlew test`
 * Integration tests &mdash; Spring wiring is used.  These go under 
-`src/integrationTest`; run with `./gradlew integrationTest`
+[`src/integrationTest`](src/integrationTest); run with `./gradlew 
+integrationTest`
 * Database tests &mdash; In addition to Spring wiring, these use a database
-resource.  These go under `src/databaseTest`; run with`./gradlew 
-databaseTest`
+resource.  These go under [`src/databaseTest`](src/databaseTest); run with`
+./gradlew databaseTest`
 
 To run all test types, use `./gradlew check`.  To refresh the build, and force
 all tests to re-run, use `./gradlew clean check --no-build-cache`.
 
-`BasiliskServiceTest` (unit) and `BasiliskServiceValidationTest` (integration)
-are an example of splitting testing of a class to limit resources, and 
-speed up the tests.
+[`BasiliskServiceTest`](src/test/java/hm/binkley/basilisk/service/BasiliskServiceTest.java)
+(unit) and
+[`BasiliskServiceValidationTest`](src/integrationTest/java/hm/binkley/basilisk/service/BasiliskServiceValidationTest.java) 
+(integration) are an example of splitting testing of a class to limit
+resources, and speed up the tests.
 
 In this project, the database is an in-memory H2 instance, so is 
 self-contained and speedy; however, in production projects, it would be an 
@@ -73,8 +76,11 @@ tests, and is "best practice" as recommended by Spring documentation.
 ### Bean validation
 
 Any bean can be validated by adding `@Validated` to the class.  See 
-examples of `@BasiliskController`, `@BasiliskProperties`, and 
-`@BasiliskService`.
+examples of
+[`BasiliskController`](src/main/java/hm/binkley/basilisk/rest/BasiliskController.java), 
+[`BasiliskProperties`](src/main/java/hm/binkley/basilisk/configuration/BasiliskProperties.java), 
+and 
+[`BasiliskService`](src/main/java/hm/binkley/basilisk/service/BasiliskService.java).
 
 ### Configuration properties validation
 
@@ -121,7 +127,10 @@ Spring to creating/injecting only beans the beans you need, and speeds up
 your test.  Among the choices include:
 
 - `@SpringBootTest` (use `classes` property to limit beans created); 
-  example in `BasiliskPropertiesTest`
-- `@DataJdbcTest`; example in `BasiliskRepositoryTest`
+  example in
+  [`BasiliskPropertiesTest`](src/integrationTest/java/hm/binkley/basilisk/configuration/BasiliskPropertiesTest.java)
+- `@DataJdbcTest`; example in
+  [`BasiliskRepositoryTest`](src/databaseTest/java/hm/binkley/basilisk/store/BasiliskRepositoryTest.java)
 - `@WebMvcTest` (use the `value` property to limit test to one controller);
-  example in `BasiliskControllerTest`
+  example in
+  [`BasiliskControllerTest`](src/integrationTest/java/hm/binkley/basilisk/rest/BasiliskControllerTest.java)
