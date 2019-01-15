@@ -4,7 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.validation.annotation.Validated;
 
 import static lombok.AccessLevel.PRIVATE;
 import static lombok.AccessLevel.PUBLIC;
@@ -16,6 +18,8 @@ import static lombok.AccessLevel.PUBLIC;
 @ConfigurationProperties("basilisk")
 @Data
 @NoArgsConstructor(access = PUBLIC)
+@Validated
 public class BasiliskProperties {
+    @Length(min = 3, max = 32)
     private String extraWord;
 }
