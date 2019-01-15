@@ -7,7 +7,6 @@ import lombok.experimental.Wither;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
 
 import java.time.Instant;
 
@@ -17,10 +16,8 @@ import java.time.Instant;
 @Table("BASILISK.BASILISKS")
 public final class BasiliskRecord {
     @Id
-    @Nullable
     @Wither
     private final Long id;
-    @Nullable
     @Wither
     private final Instant receivedAt;
     @NonNull
