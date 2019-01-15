@@ -1,14 +1,18 @@
 package hm.binkley.basilisk.service;
 
+import hm.binkley.basilisk.configuration.BasiliskProperties;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class BasiliskServiceTest {
-    private final BasiliskService service = new BasiliskService();
-
     @Test
     void shouldAcceptWords() {
-        assertThat(service.extra("foo")).isEqualTo("Uncle Bob");
+        final BasiliskService service = new BasiliskService(
+                BasiliskProperties.builder()
+                        .extraWord("Nancy Drew")
+                        .build());
+
+        assertThat(service.extra("foo")).isEqualTo("Nancy Drew");
     }
 }

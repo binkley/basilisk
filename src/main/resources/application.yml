@@ -1,3 +1,6 @@
+basilisk:
+  extra-word: 'Uncle Bob'
+
 management:
   endpoints:
     web:
