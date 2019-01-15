@@ -1,4 +1,4 @@
-package hm.binkley.basilisk;
+package hm.binkley.basilisk.configuration;
 
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
