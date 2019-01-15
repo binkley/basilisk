@@ -20,7 +20,39 @@ Demonstrate Java 11, Spring Boot 2, JUnit 5, et al
 ## Feedback
 
 _Please_ file GitHub issues for questions, suggestions, additions or 
-improvements! 
+improvements!
+
+## Getting around
+
+### Command line
+
+Build the project, run tests, generate reports, and package program:
+```bash
+./gradlew
+```
+
+Look at Junit test reports (use "firefox" instead of "open" if your machine
+ does not have the "open" command):
+```bash
+(cd build/reports/tests/test; open index.html)  # Unit tests
+(cd build/reports/tests/integrationTest; open index.html)
+(cd build/reports/tests/databaseTest; open index.html)
+```
+
+Look at JaCoCo test coverage report (across all test types):
+```bash
+(cd build/reports/jacoco/test/html; open index.html)
+```
+
+Look at SpotBugs reports:
+```bash
+(cd build/reports/spotbugs; open main.html)  # Production code
+(cd build/reports/spotbugs; open test.html)  # Unit test code
+(cd build/reports/spotbugs; open integrationTest.html)
+(cd build/reports/spotbugs; open databaseTest.html)
+```
+
+### 
 
 ## Testing
 
