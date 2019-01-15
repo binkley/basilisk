@@ -97,6 +97,42 @@ Make good use of `@RequiredArgsConstructor(onConstructor = @__(@Autowired))`
 and `final` fields in beans.  This saves typing, prevents mistakes in 
 tests, and is "best practice" as recommended by Spring documentation.
 
+This relies on Lombok.  Breaking it down:
+
+- [`@RequiredArgsConstructor`](https://projectlombok.org/features/constructor)
+  generates a `public` constructor in the class with all unset `final` fields
+  as parameters
+- [`onConstructor`](https://projectlombok.org/features/experimental/onX) adds
+  additional annotations onto the generated constructor
+- `@__(@Autowired)` picks Spring's `@Autowired` annotation for the constructor
+
+The weird "@__" syntax is an artifact of the Java compiler; Lombok has 
+little other way to express these things in a why which compiles.
+
+```java
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
+class Foo {
+    private final OneThing one;
+    private final TwoThing two;
+}
+```
+
+Becomes (more or less):
+
+```java
+class Foo {
+    @Autowired
+    public Foo(final OneThing one, final TwoThing two) {
+        this.one = one;
+        this.two = two;
+    }
+}
+```
+
+In IntelliJ, use the "Refactor | Delombok | All annotations" menu item to 
+see the generated code.  (Do not forget to undo afterwards, to restore the 
+original, unrefactored code.)
+
 ### Bean validation
 
 Any bean can be validated by adding `@Validated` to the class.  See 
