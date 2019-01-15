@@ -12,6 +12,7 @@ Demonstrate Java 11, Spring Boot 2, JUnit 5, et al
 * Repository
 * YAML configuration
 * Validations
+* Strict, fail-fast compilation
 * Full test coverage
 * Static code analysis
 * Build analysis
