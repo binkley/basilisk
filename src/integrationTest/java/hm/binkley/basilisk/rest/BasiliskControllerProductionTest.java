@@ -33,7 +33,7 @@ class BasiliskControllerProductionTest {
     private ServerProperties serverProperties;
 
     @Test
-    void shouldShowStackTraceWhenRequired()
+    void shouldNotStackTraceWhenForbidden()
             throws Exception {
         mvc.perform(post("/basilisk")
                 .contentType(APPLICATION_JSON_UTF8)
