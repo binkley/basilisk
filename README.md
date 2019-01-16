@@ -1,4 +1,5 @@
 <img src="basil-lips.jpg" alt="Image of basil" align="right"/>
+<span style="text-align: right">Last updated $Date$</span>
 
 # Basilisk
 
