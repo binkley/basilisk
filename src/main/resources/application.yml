@@ -7,6 +7,11 @@ management:
       exposure:
         include: '*'
 
+server:
+  error:
+    include-exception: true
+    include-stacktrace: never
+
 spring:
   application:
     name: 'basilisk'

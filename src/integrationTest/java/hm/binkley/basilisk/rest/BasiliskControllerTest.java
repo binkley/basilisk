@@ -149,8 +149,10 @@ class BasiliskControllerTest {
                 .andExpect(status().isIAmATeapot())
                 .andExpect(jsonPath("$.error", containsString(
                         "on field 'word': rejected value [F]")))
+                .andExpect(jsonPath("$.exception").exists())
                 .andExpect(jsonPath("$.status",
-                        equalTo(I_AM_A_TEAPOT.value())));
+                        equalTo(I_AM_A_TEAPOT.value())))
+                .andExpect(jsonPath("$.trace").doesNotExist());
 
         verifyNoMoreInteractions(repository, service);
     }
@@ -167,8 +169,10 @@ class BasiliskControllerTest {
                 .andExpect(status().isIAmATeapot())
                 .andExpect(jsonPath("$.error", containsString(
                         "on field 'when': rejected value [null]")))
+                .andExpect(jsonPath("$.exception").exists())
                 .andExpect(jsonPath("$.status",
-                        equalTo(I_AM_A_TEAPOT.value())));
+                        equalTo(I_AM_A_TEAPOT.value())))
+                .andExpect(jsonPath("$.trace").doesNotExist());
 
         verifyNoMoreInteractions(repository, service);
     }
