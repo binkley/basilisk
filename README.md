@@ -80,6 +80,13 @@ Avoid `@InjectMocks`.  It is convenient, but hides wiring mistakes until the
 test runs.  Instead, construct your object under test in a setup method, 
 and mistakes become compilation errors (see example, below).
 
+### Controller tests
+
+The controller tests are straight-forward for Spring projects, if complex 
+in other contexts.  The exception is testing sad paths.  I never found a 
+nice way to handle validation failures, nor test test for them.  This is a 
+long-standing Spring MVC complaint.
+
 ## Advice and examples
 
 _NB_ &mdash; Anything mentioned as a "bean" means anything that Spring DI 
