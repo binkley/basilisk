@@ -1,4 +1,0 @@
-#!/bin/bash
-
-when="$(date --date="$(git log --date=iso-strict --pretty=tformat:%ad -1)")"
-sed "s/Last updated \\\$Date\\\$/Last updated $when/"

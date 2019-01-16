@@ -1,3 +1,2 @@
 * text=auto
 *.bat text eol=crlf
-README.md filter=last-modified
