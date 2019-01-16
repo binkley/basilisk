@@ -19,8 +19,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(BasiliskController.class)
-@TestPropertySource(properties = "server.error.include-stacktrace=always")
-class BasiliskControllerDebuggingTest {
+@TestPropertySource(properties = "server.error.include-stacktrace=never")
+class BasiliskControllerProductionTest {
     @Autowired
     private MockMvc mvc;
     @Autowired
@@ -40,10 +40,11 @@ class BasiliskControllerDebuggingTest {
                 .content(asJson(BasiliskRequest.builder()
                         .word("FOO")
                         .when(null)
-                        .build())))
+                        .build()))
+                .param("trace", "true"))
                 .andExpect(status().isIAmATeapot())
                 .andExpect(jsonPath("$.exception").exists())
-                .andExpect(jsonPath("$.trace").exists());
+                .andExpect(jsonPath("$.trace").doesNotExist());
 
         verifyNoMoreInteractions(repository, service);
     }

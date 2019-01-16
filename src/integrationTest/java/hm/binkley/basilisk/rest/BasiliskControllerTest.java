@@ -8,11 +8,13 @@ import hm.binkley.basilisk.store.BasiliskRecord;
 import hm.binkley.basilisk.store.BasiliskRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.Instant;
@@ -38,6 +40,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(BasiliskController.class)
+@TestPropertySource(properties = {
+        "server.error.include-stacktrace=on-trace-param"})
 class BasiliskControllerTest {
     private static final OffsetDateTime WHEN = OffsetDateTime.of(
             2011, 2, 3, 4, 5, 6, 7_000_000, UTC);
@@ -50,6 +54,8 @@ class BasiliskControllerTest {
     private BasiliskRepository repository;
     @MockBean
     private BasiliskService service;
+    @Autowired
+    private ServerProperties serverProperties;
 
     @Test
     void shouldPage()
@@ -173,6 +179,23 @@ class BasiliskControllerTest {
                 .andExpect(jsonPath("$.status",
                         equalTo(I_AM_A_TEAPOT.value())))
                 .andExpect(jsonPath("$.trace").doesNotExist());
+
+        verifyNoMoreInteractions(repository, service);
+    }
+
+    @Test
+    void shouldShowStackTraceWhenRequested()
+            throws Exception {
+        mvc.perform(post("/basilisk")
+                .contentType(APPLICATION_JSON_UTF8)
+                .content(asJson(BasiliskRequest.builder()
+                        .word("FOO")
+                        .when(null)
+                        .build()))
+                .param("trace", "true"))
+                .andExpect(status().isIAmATeapot())
+                .andExpect(jsonPath("$.exception").exists())
+                .andExpect(jsonPath("$.trace").exists());
 
         verifyNoMoreInteractions(repository, service);
     }

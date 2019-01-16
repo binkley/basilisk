@@ -29,8 +29,8 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 
+import static java.lang.Boolean.parseBoolean;
 import static java.util.stream.Collectors.toList;
-import static org.springframework.boot.autoconfigure.web.ErrorProperties.IncludeStacktrace.ALWAYS;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.I_AM_A_TEAPOT;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
@@ -44,6 +44,12 @@ public class BasiliskController {
     private final BasiliskService service;
     private final ServerProperties serverProperties;
     private final ErrorAttributes errorAttributes;
+
+    private static HttpHeaders restHeaders() {
+        final HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(APPLICATION_JSON_UTF8);
+        return headers;
+    }
 
     @GetMapping
     public Page<BasiliskResponse> getAll(final Pageable pageable) {
@@ -82,20 +88,38 @@ public class BasiliskController {
             MethodArgumentNotValidException.class})
     public ResponseEntity<Map<String, Object>> badContent(
             final WebRequest request, final Exception e) {
-        final boolean includeStackTrace =
-                ALWAYS == serverProperties.getError().getIncludeStacktrace();
-        final Map<String, Object> body = errorAttributes
-                .getErrorAttributes(request, includeStackTrace);
-        body.put("error", e.getMessage());
-        body.put("status", I_AM_A_TEAPOT.value());
-
-        final HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(APPLICATION_JSON_UTF8);
-
-        return new ResponseEntity<>(body, headers, I_AM_A_TEAPOT);
+        return new ResponseEntity<>(
+                errorBody(request, e),
+                restHeaders(),
+                I_AM_A_TEAPOT);
     }
 
     private BasiliskResponse from(final BasiliskRecord record) {
         return BasiliskResponse.from(service, record);
+    }
+
+    private Map<String, Object> errorBody(final WebRequest request,
+            final Exception e) {
+        final boolean includeStackTrace = includeStackTrace(request);
+        final Map<String, Object> body = errorAttributes
+                .getErrorAttributes(request, includeStackTrace);
+        body.put("error", e.getMessage());
+        body.put("status", I_AM_A_TEAPOT.value());
+        return body;
+    }
+
+    private boolean includeStackTrace(final WebRequest request) {
+        switch (serverProperties.getError().getIncludeStacktrace()) {
+        case ALWAYS:
+            return true;
+        case ON_TRACE_PARAM:
+            return isTraceEnabled(request);
+        default:
+            return false;
+        }
+    }
+
+    private boolean isTraceEnabled(final WebRequest request) {
+        return parseBoolean(request.getParameter("trace"));
     }
 }
