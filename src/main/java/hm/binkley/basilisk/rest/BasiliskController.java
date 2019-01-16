@@ -67,6 +67,16 @@ public class BasiliskController {
         return repository.save(request.toRecord()).getId();
     }
 
+    // This awkward method is sending the default Spring JSON for exceptions
+    // from controllers as the response body.  There is trickiness, as the
+    // exact properties in the JSON depend on YAML configuration.
+    //
+    // Also note: While HTTP status code 418 ("I am a teapot") is fully
+    // present in the HTTP standards, it is the result of an April Fool's
+    // joke gone wrong.  Used here solely as this is an example project.
+    //
+    // This whole thing highlights one of the shortcomings in Spring MVC
+    // validation.
     @ExceptionHandler({
             ConstraintViolationException.class,
             MethodArgumentNotValidException.class})
