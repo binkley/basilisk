@@ -3,6 +3,7 @@ package hm.binkley.basilisk.rest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import hm.binkley.basilisk.configuration.JsonWebMvcTest;
 import hm.binkley.basilisk.service.BasiliskService;
 import hm.binkley.basilisk.store.BasiliskRecord;
 import hm.binkley.basilisk.store.BasiliskRepository;
@@ -11,17 +12,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.ErrorProperties;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.context.WebApplicationContext;
 
 import java.time.Instant;
 import java.time.OffsetDateTime;
@@ -38,19 +34,14 @@ import static org.mockito.Mockito.when;
 import static org.springframework.boot.autoconfigure.web.ErrorProperties.IncludeStacktrace.ALWAYS;
 import static org.springframework.boot.autoconfigure.web.ErrorProperties.IncludeStacktrace.NEVER;
 import static org.springframework.boot.autoconfigure.web.ErrorProperties.IncludeStacktrace.ON_TRACE_PARAM;
-import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.HttpStatus.I_AM_A_TEAPOT;
-import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
-import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
-@WebMvcTest(BasiliskController.class)
+@JsonWebMvcTest(BasiliskController.class)
 class BasiliskControllerTest {
     private static final OffsetDateTime WHEN = OffsetDateTime.of(
             2011, 2, 3, 4, 5, 6, 7_000_000, UTC);
@@ -263,20 +254,5 @@ class BasiliskControllerTest {
     private String asJson(final Object o)
             throws JsonProcessingException {
         return objectMapper.writeValueAsString(o);
-    }
-
-    @TestConfiguration
-    public static class JsonMockMvcConfiguration {
-        @Bean
-        @Primary
-        public MockMvc jsonMockMvc(final WebApplicationContext ctx) {
-            return webAppContextSetup(ctx)
-                    .defaultRequest(post("/")
-                            .contentType(APPLICATION_JSON_UTF8)
-                            .accept(APPLICATION_JSON_UTF8_VALUE))
-                    .alwaysExpect(header().string(
-                            CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE))
-                    .build();
-        }
     }
 }

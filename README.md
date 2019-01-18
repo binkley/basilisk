@@ -179,6 +179,8 @@ class SomeTest {
     private SomeBean realBean;
     @MockBean  // Mock instance created by Mockito, and injected by Spring
     private SomeMock mockBean;
+    @Mock // Mock instance created by Mockito; ignored by Spring
+    private AnotherMock mockNotBean;
     
     private ClassUnderTest testMe;
     
@@ -201,3 +203,10 @@ your test.  Among the choices include:
 - `@WebMvcTest` (use the `value` property to limit test to one controller);
   example in
   [`BasiliskControllerTest`](src/integrationTest/java/hm/binkley/basilisk/rest/BasiliskControllerTest.java)
+
+### Configuration through annotations
+
+Spring makes heavy use of configuration in Java through annotations.  Examples
+include `@EnableConfigurationProperties` and `@Import`.  See
+[`JsonWebMvcTest`](src/integrationTest/java/hm/binkley/basilisk/configuration/JsonWebMvcTest.java)
+for an example of writing your own.
