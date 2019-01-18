@@ -147,6 +147,10 @@ tasks {
         }
     }
 
+    springBoot {
+        buildInfo()
+    }
+
     bootRun {
         systemProperties = System.properties as Map<String, ?>
     }

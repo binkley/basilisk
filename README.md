@@ -45,6 +45,17 @@ not have the "open" command):
 
 ###
 
+## Production
+
+After spinning up the program with `./gradlew bootRun`, try
+[actuator](http://localhost:8080/actuator).  The page format is
+[JSON HAL](http://stateless.co/hal_specification.html), so browse the 
+returned JSON for interesting links.
+
+Of particular interest is [health](http://localhost:8080/actuator/health). 
+Note the [application configuration](src/main/resources/application.yml) to
+expose more detail.
+
 ## Testing
 
 ### Layout
@@ -116,8 +127,8 @@ Recall that package names are stylistically singular, not plural, _eg_,
 
 - [controller](src/integrationTest/java/hm/binkley/basilisk/rest/BasiliskControllerTest.java)
 - [controller validation](src/integrationTest/java/hm/binkley/basilisk/rest/BasiliskControllerValidationTest.java)
-- [json request](src/integrationTest/java/hm/binkley/basilisk/rest/BasiliskRequestTest.java)
-- [json response](src/integrationTest/java/hm/binkley/basilisk/rest/BasiliskResponseJsonTest.java)
+- [json request](src/test/java/hm/binkley/basilisk/rest/BasiliskRequestTest.java)
+- [json response](src/integrationTest/java/hm/binkley/basilisk/rest/BasiliskResponseTest.java)
 - [properties](src/integrationTest/java/hm/binkley/basilisk/configuration/BasiliskPropertiesTest.java)
 - [record validation](src/test/java/hm/binkley/basilisk/store/BasiliskRecordValidationTest.java)
 - [repository](src/databaseTest/java/hm/binkley/basilisk/store/BasiliskRepositoryTest.java)
