@@ -58,10 +58,18 @@ Of particular interest is [health](http://localhost:8080/actuator/health).
 Note the [application configuration](src/main/resources/application.yml) to
 expose more detail.
 
+### Swagger
+
+Of course, there is a [Swagger UI](http://localhost:8080/swagger-ui.html).
+
 ### Spring Data REST
 
 You can browse [the Spring repository](http://localhost:8080/data) with a 
 nice web interface.
+
+## Development
+
+Yes, there is [Swagger](http://localhost:8080/swagger-ui.html).
 
 ## Testing
 
