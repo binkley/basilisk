@@ -54,6 +54,8 @@ class BasiliskControllerTest {
     private BasiliskRepository repository;
     @MockBean
     private BasiliskService service;
+    // A spy so Spring reads the real one from application.yml, and we can
+    // change selected configuration values; spies are best very rare
     @SpyBean
     private ServerProperties server;
 

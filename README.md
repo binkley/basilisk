@@ -176,11 +176,13 @@ meta-annotations (one exception is `@JsonTest`).
 @SomeSpringTestingAnnotation
 class SomeTest {
     @Autowired  // Real instance, created and injected by Spring
-    private SomeBean realBean;
+    private SomeThing realBean;
     @MockBean  // Mock instance created by Mockito, and injected by Spring
-    private SomeMock mockBean;
-    @Mock // Mock instance created by Mockito; ignored by Spring
-    private AnotherMock mockNotBean;
+    private SomeDependency mockBean;
+    @Mock  // Mock instance created by Mockito; ignored by Spring
+    private AnotherDependency mockNotBean;
+    @SpyBean  // Very rare
+    private RealThing spyBean; 
     
     private ClassUnderTest testMe;
     
