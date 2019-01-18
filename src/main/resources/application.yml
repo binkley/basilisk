@@ -22,5 +22,8 @@ server:
 spring:
   application:
     name: 'basilisk'
+  data:
+    rest:
+      detection-strategy: annotated
   main:
     banner-mode: 'off'
