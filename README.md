@@ -119,6 +119,7 @@ Recall that package names are stylistically singular, not plural, _eg_,
 - [json request](src/integrationTest/java/hm/binkley/basilisk/rest/BasiliskRequestTest.java)
 - [json response](src/integrationTest/java/hm/binkley/basilisk/rest/BasiliskResponseJsonTest.java)
 - [properties](src/integrationTest/java/hm/binkley/basilisk/configuration/BasiliskPropertiesTest.java)
+- [record validation](src/test/java/hm/binkley/basilisk/store/BasiliskRecordValidationTest.java)
 - [repository](src/databaseTest/java/hm/binkley/basilisk/store/BasiliskRepositoryTest.java)
 - [service](src/test/java/hm/binkley/basilisk/service/BasiliskServiceTest.java)
 - [service validation](src/integrationTest/java/hm/binkley/basilisk/service/BasiliskServiceValidationTest.java)
