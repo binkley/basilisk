@@ -23,6 +23,7 @@ import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static java.time.Instant.EPOCH;
 import static java.time.ZoneOffset.UTC;
@@ -95,6 +96,42 @@ class BasiliskControllerTest {
                                 "when", "2011-02-03T04:05:06.007Z",
                                 "extra", "Bob Barker")), pageable,
                         found.size()))));
+    }
+
+    @Test
+    void shouldFindExplicitly()
+            throws Exception {
+        final long id = 1L;
+        final String word = "BIRD";
+        final String extra = "Howard";
+
+        when(repository.findById(id))
+                .thenReturn(Optional.of(BasiliskRecord.builder()
+                        .id(id)
+                        .receivedAt(EPOCH)
+                        .word(word)
+                        .when(WHEN.toInstant())
+                        .build()));
+        when(service.extra(word))
+                .thenReturn(extra);
+
+        jsonMvc.perform(get("/basilisk/" + id))
+                .andExpect(status().isOk())
+                .andExpect(content().json(asJson(Map.of("word", word,
+                        "when", "2011-02-03T04:05:06.007Z",
+                        "extra", extra))));
+    }
+
+    @Test
+    void shouldNotFindExplicitly()
+            throws Exception {
+        final long id = 1L;
+
+        when(repository.findById(id))
+                .thenReturn(Optional.empty());
+
+        jsonMvc.perform(get("/basilisk/" + id))
+                .andExpect(status().isNotFound());
     }
 
     @Test

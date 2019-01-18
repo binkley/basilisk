@@ -10,6 +10,7 @@ import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -29,7 +30,6 @@ import javax.validation.ValidationException;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import static java.lang.Boolean.parseBoolean;
 import static java.util.stream.Collectors.toList;
@@ -58,6 +58,14 @@ public class BasiliskController {
     public Page<BasiliskResponse> getAll(final Pageable pageable) {
         return repository.findAll(pageable)
                 .map(this::from);
+    }
+
+    @GetMapping("{id}")
+    public BasiliskResponse findById(
+            @PathVariable("id") final Long id) {
+        return repository.findById(id)
+                .map(this::from)
+                .orElseThrow(ResourceNotFoundException::new);
     }
 
     @GetMapping("find/{word}")
