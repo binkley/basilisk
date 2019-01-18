@@ -21,3 +21,12 @@ spring:
     name: 'basilisk'
   main:
     banner-mode: 'off'
+
+---
+
+spring:
+  profiles:
+    active: 'alternative'
+
+basilisk:
+  extra-word: 'Margaret Hamilton'
