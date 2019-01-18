@@ -68,10 +68,7 @@ class BasiliskControllerTest {
 
     @BeforeEach
     void setUp() {
-        mvc = webAppContextSetup(ctx)
-                .alwaysExpect(header().string(
-                        CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE))
-                .build();
+        mvc = assumeJson();
 
         error = spy(server.getError());
         when(server.getError())
@@ -98,8 +95,6 @@ class BasiliskControllerTest {
                 .param("page", "0")
                 .param("size", "2"))
                 .andExpect(status().isOk())
-                .andExpect(header().string(
-                        CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(content().json(asJson(new PageImpl<>(List.of(
                         Map.of("word", word,
                                 "when", "2011-02-03T04:05:06.007Z",
@@ -123,8 +118,6 @@ class BasiliskControllerTest {
 
         mvc.perform(get("/basilisk/" + word))
                 .andExpect(status().isOk())
-                .andExpect(header().string(
-                        CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(content().json(asJson(List.of(
                         Map.of("word", word,
                                 "when", "2011-02-03T04:05:06.007Z",
@@ -155,7 +148,6 @@ class BasiliskControllerTest {
                         .withReceivedAt(Instant.ofEpochSecond(1_000_000)));
 
         mvc.perform(post("/basilisk")
-                .contentType(APPLICATION_JSON_UTF8)
                 .content(asJson(BasiliskRequest.builder()
                         .word(word)
                         .when(WHEN)
@@ -168,7 +160,6 @@ class BasiliskControllerTest {
     void shouldRejectShortRequestWords()
             throws Exception {
         mvc.perform(post("/basilisk")
-                .contentType(APPLICATION_JSON_UTF8)
                 .content(asJson(BasiliskRequest.builder()
                         .word("F")
                         .when(WHEN)
@@ -188,7 +179,6 @@ class BasiliskControllerTest {
     void shouldRejectShortMissingWhens()
             throws Exception {
         mvc.perform(post("/basilisk")
-                .contentType(APPLICATION_JSON_UTF8)
                 .content(asJson(BasiliskRequest.builder()
                         .word("FOO")
                         .when(null)
@@ -211,7 +201,6 @@ class BasiliskControllerTest {
                 .thenReturn(NEVER);
 
         mvc.perform(post("/basilisk")
-                .contentType(APPLICATION_JSON_UTF8)
                 .content(asJson(BasiliskRequest.builder()
                         .word("FOO")
                         .when(null)
@@ -231,7 +220,6 @@ class BasiliskControllerTest {
                 .thenReturn(ON_TRACE_PARAM);
 
         mvc.perform(post("/basilisk")
-                .contentType(APPLICATION_JSON_UTF8)
                 .content(asJson(BasiliskRequest.builder()
                         .word("FOO")
                         .when(null)
@@ -242,7 +230,6 @@ class BasiliskControllerTest {
                 .andExpect(jsonPath("$.trace").exists());
 
         mvc.perform(post("/basilisk")
-                .contentType(APPLICATION_JSON_UTF8)
                 .content(asJson(BasiliskRequest.builder()
                         .word("FOO")
                         .when(null)
@@ -262,7 +249,6 @@ class BasiliskControllerTest {
                 .thenReturn(ALWAYS);
 
         mvc.perform(post("/basilisk")
-                .contentType(APPLICATION_JSON_UTF8)
                 .content(asJson(BasiliskRequest.builder()
                         .word("FOO")
                         .when(null)
@@ -272,6 +258,16 @@ class BasiliskControllerTest {
                 .andExpect(jsonPath("$.trace").exists());
 
         verifyNoMoreInteractions(repository, service);
+    }
+
+    private MockMvc assumeJson() {
+        return webAppContextSetup(ctx)
+                .defaultRequest(post("/")
+                        .contentType(APPLICATION_JSON_UTF8)
+                        .accept(APPLICATION_JSON_UTF8_VALUE))
+                .alwaysExpect(header().string(
+                        CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE))
+                .build();
     }
 
     private String asJson(final Object o)
