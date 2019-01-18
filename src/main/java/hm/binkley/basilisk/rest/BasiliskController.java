@@ -24,8 +24,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 
-import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
+import javax.validation.ValidationException;
 import java.util.List;
 import java.util.Map;
 
@@ -84,7 +84,7 @@ public class BasiliskController {
     // This whole thing highlights one of the shortcomings in Spring MVC
     // validation.
     @ExceptionHandler({
-            ConstraintViolationException.class,
+            ValidationException.class,
             MethodArgumentNotValidException.class})
     public ResponseEntity<Map<String, Object>> badContent(
             final WebRequest request, final Exception e) {
