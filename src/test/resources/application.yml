@@ -14,7 +14,7 @@ management:
 server:
   error:
     include-exception: true
-    include-stacktrace: never
+    include-stacktrace: on_trace_param
 
 spring:
   application:
