@@ -11,7 +11,6 @@ import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -37,6 +36,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.http.ResponseEntity.created;
+import static org.springframework.http.ResponseEntity.unprocessableEntity;
 
 @RequestMapping("/basilisk")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -47,12 +47,6 @@ public class BasiliskController {
     private final BasiliskService service;
     private final ServerProperties serverProperties;
     private final ErrorAttributes errorAttributes;
-
-    private static HttpHeaders restHeaders() {
-        final HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(APPLICATION_JSON_UTF8);
-        return headers;
-    }
 
     @GetMapping
     public Page<BasiliskResponse> getAll(final Pageable pageable) {
@@ -102,10 +96,9 @@ public class BasiliskController {
             MethodArgumentNotValidException.class})
     public ResponseEntity<Map<String, Object>> badContent(
             final WebRequest request, final Exception e) {
-        return new ResponseEntity<>(
-                errorBody(request, e),
-                restHeaders(),
-                UNPROCESSABLE_ENTITY);
+        return unprocessableEntity()
+                .contentType(APPLICATION_JSON_UTF8)
+                .body(errorBody(request, e));
     }
 
     private BasiliskResponse from(final BasiliskRecord record) {
