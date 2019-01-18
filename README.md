@@ -1,4 +1,4 @@
-<img src="basil-lips.jpg" alt="Image of basil" align="right"/>
+<img src="basil-lips.jpg" alt="Image of basil lips" align="right"/>
 
 # Basilisk
 
@@ -115,6 +115,7 @@ Recall that package names are stylistically singular, not plural, _eg_,
 ### Test types
 
 - [controller](src/integrationTest/java/hm/binkley/basilisk/rest/BasiliskControllerTest.java)
+- [controller validation](src/integrationTest/java/hm/binkley/basilisk/rest/BasiliskControllerValidationTest.java)
 - [json request](src/integrationTest/java/hm/binkley/basilisk/rest/BasiliskRequestTest.java)
 - [json response](src/integrationTest/java/hm/binkley/basilisk/rest/BasiliskResponseJsonTest.java)
 - [properties](src/integrationTest/java/hm/binkley/basilisk/configuration/BasiliskPropertiesTest.java)
