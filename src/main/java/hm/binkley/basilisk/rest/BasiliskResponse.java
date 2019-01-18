@@ -12,6 +12,7 @@ import static java.time.ZoneOffset.UTC;
 @Builder
 @Data
 public final class BasiliskResponse {
+    private final Long id;
     private final String word;
     private final OffsetDateTime when;
     private final String extra;
@@ -20,6 +21,7 @@ public final class BasiliskResponse {
             final BasiliskService service,
             final BasiliskRecord record) {
         return BasiliskResponse.builder()
+                .id(record.getId())
                 .word(record.getWord())
                 .when(record.getWhen().atOffset(UTC))
                 .extra(service.extra(record.getWord()))

@@ -19,6 +19,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -46,6 +47,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @JsonWebMvcTest(BasiliskController.class)
 class BasiliskControllerTest {
+    private static final long ID = 1L;
     private static final OffsetDateTime WHEN = OffsetDateTime.of(
             2011, 2, 3, 4, 5, 6, 7_000_000, UTC);
 
@@ -61,8 +63,16 @@ class BasiliskControllerTest {
     // change selected configuration values; spies are best very rare
     @SpyBean
     private ServerProperties server;
-
     private ErrorProperties error;
+
+    private static Map<String, Serializable> responseMapFor(
+            final String word, final String extra) {
+        return Map.of(
+                "id", ID,
+                "word", word,
+                "when", WHEN.toInstant(),
+                "extra", extra);
+    }
 
     @BeforeEach
     void setUp() {
@@ -78,7 +88,7 @@ class BasiliskControllerTest {
         final String extra = "Bob Barker";
         final Pageable pageable = PageRequest.of(0, 2);
         final List<BasiliskRecord> found = List.of(BasiliskRecord.builder()
-                .id(1L)
+                .id(ID)
                 .receivedAt(EPOCH)
                 .word(word)
                 .when(WHEN.toInstant())
@@ -94,9 +104,7 @@ class BasiliskControllerTest {
                 .param("size", "2"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(asJson(new PageImpl<>(List.of(
-                        Map.of("word", word,
-                                "when", WHEN.toInstant(),
-                                "extra", extra)), pageable,
+                        responseMapFor(word, extra)), pageable,
                         found.size()))));
     }
 
@@ -119,9 +127,8 @@ class BasiliskControllerTest {
 
         jsonMvc.perform(get("/basilisk/" + id))
                 .andExpect(status().isOk())
-                .andExpect(content().json(asJson(Map.of("word", word,
-                        "when", WHEN.toInstant(),
-                        "extra", extra))));
+                .andExpect(content().json(
+                        asJson(responseMapFor(word, extra))));
     }
 
     @Test
@@ -139,12 +146,13 @@ class BasiliskControllerTest {
     @Test
     void shouldAcceptWords()
             throws Exception {
+        final long id = 1L;
         final String word = "foo";
         final String extra = "Margaret Hamilton";
 
         when(repository.findByWord(word))
                 .thenReturn(List.of(BasiliskRecord.builder()
-                        .id(1L)
+                        .id(id)
                         .receivedAt(EPOCH)
                         .word(word)
                         .when(WHEN.toInstant())
@@ -154,10 +162,8 @@ class BasiliskControllerTest {
 
         jsonMvc.perform(get("/basilisk/find/" + word))
                 .andExpect(status().isOk())
-                .andExpect(content().json(asJson(List.of(
-                        Map.of("word", word,
-                                "when", WHEN.toInstant(),
-                                "extra", extra)))));
+                .andExpect(content().json(
+                        asJson(List.of(responseMapFor(word, extra)))));
     }
 
     @SuppressFBWarnings("RV")
@@ -196,9 +202,8 @@ class BasiliskControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(header()
                         .string(LOCATION, "/basilisk/" + id))
-                .andExpect(content().json(asJson(Map.of(
-                        "word", word,
-                        "extra", extra))));
+                .andExpect(content().json(
+                        asJson(responseMapFor(word, extra))));
     }
 
     @Test
