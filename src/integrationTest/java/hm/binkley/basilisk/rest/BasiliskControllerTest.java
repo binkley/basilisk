@@ -34,10 +34,12 @@ import static org.mockito.Mockito.when;
 import static org.springframework.boot.autoconfigure.web.ErrorProperties.IncludeStacktrace.ALWAYS;
 import static org.springframework.boot.autoconfigure.web.ErrorProperties.IncludeStacktrace.NEVER;
 import static org.springframework.boot.autoconfigure.web.ErrorProperties.IncludeStacktrace.ON_TRACE_PARAM;
-import static org.springframework.http.HttpStatus.I_AM_A_TEAPOT;
+import static org.springframework.http.HttpHeaders.LOCATION;
+import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -109,7 +111,7 @@ class BasiliskControllerTest {
         when(service.extra(word))
                 .thenReturn("Margaret Hamilton");
 
-        jsonMvc.perform(get("/basilisk/" + word))
+        jsonMvc.perform(get("/basilisk/find/" + word))
                 .andExpect(status().isOk())
                 .andExpect(content().json(asJson(List.of(
                         Map.of("word", word,
@@ -121,8 +123,8 @@ class BasiliskControllerTest {
     @Test
     void shouldRejectShortWords()
             throws Exception {
-        jsonMvc.perform(get("/basilisk/F"))
-                .andExpect(status().isIAmATeapot());
+        jsonMvc.perform(get("/basilisk/find/F"))
+                .andExpect(status().isUnprocessableEntity());
 
         verifyNoMoreInteractions(repository, service);
     }
@@ -135,10 +137,13 @@ class BasiliskControllerTest {
                 .word(word)
                 .when(WHEN.toInstant())
                 .build();
+        final long id = 1L;
         when(repository.save(record))
                 .thenReturn(record
-                        .withId(1L)
+                        .withId(id)
                         .withReceivedAt(Instant.ofEpochSecond(1_000_000)));
+        when(service.extra(word))
+                .thenReturn("Alice");
 
         jsonMvc.perform(post("/basilisk")
                 .content(asJson(BasiliskRequest.builder()
@@ -146,7 +151,11 @@ class BasiliskControllerTest {
                         .when(WHEN)
                         .build())))
                 .andExpect(status().isCreated())
-                .andExpect(content().json("1"));
+                .andExpect(header()
+                        .string(LOCATION, "/basilisk/" + id))
+                .andExpect(content().json(asJson(Map.of(
+                        "word", word,
+                        "extra", "Alice"))));
     }
 
     @Test
@@ -157,12 +166,12 @@ class BasiliskControllerTest {
                         .word("F")
                         .when(WHEN)
                         .build())))
-                .andExpect(status().isIAmATeapot())
+                .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.error", containsString(
                         "on field 'word': rejected value [F]")))
                 .andExpect(jsonPath("$.exception").exists())
                 .andExpect(jsonPath("$.status",
-                        equalTo(I_AM_A_TEAPOT.value())))
+                        equalTo(UNPROCESSABLE_ENTITY.value())))
                 .andExpect(jsonPath("$.trace").doesNotExist());
 
         verifyNoMoreInteractions(repository, service);
@@ -176,12 +185,12 @@ class BasiliskControllerTest {
                         .word("FOO")
                         .when(null)
                         .build())))
-                .andExpect(status().isIAmATeapot())
+                .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.error", containsString(
                         "on field 'when': rejected value [null]")))
                 .andExpect(jsonPath("$.exception").exists())
                 .andExpect(jsonPath("$.status",
-                        equalTo(I_AM_A_TEAPOT.value())))
+                        equalTo(UNPROCESSABLE_ENTITY.value())))
                 .andExpect(jsonPath("$.trace").doesNotExist());
 
         verifyNoMoreInteractions(repository, service);
@@ -199,7 +208,7 @@ class BasiliskControllerTest {
                         .when(null)
                         .build()))
                 .param("trace", "true"))
-                .andExpect(status().isIAmATeapot())
+                .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.exception").exists())
                 .andExpect(jsonPath("$.trace").doesNotExist());
 
@@ -218,7 +227,7 @@ class BasiliskControllerTest {
                         .when(null)
                         .build()))
                 .param("trace", "true"))
-                .andExpect(status().isIAmATeapot())
+                .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.exception").exists())
                 .andExpect(jsonPath("$.trace").exists());
 
@@ -228,7 +237,7 @@ class BasiliskControllerTest {
                         .when(null)
                         .build()))
                 .param("trace", "false"))
-                .andExpect(status().isIAmATeapot())
+                .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.exception").exists())
                 .andExpect(jsonPath("$.trace").doesNotExist());
 
@@ -246,7 +255,7 @@ class BasiliskControllerTest {
                         .word("FOO")
                         .when(null)
                         .build())))
-                .andExpect(status().isIAmATeapot())
+                .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.exception").exists())
                 .andExpect(jsonPath("$.trace").exists());
 

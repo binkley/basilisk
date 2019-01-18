@@ -26,14 +26,17 @@ import org.springframework.web.context.request.WebRequest;
 
 import javax.validation.Valid;
 import javax.validation.ValidationException;
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static java.lang.Boolean.parseBoolean;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.I_AM_A_TEAPOT;
+import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
+import static org.springframework.http.ResponseEntity.created;
 
 @RequestMapping("/basilisk")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -57,7 +60,7 @@ public class BasiliskController {
                 .map(this::from);
     }
 
-    @GetMapping("{word}")
+    @GetMapping("find/{word}")
     public List<BasiliskResponse> getByWord(
             @Length(min = 3, max = 32) @PathVariable("word")
             final String word) {
@@ -68,9 +71,12 @@ public class BasiliskController {
 
     @PostMapping
     @ResponseStatus(CREATED)
-    public Long postBasilisk(
+    public ResponseEntity<BasiliskResponse> postBasilisk(
             @RequestBody @Valid final BasiliskRequest request) {
-        return repository.save(request.toRecord()).getId();
+        final BasiliskRecord saved = repository.save(request.toRecord());
+
+        return created(URI.create("/basilisk/" + saved.getId()))
+                .body(from(saved));
     }
 
     // This awkward method is sending the default Spring JSON for exceptions
@@ -91,7 +97,7 @@ public class BasiliskController {
         return new ResponseEntity<>(
                 errorBody(request, e),
                 restHeaders(),
-                I_AM_A_TEAPOT);
+                UNPROCESSABLE_ENTITY);
     }
 
     private BasiliskResponse from(final BasiliskRecord record) {
@@ -104,7 +110,7 @@ public class BasiliskController {
         final Map<String, Object> body = errorAttributes
                 .getErrorAttributes(request, includeStackTrace);
         body.put("error", e.getMessage());
-        body.put("status", I_AM_A_TEAPOT.value());
+        body.put("status", UNPROCESSABLE_ENTITY.value());
         return body;
     }
 
