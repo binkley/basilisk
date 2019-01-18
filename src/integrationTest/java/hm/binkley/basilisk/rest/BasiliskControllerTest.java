@@ -95,7 +95,7 @@ class BasiliskControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().json(asJson(new PageImpl<>(List.of(
                         Map.of("word", word,
-                                "when", "2011-02-03T04:05:06.007Z",
+                                "when", WHEN.toInstant(),
                                 "extra", extra)), pageable,
                         found.size()))));
     }
@@ -120,7 +120,7 @@ class BasiliskControllerTest {
         jsonMvc.perform(get("/basilisk/" + id))
                 .andExpect(status().isOk())
                 .andExpect(content().json(asJson(Map.of("word", word,
-                        "when", "2011-02-03T04:05:06.007Z",
+                        "when", WHEN.toInstant(),
                         "extra", extra))));
     }
 
@@ -156,7 +156,7 @@ class BasiliskControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().json(asJson(List.of(
                         Map.of("word", word,
-                                "when", "2011-02-03T04:05:06.007Z",
+                                "when", WHEN.toInstant(),
                                 "extra", extra)))));
     }
 

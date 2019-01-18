@@ -112,6 +112,19 @@ this project, there are only four:
 Recall that package names are stylistically singular, not plural, _eg_,
 `service` rather than `services`.
 
+### Test types
+
+- [controller](src/integrationTest/java/hm/binkley/basilisk/rest/BasiliskControllerTest.java)
+- [json request](src/integrationTest/java/hm/binkley/basilisk/rest/BasiliskRequestTest.java)
+- [json response](src/integrationTest/java/hm/binkley/basilisk/rest/BasiliskResponseJsonTest.java)
+- [properties](src/integrationTest/java/hm/binkley/basilisk/configuration/BasiliskPropertiesTest.java)
+- [repository](src/databaseTest/java/hm/binkley/basilisk/store/BasiliskRepositoryTest.java)
+- [service](src/test/java/hm/binkley/basilisk/service/BasiliskServiceTest.java)
+- [service validation](src/integrationTest/java/hm/binkley/basilisk/service/BasiliskServiceValidationTest.java)
+
+Note the source root of each test depends on the resources it uses.  See 
+[Testing - Layout](#layout).
+
 ### Spring configuration
 
 Keep your top-level application class simple, generally just a `main()`
