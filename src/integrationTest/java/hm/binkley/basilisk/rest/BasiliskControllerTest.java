@@ -12,8 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.ErrorProperties;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -53,7 +56,7 @@ class BasiliskControllerTest {
             2011, 2, 3, 4, 5, 6, 7_000_000, UTC);
 
     @Autowired
-    private WebApplicationContext ctx;
+    private MockMvc jsonMvc;
     @Autowired
     private ObjectMapper objectMapper;
     @MockBean
@@ -63,13 +66,10 @@ class BasiliskControllerTest {
     @SpyBean
     private ServerProperties server;
 
-    private MockMvc mvc;
     private ErrorProperties error;
 
     @BeforeEach
     void setUp() {
-        mvc = assumeJson();
-
         error = spy(server.getError());
         when(server.getError())
                 .thenReturn(error);
@@ -91,7 +91,7 @@ class BasiliskControllerTest {
         when(service.extra(word))
                 .thenReturn("Bob Barker");
 
-        mvc.perform(get("/basilisk")
+        jsonMvc.perform(get("/basilisk")
                 .param("page", "0")
                 .param("size", "2"))
                 .andExpect(status().isOk())
@@ -116,7 +116,7 @@ class BasiliskControllerTest {
         when(service.extra(word))
                 .thenReturn("Margaret Hamilton");
 
-        mvc.perform(get("/basilisk/" + word))
+        jsonMvc.perform(get("/basilisk/" + word))
                 .andExpect(status().isOk())
                 .andExpect(content().json(asJson(List.of(
                         Map.of("word", word,
@@ -128,7 +128,7 @@ class BasiliskControllerTest {
     @Test
     void shouldRejectShortWords()
             throws Exception {
-        mvc.perform(get("/basilisk/F"))
+        jsonMvc.perform(get("/basilisk/F"))
                 .andExpect(status().isIAmATeapot());
 
         verifyNoMoreInteractions(repository, service);
@@ -147,7 +147,7 @@ class BasiliskControllerTest {
                         .withId(1L)
                         .withReceivedAt(Instant.ofEpochSecond(1_000_000)));
 
-        mvc.perform(post("/basilisk")
+        jsonMvc.perform(post("/basilisk")
                 .content(asJson(BasiliskRequest.builder()
                         .word(word)
                         .when(WHEN)
@@ -159,7 +159,7 @@ class BasiliskControllerTest {
     @Test
     void shouldRejectShortRequestWords()
             throws Exception {
-        mvc.perform(post("/basilisk")
+        jsonMvc.perform(post("/basilisk")
                 .content(asJson(BasiliskRequest.builder()
                         .word("F")
                         .when(WHEN)
@@ -178,7 +178,7 @@ class BasiliskControllerTest {
     @Test
     void shouldRejectShortMissingWhens()
             throws Exception {
-        mvc.perform(post("/basilisk")
+        jsonMvc.perform(post("/basilisk")
                 .content(asJson(BasiliskRequest.builder()
                         .word("FOO")
                         .when(null)
@@ -200,7 +200,7 @@ class BasiliskControllerTest {
         when(error.getIncludeStacktrace())
                 .thenReturn(NEVER);
 
-        mvc.perform(post("/basilisk")
+        jsonMvc.perform(post("/basilisk")
                 .content(asJson(BasiliskRequest.builder()
                         .word("FOO")
                         .when(null)
@@ -219,7 +219,7 @@ class BasiliskControllerTest {
         when(error.getIncludeStacktrace())
                 .thenReturn(ON_TRACE_PARAM);
 
-        mvc.perform(post("/basilisk")
+        jsonMvc.perform(post("/basilisk")
                 .content(asJson(BasiliskRequest.builder()
                         .word("FOO")
                         .when(null)
@@ -229,7 +229,7 @@ class BasiliskControllerTest {
                 .andExpect(jsonPath("$.exception").exists())
                 .andExpect(jsonPath("$.trace").exists());
 
-        mvc.perform(post("/basilisk")
+        jsonMvc.perform(post("/basilisk")
                 .content(asJson(BasiliskRequest.builder()
                         .word("FOO")
                         .when(null)
@@ -248,7 +248,7 @@ class BasiliskControllerTest {
         when(error.getIncludeStacktrace())
                 .thenReturn(ALWAYS);
 
-        mvc.perform(post("/basilisk")
+        jsonMvc.perform(post("/basilisk")
                 .content(asJson(BasiliskRequest.builder()
                         .word("FOO")
                         .when(null)
@@ -260,18 +260,23 @@ class BasiliskControllerTest {
         verifyNoMoreInteractions(repository, service);
     }
 
-    private MockMvc assumeJson() {
-        return webAppContextSetup(ctx)
-                .defaultRequest(post("/")
-                        .contentType(APPLICATION_JSON_UTF8)
-                        .accept(APPLICATION_JSON_UTF8_VALUE))
-                .alwaysExpect(header().string(
-                        CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE))
-                .build();
-    }
-
     private String asJson(final Object o)
             throws JsonProcessingException {
         return objectMapper.writeValueAsString(o);
+    }
+
+    @TestConfiguration
+    public static class JsonMockMvcConfiguration {
+        @Bean
+        @Primary
+        public MockMvc jsonMockMvc(final WebApplicationContext ctx) {
+            return webAppContextSetup(ctx)
+                    .defaultRequest(post("/")
+                            .contentType(APPLICATION_JSON_UTF8)
+                            .accept(APPLICATION_JSON_UTF8_VALUE))
+                    .alwaysExpect(header().string(
+                            CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE))
+                    .build();
+        }
     }
 }
