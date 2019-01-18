@@ -12,7 +12,7 @@ import static lombok.AccessLevel.PRIVATE;
 import static lombok.AccessLevel.PUBLIC;
 
 // Note all the annotations -- configuration properties has one set of
-// requirements; clean testing has another set: accomodate them both
+// requirements; clean testing has another set: accommodate them both
 @AllArgsConstructor(access = PRIVATE)
 @Builder
 @ConfigurationProperties("basilisk")

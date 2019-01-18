@@ -20,7 +20,7 @@ Demonstrate Java 11, Spring Boot 2, JUnit 5, et al
 
 ## Feedback
 
-_Please_ file GitHub issues for questions, suggestions, additions or 
+_Please_ file GitHub issues for questions, suggestions, additions or
 improvements!
 
 ## Getting around
@@ -37,71 +37,95 @@ Run the program:
 ./gradlew bootRun
 ```
 
-Examine at all reports (use "firefox" instead of "open" if your machine does 
+Examine at all reports (use "firefox" instead of "open" if your machine does
 not have the "open" command):
 ```bash
 (cd build/reports/buildDashboard; open index.html)
 ```
 
-### 
+###
 
 ## Testing
 
-### Layout 
+### Layout
 
-Divide your tests by what resources they use.  This speeds up testing 
+Divide your tests by what resources they use.  This speeds up testing
 individual types of tests:
 
-* Unit tests &mdash; No Spring wiring or other resources needed.  These go 
+* Unit tests &mdash; No Spring wiring or other resources needed.  These go
 under [`src/test`](src/test); run with `./gradlew test`
-* Integration tests &mdash; Spring wiring is used.  These go under 
-[`src/integrationTest`](src/integrationTest); run with `./gradlew 
+* Integration tests &mdash; Spring wiring is used.  These go under
+[`src/integrationTest`](src/integrationTest); run with `./gradlew
 integrationTest`
 * Database tests &mdash; In addition to Spring wiring, these use a database
-resource.  These go under [`src/databaseTest`](src/databaseTest); run with`
-./gradlew databaseTest`
+resource.  These go under [`src/databaseTest`](src/databaseTest); run with
+`./gradlew databaseTest`
 
 To run all test types, use `./gradlew check`.  To refresh the build, and force
 all tests to re-run, use `./gradlew clean check --no-build-cache`.
 
 [`BasiliskServiceTest`](src/test/java/hm/binkley/basilisk/service/BasiliskServiceTest.java)
 (unit) and
-[`BasiliskServiceValidationTest`](src/integrationTest/java/hm/binkley/basilisk/service/BasiliskServiceValidationTest.java) 
+[`BasiliskServiceValidationTest`](src/integrationTest/java/hm/binkley/basilisk/service/BasiliskServiceValidationTest.java)
 (integration) are an example of splitting testing of a class to limit
 resources, and speed up the tests.
 
-In this project, the database is an in-memory H2 instance, so is 
-self-contained and speedy; however, in production projects, it would be an 
+In this project, the database is an in-memory H2 instance, so is
+self-contained and speedy; however, in production projects, it would be an
 external database process.
 
 ### Spring injection
 
 Avoid `@InjectMocks`.  It is convenient, but hides wiring mistakes until the
-test runs.  Instead, construct your object under test in a setup method, 
+test runs.  Instead, construct your object under test in a setup method,
 and mistakes become compilation errors (see example, below).
 
 ### Controller tests
 
-The controller tests are straight-forward for Spring projects, if complex 
-in other contexts.  The exception is testing sad paths.  I never found a 
-nice way to handle validation failures, nor test test for them.  This is a 
+The controller tests are straight-forward for Spring projects, if complex
+in other contexts.  The exception is testing sad paths.  I never found a
+nice way to handle validation failures, nor test test for them.  This is a
 long-standing Spring MVC complaint.
 
 ## Advice and examples
 
-_NB_ &mdash; Anything mentioned as a "bean" means anything that Spring DI 
-creates and/or injects.  Spring is very flexible about this; in most cases 
+_NB_ &mdash; Anything mentioned as a "bean" means anything that Spring DI
+creates and/or injects.  Spring is very flexible about this; in most cases
 beans are instances of classes.
 
 ### Build
 
-See what tasks are run, and their dependencies with `./gradlew <tasks> 
+See what tasks are run, and their dependencies with `./gradlew <tasks>
 taskTree` (append `taskTree` after the list of tasks to analyze).
+
+### General layout
+
+Keep your top-level application class in the root of your package hierarchy.
+Break up the rest of your classes into categories of related function.  In
+this project, there are only four:
+
+- [configuration](src/main/java/hm/binkley/basilisk/configuration)
+- [endpoints](src/main/java/hm/binkley/basilisk/rest)
+- [persistence](src/main/java/hm/binkley/basilisk/store)
+- [services](src/main/java/hm/binkley/basilisk/service)
+
+Recall that package names are stylistically singular, not plural, _eg_,
+`service` rather than `services`.
+
+### Spring configuration
+
+Keep your top-level application class simple, generally just a `main()`
+which calls `SpringApplication.run(...)`.  Provide a top-level
+configuration class, initially empty.  On the configuration class go any
+`@Enable*`-type Spring annotations, not on the application class.  See:
+
+- [`BasiliskApplication`](src/main/java/hm/binkley/basilisk/BasiliskApplication.java)
+- [`BasiliskConfiguration`](src/main/java/hm/binkley/basilisk/configuration/BasiliskConfiguration.java)
 
 ### Autowiring
 
 Make good use of `@RequiredArgsConstructor(onConstructor = @__(@Autowired))`
-and `final` fields in beans.  This saves typing, prevents mistakes in 
+and `final` fields in beans.  This saves typing, prevents mistakes in
 tests, and is "best practice" as recommended by Spring documentation.
 
 This relies on Lombok.  Breaking it down:
@@ -113,7 +137,7 @@ This relies on Lombok.  Breaking it down:
   additional annotations onto the generated constructor
 - `@__(@Autowired)` picks Spring's `@Autowired` annotation for the constructor
 
-The weird "@__" syntax is an artifact of the Java compiler; Lombok has 
+The weird "@__" syntax is an artifact of the Java compiler; Lombok has
 little other way to express these things in a why which compiles.
 
 ```java
@@ -136,17 +160,17 @@ class Foo {
 }
 ```
 
-In IntelliJ, use the "Refactor | Delombok | All annotations" menu item to 
-see the generated code.  (Do not forget to undo afterwards, to restore the 
+In IntelliJ, use the "Refactor | Delombok | All annotations" menu item to
+see the generated code.  (Do not forget to undo afterwards, to restore the
 original, unrefactored code.)
 
 ### Bean validation
 
-Any bean can be validated by adding `@Validated` to the class.  See 
+Any bean can be validated by adding `@Validated` to the class.  See
 examples of
-[`BasiliskController`](src/main/java/hm/binkley/basilisk/rest/BasiliskController.java), 
-[`BasiliskProperties`](src/main/java/hm/binkley/basilisk/configuration/BasiliskProperties.java), 
-and 
+[`BasiliskController`](src/main/java/hm/binkley/basilisk/rest/BasiliskController.java),
+[`BasiliskProperties`](src/main/java/hm/binkley/basilisk/configuration/BasiliskProperties.java),
+and
 [`BasiliskService`](src/main/java/hm/binkley/basilisk/service/BasiliskService.java).
 
 ### Configuration properties validation
@@ -169,7 +193,7 @@ basilisk:
 ### Spring-injected tests
 
 Most of the Spring Boot testing annotations include
-`@ExtendsWith(SpringExtension.class)` for you through the magic of Spring 
+`@ExtendsWith(SpringExtension.class)` for you through the magic of Spring
 meta-annotations (one exception is `@JsonTest`).
 
 ```java
@@ -182,22 +206,22 @@ class SomeTest {
     @Mock  // Mock instance created by Mockito; ignored by Spring
     private AnotherDependency mockNotBean;
     @SpyBean  // Very rare
-    private RealThing spyBean; 
-    
+    private RealThing spyBean;
+
     private ClassUnderTest testMe;
-    
+
     @BeforeEach
     void setUp() {
-        testMe = new TestMe(realBean, mockBean);        
+        testMe = new TestMe(realBean, mockBean);
     }
 }
 ```
 
-Use the Spring Boot annotation _most specific_ to your test.  This limit 
-Spring to creating/injecting only beans the beans you need, and speeds up 
+Use the Spring Boot annotation _most specific_ to your test.  This limit
+Spring to creating/injecting only beans the beans you need, and speeds up
 your test.  Among the choices include:
 
-- `@SpringBootTest` (use `classes` property to limit beans created); 
+- `@SpringBootTest` (use `classes` property to limit beans created);
   example in
   [`BasiliskPropertiesTest`](src/integrationTest/java/hm/binkley/basilisk/configuration/BasiliskPropertiesTest.java)
 - `@DataJdbcTest`; example in
