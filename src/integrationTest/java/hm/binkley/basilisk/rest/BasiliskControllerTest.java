@@ -75,6 +75,7 @@ class BasiliskControllerTest {
     void shouldPage()
             throws Exception {
         final String word = "foo";
+        final String extra = "Bob Barker";
         final Pageable pageable = PageRequest.of(0, 2);
         final List<BasiliskRecord> found = List.of(BasiliskRecord.builder()
                 .id(1L)
@@ -82,10 +83,11 @@ class BasiliskControllerTest {
                 .word(word)
                 .when(WHEN.toInstant())
                 .build());
+
         when(repository.findAll(pageable))
                 .thenReturn(new PageImpl<>(found, pageable, found.size()));
         when(service.extra(word))
-                .thenReturn("Bob Barker");
+                .thenReturn(extra);
 
         jsonMvc.perform(get("/basilisk")
                 .param("page", "0")
@@ -94,7 +96,7 @@ class BasiliskControllerTest {
                 .andExpect(content().json(asJson(new PageImpl<>(List.of(
                         Map.of("word", word,
                                 "when", "2011-02-03T04:05:06.007Z",
-                                "extra", "Bob Barker")), pageable,
+                                "extra", extra)), pageable,
                         found.size()))));
     }
 
@@ -138,6 +140,8 @@ class BasiliskControllerTest {
     void shouldAcceptWords()
             throws Exception {
         final String word = "foo";
+        final String extra = "Margaret Hamilton";
+
         when(repository.findByWord(word))
                 .thenReturn(List.of(BasiliskRecord.builder()
                         .id(1L)
@@ -146,14 +150,14 @@ class BasiliskControllerTest {
                         .when(WHEN.toInstant())
                         .build()));
         when(service.extra(word))
-                .thenReturn("Margaret Hamilton");
+                .thenReturn(extra);
 
         jsonMvc.perform(get("/basilisk/find/" + word))
                 .andExpect(status().isOk())
                 .andExpect(content().json(asJson(List.of(
                         Map.of("word", word,
                                 "when", "2011-02-03T04:05:06.007Z",
-                                "extra", "Margaret Hamilton")))));
+                                "extra", extra)))));
     }
 
     @SuppressFBWarnings("RV")
@@ -169,18 +173,20 @@ class BasiliskControllerTest {
     @Test
     void shouldAddRecords()
             throws Exception {
+        final long id = 1L;
         final String word = "FOO";
+        final String extra = "Alice";
         final BasiliskRecord record = BasiliskRecord.builder()
                 .word(word)
                 .when(WHEN.toInstant())
                 .build();
-        final long id = 1L;
+
         when(repository.save(record))
                 .thenReturn(record
                         .withId(id)
                         .withReceivedAt(Instant.ofEpochSecond(1_000_000)));
         when(service.extra(word))
-                .thenReturn("Alice");
+                .thenReturn(extra);
 
         jsonMvc.perform(post("/basilisk")
                 .content(asJson(BasiliskRequest.builder()
@@ -192,7 +198,7 @@ class BasiliskControllerTest {
                         .string(LOCATION, "/basilisk/" + id))
                 .andExpect(content().json(asJson(Map.of(
                         "word", word,
-                        "extra", "Alice"))));
+                        "extra", extra))));
     }
 
     @Test
