@@ -18,6 +18,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.time.Instant;
 import java.time.OffsetDateTime;
@@ -44,6 +45,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 @WebMvcTest(BasiliskController.class)
 class BasiliskControllerTest {
@@ -51,7 +53,7 @@ class BasiliskControllerTest {
             2011, 2, 3, 4, 5, 6, 7_000_000, UTC);
 
     @Autowired
-    private MockMvc mvc;
+    private WebApplicationContext ctx;
     @Autowired
     private ObjectMapper objectMapper;
     @MockBean
@@ -61,10 +63,16 @@ class BasiliskControllerTest {
     @SpyBean
     private ServerProperties server;
 
+    private MockMvc mvc;
     private ErrorProperties error;
 
     @BeforeEach
     void setUp() {
+        mvc = webAppContextSetup(ctx)
+                .alwaysExpect(header().string(
+                        CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE))
+                .build();
+
         error = spy(server.getError());
         when(server.getError())
                 .thenReturn(error);
