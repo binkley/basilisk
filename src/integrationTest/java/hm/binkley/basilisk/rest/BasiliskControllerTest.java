@@ -153,7 +153,7 @@ class BasiliskControllerTest {
                         .when(WHEN)
                         .build())))
                 .andExpect(status().isCreated())
-                .andExpect(content().string("1"));
+                .andExpect(content().json("1"));
     }
 
     @Test
