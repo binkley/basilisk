@@ -24,6 +24,7 @@ spring:
     name: 'basilisk'
   data:
     rest:
+      base-path: '/data'
       detection-strategy: annotated
   main:
     banner-mode: 'off'

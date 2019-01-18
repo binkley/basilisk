@@ -47,6 +47,8 @@ not have the "open" command):
 
 ## Production
 
+### Actuator
+
 After spinning up the program with `./gradlew bootRun`, try
 [actuator](http://localhost:8080/actuator).  The page format is
 [JSON HAL](http://stateless.co/hal_specification.html), so browse the 
@@ -55,6 +57,11 @@ returned JSON for interesting links.
 Of particular interest is [health](http://localhost:8080/actuator/health). 
 Note the [application configuration](src/main/resources/application.yml) to
 expose more detail.
+
+### Spring Data REST
+
+You can browse [the Spring repository](http://localhost:8080/data) with a 
+nice web interface.
 
 ## Testing
 
