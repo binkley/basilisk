@@ -60,7 +60,8 @@ expose more detail.
 
 ### Swagger
 
-Of course, there is a [Swagger UI](http://localhost:8080/swagger-ui.html).
+Of course, there is a [Swagger UI](http://localhost:8080/swagger-ui.html) 
+to browse your REST endpoints.
 
 ### Spring Data REST
 
@@ -86,6 +87,9 @@ integrationTest`
 * Database tests &mdash; In addition to Spring wiring, these use a database
 resource.  These go under [`src/databaseTest`](src/databaseTest); run with
 `./gradlew databaseTest`
+* Live tests &mdash; The entire application is wired and brought up, the 
+most expensive kind of tests.  These go under [`src/liveTest`]
+(src/liveTest); run with `./gradlew liveTest`
 
 To run all test types, use `./gradlew check`.  To refresh the build, and force
 all tests to re-run, use `./gradlew clean check --no-build-cache`.
@@ -140,18 +144,20 @@ Recall that package names are stylistically singular, not plural, _eg_,
 
 ### Test types
 
-- [controller](src/integrationTest/java/hm/binkley/basilisk/rest/BasiliskControllerTest.java)
-- [controller validation](src/integrationTest/java/hm/binkley/basilisk/rest/BasiliskControllerValidationTest.java)
-- [json request](src/test/java/hm/binkley/basilisk/rest/BasiliskRequestTest.java)
-- [json response](src/integrationTest/java/hm/binkley/basilisk/rest/BasiliskResponseTest.java)
-- [properties](src/integrationTest/java/hm/binkley/basilisk/configuration/BasiliskPropertiesTest.java)
-- [record validation](src/test/java/hm/binkley/basilisk/store/BasiliskRecordValidationTest.java)
-- [repository](src/databaseTest/java/hm/binkley/basilisk/store/BasiliskRepositoryTest.java)
-- [service](src/test/java/hm/binkley/basilisk/service/BasiliskServiceTest.java)
-- [service validation](src/integrationTest/java/hm/binkley/basilisk/service/BasiliskServiceValidationTest.java)
+- [application (live)](src/liveTest/java/hm/binkley/basilisk/BasiliskApplicationTest.java)
+- [controller (integration)](src/integrationTest/java/hm/binkley/basilisk/rest/BasiliskControllerTest.java)
+- [controller validation (integration)](src/integrationTest/java/hm/binkley/basilisk/rest/BasiliskControllerValidationTest.java)
+- [json request (unit)](src/test/java/hm/binkley/basilisk/rest/BasiliskRequestTest.java)
+- [json response (integration)](src/integrationTest/java/hm/binkley/basilisk/rest/BasiliskResponseTest.java)
+- [properties (integration)](src/integrationTest/java/hm/binkley/basilisk/configuration/BasiliskPropertiesTest.java)
+- [record validation (unit)](src/test/java/hm/binkley/basilisk/store/BasiliskRecordValidationTest.java)
+- [repository (database)](src/databaseTest/java/hm/binkley/basilisk/store/BasiliskRepositoryTest.java)
+- [service (unit)](src/test/java/hm/binkley/basilisk/service/BasiliskServiceTest.java)
+- [service validation integration](src/integrationTest/java/hm/binkley/basilisk/service/BasiliskServiceValidationTest.java)
 
 Note the source root of each test depends on the resources it uses.  See 
-[Testing - Layout](#layout).
+[Testing - Layout](#layout).  Also note the prevalence of integration 
+tests: this is a common drawback to Spring projects.
 
 ### Spring configuration
 

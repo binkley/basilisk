@@ -32,6 +32,9 @@ testSets {
     integrationTest {
         shouldRunAfter test
     }
+    liveTest {
+        shouldRunAfter test
+    }
 }
 
 repositories {
@@ -64,6 +67,7 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude module: "junit"
     }
+    testImplementation "org.springframework.boot:spring-boot-starter-webflux"
     testImplementation "org.junit.jupiter:junit-jupiter-api"
     testImplementation "org.mockito:mockito-core"
     testImplementation "org.mockito:mockito-junit-jupiter"
@@ -125,7 +129,7 @@ tasks {
     }
 
     jacocoTestReport {
-        dependsOn(test, "databaseTest", "integrationTest")
+        dependsOn tasks.withType(Test)
     }
 
     jacocoTestCoverageVerification {
