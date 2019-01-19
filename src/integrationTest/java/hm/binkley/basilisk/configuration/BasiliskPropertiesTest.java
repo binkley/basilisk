@@ -8,7 +8,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(
         classes = {BasiliskProperties.class, BasiliskConfiguration.class},
-        properties = "spring.profiles.active=alternative")
+        properties = "spring.profiles.active=test-basilisk-properties")
 class BasiliskPropertiesTest {
     @Autowired
     private BasiliskProperties basilisk;

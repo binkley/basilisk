@@ -29,11 +29,23 @@ spring:
   main:
     banner-mode: 'off'
 
+swagger:
+  ui:
+    description: 'A demonstration Spring Boot program'
+    contact:
+      name: 'Brian Oxley'
+      url: 'https://github.com/binkley/basilisk'
+      email: 'binkley@alumni.rice.edu'
+    licence: 'Public Domain'
+    licenseUrl: 'https://github.com/binkley/basilisk/blob/master/LICENSE.md'
+    title: 'Basilisk'
+    version: '0'
+
 ---
 
 spring:
   profiles:
-    active: 'alternative'
+    active: 'test-basilisk-properties'
 
 basilisk:
   extra-word: 'Margaret Hamilton'
