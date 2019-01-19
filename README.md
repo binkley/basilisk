@@ -4,6 +4,14 @@
 
 Demonstrate Java 11, Spring Boot 2, JUnit 5, et al
 
+* [Features](#features)
+* [Feedback](#feedback)
+* [Production](#production)
+* [Development](#development)
+* [Testing](#testing)
+* [Advice and examples](#advice-and-examples)
+
+
 ## Features
 
 * Modern Spring Boot
@@ -18,32 +26,12 @@ Demonstrate Java 11, Spring Boot 2, JUnit 5, et al
 * Static code analysis
 * Build analysis
 
+
 ## Feedback
 
 _Please_ file GitHub issues for questions, suggestions, additions or
 improvements!
 
-## Getting around
-
-### Command line
-
-Build the project, run tests, generate reports, and package program:
-```bash
-./gradlew
-```
-
-Run the program:
-```bash
-./gradlew bootRun
-```
-
-Examine at all reports (use "firefox" instead of "open" if your machine does
-not have the "open" command):
-```bash
-(cd build/reports/buildDashboard; open index.html)
-```
-
-###
 
 ## Production
 
@@ -51,26 +39,53 @@ not have the "open" command):
 
 After spinning up the program with `./gradlew bootRun`, try
 [actuator](http://localhost:8080/actuator).  The page format is
-[JSON HAL](http://stateless.co/hal_specification.html), so browse the 
+[JSON HAL](http://stateless.co/hal_specification.html), so browse the
 returned JSON for interesting links.
 
-Of particular interest is [health](http://localhost:8080/actuator/health). 
+Of particular interest is [health](http://localhost:8080/actuator/health).
 Note the [application configuration](src/main/resources/application.yml) to
 expose more detail.
 
 ### Swagger
 
-Of course, there is a [Swagger UI](http://localhost:8080/swagger-ui.html) 
+Of course, there is a [Swagger UI](http://localhost:8080/swagger-ui.html)
 to browse your REST endpoints.
 
 ### Spring Data REST
 
-You can browse [the Spring repository](http://localhost:8080/data) with a 
+You can browse [the Spring repository](http://localhost:8080/data) with a
 nice web interface.
+
 
 ## Development
 
-Yes, there is [Swagger](http://localhost:8080/swagger-ui.html).
+### Building
+
+Build the project with `./gradlew`.  The default task is "build".
+
+### Running
+
+Bring up the program with:
+
+* Command line &mdash; `./gradlew bootRun`
+* IntelliJ &mdash; run/debug/profile
+[the application](src/main/java/hm/binkley/basilisk/BasiliskApplication.java)
+
+### Reports
+
+To see all build reports, open
+[the dashboard](build/reports/buildDashboard/index.html).
+
+### Swagger
+
+Yes, there is [Swagger](http://localhost:8080/swagger-ui.html) for browsing
+the REST endpoints.
+
+### Rest data
+
+Browse and edit the database with
+[Spring Rest Data](http://localhost:8080/data).
+
 
 ## Testing
 
@@ -87,7 +102,7 @@ integrationTest`
 * Database tests &mdash; In addition to Spring wiring, these use a database
 resource.  These go under [`src/databaseTest`](src/databaseTest); run with
 `./gradlew databaseTest`
-* Live tests &mdash; The entire application is wired and brought up, the 
+* Live tests &mdash; The entire application is wired and brought up, the
 most expensive kind of tests.  These go under [`src/liveTest`]
 (src/liveTest); run with `./gradlew liveTest`
 
@@ -117,6 +132,7 @@ in other contexts.  The exception is testing sad paths.  I never found a
 nice way to handle validation failures, nor test test for them.  This is a
 long-standing Spring MVC complaint.
 
+
 ## Advice and examples
 
 _NB_ &mdash; Anything mentioned as a "bean" means anything that Spring DI
@@ -125,8 +141,9 @@ beans are instances of classes.
 
 ### Build
 
-See what tasks are run, and their dependencies with `./gradlew <tasks>
-taskTree` (append `taskTree` after the list of tasks to analyze).
+See what tasks are run, and their dependencies with
+`./gradlew <tasks> taskTree` (append `taskTree` after any list of tasks to
+show the tree).
 
 ### General layout
 
@@ -145,6 +162,7 @@ Recall that package names are stylistically singular, not plural, _eg_,
 ### Test types
 
 - [application (live)](src/liveTest/java/hm/binkley/basilisk/BasiliskApplicationTest.java)
+- [configuration (unit)](src/test/java/hm/binkley/basilisk/configuration/BasiliskConfigurationTest.java)
 - [controller (integration)](src/integrationTest/java/hm/binkley/basilisk/rest/BasiliskControllerTest.java)
 - [controller validation (integration)](src/integrationTest/java/hm/binkley/basilisk/rest/BasiliskControllerValidationTest.java)
 - [json request (unit)](src/test/java/hm/binkley/basilisk/rest/BasiliskRequestTest.java)
@@ -153,10 +171,10 @@ Recall that package names are stylistically singular, not plural, _eg_,
 - [record validation (unit)](src/test/java/hm/binkley/basilisk/store/BasiliskRecordValidationTest.java)
 - [repository (database)](src/databaseTest/java/hm/binkley/basilisk/store/BasiliskRepositoryTest.java)
 - [service (unit)](src/test/java/hm/binkley/basilisk/service/BasiliskServiceTest.java)
-- [service validation integration](src/integrationTest/java/hm/binkley/basilisk/service/BasiliskServiceValidationTest.java)
+- [service validation (integration)](src/integrationTest/java/hm/binkley/basilisk/service/BasiliskServiceValidationTest.java)
 
-Note the source root of each test depends on the resources it uses.  See 
-[Testing - Layout](#layout).  Also note the prevalence of integration 
+Note the source root of each test depends on the resources it uses.  See
+[Testing - Layout](#layout).  Also note the prevalence of integration
 tests: this is a common drawback to Spring projects.
 
 ### Spring configuration
