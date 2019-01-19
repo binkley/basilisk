@@ -37,7 +37,7 @@ swagger:
       url: 'https://github.com/binkley/basilisk'
       email: 'binkley@alumni.rice.edu'
     licence: 'Public Domain'
-    licenseUrl: 'https://github.com/binkley/basilisk/blob/master/LICENSE.md'
+    license-url: 'https://github.com/binkley/basilisk/blob/master/LICENSE.md'
     title: 'Basilisk'
     version: '0'
 
