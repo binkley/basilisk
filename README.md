@@ -231,12 +231,17 @@ original, unrefactored code.)
 
 ### Bean validation
 
-Any bean can be validated by adding `@Validated` to the class.  See
-examples of
+Any bean can be validated by adding `@Validated` to the class.  See examples
+of
 [`BasiliskController`](src/main/java/hm/binkley/basilisk/rest/BasiliskController.java),
 [`BasiliskProperties`](src/main/java/hm/binkley/basilisk/configuration/BasiliskProperties.java),
 and
 [`BasiliskService`](src/main/java/hm/binkley/basilisk/service/BasiliskService.java).
+
+Note: Spring Data JDBC does not support validating entities/records in this
+way.  However, a well-written schema will catch issues, and controller and 
+service classes should have been validated before attempting to write to 
+data store.
 
 ### Configuration properties validation
 
