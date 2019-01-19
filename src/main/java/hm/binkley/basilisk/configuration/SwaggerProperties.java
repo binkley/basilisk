@@ -23,7 +23,8 @@ import static lombok.AccessLevel.PUBLIC;
 @Validated
 public class SwaggerProperties {
     private String description;
-    private Contact contact;
+    @Builder.Default
+    private Contact contact = new Contact();
     private String license;
     private URI licenseUrl;
     private String title;

@@ -24,11 +24,10 @@ public class BasiliskConfiguration {
         return new ApiInfoBuilder()
                 .description(swagger.getDescription())
                 .contact(new Contact(
-                        null == contact ? null : contact.getName(),
-                        null == contact ? null
-                                : null == contact.getUrl() ? null
-                                        : contact.getUrl().toString(),
-                        null == contact ? null : contact.getEmail()))
+                        contact.getName(),
+                        null == contact.getUrl() ? null
+                                : contact.getUrl().toString(),
+                        contact.getEmail()))
                 .license(swagger.getLicense())
                 .licenseUrl(null == swagger.getLicenseUrl()
                         ? null : swagger.getLicenseUrl().toString())
