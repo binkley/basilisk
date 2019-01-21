@@ -20,6 +20,13 @@ class BasiliskApplicationTest {
     }
 
     @Test
+    void shouldFindSwaggerRestApi() {
+        client.get().uri("/v2/api-docs")
+                .exchange()
+                .expectStatus().isOk();
+    }
+
+    @Test
     void shouldFindSwaggerHomePage() {
         client.get().uri("/swagger-ui.html")
                 .exchange()
