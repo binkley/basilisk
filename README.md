@@ -65,6 +65,13 @@ nice web interface.
 
 Build the project with `./gradlew`.  The default task is "build".
 
+### Dependencies
+
+Periodically check for updates to gradle, plugins, and dependencies with
+`./gradlew dependencyUpdates`; this prints a report to console, and to
+`./build/dependencyUpdates/report.txt`.  (Unfortunately, this plugin does not
+tie into the build dashboard.)
+
 ### Running
 
 Bring up the program with:
