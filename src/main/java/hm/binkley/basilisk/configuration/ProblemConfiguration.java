@@ -1,0 +1,29 @@
+package hm.binkley.basilisk.configuration;
+
+import lombok.Generated;
+import org.springframework.boot.autoconfigure.web.ServerProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.zalando.problem.ProblemModule;
+import org.zalando.problem.validation.ConstraintViolationProblemModule;
+
+import static org.springframework.boot.autoconfigure.web.ErrorProperties.IncludeStacktrace.ALWAYS;
+
+@Configuration
+@Generated // Lie to JaCoCo
+public class ProblemConfiguration {
+    private static boolean includeStackTrace(final ServerProperties server) {
+        return ALWAYS == server.getError().getIncludeStacktrace();
+    }
+
+    @Bean
+    public ProblemModule problemModule(final ServerProperties server) {
+        return new ProblemModule()
+                .withStackTraces(includeStackTrace(server));
+    }
+
+    @Bean
+    public ConstraintViolationProblemModule constraintViolationProblemModule() {
+        return new ConstraintViolationProblemModule();
+    }
+}

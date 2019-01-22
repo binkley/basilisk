@@ -21,6 +21,7 @@ Demonstrate Java 11, Spring Boot 2, JUnit 5, et al
 * Repository
 * YAML configuration
 * Validations
+* RFC 7807 (problem+json)
 * Strict, fail-fast compilation
 * Full test coverage
 * Static code analysis
@@ -49,7 +50,8 @@ expose more detail.
 ### Swagger
 
 Of course, there is a [Swagger UI](http://localhost:8080/swagger-ui.html)
-to browse your REST endpoints.
+to browse your REST endpoints.  The Swagger REST API endpoint is at the
+[usual location](http://localhost:8080/v2/api-docs).
 
 ### Spring Data REST
 
@@ -76,15 +78,10 @@ Bring up the program with:
 To see all build reports, open
 [the dashboard](build/reports/buildDashboard/index.html).
 
-### Swagger
-
-Yes, there is [Swagger](http://localhost:8080/swagger-ui.html) for browsing
-the REST endpoints.
-
 ### Rest data
 
 Browse and edit the database with
-[Spring Rest Data](http://localhost:8080/data).
+[Spring Data REST](http://localhost:8080/data).
 
 
 ## Testing
@@ -103,7 +100,7 @@ integrationTest`
 resource.  These go under [`src/databaseTest`](src/databaseTest); run with
 `./gradlew databaseTest`
 * Live tests &mdash; The entire application is wired and brought up, the
-most expensive kind of tests.  These go under [`src/liveTest`]
+most rare and expensive kind of tests.  These go under [`src/liveTest`]
 (src/liveTest); run with `./gradlew liveTest`
 
 To run all test types, use `./gradlew check`.  To refresh the build, and force
@@ -177,15 +174,31 @@ Note the source root of each test depends on the resources it uses.  See
 [Testing - Layout](#layout).  Also note the prevalence of integration
 tests: this is a common drawback to Spring projects.
 
+#### Controller tests
+
+Two kinds of help in this project for JSON-based REST endpoints:
+
+- [happy path](src/integrationTest/java/hm/binkley/basilisk/configuration/JsonWebMvcTest.java)
+- [sad path](src/integrationTest/java/hm/binkley/basilisk/configuration/ProblemWebMvcTest.java)
+
+These replace Spring `@WebMvcTest` annotation to ensure JSON sent and 
+received.
+
 ### Spring configuration
 
 Keep your top-level application class simple, generally just a `main()`
 which calls `SpringApplication.run(...)`.  Provide a top-level
 configuration class, initially empty.  On the configuration class go any
-`@Enable*`-type Spring annotations, not on the application class.  See:
+`@Enable*`-type Spring annotations, not on the application class.  
+Specialize your configuration classes as makes sense.
+
+See:
 
 - [`BasiliskApplication`](src/main/java/hm/binkley/basilisk/BasiliskApplication.java)
 - [`BasiliskConfiguration`](src/main/java/hm/binkley/basilisk/configuration/BasiliskConfiguration.java)
+- [`ProblemConfiguration`](src/main/java/hm/binkley/basilisk/configuration/ProblemConfiguration.java)
+- [`SecurityConfiguration`](src/main/java/hm/binkley/basilisk/configuration/SecurityConfiguration.java)
+- [`SwaggerConfiguration`](src/main/java/hm/binkley/basilisk/configuration/SwaggerConfiguration.java)
 
 ### Autowiring
 
