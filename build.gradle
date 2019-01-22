@@ -23,6 +23,11 @@ plugins {
     id "jacoco"
 }
 
+ext {
+    spotbugsVersion = "3.1.11"
+    swaggerVersion = "2.9.2"
+}
+
 group = "hm.binkley"
 version = "0"
 
@@ -43,7 +48,7 @@ dependencies {
 
     compileOnly "org.springframework.boot:spring-boot-configuration-processor"
     compileOnly "org.projectlombok:lombok"
-    compileOnly "com.github.spotbugs:spotbugs-annotations:3.1.11"
+    compileOnly "com.github.spotbugs:spotbugs-annotations:${spotbugsVersion}"
 
     implementation "org.springframework.boot:spring-boot-starter-validation"
     implementation "org.springframework.boot:spring-boot-starter-actuator"
@@ -52,14 +57,14 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-hateoas"
     implementation "org.springframework.boot:spring-boot-starter-security"
     implementation "org.zalando:problem-spring-web:0.23.0"
-    implementation "io.springfox:springfox-swagger2:2.9.2"
+    implementation "io.springfox:springfox-swagger2:${swaggerVersion}"
 
     runtime "org.springframework.data:spring-data-rest-hal-browser"
     runtime "com.h2database:h2"
-    runtime "io.springfox:springfox-swagger-ui:2.9.2"
+    runtime "io.springfox:springfox-swagger-ui:${swaggerVersion}"
 
     testCompileOnly "org.projectlombok:lombok"
-    testCompileOnly "com.github.spotbugs:spotbugs-annotations:3.1.11"
+    testCompileOnly "com.github.spotbugs:spotbugs-annotations:${spotbugsVersion}"
 
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude module: "junit"
@@ -78,7 +83,7 @@ sourceCompatibility = 11
 targetCompatibility = 11
 
 spotbugs {
-    toolVersion = "3.1.11"
+    toolVersion = "${spotbugsVersion}"
 }
 
 jacoco {
