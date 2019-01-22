@@ -18,7 +18,7 @@ plugins {
     id "com.dorongold.task-tree" version "1.3.1"
     id "org.springframework.boot" version "2.1.2.RELEASE"
     id "io.spring.dependency-management" version "1.0.6.RELEASE"
-    id "org.unbroken-dome.test-sets" version "2.0.3"
+    id "org.unbroken-dome.test-sets" version "2.1.1"
     id "com.github.spotbugs" version "1.6.9"
     id "jacoco"
 }
@@ -27,15 +27,9 @@ group = "hm.binkley"
 version = "0"
 
 testSets {
-    databaseTest {
-        shouldRunAfter test
-    }
-    integrationTest {
-        shouldRunAfter test
-    }
-    liveTest {
-        shouldRunAfter test
-    }
+    databaseTest
+    integrationTest
+    liveTest
 }
 
 repositories {
@@ -109,6 +103,8 @@ tasks.withType(Test) {
     testLogging {
         exceptionFormat "full"
     }
+
+    shouldRunAfter test
 }
 
 tasks.withType(SpotBugsTask) {
