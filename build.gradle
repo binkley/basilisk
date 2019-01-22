@@ -141,19 +141,17 @@ tasks {
         violationRules {
             rule {
                 limit {
-                    minimum = new BigDecimal("1.00")
+                    minimum = 1.00
                 }
             }
         }
-        dependsOn(jacocoTestReport)
+
+        dependsOn jacocoTestReport
     }
 
     check {
-        dependsOn(jacocoTestCoverageVerification)
-
-        finalizedBy {
-            buildDashboard
-        }
+        dependsOn jacocoTestCoverageVerification
+        finalizedBy buildDashboard
     }
 
     springBoot {
