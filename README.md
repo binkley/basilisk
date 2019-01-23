@@ -19,6 +19,7 @@ Demonstrate Java 11, Spring Boot 2, JUnit 5, et al
 * Build dashboard
 * Pure service layer
 * Repository
+* Schema and data migrations
 * YAML configuration
 * Validations
 * RFC 7807 (problem+json)
@@ -53,7 +54,7 @@ To change databases between production and lower environments, use the
 `spring.datasource.platform` property in
 [`application.yml`](src/main/resources/application.yml) for Postgres in 
 production, and H2 (in-memory, embedded) for local testing.  Copy
-[`schema-h2.sql`](src/main/resources/schema-h2.sql) to
+[`V1__initial-schema.sql`](src/main/resources/V1__initial-schema.sql) to
 `schema-postgresql.sql`, and update with Postgres-specific syntax.  (In 
 this scenario, using H2 would in a
 [non-production `application.yml`](src/databaseTest/resources/application.yml),
