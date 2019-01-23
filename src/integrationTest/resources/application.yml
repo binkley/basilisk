@@ -25,6 +25,8 @@ spring:
     rest:
       base-path: '/data'
       detection-strategy: annotated
+  datasource:
+    platform: 'h2' # Ex: use 'postgresql' for prod; 'h2' for in-memory
   main:
     banner-mode: 'off'
 

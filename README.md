@@ -47,6 +47,18 @@ Of particular interest is [health](http://localhost:8080/actuator/health).
 Note the [application configuration](src/main/resources/application.yml) to
 expose more detail.
 
+### Database
+
+To change databases between production and lower environments, use the 
+`spring.datasource.platform` property in
+[`application.yml`](src/main/resources/application.yml) for Postgres in 
+production, and H2 (in-memory, embedded) for local testing.  Copy
+[`schema-h2.sql`](src/main/resources/schema-h2.sql) to
+`schema-postgresql.sql`, and update with Postgres-specific syntax.  (In 
+this scenario, using H2 would in a
+[non-production `application.yml`](src/databaseTest/resources/application.yml),
+or in changed via Spring profiles.)
+
 ### Swagger
 
 Of course, there is a [Swagger UI](http://localhost:8080/swagger-ui.html)
