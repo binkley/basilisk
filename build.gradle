@@ -82,6 +82,12 @@ dependencies {
 sourceCompatibility = 11
 targetCompatibility = 11
 
+normalization {
+    runtimeClasspath {
+        ignore "META-INF/build-info.properties"
+    }
+}
+
 spotbugs {
     toolVersion = "${spotbugsVersion}"
 }
