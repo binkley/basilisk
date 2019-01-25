@@ -27,6 +27,7 @@ spring:
       detection-strategy: annotated
   datasource:
     platform: 'h2' # Ex: use 'postgresql' for prod; 'h2' for in-memory
+    url: jdbc:h2:mem:;MODE=PostgreSQL
   main:
     banner-mode: 'off'
 
