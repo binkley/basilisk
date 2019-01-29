@@ -9,7 +9,7 @@ import java.net.URI;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(classes = BasiliskConfiguration.class, properties = {
-        "spring.profiles.active=test-basilisk-properties",
+        "spring.profiles.active=test",
         "basilisk.nested.number=7",
         "basilisk.overlapped.endpoint-base=ftp://old/school"
 })
