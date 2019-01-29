@@ -1,5 +1,9 @@
 basilisk:
   extra-word: 'Uncle Bob'
+  nested:
+    number: 3
+  overlapped:
+    endpoint-base: 'http://some-where/else'
 
 logging:
   level:

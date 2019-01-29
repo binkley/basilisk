@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @EnableAutoConfiguration(exclude = ErrorMvcAutoConfiguration.class)
-@EnableConfigurationProperties(BasiliskProperties.class)
+@EnableConfigurationProperties({
+        BasiliskProperties.class,
+        OverlappedProperties.class})
 public class BasiliskConfiguration {
 }
