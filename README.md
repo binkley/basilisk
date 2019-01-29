@@ -293,6 +293,11 @@ basilisk:
   extra-word: 'F'
 ```
 
+See:
+
+- [`BasiliskProperties`](src/main/java/hm/binkley/basilisk/configuration/BasiliskProperties.java)
+- [`OverlappedProperties`](src/main/java/hm/binkley/basilisk/configuration/OverlappedProperties.java)
+
 ### Spring-injected tests
 
 Most of the Spring Boot testing annotations include
