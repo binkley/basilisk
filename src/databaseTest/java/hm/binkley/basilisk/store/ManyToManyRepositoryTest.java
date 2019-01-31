@@ -28,11 +28,9 @@ class ManyToManyRepositoryTest {
                 migrations.save(bat).id);
         assertThat(foundBat).contains(bat);
 
-        final var austin = new Roost();
+        final var austin = new Roost()
+                .add(bat);
         austin.name = "Austin";
-        final var roostBatRef = new RoostMigrationRef();
-        roostBatRef.id = bat.id;
-        austin.migrations.add(roostBatRef);
 
         final var spring = new Season();
         spring.name = "Spring";

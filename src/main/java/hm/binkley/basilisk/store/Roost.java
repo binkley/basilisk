@@ -18,4 +18,9 @@ public class Roost {
     public String name;
     @Column("ROOST")
     public Set<RoostMigrationRef> migrations = new HashSet<>();
+
+    public Roost add(final Migration migration) {
+        migrations.add(new RoostMigrationRef(migration.id));
+        return this;
+    }
 }
