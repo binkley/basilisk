@@ -61,6 +61,7 @@ dependencies {
 
     runtime "org.springframework.data:spring-data-rest-hal-browser"
     runtime "com.h2database:h2"
+    runtime "org.postgresql:postgresql"
     runtime "org.flywaydb:flyway-core"
     runtime "io.springfox:springfox-swagger-ui:${swaggerVersion}"
 

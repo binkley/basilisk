@@ -50,15 +50,13 @@ expose more detail.
 
 ### Database
 
-To change databases between production and lower environments, use the 
-`spring.datasource.platform` property in
-[`application.yml`](src/main/resources/application.yml) for Postgres in 
-production, and H2 (in-memory, embedded) for local testing.  Copy
-[`V1__initial-schema.sql`](src/main/resources/V1__initial-schema.sql) to
-`schema-postgresql.sql`, and update with Postgres-specific syntax.  (In 
-this scenario, using H2 would in a
-[non-production `application.yml`](src/databaseTest/resources/application.yml),
-or in changed via Spring profiles.)
+Production uses PostgreSQL; lower environments use H2 (in-memory).  See
+[`application.yml`](src/main/resources/application.yml).  An example for the
+command line:
+
+```bash
+./gradlew bootRun -Dspring.profiles.active=production
+```
 
 ### Swagger
 

@@ -30,8 +30,10 @@ spring:
       base-path: '/data'
       detection-strategy: annotated
   datasource:
-    platform: 'h2' # Ex: use 'postgresql' for prod; 'h2' for in-memory
+    platform: h2
     url: jdbc:h2:mem:;MODE=PostgreSQL
+  flyway:
+    locations: classpath:db/migration/h2
   main:
     banner-mode: 'off'
 
@@ -46,3 +48,13 @@ swagger:
     license-url: 'https://github.com/binkley/basilisk/blob/master/LICENSE.md'
     title: 'Basilisk'
     version: '0'
+
+---
+
+spring:
+  profiles: production
+  datasource:
+    platform: postgresql
+    url: jdbc:postgresql:basilisk
+  flyway:
+    locations: classpath:db/migration/postgresql
