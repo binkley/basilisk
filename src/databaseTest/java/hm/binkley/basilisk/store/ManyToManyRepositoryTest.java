@@ -14,25 +14,38 @@ class ManyToManyRepositoryTest {
     @Autowired
     private RoostRepository roosts;
     @Autowired
+    private SeasonRepository seasons;
+    @Autowired
     private MigrationRepository migrations;
 
     @SuppressFBWarnings("NP")
     @Test
-    void shouldRoundtrip() {
-        final var austin = new Roost();
-        austin.name = "Austin";
+    void shouldBelongToMultipleAggregateRootTypes() {
         final var bat = new Migration();
         bat.name = "Bat";
 
-        migrations.save(bat);
+        final var foundBat = migrations.findById(
+                migrations.save(bat).id);
+        assertThat(foundBat).contains(bat);
 
-        final var batRef = new MigrationRef();
-        batRef.id = bat.id;
-        austin.migrations.add(batRef);
+        final var austin = new Roost();
+        austin.name = "Austin";
+        final var roostBatRef = new RoostMigrationRef();
+        roostBatRef.id = bat.id;
+        austin.migrations.add(roostBatRef);
 
-        final var found = roosts.findById(
+        final var spring = new Season();
+        spring.name = "Spring";
+        final var seasonBatRef = new SeasonMigrationRef();
+        seasonBatRef.id = bat.id;
+        spring.migrations.add(seasonBatRef);
+
+        final var foundAustin = roosts.findById(
                 roosts.save(austin).id);
+        assertThat(foundAustin).contains(austin);
 
-        assertThat(found).contains(austin);
+        final var foundSpring = seasons.findById(
+                seasons.save(spring).id);
+        assertThat(foundSpring).contains(spring);
     }
 }

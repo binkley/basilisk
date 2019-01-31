@@ -2,20 +2,13 @@ package hm.binkley.basilisk.store;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
-import java.util.HashSet;
-import java.util.Set;
-
 @EqualsAndHashCode(exclude = "id")
-@Table("BASILISK.ROOST")
+@Table("BASILISK.ROOST_MIGRATION")
 @ToString
-public class Roost {
-    @Id
+public class RoostMigrationRef {
+    @Column("MIGRATION")
     public Long id;
-    public String name;
-    @Column("ROOST")
-    public Set<RoostMigrationRef> migrations = new HashSet<>();
 }
