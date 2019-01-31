@@ -154,7 +154,7 @@ long-standing Spring MVC complaint.
 - [`BasiliskRepositoryTest`](src/databaseTest/java/hm/binkley/basilisk/store/BasiliskRepositoryTest.java)
   tests a simple model with no references to other domain objects
 - [`CityRepositoryTest`](src/databaseTest/java/hm/binkley/basilisk/store/CityRepositoryTest.java)
-  tests a one-to-one model
+  tests a many-to-one model
 
 
 ## Advice and examples

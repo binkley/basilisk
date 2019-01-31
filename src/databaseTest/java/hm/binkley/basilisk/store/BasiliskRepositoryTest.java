@@ -8,8 +8,6 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -22,11 +20,11 @@ class BasiliskRepositoryTest {
     @SuppressFBWarnings("NP")
     @Test
     void shouldRoundtrip() {
-        final BasiliskRecord unsaved = BasiliskRecord.builder()
+        final var unsaved = BasiliskRecord.builder()
                 .word("BIRD")
                 .when(Instant.ofEpochSecond(1_000_000))
                 .build();
-        final Optional<BasiliskRecord> found = basilisks.findById(
+        final var found = basilisks.findById(
                 basilisks.save(unsaved).getId());
 
         assertThat(found).contains(unsaved);
@@ -34,11 +32,11 @@ class BasiliskRepositoryTest {
 
     @Test
     void shouldStream() {
-        final BasiliskRecord unsavedA = BasiliskRecord.builder()
+        final var unsavedA = BasiliskRecord.builder()
                 .word("BIRD")
                 .when(Instant.ofEpochSecond(1_000_000))
                 .build();
-        final BasiliskRecord unsavedB = BasiliskRecord.builder()
+        final var unsavedB = BasiliskRecord.builder()
                 .word("WORD")
                 .when(Instant.ofEpochSecond(1_000_000))
                 .build();
@@ -46,7 +44,7 @@ class BasiliskRepositoryTest {
 
         // Wrap in try-with-resources to close the stream when done; this
         // frees up DB resources as a stream is potentially very long
-        try (final Stream<BasiliskRecord> found = basilisks.readAll()) {
+        try (final var found = basilisks.readAll()) {
             assertThat(found).containsExactly(unsavedA, unsavedB);
         }
     }

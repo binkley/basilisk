@@ -11,7 +11,7 @@ import org.springframework.data.relational.core.mapping.Table;
 @ToString
 public class City {
     @Id
-    public long id;
+    public Long id;
     public String name;
     @Column("CITY")
     public Symbol symbol;

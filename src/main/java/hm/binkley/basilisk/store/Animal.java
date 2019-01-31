@@ -6,9 +6,9 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
 @EqualsAndHashCode(exclude = "id")
-@Table("BASILISK.SYMBOL")
+@Table("BASILISK.ANIMAL")
 @ToString
-public class Symbol {
+public class Animal {
     @Id
     public Long id;
     public String name;
