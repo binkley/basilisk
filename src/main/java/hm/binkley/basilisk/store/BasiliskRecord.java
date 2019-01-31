@@ -13,7 +13,7 @@ import java.time.Instant;
 @Builder
 @Data
 @EqualsAndHashCode(exclude = {"id", "receivedAt"})
-@Table("BASILISK.BASILISKS")
+@Table("BASILISK.BASILISK")
 public final class BasiliskRecord {
     @Id
     @Wither

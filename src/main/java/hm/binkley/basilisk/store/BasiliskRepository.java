@@ -13,6 +13,6 @@ public interface BasiliskRepository
     List<BasiliskRecord> findByWord(String word);
 
     // An example of both 1) a custom query, and 2) returning a stream
-    @Query("SELECT * FROM BASILISK.BASILISKS")
+    @Query("SELECT * FROM BASILISK.BASILISK")
     Stream<BasiliskRecord> readAll();
 }
