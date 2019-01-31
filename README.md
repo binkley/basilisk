@@ -156,9 +156,11 @@ Spring blogs on Spring Data JDBC domain relationships in
 
 - [`BasiliskRepositoryTest`](src/databaseTest/java/hm/binkley/basilisk/store/BasiliskRepositoryTest.java)
   tests a simple model with no references to other domain objects
-- [`CityRepositoryTest`](src/databaseTest/java/hm/binkley/basilisk/store/CityRepositoryTest.java)
+- [`OneToOneRepositoryTest`](src/databaseTest/java/hm/binkley/basilisk/store/OneToOneRepositoryTest.java)
+  tests a one-to-one domain model
+- [`ManyToOneRepositoryTest`](src/databaseTest/java/hm/binkley/basilisk/store/ManyToOneRepositoryTest.java)
   tests a many-to-one domain model
-- [`RoostRepositoryTest`](src/databaseTest/java/hm/binkley/basilisk/store/RoostRepositoryTest.java)
+- [`ManyToManyRepositoryTest`](src/databaseTest/java/hm/binkley/basilisk/store/ManyToManyRepositoryTest.java)
   tests a many-to-many domain model
 
 

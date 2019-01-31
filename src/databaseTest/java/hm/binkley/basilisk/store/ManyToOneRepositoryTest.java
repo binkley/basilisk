@@ -10,22 +10,25 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @ActiveProfiles("test")
 @DataJdbcTest
-class CityRepositoryTest {
+class ManyToOneRepositoryTest {
     @Autowired
-    private CityRepository cities;
+    private ZooRepository zoos;
 
     @SuppressFBWarnings("NP")
     @Test
     void shouldRoundtrip() {
-        final var singapore = new City();
-        singapore.name = "Singapore";
-        final var merlion = new Symbol();
-        merlion.name = "Merlion";
-        singapore.symbol = merlion;
+        final var houston = new Zoo();
+        houston.name = "Hermann Park";
+        final var lion = new Animal();
+        lion.name = "Lion";
+        houston.animals.add(lion);
+        final var horse = new Animal();
+        horse.name = "Horse";
+        houston.animals.add(horse);
 
-        final var found = cities.findById(
-                cities.save(singapore).id);
+        final var found = zoos.findById(
+                zoos.save(houston).id);
 
-        assertThat(found).contains(singapore);
+        assertThat(found).contains(houston);
     }
 }

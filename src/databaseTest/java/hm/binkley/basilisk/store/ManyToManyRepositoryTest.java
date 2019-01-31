@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @ActiveProfiles("test")
 @DataJdbcTest
-class RoostRepositoryTest {
+class ManyToManyRepositoryTest {
     @Autowired
     private RoostRepository roosts;
     @Autowired
