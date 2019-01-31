@@ -15,10 +15,10 @@ Demonstrate Java 11, Spring Boot 2, JUnit 5, et al
 ## Features
 
 * Modern Spring Boot
+* Spring Data JDBC
 * Incremental build
 * Build dashboard
 * Pure service layer
-* Repository
 * Schema and data migrations
 * YAML configuration
 * Validations
@@ -148,6 +148,13 @@ The controller tests are straight-forward for Spring projects, if complex
 in other contexts.  The exception is testing sad paths.  I never found a
 nice way to handle validation failures, nor test test for them.  This is a
 long-standing Spring MVC complaint.
+
+### Database tests
+
+- [`BasiliskRepositoryTest`](src/databaseTest/java/hm/binkley/basilisk/store/BasiliskRepositoryTest.java)
+  tests a simple model with no references to other domain objects
+- [`CityRepositoryTest`](src/databaseTest/java/hm/binkley/basilisk/store/CityRepositoryTest.java)
+  tests a one-to-one model
 
 
 ## Advice and examples

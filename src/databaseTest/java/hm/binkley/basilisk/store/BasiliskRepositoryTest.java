@@ -17,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataJdbcTest
 class BasiliskRepositoryTest {
     @Autowired
-    private BasiliskRepository repository;
+    private BasiliskRepository basilisks;
 
     @SuppressFBWarnings("NP")
     @Test
@@ -26,8 +26,8 @@ class BasiliskRepositoryTest {
                 .word("BIRD")
                 .when(Instant.ofEpochSecond(1_000_000))
                 .build();
-        final Optional<BasiliskRecord> found = repository
-                .findById(repository.save(unsaved).getId());
+        final Optional<BasiliskRecord> found = basilisks.findById(
+                basilisks.save(unsaved).getId());
 
         assertThat(found).contains(unsaved);
     }
@@ -42,11 +42,11 @@ class BasiliskRepositoryTest {
                 .word("WORD")
                 .when(Instant.ofEpochSecond(1_000_000))
                 .build();
-        repository.saveAll(List.of(unsavedA, unsavedB));
+        basilisks.saveAll(List.of(unsavedA, unsavedB));
 
         // Wrap in try-with-resources to close the stream when done; this
         // frees up DB resources as a stream is potentially very long
-        try (final Stream<BasiliskRecord> found = repository.readAll()) {
+        try (final Stream<BasiliskRecord> found = basilisks.readAll()) {
             assertThat(found).containsExactly(unsavedA, unsavedB);
         }
     }

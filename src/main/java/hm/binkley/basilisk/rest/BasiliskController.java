@@ -3,6 +3,7 @@ package hm.binkley.basilisk.rest;
 import hm.binkley.basilisk.service.BasiliskService;
 import hm.binkley.basilisk.store.BasiliskRecord;
 import hm.binkley.basilisk.store.BasiliskRepository;
+import hm.binkley.basilisk.store.CityRepository;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,28 +33,29 @@ import static org.springframework.http.ResponseEntity.created;
 @RestController
 @Validated
 public class BasiliskController {
-    private final BasiliskRepository repository;
+    private final BasiliskRepository basilisks;
     private final BasiliskService service;
+    private final CityRepository cities;
 
     @GetMapping
     public Page<BasiliskResponse> getAll(final Pageable pageable) {
-        return repository.findAll(pageable)
+        return basilisks.findAll(pageable)
                 .map(this::from);
     }
 
     @GetMapping("{id}")
     public BasiliskResponse findById(
             @PathVariable("id") final Long id) {
-        return repository.findById(id)
+        return basilisks.findById(id)
                 .map(this::from)
                 .orElseThrow(ResourceNotFoundException::new);
     }
 
     @GetMapping("find/{word}")
     public List<BasiliskResponse> getByWord(
-            @Length(min = 3, max = 32) @PathVariable("word")
-            final String word) {
-        return repository.findByWord(word).stream()
+            @PathVariable("word") final @Length(min = 3, max = 32)
+                    String word) {
+        return basilisks.findByWord(word).stream()
                 .map(this::from)
                 .collect(toList());
     }
@@ -61,8 +63,8 @@ public class BasiliskController {
     @PostMapping
     @ResponseStatus(CREATED)
     public ResponseEntity<BasiliskResponse> postBasilisk(
-            @RequestBody @Valid final BasiliskRequest request) {
-        final BasiliskRecord saved = repository.save(request.toRecord());
+            @RequestBody final @Valid BasiliskRequest request) {
+        final BasiliskRecord saved = basilisks.save(request.toRecord());
 
         return created(URI.create("/basilisk/" + saved.getId()))
                 .body(from(saved));

@@ -6,6 +6,7 @@ import hm.binkley.basilisk.configuration.JsonWebMvcTest;
 import hm.binkley.basilisk.service.BasiliskService;
 import hm.binkley.basilisk.store.BasiliskRecord;
 import hm.binkley.basilisk.store.BasiliskRepository;
+import hm.binkley.basilisk.store.CityRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -42,7 +43,9 @@ class BasiliskControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
     @MockBean
-    private BasiliskRepository repository;
+    private BasiliskRepository basilisks;
+    @MockBean
+    private CityRepository cities;
     @MockBean
     private BasiliskService service;
 
@@ -68,7 +71,7 @@ class BasiliskControllerTest {
                 .when(WHEN.toInstant())
                 .build());
 
-        when(repository.findAll(pageable))
+        when(basilisks.findAll(pageable))
                 .thenReturn(new PageImpl<>(found, pageable, found.size()));
         when(service.extra(word))
                 .thenReturn(extra);
@@ -89,7 +92,7 @@ class BasiliskControllerTest {
         final String word = "BIRD";
         final String extra = "Howard";
 
-        when(repository.findById(id))
+        when(basilisks.findById(id))
                 .thenReturn(Optional.of(BasiliskRecord.builder()
                         .id(id)
                         .receivedAt(EPOCH)
@@ -110,7 +113,7 @@ class BasiliskControllerTest {
             throws Exception {
         final long id = 1L;
 
-        when(repository.findById(id))
+        when(basilisks.findById(id))
                 .thenReturn(Optional.empty());
 
         jsonMvc.perform(get("/basilisk/" + id))
@@ -124,7 +127,7 @@ class BasiliskControllerTest {
         final String word = "foo";
         final String extra = "Margaret Hamilton";
 
-        when(repository.findByWord(word))
+        when(basilisks.findByWord(word))
                 .thenReturn(List.of(BasiliskRecord.builder()
                         .id(id)
                         .receivedAt(EPOCH)
@@ -151,7 +154,7 @@ class BasiliskControllerTest {
                 .when(WHEN.toInstant())
                 .build();
 
-        when(repository.save(record))
+        when(basilisks.save(record))
                 .thenReturn(record
                         .withId(id)
                         .withReceivedAt(Instant.ofEpochSecond(1_000_000)));
