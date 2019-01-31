@@ -11,9 +11,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 class BasiliskRequestTest {
     @Test
     void shouldConvertToRecord() {
-        final OffsetDateTime when = OffsetDateTime.of(
-                2011, 2, 3, 4, 5, 6, 7_000_000, UTC);
-        final BasiliskRequest request = BasiliskRequest.builder()
+        final var when = OffsetDateTime.of(
+                2011, 2, 3, 4, 5, 6, 7_000_000, UTC)
+                .toInstant();
+        final var request = BasiliskRequest.builder()
                 .word("FOO")
                 .when(when)
                 .build();
@@ -21,7 +22,7 @@ class BasiliskRequestTest {
         assertThat(request.toRecord()).isEqualTo(
                 BasiliskRecord.builder()
                         .word(request.getWord())
-                        .when(when.toInstant())
+                        .when(when)
                         .build());
     }
 }

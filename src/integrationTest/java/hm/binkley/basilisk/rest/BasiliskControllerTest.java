@@ -35,8 +35,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @JsonWebMvcTest(BasiliskController.class)
 class BasiliskControllerTest {
     private static final long ID = 1L;
-    private static final OffsetDateTime WHEN = OffsetDateTime.of(
-            2011, 2, 3, 4, 5, 6, 7_000_000, UTC);
+    private static final Instant WHEN = OffsetDateTime.of(
+            2011, 2, 3, 4, 5, 6, 7_000_000, UTC)
+            .toInstant();
 
     @Autowired
     private MockMvc jsonMvc;
@@ -54,7 +55,7 @@ class BasiliskControllerTest {
         return Map.of(
                 "id", ID,
                 "word", word,
-                "when", WHEN.toInstant(),
+                "when", WHEN,
                 "extra", extra);
     }
 
@@ -68,7 +69,7 @@ class BasiliskControllerTest {
                 .id(ID)
                 .receivedAt(EPOCH)
                 .word(word)
-                .when(WHEN.toInstant())
+                .when(WHEN)
                 .build());
 
         when(basilisks.findAll(pageable))
@@ -97,7 +98,7 @@ class BasiliskControllerTest {
                         .id(id)
                         .receivedAt(EPOCH)
                         .word(word)
-                        .when(WHEN.toInstant())
+                        .when(WHEN)
                         .build()));
         when(service.extra(word))
                 .thenReturn(extra);
@@ -132,7 +133,7 @@ class BasiliskControllerTest {
                         .id(id)
                         .receivedAt(EPOCH)
                         .word(word)
-                        .when(WHEN.toInstant())
+                        .when(WHEN)
                         .build()));
         when(service.extra(word))
                 .thenReturn(extra);
@@ -151,7 +152,7 @@ class BasiliskControllerTest {
         final String extra = "Alice";
         final BasiliskRecord record = BasiliskRecord.builder()
                 .word(word)
-                .when(WHEN.toInstant())
+                .when(WHEN)
                 .build();
 
         when(basilisks.save(record))

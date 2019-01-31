@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotNull;
-import java.time.OffsetDateTime;
+import java.time.Instant;
 
 @Builder
 @Data
@@ -16,12 +16,12 @@ public final class BasiliskRequest {
     @Length(min = 3, max = 32)
     private final String word;
     @NotNull
-    private final OffsetDateTime when;
+    private final Instant when;
 
     public BasiliskRecord toRecord() {
         return BasiliskRecord.builder()
                 .word(getWord())
-                .when(when.toInstant())
+                .when(when)
                 .build();
     }
 }

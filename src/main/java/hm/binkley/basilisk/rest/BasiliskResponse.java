@@ -5,16 +5,14 @@ import hm.binkley.basilisk.store.BasiliskRecord;
 import lombok.Builder;
 import lombok.Data;
 
-import java.time.OffsetDateTime;
-
-import static java.time.ZoneOffset.UTC;
+import java.time.Instant;
 
 @Builder
 @Data
 public final class BasiliskResponse {
     private final Long id;
     private final String word;
-    private final OffsetDateTime when;
+    private final Instant when;
     private final String extra;
 
     public static BasiliskResponse from(
@@ -23,7 +21,7 @@ public final class BasiliskResponse {
         return BasiliskResponse.builder()
                 .id(record.getId())
                 .word(record.getWord())
-                .when(record.getWhen().atOffset(UTC))
+                .when(record.getWhen())
                 .extra(service.extra(record.getWord()))
                 .build();
     }

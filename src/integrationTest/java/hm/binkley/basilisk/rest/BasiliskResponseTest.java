@@ -26,7 +26,8 @@ class BasiliskResponseTest {
                 .id(31L)
                 .word("BOB")
                 .when(OffsetDateTime.of(
-                        2011, 2, 3, 4, 5, 6, 7_000_000, UTC))
+                        2011, 2, 3, 4, 5, 6, 7_000_000, UTC)
+                        .toInstant())
                 .extra("BONUS")
                 .build()))
                 .isEqualToJson("basilisk-response-test.json");

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.Instant;
 import java.time.OffsetDateTime;
 
 import static java.time.ZoneOffset.UTC;
@@ -25,8 +26,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ProblemWebMvcTest(BasiliskController.class)
 class BasiliskControllerValidationTest {
-    private static final OffsetDateTime WHEN = OffsetDateTime.of(
-            2011, 2, 3, 4, 5, 6, 7_000_000, UTC);
+    private static final Instant WHEN = OffsetDateTime.of(
+            2011, 2, 3, 4, 5, 6, 7_000_000, UTC)
+            .toInstant();
 
     @Autowired
     private MockMvc problemMvc;
