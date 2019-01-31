@@ -112,16 +112,16 @@ Divide your tests by what resources they use.  This speeds up testing
 individual types of tests:
 
 * Unit tests &mdash; No Spring wiring or other resources needed.  These go
-under [`src/test`](src/test); run with `./gradlew test`
+  under [`src/test`](src/test); run with `./gradlew test`
 * Integration tests &mdash; Spring wiring is used.  These go under
-[`src/integrationTest`](src/integrationTest); run with `./gradlew
-integrationTest`
+  [`src/integrationTest`](src/integrationTest); run with `./gradlew
+  integrationTest`
 * Database tests &mdash; In addition to Spring wiring, these use a database
-resource.  These go under [`src/databaseTest`](src/databaseTest); run with
-`./gradlew databaseTest`
+  resource.  These go under [`src/databaseTest`](src/databaseTest); run with
+  `./gradlew databaseTest`
 * Live tests &mdash; The entire application is wired and brought up, the
-most rare and expensive kind of tests.  These go under [`src/liveTest`]
-(src/liveTest); run with `./gradlew liveTest`
+  most rare and expensive kind of tests.  These go under
+  [`src/liveTest`](src/liveTest); run with `./gradlew liveTest`
 
 To run all test types, use `./gradlew check`.  To refresh the build, and force
 all tests to re-run, use `./gradlew clean check --no-build-cache`.
