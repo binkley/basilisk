@@ -151,10 +151,15 @@ long-standing Spring MVC complaint.
 
 ### Database tests
 
+Spring blogs on Spring Data JDBC domain relationships in
+[_Spring Data JDBC, References, and Aggregates_](https://spring.io/blog/2018/09/24/spring-data-jdbc-references-and-aggregates).
+
 - [`BasiliskRepositoryTest`](src/databaseTest/java/hm/binkley/basilisk/store/BasiliskRepositoryTest.java)
   tests a simple model with no references to other domain objects
 - [`CityRepositoryTest`](src/databaseTest/java/hm/binkley/basilisk/store/CityRepositoryTest.java)
-  tests a many-to-one model
+  tests a many-to-one domain model
+- [`RoostRepositoryTest`](src/databaseTest/java/hm/binkley/basilisk/store/RoostRepositoryTest.java)
+  tests a many-to-many domain model
 
 
 ## Advice and examples
