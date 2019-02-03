@@ -190,7 +190,7 @@ Recall that package names are stylistically singular, not plural, _eg_,
 
 ### Test types
 
-- [application (live)](src/liveTest/java/hm/binkley/basilisk/BasiliskApplicationTest.java)
+- [application (live)](src/liveTest/java/hm/binkley/basilisk/BasiliskLiveTest.java)
 - [configuration (unit)](src/test/java/hm/binkley/basilisk/configuration/BasiliskConfigurationTest.java)
 - [controller (integration)](src/integrationTest/java/hm/binkley/basilisk/rest/BasiliskControllerTest.java)
 - [controller validation (integration)](src/integrationTest/java/hm/binkley/basilisk/rest/BasiliskControllerValidationTest.java)
