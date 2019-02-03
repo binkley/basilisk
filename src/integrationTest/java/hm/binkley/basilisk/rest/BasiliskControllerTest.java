@@ -10,9 +10,6 @@ import hm.binkley.basilisk.store.CityRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.io.Serializable;
@@ -28,9 +25,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.LOCATION;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @JsonWebMvcTest(BasiliskController.class)
 class BasiliskControllerTest {
@@ -60,11 +55,10 @@ class BasiliskControllerTest {
     }
 
     @Test
-    void shouldPage()
+    void shouldFindAll()
             throws Exception {
         final String word = "foo";
         final String extra = "Bob Barker";
-        final Pageable pageable = PageRequest.of(0, 2);
         final List<BasiliskRecord> found = List.of(BasiliskRecord.builder()
                 .id(ID)
                 .receivedAt(EPOCH)
@@ -72,18 +66,15 @@ class BasiliskControllerTest {
                 .when(WHEN)
                 .build());
 
-        when(basilisks.findAll(pageable))
-                .thenReturn(new PageImpl<>(found, pageable, found.size()));
+        when(basilisks.readAll())
+                .thenReturn(found.stream());
         when(service.extra(word))
                 .thenReturn(extra);
 
-        jsonMvc.perform(get("/basilisk")
-                .param("page", "0")
-                .param("size", "2"))
+        jsonMvc.perform(get("/basilisk"))
                 .andExpect(status().isOk())
-                .andExpect(content().json(asJson(new PageImpl<>(List.of(
-                        responseMapFor(word, extra)), pageable,
-                        found.size()))));
+                .andExpect(content().json(asJson(
+                        List.of(responseMapFor(word, extra)))));
     }
 
     @Test
