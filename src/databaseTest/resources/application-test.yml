@@ -1,2 +1,6 @@
 # Because this is in a different Spring active profile based on the file name,
 # it _overrides_ the main `application.yml`: no need to copy over the whole thing
+
+logging:
+  level:
+    io.zonky.test.db.logging.EmbeddedDatabaseReporter: INFO
