@@ -50,9 +50,9 @@ expose more detail.
 
 ### Database
 
-Production uses PostgreSQL; lower environments use H2 (in-memory).  See
-[`application.yml`](src/main/resources/application.yml).  An example for the
-command line:
+Production uses external PostgreSQL; lower environments use in-memory
+PostgreSQL.  See [`application.yml`](src/main/resources/application.yml).  An
+example for the command line:
 
 ```bash
 ./gradlew bootRun -Dspring.profiles.active=production
@@ -130,7 +130,7 @@ all tests to re-run, use `./gradlew clean check --no-build-cache`.
 (integration) are an example of splitting testing of a class to limit
 resources, and speed up the tests.
 
-In this project, the database is an in-memory H2 instance, so is
+In this project, the database is an in-memory PostgreSQL instance, so is
 self-contained and speedy; however, in production projects, it would be an
 external database process.
 

@@ -30,8 +30,8 @@ spring:
       base-path: '/data'
       detection-strategy: annotated
   datasource:
-    platform: h2
-    url: jdbc:h2:mem:basilisk;MODE=PostgreSQL
+    platform: postgresql
+    url: jdbc:postgresql:basilisk
   main:
     banner-mode: 'off'
 

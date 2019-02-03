@@ -18,7 +18,7 @@ public class BasiliskService {
     private final BasiliskProperties basilisk;
 
     public String extra(
-            @Length(min = 3, max = 32) @NotNull final String word) {
+            final @Length(min = 3, max = 32) @NotNull String word) {
         return basilisk.getExtraWord() + " is " + word;
     }
 }
