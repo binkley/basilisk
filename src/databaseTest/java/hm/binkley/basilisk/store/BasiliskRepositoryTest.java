@@ -22,7 +22,7 @@ class BasiliskRepositoryTest {
     void shouldRoundtrip() {
         final var unsaved = BasiliskRecord.builder()
                 .word("BIRD")
-                .when(Instant.ofEpochSecond(1_000_000))
+                .at(Instant.ofEpochSecond(1_000_000))
                 .build();
         final var found = basilisks.findById(
                 basilisks.save(unsaved).getId());
@@ -34,15 +34,15 @@ class BasiliskRepositoryTest {
     void shouldStream() {
         final var unsavedA = BasiliskRecord.builder()
                 .word("BIRD")
-                .when(Instant.ofEpochSecond(1_000_000))
+                .at(Instant.ofEpochSecond(1_000_000))
                 .build();
         final var unsavedB = BasiliskRecord.builder()
                 .word("WORD")
-                .when(Instant.ofEpochSecond(1_000_000))
+                .at(Instant.ofEpochSecond(1_000_000))
                 .build();
         basilisks.saveAll(List.of(unsavedA, unsavedB));
 
-        // Wrap in try-with-resources to close the stream when done; this
+        // Wrap in try-with-resources to close the stream at done; this
         // frees up DB resources as a stream is potentially very long
         try (final var found = basilisks.readAll()) {
             assertThat(found).containsExactly(unsavedA, unsavedB);

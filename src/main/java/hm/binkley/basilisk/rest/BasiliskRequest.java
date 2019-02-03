@@ -16,12 +16,12 @@ public final class BasiliskRequest {
     @Length(min = 3, max = 32)
     private final String word;
     @NotNull
-    private final Instant when;
+    private final Instant at;
 
     public BasiliskRecord toRecord() {
         return BasiliskRecord.builder()
                 .word(getWord())
-                .when(when)
+                .at(at)
                 .build();
     }
 }

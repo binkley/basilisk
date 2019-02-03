@@ -39,4 +39,11 @@ class BasiliskLiveTest {
                 .exchange()
                 .expectStatus().isOk();
     }
+
+    @Test
+    void shouldFindRestApi() {
+        client.get().uri("/basilisk")
+                .exchange()
+                .expectStatus().isOk();
+    }
 }

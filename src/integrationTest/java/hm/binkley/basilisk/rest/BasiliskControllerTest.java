@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @JsonWebMvcTest(BasiliskController.class)
 class BasiliskControllerTest {
     private static final long ID = 1L;
-    private static final Instant WHEN = OffsetDateTime.of(
+    private static final Instant AT = OffsetDateTime.of(
             2011, 2, 3, 4, 5, 6, 7_000_000, UTC)
             .toInstant();
 
@@ -50,7 +50,7 @@ class BasiliskControllerTest {
         return Map.of(
                 "id", ID,
                 "word", word,
-                "when", WHEN,
+                "at", AT,
                 "extra", extra);
     }
 
@@ -63,7 +63,7 @@ class BasiliskControllerTest {
                 .id(ID)
                 .receivedAt(EPOCH)
                 .word(word)
-                .when(WHEN)
+                .at(AT)
                 .build());
 
         when(basilisks.readAll())
@@ -89,7 +89,7 @@ class BasiliskControllerTest {
                         .id(id)
                         .receivedAt(EPOCH)
                         .word(word)
-                        .when(WHEN)
+                        .at(AT)
                         .build()));
         when(service.extra(word))
                 .thenReturn(extra);
@@ -124,7 +124,7 @@ class BasiliskControllerTest {
                         .id(id)
                         .receivedAt(EPOCH)
                         .word(word)
-                        .when(WHEN)
+                        .at(AT)
                         .build()));
         when(service.extra(word))
                 .thenReturn(extra);
@@ -143,7 +143,7 @@ class BasiliskControllerTest {
         final String extra = "Alice";
         final BasiliskRecord record = BasiliskRecord.builder()
                 .word(word)
-                .when(WHEN)
+                .at(AT)
                 .build();
 
         when(basilisks.save(record))
@@ -156,7 +156,7 @@ class BasiliskControllerTest {
         jsonMvc.perform(post("/basilisk")
                 .content(asJson(BasiliskRequest.builder()
                         .word(word)
-                        .when(WHEN)
+                        .at(AT)
                         .build())))
                 .andExpect(status().isCreated())
                 .andExpect(header()

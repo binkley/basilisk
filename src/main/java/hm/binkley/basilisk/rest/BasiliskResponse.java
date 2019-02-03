@@ -12,7 +12,7 @@ import java.time.Instant;
 public final class BasiliskResponse {
     private final Long id;
     private final String word;
-    private final Instant when;
+    private final Instant at;
     private final String extra;
 
     public static BasiliskResponse from(
@@ -21,7 +21,7 @@ public final class BasiliskResponse {
         return BasiliskResponse.builder()
                 .id(record.getId())
                 .word(record.getWord())
-                .when(record.getWhen())
+                .at(record.getAt())
                 .extra(service.extra(record.getWord()))
                 .build();
     }

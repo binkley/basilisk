@@ -17,7 +17,7 @@ class BasiliskRecordValidationTest {
         assertThatThrownBy(() ->
                 BasiliskRecord.builder()
                         .word(null)
-                        .when(Instant.ofEpochSecond(1_000_000))
+                        .at(Instant.ofEpochSecond(1_000_000))
                         .build())
                 .isInstanceOf(NullPointerException.class)
                 .hasMessageContaining("word is marked @NonNull");
@@ -28,9 +28,9 @@ class BasiliskRecordValidationTest {
         assertThatThrownBy(() ->
                 BasiliskRecord.builder()
                         .word("IN THE BEGINNING")
-                        .when(null)
+                        .at(null)
                         .build())
                 .isInstanceOf(NullPointerException.class)
-                .hasMessageContaining("when is marked @NonNull");
+                .hasMessageContaining("at is marked @NonNull");
     }
 }

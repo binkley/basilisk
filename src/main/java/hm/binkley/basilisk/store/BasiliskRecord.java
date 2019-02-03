@@ -23,5 +23,5 @@ public final class BasiliskRecord {
     @NonNull
     private final String word;
     @NonNull
-    private final Instant when;
+    private final Instant at;
 }

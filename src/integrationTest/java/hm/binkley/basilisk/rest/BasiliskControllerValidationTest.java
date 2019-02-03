@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ProblemWebMvcTest(BasiliskController.class)
 class BasiliskControllerValidationTest {
-    private static final Instant WHEN = OffsetDateTime.of(
+    private static final Instant AT = OffsetDateTime.of(
             2011, 2, 3, 4, 5, 6, 7_000_000, UTC)
             .toInstant();
 
@@ -66,7 +66,7 @@ class BasiliskControllerValidationTest {
         problemMvc.perform(post("/basilisk")
                 .content(asJson(BasiliskRequest.builder()
                         .word("F")
-                        .when(WHEN)
+                        .at(AT)
                         .build())))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.violations[0].field",
@@ -88,11 +88,11 @@ class BasiliskControllerValidationTest {
         problemMvc.perform(post("/basilisk")
                 .content(asJson(BasiliskRequest.builder()
                         .word("FOO")
-                        .when(null)
+                        .at(null)
                         .build())))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.violations[0].field",
-                        equalTo("when")))
+                        equalTo("at")))
                 .andExpect(jsonPath("$.violations[0].message",
                         equalTo("must not be null")))
                 .andExpect(jsonPath("$.status",

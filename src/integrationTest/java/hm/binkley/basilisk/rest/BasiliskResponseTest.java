@@ -25,7 +25,7 @@ class BasiliskResponseTest {
         assertThat(json.write(BasiliskResponse.builder()
                 .id(31L)
                 .word("BOB")
-                .when(OffsetDateTime.of(
+                .at(OffsetDateTime.of(
                         2011, 2, 3, 4, 5, 6, 7_000_000, UTC)
                         .toInstant())
                 .extra("BONUS")

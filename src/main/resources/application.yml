@@ -31,7 +31,7 @@ spring:
       detection-strategy: annotated
   datasource:
     platform: h2
-    url: jdbc:h2:mem:;MODE=PostgreSQL
+    url: jdbc:h2:mem:basilisk;MODE=PostgreSQL
   flyway:
     locations: classpath:db/migration/h2
   main:
