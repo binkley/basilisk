@@ -58,6 +58,13 @@ example for the command line:
 ./gradlew bootRun -Dspring.profiles.active=production
 ```
 
+Note the benefits of embedded PostgreSQL for testing:
+
+* Faster tests, faster build
+* Same schema for tests and production (no separate H2 schema)
+* Greater discipline for application tests not using the database
+* Database accessible externally while debugging tests
+
 ### Swagger
 
 Of course, there is a [Swagger UI](http://localhost:8080/swagger-ui.html)
