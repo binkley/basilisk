@@ -17,21 +17,14 @@ class BasiliskServiceValidationTest {
     @Autowired
     private BasiliskService service;
 
-    private static String wordOfLength(final int length) {
-        final var s = new StringBuilder();
-        for (int i = 0; i < length; ++i)
-            s.append('A');
-        return s.toString();
-    }
-
     @Test
     void shouldAcceptMinLengthWords() {
-        service.extra(wordOfLength(3));
+        service.extra("A".repeat(3));
     }
 
     @Test
     void shouldAcceptMaxLengthWords() {
-        service.extra(wordOfLength(32));
+        service.extra("A".repeat(32));
     }
 
     @Test
@@ -42,13 +35,13 @@ class BasiliskServiceValidationTest {
 
     @Test
     void shouldRejectShortWords() {
-        assertThatThrownBy(() -> service.extra(wordOfLength(2)))
+        assertThatThrownBy(() -> service.extra("A".repeat(2)))
                 .isInstanceOf(ConstraintViolationException.class);
     }
 
     @Test
     void shouldRejectLongWords() {
-        assertThatThrownBy(() -> service.extra(wordOfLength(33)))
+        assertThatThrownBy(() -> service.extra("A".repeat(33)))
                 .isInstanceOf(ConstraintViolationException.class);
     }
 

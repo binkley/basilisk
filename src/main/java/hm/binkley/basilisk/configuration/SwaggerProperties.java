@@ -38,7 +38,6 @@ public class SwaggerProperties {
     public static class Contact {
         private String name;
         private URI url;
-        @Email
-        private String email;
+        private @Email String email;
     }
 }

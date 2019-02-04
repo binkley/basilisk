@@ -13,10 +13,8 @@ import java.time.Instant;
 @Data
 @RequiredArgsConstructor
 public final class BasiliskRequest {
-    @Length(min = 3, max = 32)
-    private final String word;
-    @NotNull
-    private final Instant at;
+    private final @Length(min = 3, max = 32) String word;
+    private final @NotNull Instant at;
 
     public BasiliskRecord toRecord() {
         return BasiliskRecord.builder()

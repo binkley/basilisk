@@ -18,7 +18,7 @@ public final class BasiliskResponse {
     public static BasiliskResponse from(
             final BasiliskService service,
             final BasiliskRecord record) {
-        return BasiliskResponse.builder()
+        return builder()
                 .id(record.getId())
                 .word(record.getWord())
                 .at(record.getAt())
