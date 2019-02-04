@@ -3,19 +3,19 @@ package hm.binkley.basilisk.rest;
 import hm.binkley.basilisk.service.BasiliskService;
 import hm.binkley.basilisk.store.BasiliskRecord;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Value;
 
 import java.time.Instant;
 
 @Builder
-@Data
+@Value
 public final class BasiliskResponse {
-    private final Long id;
-    private final String word;
-    private final Instant at;
-    private final String extra;
+    Long id;
+    String word;
+    Instant at;
+    String extra;
 
-    public static BasiliskResponse from(
+    static BasiliskResponse from(
             final BasiliskService service,
             final BasiliskRecord record) {
         return builder()
