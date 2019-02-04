@@ -18,7 +18,7 @@ public final class BasiliskRequest {
 
     public BasiliskRecord toRecord() {
         return BasiliskRecord.builder()
-                .word(getWord())
+                .word(word)
                 .at(at)
                 .build();
     }
