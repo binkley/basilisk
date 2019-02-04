@@ -118,6 +118,10 @@ pmd {
 
 defaultTasks "build"
 
+clean {
+    delete "out"
+}
+
 tasks.withType(JavaCompile) {
     options.compilerArgs = [
             "-encoding", "UTF8",
@@ -147,42 +151,36 @@ tasks.withType(JacocoReportBase) {
     executionData(fileTree(buildDir).include("/jacoco/*.exec"))
 }
 
-tasks {
-    wrapper {
-        distributionType = Wrapper.DistributionType.ALL
-        gradleVersion = "5.1.1"
-    }
+jacocoTestReport {
+    dependsOn tasks.withType(Test)
+}
 
-    clean {
-        delete "out"
-    }
-
-    jacocoTestReport {
-        dependsOn tasks.withType(Test)
-    }
-
-    jacocoTestCoverageVerification {
-        violationRules {
-            rule {
-                limit {
-                    minimum = 1.00
-                }
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                minimum = 1.00
             }
         }
-
-        dependsOn jacocoTestReport
     }
 
-    check {
-        dependsOn jacocoTestCoverageVerification
-        finalizedBy buildDashboard
-    }
+    dependsOn jacocoTestReport
+}
 
-    springBoot {
-        buildInfo()
-    }
+check {
+    dependsOn jacocoTestCoverageVerification
+    finalizedBy buildDashboard
+}
 
-    bootRun {
-        systemProperties = System.properties as Map<String, ?>
-    }
+bootRun {
+    systemProperties = System.properties as Map<String, ?>
+}
+
+springBoot {
+    buildInfo()
+}
+
+wrapper {
+    distributionType = Wrapper.DistributionType.ALL
+    gradleVersion = "5.1.1"
 }
