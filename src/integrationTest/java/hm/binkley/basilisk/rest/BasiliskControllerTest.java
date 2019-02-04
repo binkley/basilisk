@@ -6,7 +6,6 @@ import hm.binkley.basilisk.configuration.JsonWebMvcTest;
 import hm.binkley.basilisk.service.BasiliskService;
 import hm.binkley.basilisk.store.BasiliskRecord;
 import hm.binkley.basilisk.store.BasiliskRepository;
-import hm.binkley.basilisk.store.CityRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -25,7 +24,9 @@ import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.LOCATION;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @JsonWebMvcTest(BasiliskController.class)
 class BasiliskControllerTest {
@@ -40,8 +41,6 @@ class BasiliskControllerTest {
     private ObjectMapper objectMapper;
     @MockBean
     private BasiliskRepository basilisks;
-    @MockBean
-    private CityRepository cities;
     @MockBean
     private BasiliskService service;
 

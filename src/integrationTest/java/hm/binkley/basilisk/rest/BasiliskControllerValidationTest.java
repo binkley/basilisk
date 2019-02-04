@@ -6,7 +6,6 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hm.binkley.basilisk.configuration.ProblemWebMvcTest;
 import hm.binkley.basilisk.service.BasiliskService;
 import hm.binkley.basilisk.store.BasiliskRepository;
-import hm.binkley.basilisk.store.CityRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -36,8 +35,6 @@ class BasiliskControllerValidationTest {
     private ObjectMapper objectMapper;
     @MockBean
     private BasiliskRepository basilisks;
-    @MockBean
-    private CityRepository cities;
     @MockBean
     private BasiliskService service;
 

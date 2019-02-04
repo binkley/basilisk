@@ -21,6 +21,7 @@ plugins {
     id "org.unbroken-dome.test-sets" version "2.1.1"
     id "com.github.spotbugs" version "1.6.9"
     id "jacoco"
+    id "pmd"
 }
 
 ext {
@@ -103,6 +104,15 @@ spotbugs {
 
 jacoco {
     toolVersion = "0.8.2"
+}
+
+pmd {
+    toolVersion = "6.11.0"
+
+    ignoreFailures = true
+    consoleOutput = true
+    ruleSets = []
+    ruleSetFiles = files("config/pmd/ruleset.xml") // TODO: default location?
 }
 
 defaultTasks "build"
