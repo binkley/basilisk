@@ -32,6 +32,10 @@ spring:
   datasource:
     platform: postgresql
     url: jdbc:postgresql:basilisk
+#  jackson:
+#    time-zone: UTC
+#    serialization:
+#      write-dates-with-zone-id: true
   main:
     banner-mode: 'off'
 
