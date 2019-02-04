@@ -1,6 +1,7 @@
 package hm.binkley.basilisk.service;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.validation.ValidationAutoConfiguration;
@@ -12,10 +13,10 @@ import javax.validation.ConstraintViolationException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @Import(ValidationAutoConfiguration.class)
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @SpringBootTest(classes = BasiliskService.class)
 class BasiliskServiceValidationTest {
-    @Autowired
-    private BasiliskService service;
+    private final BasiliskService service;
 
     @Test
     void shouldAcceptMinLengthWords() {

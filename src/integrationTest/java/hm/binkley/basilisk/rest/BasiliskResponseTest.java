@@ -1,5 +1,6 @@
 package hm.binkley.basilisk.rest;
 
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +16,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
 @JsonTest
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 class BasiliskResponseTest {
-    @Autowired
-    private JacksonTester<BasiliskResponse> json;
+    private final JacksonTester<BasiliskResponse> json;
 
     @Test
     void shouldBecomeGoodJson()

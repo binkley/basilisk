@@ -2,6 +2,7 @@ package hm.binkley.basilisk.store;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
@@ -15,9 +16,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ActiveProfiles("test")
 @AutoConfigureEmbeddedDatabase
 @DataJdbcTest
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 class BasiliskRepositoryTest {
-    @Autowired
-    private BasiliskRepository basilisks;
+    private final BasiliskRepository basilisks;
 
     @SuppressFBWarnings("NP")
     @Test

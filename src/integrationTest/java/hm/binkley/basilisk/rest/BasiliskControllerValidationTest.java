@@ -6,6 +6,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hm.binkley.basilisk.configuration.ProblemWebMvcTest;
 import hm.binkley.basilisk.service.BasiliskService;
 import hm.binkley.basilisk.store.BasiliskRepository;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -24,15 +25,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ProblemWebMvcTest(BasiliskController.class)
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 class BasiliskControllerValidationTest {
     private static final Instant AT = OffsetDateTime.of(
             2011, 2, 3, 4, 5, 6, 7_000_000, UTC)
             .toInstant();
 
-    @Autowired
-    private MockMvc problemMvc;
-    @Autowired
-    private ObjectMapper objectMapper;
+    private final MockMvc problemMvc;
+    private final ObjectMapper objectMapper;
+
     @MockBean
     private BasiliskRepository basilisks;
     @MockBean

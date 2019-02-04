@@ -2,6 +2,7 @@ package hm.binkley.basilisk.store;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
@@ -12,13 +13,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ActiveProfiles("test")
 @AutoConfigureEmbeddedDatabase
 @DataJdbcTest
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 class ManyToManyRepositoryTest {
-    @Autowired
-    private RoostRepository roosts;
-    @Autowired
-    private SeasonRepository seasons;
-    @Autowired
-    private MigrationRepository migrations;
+    private final RoostRepository roosts;
+    private final SeasonRepository seasons;
+    private final MigrationRepository migrations;
 
     @SuppressFBWarnings("NP")
     @Test

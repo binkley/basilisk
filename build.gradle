@@ -71,6 +71,8 @@ dependencies {
     runtime "org.flywaydb:flyway-core"
     runtime "io.springfox:springfox-swagger-ui:${swaggerVersion}"
 
+    testAnnotationProcessor "org.projectlombok:lombok"
+
     testCompileOnly "org.projectlombok:lombok"
     testCompileOnly "com.github.spotbugs:spotbugs-annotations:${spotbugsVersion}"
 
@@ -86,7 +88,20 @@ dependencies {
 
     testRuntime "org.junit.jupiter:junit-jupiter-engine"
 
+    integrationTestAnnotationProcessor "org.projectlombok:lombok"
+
+    integrationTestCompileOnly "org.projectlombok:lombok"
+
+    databaseTestAnnotationProcessor "org.projectlombok:lombok"
+
+    databaseTestCompileOnly "org.projectlombok:lombok"
+
     databaseTestImplementation "io.zonky.test:embedded-database-spring-test:1.3.4"
+
+    liveTestAnnotationProcessor "org.projectlombok:lombok"
+
+    liveTestCompileOnly "org.projectlombok:lombok"
+
     liveTestImplementation "io.zonky.test:embedded-database-spring-test:1.3.4"
 }
 

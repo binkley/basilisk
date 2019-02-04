@@ -1,6 +1,7 @@
 package hm.binkley.basilisk;
 
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -9,10 +10,10 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @AutoConfigureEmbeddedDatabase
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 class BasiliskLiveTest {
-    @Autowired
-    private WebTestClient client;
+    private final WebTestClient client;
 
     @Test
     void shouldFindActuatorHealth() {
