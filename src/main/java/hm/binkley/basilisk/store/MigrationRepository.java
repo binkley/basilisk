@@ -1,7 +1,7 @@
 package hm.binkley.basilisk.store;
 
-import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.CrudRepository;
 
 public interface MigrationRepository
-        extends PagingAndSortingRepository<Migration, Long> {
+        extends CrudRepository<Migration, Long> {
 }

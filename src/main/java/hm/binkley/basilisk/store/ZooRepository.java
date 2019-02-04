@@ -1,7 +1,7 @@
 package hm.binkley.basilisk.store;
 
-import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.CrudRepository;
 
 public interface ZooRepository
-        extends PagingAndSortingRepository<Zoo, Long> {
+        extends CrudRepository<Zoo, Long> {
 }
