@@ -134,8 +134,6 @@ tasks.withType(Test) {
     testLogging {
         exceptionFormat "full"
     }
-
-    shouldRunAfter test
 }
 
 tasks.withType(SpotBugsTask) {
