@@ -217,4 +217,5 @@ wrapper {
 contracts {
     baseClassForTests = "hm.binkley.basilisk.contracts.ContractTestBase"
     testFramework = "JUNIT5"
+    testMode = "EXPLICIT"
 }

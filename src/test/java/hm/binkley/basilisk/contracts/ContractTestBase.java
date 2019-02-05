@@ -1,21 +1,22 @@
 package hm.binkley.basilisk.contracts;
 
-import io.restassured.module.mockmvc.RestAssuredMockMvc;
+import io.restassured.RestAssured;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.junit.jupiter.api.BeforeEach;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.web.context.WebApplicationContext;
+import org.springframework.boot.web.server.LocalServerPort;
+
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @AutoConfigureEmbeddedDatabase
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-public class ContractTestBase {
-    @Autowired
-    protected WebApplicationContext context;
+@SpringBootTest(webEnvironment = RANDOM_PORT)
+abstract class ContractTestBase {
+    @LocalServerPort
+    private int port;
 
     @BeforeEach
     void setUp() {
-        RestAssuredMockMvc.webAppContextSetup(context);
+        RestAssured.baseURI = "http://localhost";
+        RestAssured.port = port;
     }
 }
