@@ -8,6 +8,7 @@ buildscript {
 
     dependencies {
         classpath "org.springframework.boot:spring-boot-gradle-plugin:2.1.2.RELEASE"
+        classpath "org.springframework.cloud:spring-cloud-contract-gradle-plugin:2.1.0.RELEASE"
     }
 }
 
@@ -22,7 +23,10 @@ plugins {
     id "com.github.spotbugs" version "1.6.9"
     id "jacoco"
     id "pmd"
+    id "groovy"
 }
+
+apply plugin: "spring-cloud-contract" // TODO: Use plugins.id
 
 ext {
     spotbugsVersion = "3.1.11"
@@ -36,6 +40,7 @@ testSets {
     databaseTest
     integrationTest
     liveTest
+    contractTest
 }
 
 repositories {
@@ -45,6 +50,7 @@ repositories {
 
 dependencyManagement {
     imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:Greenwich.RELEASE"
         mavenBom "io.zonky.test.postgres:embedded-postgres-binaries-bom:10.6.0"
     }
 }
