@@ -39,7 +39,6 @@ testSets {
     databaseTest
     integrationTest
     liveTest
-    contractTest
 }
 
 repositories {
