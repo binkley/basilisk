@@ -27,6 +27,7 @@ Demonstrate Java 11, Spring Boot 2, JUnit 5, et al
 * Full test coverage
 * Static code analysis
 * Build analysis
+* YAML Spring Cloud Contract tests
 
 
 ## Feedback
@@ -127,6 +128,9 @@ individual types of tests:
 * Live tests &mdash; The entire application is wired and brought up, the
   most rare and expensive kind of tests.  These go under
   [`src/liveTest`](src/liveTest); run with `./gradlew liveTest`
+* Contract tests &mdash; The entire application is wired and brought up, and
+  contract tests run against it.  See
+  [limitations](#contract-tests). 
 
 To run all test types, use `./gradlew check`.  To refresh the build, and force
 all tests to re-run, use `./gradlew clean check --no-build-cache`.
@@ -154,6 +158,13 @@ in other contexts.  The exception is testing sad paths.  I never found a
 nice way to handle validation failures, nor test test for them.  This is a
 long-standing Spring MVC complaint.
 
+Two kinds of help in this project for JSON-based REST endpoints:
+
+- [happy path](src/integrationTest/java/hm/binkley/basilisk/configuration/JsonWebMvcTest.java)
+- [sad path](src/integrationTest/java/hm/binkley/basilisk/configuration/ProblemWebMvcTest.java)
+
+These replace Spring `@WebMvcTest` annotation to ensure JSON sent and received.
+
 ### Database tests
 
 Spring blogs on Spring Data JDBC domain relationships in
@@ -167,6 +178,27 @@ Spring blogs on Spring Data JDBC domain relationships in
   tests a many-to-one domain model
 - [`ManyToManyRepositoryTest`](src/databaseTest/java/hm/binkley/basilisk/store/ManyToManyRepositoryTest.java)
   tests a many-to-many domain model
+
+### Contract tests
+
+To improve the red-green-refactor cycle in IntelliJ for Spring Cloud Contract:
+
+- Defer building and testing to Gradle
+- Observe
+  [the contract test](build/generated-test-sources/contracts/hm/binkley/basilisk/contracts/BasiliskTest.java)
+  and run this directly; Spring Cloud Contract automatically adds this as a
+  source root in IntelliJ
+
+Spring Cloud Contract has several limitations, especially the Gradle plugin.
+Among them:
+
+- The plugin interacts poorly with Gradle 5 and caching
+- Test sources _must_ be underneath `src/test`
+- Test code generation is flaky, and does not always produce assertions from
+  an input file (eg, `response.matchers.body` generates no code unless there
+  is a `response.body`, though the latter is ignored)
+- Testing for an empty root array is particularly challenging
+- There is little configuration over JSON parsing
 
 
 ## Advice and examples
@@ -198,6 +230,7 @@ Recall that package names are stylistically singular, not plural, _eg_,
 ### Test types
 
 - [application (live)](src/liveTest/java/hm/binkley/basilisk/BasiliskLiveTest.java)
+- [application (contract)](src/test/resources/contracts/basilisk/see_basilisks.yml)
 - [configuration (unit)](src/test/java/hm/binkley/basilisk/configuration/BasiliskConfigurationTest.java)
 - [controller (integration)](src/integrationTest/java/hm/binkley/basilisk/rest/BasiliskControllerTest.java)
 - [controller validation (integration)](src/integrationTest/java/hm/binkley/basilisk/rest/BasiliskControllerValidationTest.java)
@@ -212,16 +245,6 @@ Recall that package names are stylistically singular, not plural, _eg_,
 Note the source root of each test depends on the resources it uses.  See
 [Testing - Layout](#layout).  Also note the prevalence of integration
 tests: this is a common drawback to Spring projects.
-
-#### Controller tests
-
-Two kinds of help in this project for JSON-based REST endpoints:
-
-- [happy path](src/integrationTest/java/hm/binkley/basilisk/configuration/JsonWebMvcTest.java)
-- [sad path](src/integrationTest/java/hm/binkley/basilisk/configuration/ProblemWebMvcTest.java)
-
-These replace Spring `@WebMvcTest` annotation to ensure JSON sent and 
-received.
 
 ### Spring configuration
 

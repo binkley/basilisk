@@ -8,5 +8,9 @@ response:
   status: 200
   headers:
     Content-Type: application/json;charset=UTF-8
-  # TODO: Having trouble SCC generating check for empty array
-  bodyFromFile: no-basilisks.json
+  body: '{}'  # Ignored, but required for matchers to generate code
+  matchers:
+    body:
+      - path: $
+        type: by_command
+        value: assertEmptyArray($it)
