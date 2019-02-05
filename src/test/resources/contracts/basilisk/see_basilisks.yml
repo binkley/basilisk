@@ -1,0 +1,10 @@
+description: Find all basilisks
+request:
+  method: GET
+  url: /basilisk
+  headers:
+    Content-Type: application/json;charset=UTF-8
+response:
+  status: 200
+  headers:
+    Content-Type: application/json;charset=UTF-8
