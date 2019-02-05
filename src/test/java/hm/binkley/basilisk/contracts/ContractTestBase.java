@@ -10,7 +10,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 @AutoConfigureEmbeddedDatabase
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-public abstract class ContractTestBase {
+public class ContractTestBase {
     @Autowired
     protected WebApplicationContext context;
 

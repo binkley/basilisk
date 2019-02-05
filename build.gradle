@@ -142,6 +142,10 @@ pmd {
     ruleSetFiles = files("config/pmd/ruleset.xml") // TODO: default location?
 }
 
+pmdTest {
+    excludes = ["hm/binkley/basilisk/contracts/BasiliskTest.java"]
+}
+
 defaultTasks "build"
 
 clean {
