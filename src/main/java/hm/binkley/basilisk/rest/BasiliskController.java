@@ -51,7 +51,7 @@ public class BasiliskController {
     }
 
     @GetMapping("find/{word}")
-    public List<BasiliskResponse> getByWord(
+    public List<BasiliskResponse> findByWord(
             @PathVariable("word") final @Length(min = 3, max = 32)
                     String word) {
         return basilisks.findByWord(word).stream()

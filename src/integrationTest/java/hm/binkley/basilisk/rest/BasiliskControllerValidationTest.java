@@ -46,7 +46,7 @@ class BasiliskControllerValidationTest {
         problemMvc.perform(get("/basilisk/find/F"))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.violations[0].field",
-                        equalTo("getByWord.word")))
+                        equalTo("findByWord.word")))
                 .andExpect(jsonPath("$.violations[0].message",
                         equalTo("length must be between 3 and 32")))
                 .andExpect(jsonPath("$.status",
