@@ -124,6 +124,8 @@ normalization {
 }
 
 spotbugs {
+    // TODO: See https://github.com/spotbugs/spotbugs-gradle-plugin/issues/5
+    excludeFilterConfig = resources.text.fromFile("config/spotbugs/excludeFilter.xml")
     toolVersion = "${spotbugsVersion}"
 }
 
