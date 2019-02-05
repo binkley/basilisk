@@ -109,6 +109,8 @@ dependencies {
     liveTestCompileOnly "org.projectlombok:lombok"
 
     liveTestImplementation "io.zonky.test:embedded-database-spring-test:1.3.4"
+
+    contractTestCompile "org.codehaus.groovy:groovy-all"
 }
 
 sourceCompatibility = 11
