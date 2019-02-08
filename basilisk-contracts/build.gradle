@@ -1,0 +1,17 @@
+apply plugin: "spring-cloud-contract"
+
+dependencies {
+    testImplementation project(":basilisk-service")
+}
+
+contracts {
+    baseClassForTests = "hm.binkley.basilisk.contracts.ContractTestBase"
+    testFramework = "JUNIT5"
+    testMode = "EXPLICIT"
+}
+
+pmdTest {
+    excludes = [
+            "hm/binkley/basilisk/contracts/BasiliskTest.java",
+            "hm/binkley/basilisk/contracts/ContractTestBase.java"]
+}
