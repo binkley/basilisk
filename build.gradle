@@ -153,15 +153,14 @@ subprojects {
     pmd {
         toolVersion = "6.11.0"
 
-        ignoreFailures = true
         consoleOutput = true
         ruleSets = []
-        ruleSetFiles = files("${project.rootDir}/config/pmd/ruleset.xml")
         // TODO: default location?
+        ruleSetFiles = files("${project.rootDir}/config/pmd/ruleset.xml")
     }
 
     pmdTest {
-        excludes = ["hm/binkley/basilisk/contracts/BasiliskTest.java"]
+        excludes = ["hm/binkley/basilisk/contracts/ContractTestBase.java"]
     }
 
     clean {
