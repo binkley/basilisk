@@ -1,5 +1,3 @@
-import com.github.spotbugs.SpotBugsTask
-
 buildscript {
     repositories {
         mavenCentral()
@@ -7,215 +5,226 @@ buildscript {
     }
 
     dependencies {
+        classpath "io.spring.gradle:dependency-management-plugin:1.0.6.RELEASE"
         classpath "org.springframework.boot:spring-boot-gradle-plugin:2.1.2.RELEASE"
         classpath "org.springframework.cloud:spring-cloud-contract-gradle-plugin:2.1.0.RELEASE"
+        classpath "org.unbroken-dome.gradle-plugins:gradle-testsets-plugin:2.1.1"
+        classpath "net.ltgt.gradle:gradle-apt-plugin:0.21"
+        classpath "gradle.plugin.com.github.spotbugs:spotbugs-gradle-plugin:1.6.9"
     }
 }
 
 plugins {
     id "com.github.ben-manes.versions" version "0.20.0"
     id "build-dashboard"
-    id "java"
     id "com.dorongold.task-tree" version "1.3.1"
-    id "org.springframework.boot" version "2.1.2.RELEASE"
-    id "io.spring.dependency-management" version "1.0.6.RELEASE"
-    id "org.unbroken-dome.test-sets" version "2.1.1"
-    id "com.github.spotbugs" version "1.6.9"
-    id "jacoco"
-    id "pmd"
 }
 
+apply plugin: "io.spring.dependency-management"
 apply plugin: "spring-cloud-contract" // TODO: Use plugins.id
 
-ext {
-    spotbugsVersion = "3.1.11"
-    swaggerVersion = "2.9.2"
-}
+allprojects {
+    ext {
+        spotbugsVersion = "3.1.11"
+        swaggerVersion = "2.9.2"
+    }
 
-group = "hm.binkley"
-version = "0"
+    group = "hm.binkley"
+    version = "0"
 
-testSets {
-    databaseTest
-    integrationTest
-    liveTest
-}
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
 
-repositories {
-    mavenCentral()
-    jcenter()
-}
+    defaultTasks "build"
 
-dependencyManagement {
-    imports {
-        mavenBom "io.zonky.test.postgres:embedded-postgres-binaries-bom:10.6.0"
-        mavenBom "org.springframework.cloud:spring-cloud-dependencies:Greenwich.RELEASE"
+    wrapper {
+        distributionType = Wrapper.DistributionType.ALL
+        gradleVersion = "5.2"
     }
 }
 
-dependencies {
-    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
-    annotationProcessor "org.projectlombok:lombok"
+subprojects {
+    apply plugin: JavaPlugin
+    apply plugin: "net.ltgt.apt"
+    apply plugin: "io.spring.dependency-management"
+    apply plugin: "org.springframework.boot"
+    apply plugin: "org.unbroken-dome.test-sets"
+    apply plugin: "jacoco"
+    apply plugin: "com.github.spotbugs"
+    apply plugin: "pmd"
 
-    compileOnly "org.springframework.boot:spring-boot-configuration-processor"
-    compileOnly "org.projectlombok:lombok"
-    compileOnly "com.github.spotbugs:spotbugs-annotations:${spotbugsVersion}"
-
-    implementation "org.springframework.boot:spring-boot-starter-validation"
-    implementation "org.springframework.boot:spring-boot-starter-actuator"
-    implementation "org.springframework.boot:spring-boot-starter-data-jdbc"
-    implementation "org.springframework.boot:spring-boot-starter-data-rest"
-    implementation "org.springframework.boot:spring-boot-starter-hateoas"
-    implementation "org.springframework.boot:spring-boot-starter-security"
-    implementation "org.zalando:problem-spring-web:0.23.0"
-    implementation "io.springfox:springfox-swagger2:${swaggerVersion}"
-
-    runtime "org.springframework.data:spring-data-rest-hal-browser"
-    runtime "org.postgresql:postgresql"
-    runtime "org.flywaydb:flyway-core"
-    runtime "io.springfox:springfox-swagger-ui:${swaggerVersion}"
-
-    testAnnotationProcessor "org.projectlombok:lombok"
-
-    testCompileOnly "org.projectlombok:lombok"
-    testCompileOnly "com.github.spotbugs:spotbugs-annotations:${spotbugsVersion}"
-
-    testImplementation("org.springframework.boot:spring-boot-starter-test") {
-        exclude module: "junit"
+    testSets {
+        databaseTest
+        integrationTest
+        liveTest
     }
-    testImplementation "org.springframework.boot:spring-boot-starter-webflux"
-    testImplementation "org.junit.jupiter:junit-jupiter-api"
-    testImplementation "org.mockito:mockito-core"
-    testImplementation "org.mockito:mockito-junit-jupiter"
-    testImplementation "org.assertj:assertj-core"
-    testImplementation "org.awaitility:awaitility:3.1.6"
 
-    testRuntime "org.junit.jupiter:junit-jupiter-engine"
-
-    integrationTestAnnotationProcessor "org.projectlombok:lombok"
-
-    integrationTestCompileOnly "org.projectlombok:lombok"
-
-    databaseTestAnnotationProcessor "org.projectlombok:lombok"
-
-    databaseTestCompileOnly "org.projectlombok:lombok"
-
-    databaseTestImplementation "io.zonky.test:embedded-database-spring-test:1.3.4"
-
-    liveTestAnnotationProcessor "org.projectlombok:lombok"
-
-    liveTestCompileOnly "org.projectlombok:lombok"
-
-    liveTestImplementation "io.zonky.test:embedded-database-spring-test:1.3.4"
-
-    testImplementation "org.springframework.cloud:spring-cloud-starter-contract-verifier"
-    testImplementation "org.springframework.cloud:spring-cloud-starter-contract-stub-runner"
-    testImplementation "io.zonky.test:embedded-database-spring-test:1.3.4"
-}
-
-sourceCompatibility = 11
-targetCompatibility = 11
-
-normalization {
-    runtimeClasspath {
-        ignore "META-INF/build-info.properties"
-    }
-}
-
-spotbugs {
-    // TODO: See https://github.com/spotbugs/spotbugs-gradle-plugin/issues/5
-    excludeFilterConfig = resources.text.fromFile("config/spotbugs/excludeFilter.xml")
-    toolVersion = "${spotbugsVersion}"
-}
-
-jacoco {
-    toolVersion = "0.8.2"
-}
-
-pmd {
-    toolVersion = "6.11.0"
-
-    ignoreFailures = true
-    consoleOutput = true
-    ruleSets = []
-    ruleSetFiles = files("config/pmd/ruleset.xml") // TODO: default location?
-}
-
-pmdTest {
-    excludes = ["hm/binkley/basilisk/contracts/BasiliskTest.java"]
-}
-
-defaultTasks "build"
-
-clean {
-    delete "out"
-}
-
-tasks.withType(JavaCompile) {
-    options.compilerArgs = [
-            "-encoding", "UTF8",
-            "-parameters",
-            "-Werror",
-            "-Xdiags:verbose",
-            "-Xlint:all,-processing,-serial"
-    ]
-}
-
-tasks.withType(Test) {
-    useJUnitPlatform()
-
-    testLogging {
-        exceptionFormat "full"
-    }
-}
-
-tasks.withType(SpotBugsTask) {
-    reports {
-        xml.enabled = false
-        html.enabled = true
-    }
-}
-
-tasks.withType(JacocoReportBase) {
-    executionData(fileTree(buildDir).include("/jacoco/*.exec"))
-}
-
-jacocoTestReport {
-    dependsOn tasks.withType(Test)
-}
-
-jacocoTestCoverageVerification {
-    violationRules {
-        rule {
-            limit {
-                minimum = 1.00
-            }
+    dependencyManagement {
+        imports {
+            mavenBom "io.zonky.test.postgres:embedded-postgres-binaries-bom:10.6.0"
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:Greenwich.RELEASE"
         }
     }
 
-    dependsOn jacocoTestReport
-}
+    dependencies {
+        annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+        annotationProcessor "org.projectlombok:lombok"
 
-check {
-    dependsOn jacocoTestCoverageVerification
-    finalizedBy buildDashboard
-}
+        compileOnly "org.springframework.boot:spring-boot-configuration-processor"
+        compileOnly "org.projectlombok:lombok"
+        compileOnly "com.github.spotbugs:spotbugs-annotations:${spotbugsVersion}"
 
-bootRun {
-    systemProperties = System.properties as Map<String, ?>
-}
+        implementation "org.springframework.boot:spring-boot-starter-validation"
+        implementation "org.springframework.boot:spring-boot-starter-actuator"
+        implementation "org.springframework.boot:spring-boot-starter-data-jdbc"
+        implementation "org.springframework.boot:spring-boot-starter-data-rest"
+        implementation "org.springframework.boot:spring-boot-starter-hateoas"
+        implementation "org.springframework.boot:spring-boot-starter-security"
+        implementation "org.zalando:problem-spring-web:0.23.0"
+        implementation "io.springfox:springfox-swagger2:${swaggerVersion}"
 
-springBoot {
-    buildInfo()
-}
+        runtime "org.springframework.data:spring-data-rest-hal-browser"
+        runtime "org.postgresql:postgresql"
+        runtime "org.flywaydb:flyway-core"
+        runtime "io.springfox:springfox-swagger-ui:${swaggerVersion}"
 
-wrapper {
-    distributionType = Wrapper.DistributionType.ALL
-    gradleVersion = "5.2"
-}
+        testAnnotationProcessor "org.projectlombok:lombok"
 
-contracts {
-    baseClassForTests = "hm.binkley.basilisk.contracts.ContractTestBase"
-    testFramework = "JUNIT5"
-    testMode = "EXPLICIT"
+        testCompileOnly "org.projectlombok:lombok"
+        testCompileOnly "com.github.spotbugs:spotbugs-annotations:${spotbugsVersion}"
+
+        testImplementation("org.springframework.boot:spring-boot-starter-test") {
+            exclude module: "junit"
+        }
+        testImplementation "org.springframework.boot:spring-boot-starter-webflux"
+        testImplementation "org.junit.jupiter:junit-jupiter-api"
+        testImplementation "org.mockito:mockito-core"
+        testImplementation "org.mockito:mockito-junit-jupiter"
+        testImplementation "org.assertj:assertj-core"
+        testImplementation "org.awaitility:awaitility:3.1.6"
+
+        testRuntime "org.junit.jupiter:junit-jupiter-engine"
+
+        integrationTestAnnotationProcessor "org.projectlombok:lombok"
+
+        integrationTestCompileOnly "org.projectlombok:lombok"
+
+        databaseTestAnnotationProcessor "org.projectlombok:lombok"
+
+        databaseTestCompileOnly "org.projectlombok:lombok"
+
+        databaseTestImplementation "io.zonky.test:embedded-database-spring-test:1.3.4"
+
+        liveTestAnnotationProcessor "org.projectlombok:lombok"
+
+        liveTestCompileOnly "org.projectlombok:lombok"
+
+        liveTestImplementation "io.zonky.test:embedded-database-spring-test:1.3.4"
+
+        testImplementation "org.springframework.cloud:spring-cloud-starter-contract-verifier"
+        testImplementation "org.springframework.cloud:spring-cloud-starter-contract-stub-runner"
+        testImplementation "io.zonky.test:embedded-database-spring-test:1.3.4"
+    }
+
+    sourceCompatibility = 11
+    targetCompatibility = 11
+
+    normalization {
+        runtimeClasspath {
+            ignore "META-INF/build-info.properties"
+        }
+    }
+
+    spotbugs {
+        // TODO: See https://github.com/spotbugs/spotbugs-gradle-plugin/issues/5
+        excludeFilterConfig = resources.text.fromFile("${project.rootDir}/config/spotbugs/excludeFilter.xml")
+        toolVersion = "${spotbugsVersion}"
+    }
+
+    jacoco {
+        toolVersion = "0.8.2"
+    }
+
+    pmd {
+        toolVersion = "6.11.0"
+
+        ignoreFailures = true
+        consoleOutput = true
+        ruleSets = []
+        ruleSetFiles = files("${project.rootDir}/config/pmd/ruleset.xml") // TODO: default location?
+    }
+
+    pmdTest {
+        excludes = ["hm/binkley/basilisk/contracts/BasiliskTest.java"]
+    }
+
+    clean {
+        delete "out"
+    }
+
+    tasks.withType(JavaCompile) {
+        options.compilerArgs = [
+                "-encoding", "UTF8",
+                "-parameters",
+                "-Werror",
+                "-Xdiags:verbose",
+                "-Xlint:all,-processing,-serial"
+        ]
+    }
+
+    tasks.withType(Test) {
+        useJUnitPlatform()
+
+        testLogging {
+            exceptionFormat "full"
+        }
+    }
+
+    tasks.withType(com.github.spotbugs.SpotBugsTask) {
+        reports {
+            xml.enabled = false
+            html.enabled = true
+        }
+    }
+
+    tasks.withType(JacocoReportBase) {
+        executionData(fileTree(buildDir).include("/jacoco/*.exec"))
+    }
+
+    jacocoTestReport {
+        dependsOn tasks.withType(Test)
+    }
+
+    jacocoTestCoverageVerification {
+        violationRules {
+            rule {
+                limit {
+                    minimum = 1.00
+                }
+            }
+        }
+
+        dependsOn jacocoTestReport
+    }
+
+    check {
+        dependsOn jacocoTestCoverageVerification
+        finalizedBy buildDashboard
+    }
+
+    bootRun {
+        systemProperties = System.properties as Map<String, ?>
+    }
+
+    springBoot {
+        buildInfo()
+    }
+
+    contracts {
+        baseClassForTests = "hm.binkley.basilisk.contracts.ContractTestBase"
+        testFramework = "JUNIT5"
+        testMode = "EXPLICIT"
+    }
 }
