@@ -28,6 +28,7 @@ Demonstrate Java 11, Spring Boot 2, JUnit 5, et al
 * Static code analysis
 * Build analysis
 * YAML Spring Cloud Contract tests
+* Custom JSON formatting
 
 
 ## Feedback
@@ -46,13 +47,13 @@ After spinning up the program with `./gradlew bootRun`, try
 returned JSON for interesting links.
 
 Of particular interest is [health](http://localhost:8080/actuator/health).
-Note the [application configuration](src/main/resources/application.yml) to
+Note the [application configuration](basilisk-service/src/main/resources/application.yml) to
 expose more detail.
 
 ### Database
 
 Production uses external PostgreSQL; lower environments use in-memory
-PostgreSQL.  See [`application.yml`](src/main/resources/application.yml).  An
+PostgreSQL.  See [`application.yml`](basilisk-service/src/main/resources/application.yml).  An
 example for the command line:
 
 ```bash
@@ -97,7 +98,7 @@ Bring up the program with:
 
 * Command line &mdash; `./gradlew bootRun`
 * IntelliJ &mdash; run/debug/profile
-[the application](src/main/java/hm/binkley/basilisk/BasiliskApplication.java)
+[the application](basilisk-service/src/main/java/hm/binkley/basilisk/BasiliskApplication.java)
 
 ### Reports
 
@@ -118,16 +119,16 @@ Divide your tests by what resources they use.  This speeds up testing
 individual types of tests:
 
 * Unit tests &mdash; No Spring wiring or other resources needed.  These go
-  under [`src/test`](src/test); run with `./gradlew test`
+  under [`src/test`](basilisk-service/src/test); run with `./gradlew test`
 * Integration tests &mdash; Spring wiring is used.  These go under
-  [`src/integrationTest`](src/integrationTest); run with `./gradlew
+  [`src/integrationTest`](basilisk-service/src/integrationTest); run with `./gradlew
   integrationTest`
 * Database tests &mdash; In addition to Spring wiring, these use a database
-  resource.  These go under [`src/databaseTest`](src/databaseTest); run with
+  resource.  These go under [`src/databaseTest`](basilisk-service/src/databaseTest); run with
   `./gradlew databaseTest`
 * Live tests &mdash; The entire application is wired and brought up, the
   most rare and expensive kind of tests.  These go under
-  [`src/liveTest`](src/liveTest); run with `./gradlew liveTest`
+  [`src/liveTest`](basilisk-service/src/liveTest); run with `./gradlew liveTest`
 * Contract tests &mdash; The entire application is wired and brought up, and
   contract tests run against it.  See
   [limitations](#contract-tests). 
@@ -135,9 +136,9 @@ individual types of tests:
 To run all test types, use `./gradlew check`.  To refresh the build, and force
 all tests to re-run, use `./gradlew clean check --no-build-cache`.
 
-[`BasiliskServiceTest`](src/test/java/hm/binkley/basilisk/service/BasiliskServiceTest.java)
+[`BasiliskServiceTest`](basilisk-service/src/test/java/hm/binkley/basilisk/service/BasiliskServiceTest.java)
 (unit) and
-[`BasiliskServiceValidationTest`](src/integrationTest/java/hm/binkley/basilisk/service/BasiliskServiceValidationTest.java)
+[`BasiliskServiceValidationTest`](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/service/BasiliskServiceValidationTest.java)
 (integration) are an example of splitting testing of a class to limit
 resources, and speed up the tests.
 
@@ -160,8 +161,8 @@ long-standing Spring MVC complaint.
 
 Two kinds of help in this project for JSON-based REST endpoints:
 
-- [happy path](src/integrationTest/java/hm/binkley/basilisk/configuration/JsonWebMvcTest.java)
-- [sad path](src/integrationTest/java/hm/binkley/basilisk/configuration/ProblemWebMvcTest.java)
+- [happy path](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/configuration/JsonWebMvcTest.java)
+- [sad path](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/configuration/ProblemWebMvcTest.java)
 
 These replace Spring `@WebMvcTest` annotation to ensure JSON sent and received.
 
@@ -170,13 +171,13 @@ These replace Spring `@WebMvcTest` annotation to ensure JSON sent and received.
 Spring blogs on Spring Data JDBC domain relationships in
 [_Spring Data JDBC, References, and Aggregates_](https://spring.io/blog/2018/09/24/spring-data-jdbc-references-and-aggregates).
 
-- [`BasiliskRepositoryTest`](src/databaseTest/java/hm/binkley/basilisk/store/BasiliskRepositoryTest.java)
+- [`BasiliskRepositoryTest`](basilisk-service/src/databaseTest/java/hm/binkley/basilisk/store/BasiliskRepositoryTest.java)
   tests a simple model with no references to other domain objects
-- [`OneToOneRepositoryTest`](src/databaseTest/java/hm/binkley/basilisk/store/OneToOneRepositoryTest.java)
+- [`OneToOneRepositoryTest`](basilisk-service/src/databaseTest/java/hm/binkley/basilisk/store/OneToOneRepositoryTest.java)
   tests a one-to-one domain model
-- [`ManyToOneRepositoryTest`](src/databaseTest/java/hm/binkley/basilisk/store/ManyToOneRepositoryTest.java)
+- [`ManyToOneRepositoryTest`](basilisk-service/src/databaseTest/java/hm/binkley/basilisk/store/ManyToOneRepositoryTest.java)
   tests a many-to-one domain model
-- [`ManyToManyRepositoryTest`](src/databaseTest/java/hm/binkley/basilisk/store/ManyToManyRepositoryTest.java)
+- [`ManyToManyRepositoryTest`](basilisk-service/src/databaseTest/java/hm/binkley/basilisk/store/ManyToManyRepositoryTest.java)
   tests a many-to-many domain model
 
 ### Contract tests
@@ -185,7 +186,7 @@ To improve the red-green-refactor cycle in IntelliJ for Spring Cloud Contract:
 
 - Defer building and testing to Gradle
 - Observe
-  [the contract test](build/generated-test-sources/contracts/hm/binkley/basilisk/contracts/BasiliskTest.java)
+  [the contract test](basilisk-contracts/build/generated-test-sources/contracts/hm/binkley/basilisk/contracts/BasiliskTest.java)
   and run this directly; Spring Cloud Contract automatically adds this as a
   source root in IntelliJ
 
@@ -219,28 +220,28 @@ Keep your top-level application class in the root of your package hierarchy.
 Break up the rest of your classes into categories of related function.  In
 this project, there are only four:
 
-- [configuration](src/main/java/hm/binkley/basilisk/configuration)
-- [endpoints](src/main/java/hm/binkley/basilisk/rest)
-- [persistence](src/main/java/hm/binkley/basilisk/store)
-- [services](src/main/java/hm/binkley/basilisk/service)
+- [configuration](basilisk-service/src/main/java/hm/binkley/basilisk/configuration)
+- [endpoints](basilisk-service/src/main/java/hm/binkley/basilisk/rest)
+- [persistence](basilisk-service/src/main/java/hm/binkley/basilisk/store)
+- [services](basilisk-service/src/main/java/hm/binkley/basilisk/service)
 
 Recall that package names are stylistically singular, not plural, _eg_,
 `service` rather than `services`.
 
 ### Test types
 
-- [application (live)](src/liveTest/java/hm/binkley/basilisk/BasiliskLiveTest.java)
-- [application (contract)](src/test/resources/contracts/basilisk/see_basilisks.yml)
-- [configuration (unit)](src/test/java/hm/binkley/basilisk/configuration/BasiliskConfigurationTest.java)
-- [controller (integration)](src/integrationTest/java/hm/binkley/basilisk/rest/BasiliskControllerTest.java)
-- [controller validation (integration)](src/integrationTest/java/hm/binkley/basilisk/rest/BasiliskControllerValidationTest.java)
-- [json request (unit)](src/test/java/hm/binkley/basilisk/rest/BasiliskRequestTest.java)
-- [json response (integration)](src/integrationTest/java/hm/binkley/basilisk/rest/BasiliskResponseTest.java)
-- [properties (integration)](src/integrationTest/java/hm/binkley/basilisk/configuration/BasiliskPropertiesTest.java)
-- [record validation (unit)](src/test/java/hm/binkley/basilisk/store/BasiliskRecordValidationTest.java)
-- [repository (database)](src/databaseTest/java/hm/binkley/basilisk/store/BasiliskRepositoryTest.java)
-- [service (unit)](src/test/java/hm/binkley/basilisk/service/BasiliskServiceTest.java)
-- [service validation (integration)](src/integrationTest/java/hm/binkley/basilisk/service/BasiliskServiceValidationTest.java)
+- [application (live)](basilisk-service/src/liveTest/java/hm/binkley/basilisk/BasiliskLiveTest.java)
+- [application (contract)](basilisk-contracts/src/test/resources/contracts/basilisk/make_basilisk.yml)
+- [configuration (unit)](basilisk-service/src/test/java/hm/binkley/basilisk/configuration/JsonConfigurationTest.java)
+- [controller (integration)](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/rest/BasiliskControllerTest.java)
+- [controller validation (integration)](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/rest/BasiliskControllerValidationTest.java)
+- [json request (unit)](basilisk-service/src/test/java/hm/binkley/basilisk/rest/BasiliskRequestTest.java)
+- [json response (integration)](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/rest/BasiliskResponseTest.java)
+- [properties (integration)](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/configuration/BasiliskPropertiesTest.java)
+- [record validation (unit)](basilisk-service/src/test/java/hm/binkley/basilisk/store/BasiliskRecordValidationTest.java)
+- [repository (database)](basilisk-service/src/databaseTest/java/hm/binkley/basilisk/store/BasiliskRepositoryTest.java)
+- [service (unit)](basilisk-service/src/test/java/hm/binkley/basilisk/service/BasiliskServiceTest.java)
+- [service validation (integration)](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/service/BasiliskServiceValidationTest.java)
 
 Note the source root of each test depends on the resources it uses.  See
 [Testing - Layout](#layout).  Also note the prevalence of integration
@@ -256,11 +257,11 @@ Specialize your configuration classes as makes sense.
 
 See:
 
-- [`BasiliskApplication`](src/main/java/hm/binkley/basilisk/BasiliskApplication.java)
-- [`BasiliskConfiguration`](src/main/java/hm/binkley/basilisk/configuration/BasiliskConfiguration.java)
-- [`ProblemConfiguration`](src/main/java/hm/binkley/basilisk/configuration/ProblemConfiguration.java)
-- [`SecurityConfiguration`](src/main/java/hm/binkley/basilisk/configuration/SecurityConfiguration.java)
-- [`SwaggerConfiguration`](src/main/java/hm/binkley/basilisk/configuration/SwaggerConfiguration.java)
+- [`BasiliskApplication`](basilisk-service/src/main/java/hm/binkley/basilisk/BasiliskApplication.java)
+- [`BasiliskConfiguration`](basilisk-service/src/main/java/hm/binkley/basilisk/configuration/BasiliskConfiguration.java)
+- [`ProblemConfiguration`](basilisk-service/src/main/java/hm/binkley/basilisk/configuration/ProblemConfiguration.java)
+- [`SecurityConfiguration`](basilisk-service/src/main/java/hm/binkley/basilisk/configuration/SecurityConfiguration.java)
+- [`SwaggerConfiguration`](basilisk-service/src/main/java/hm/binkley/basilisk/configuration/SwaggerConfiguration.java)
 
 ### Autowiring
 
@@ -308,10 +309,10 @@ original, unrefactored code.)
 
 Any bean can be validated by adding `@Validated` to the class.  See examples
 of
-[`BasiliskController`](src/main/java/hm/binkley/basilisk/rest/BasiliskController.java),
-[`BasiliskProperties`](src/main/java/hm/binkley/basilisk/configuration/BasiliskProperties.java),
+[`BasiliskController`](basilisk-service/src/main/java/hm/binkley/basilisk/rest/BasiliskController.java),
+[`BasiliskProperties`](basilisk-service/src/main/java/hm/binkley/basilisk/configuration/BasiliskProperties.java),
 and
-[`BasiliskService`](src/main/java/hm/binkley/basilisk/service/BasiliskService.java).
+[`BasiliskService`](basilisk-service/src/main/java/hm/binkley/basilisk/service/BasiliskService.java).
 
 Note: Spring Data JDBC does not support validating entities/records in this
 way.  However, a well-written schema will catch issues, and controller and 
@@ -337,8 +338,8 @@ basilisk:
 
 See:
 
-- [`BasiliskProperties`](src/main/java/hm/binkley/basilisk/configuration/BasiliskProperties.java)
-- [`OverlappedProperties`](src/main/java/hm/binkley/basilisk/configuration/OverlappedProperties.java)
+- [`BasiliskProperties`](basilisk-service/src/main/java/hm/binkley/basilisk/configuration/BasiliskProperties.java)
+- [`OverlappedProperties`](basilisk-service/src/main/java/hm/binkley/basilisk/configuration/OverlappedProperties.java)
 
 ### Spring-injected tests
 
@@ -373,16 +374,23 @@ your test.  Among the choices include:
 
 - `@SpringBootTest` (use `classes` property to limit beans created);
   example in
-  [`BasiliskPropertiesTest`](src/integrationTest/java/hm/binkley/basilisk/configuration/BasiliskPropertiesTest.java)
+  [`BasiliskPropertiesTest`](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/configuration/BasiliskPropertiesTest.java)
 - `@DataJdbcTest`; example in
-  [`BasiliskRepositoryTest`](src/databaseTest/java/hm/binkley/basilisk/store/BasiliskRepositoryTest.java)
+  [`BasiliskRepositoryTest`](basilisk-service/src/databaseTest/java/hm/binkley/basilisk/store/BasiliskRepositoryTest.java)
 - `@WebMvcTest` (use the `value` property to limit test to one controller);
   example in
-  [`BasiliskControllerTest`](src/integrationTest/java/hm/binkley/basilisk/rest/BasiliskControllerTest.java)
+  [`BasiliskControllerTest`](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/rest/BasiliskControllerTest.java)
 
 ### Configuration through annotations
 
 Spring makes heavy use of configuration in Java through annotations.  Examples
 include `@EnableConfigurationProperties` and `@Import`.  See
-[`JsonWebMvcTest`](src/integrationTest/java/hm/binkley/basilisk/configuration/JsonWebMvcTest.java)
+[`JsonWebMvcTest`](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/configuration/JsonWebMvcTest.java)
 for an example of writing your own.
+
+### Custom JSON formatting
+
+See
+[`JsonConfiguration`](basilisk-service/src/main/java/hm/binkley/basilisk/configuration/JsonConfiguration.java)
+for an example of global custom JSON formatting, in this case, showing
+`Instant` as "2011-02-03T04:05:06Z" (no milliseconds; UTC timezone).
