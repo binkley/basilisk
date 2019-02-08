@@ -14,5 +14,6 @@
 
     <rule ref="category/java/errorprone.xml">
         <exclude name="BeanMembersShouldSerialize"/>
+        <exclude name="MissingSerialVersionUID"/>
     </rule>
 </ruleset>

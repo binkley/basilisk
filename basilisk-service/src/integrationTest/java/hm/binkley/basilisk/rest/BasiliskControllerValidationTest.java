@@ -3,6 +3,7 @@ package hm.binkley.basilisk.rest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import hm.binkley.basilisk.configuration.JsonConfiguration;
 import hm.binkley.basilisk.configuration.ProblemWebMvcTest;
 import hm.binkley.basilisk.service.BasiliskService;
 import hm.binkley.basilisk.store.BasiliskRepository;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.Instant;
@@ -24,11 +26,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@Import(JsonConfiguration.class)
 @ProblemWebMvcTest(BasiliskController.class)
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 class BasiliskControllerValidationTest {
     private static final Instant AT = OffsetDateTime.of(
-            2011, 2, 3, 4, 5, 6, 7_000_000, UTC)
+            2011, 2, 3, 4, 5, 6, 0, UTC)
             .toInstant();
 
     private final MockMvc problemMvc;

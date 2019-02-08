@@ -2,6 +2,7 @@ package hm.binkley.basilisk.rest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import hm.binkley.basilisk.configuration.JsonConfiguration;
 import hm.binkley.basilisk.configuration.JsonWebMvcTest;
 import hm.binkley.basilisk.service.BasiliskService;
 import hm.binkley.basilisk.store.BasiliskRecord;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.io.Serializable;
@@ -29,12 +31,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@Import(JsonConfiguration.class)
 @JsonWebMvcTest(BasiliskController.class)
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 class BasiliskControllerTest {
     private static final long ID = 1L;
     private static final Instant AT = OffsetDateTime.of(
-            2011, 2, 3, 4, 5, 6, 7_000_000, UTC)
+            2011, 2, 3, 4, 5, 6, 0, UTC)
             .toInstant();
 
     private final MockMvc jsonMvc;
@@ -159,8 +162,8 @@ class BasiliskControllerTest {
                         .at(AT)
                         .build())))
                 .andExpect(status().isCreated())
-                .andExpect(header()
-                        .string(LOCATION, "/basilisk/" + id))
+                .andExpect(header().string(
+                        LOCATION, "/basilisk/" + id))
                 .andExpect(content().json(
                         asJson(responseMapFor(word, extra))));
     }
