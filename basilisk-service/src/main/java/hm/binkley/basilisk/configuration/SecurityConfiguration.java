@@ -10,8 +10,8 @@ public class SecurityConfiguration
     @Override
     protected void configure(final HttpSecurity http)
             throws Exception {
-        http.authorizeRequests()
-                .anyRequest()
-                .permitAll();
+        http
+                .csrf().disable()
+                .authorizeRequests().anyRequest().permitAll();
     }
 }

@@ -1,0 +1,19 @@
+description: Make a basilisk, and find it
+request:
+  method: POST
+  url: /basilisk
+  headers:
+    Content-Type: application/json;charset=UTF-8
+  body:
+    at: '2011-02-03T04:05:06Z'
+    word: BOB
+response:
+  status: 201
+  headers:
+    Content-Type: application/json;charset=UTF-8
+    Location: /basilisk/1
+  body:
+    id: 1
+    word: BOB
+    at: '2011-02-03T04:05:06Z'
+    extra: Uncle Bob is BOB
