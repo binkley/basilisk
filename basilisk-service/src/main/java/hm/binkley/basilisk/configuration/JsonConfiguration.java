@@ -17,10 +17,24 @@ import java.time.format.DateTimeFormatter;
 import java.util.TimeZone;
 
 import static java.time.format.DateTimeFormatter.ISO_INSTANT;
+import static org.springframework.util.ReflectionUtils.findField;
+import static org.springframework.util.ReflectionUtils.getField;
 
 @ConditionalOnClass(Jackson2ObjectMapperBuilder.class)
 @Configuration
 public class JsonConfiguration {
+    /**
+     * Teaches Jackson to serialize {@link Instant} globally according to a
+     * <var>dateFormat</var> and <var>timeZone</var>, defaulting respectively
+     * to <em>ISO_INSTANT</em> and <em>UTC</em>, and mapping them from the
+     * matching Spring application properties, {@code spring.jackson
+     * .date-format} and {@code spring.jackson.timze-zone}.
+     * <p>
+     * If <var>timeZone</var> is not a valid "pattern" for {@link
+     * DateTimeFormatter}, treats it as a <em>symbolic name</em> for the
+     * pre-defined constants therein, <em>eg</em>, "RFC_1123_DATE_TIME" for
+     * {@link DateTimeFormatter#RFC_1123_DATE_TIME}.
+     */
     @Bean
     public Jackson2ObjectMapperBuilderCustomizer instantFormat(
             final JacksonProperties jackson) {
@@ -44,13 +58,24 @@ public class JsonConfiguration {
                                 + "ISO_INSTANT format ignores timeZone");
             }
 
-            final var formatter = null == format
-                    ? ISO_INSTANT : DateTimeFormatter.ofPattern(format);
+            final var formatter = formatterFor(format);
             final var thisTimeZone = null == timeZone
                     ? TimeZone.getTimeZone("UTC") : timeZone;
 
             this.formatter = formatter
                     .withZone(thisTimeZone.toZoneId().normalized());
+        }
+
+        private static DateTimeFormatter formatterFor(final String format) {
+            if (null == format) return ISO_INSTANT;
+            try {
+                return DateTimeFormatter.ofPattern(format);
+            } catch (final IllegalArgumentException badFormat) {
+                final var field = findField(DateTimeFormatter.class, format,
+                        DateTimeFormatter.class);
+                if (null == field) throw badFormat;
+                return (DateTimeFormatter) getField(field, null);
+            }
         }
 
         @Override

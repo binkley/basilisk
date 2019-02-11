@@ -48,6 +48,13 @@ class JsonConfigurationTest {
     }
 
     @Test
+    void shouldFormatWithSymbolicDateFormat()
+            throws IOException {
+        assertFormatInstant("RFC_1123_DATE_TIME", null,
+                "Thu, 3 Feb 2011 04:05:06 GMT");
+    }
+
+    @Test
     void shouldFormatWithDateFormatAndTimeZone()
             throws IOException {
         assertFormatInstant("yyyy-MM-dd'T'HH:mm:ssXXX", "GMT+1",
@@ -58,6 +65,13 @@ class JsonConfigurationTest {
     void shouldComplainWithTimeZoneOnly() {
         assertThatThrownBy(() ->
                 assertFormatInstant(null, "GMT+1", null))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void shouldComplainWithBadDateFormat() {
+        assertThatThrownBy(() ->
+                assertFormatInstant("NOT A VALID FORMAT", null, null))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 

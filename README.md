@@ -395,4 +395,6 @@ See
 for an example of global custom JSON formatting, in this case, showing
 `Instant` as, _eg_, "2011-02-03T04:05:06Z" (no milliseconds; UTC timezone),
 based on `spring.jackson.date-format` and `spring.jackson.time-zone`
-application properties. 
+application properties.  Comare to
+`@org.springframework.format.annotation.DateTimeFormat`
+(which does not handle `Instant`).
