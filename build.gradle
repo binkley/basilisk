@@ -1,3 +1,5 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+
 buildscript {
     repositories {
         mavenCentral()
@@ -160,10 +162,13 @@ subprojects {
     }
 
     tasks.withType(Test) {
+        systemProperty "java.util.logging.config.file", "${project.rootDir}/config/logging.properties"
+
         useJUnitPlatform()
 
         testLogging {
-            exceptionFormat "full"
+            showStandardStreams = true
+            exceptionFormat = TestExceptionFormat.FULL
         }
     }
 

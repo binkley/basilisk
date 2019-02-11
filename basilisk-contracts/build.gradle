@@ -1,3 +1,6 @@
+import org.springframework.cloud.contract.verifier.config.TestFramework
+import org.springframework.cloud.contract.verifier.config.TestMode
+
 apply plugin: "spring-cloud-contract"
 
 dependencies {
@@ -6,8 +9,8 @@ dependencies {
 
 contracts {
     baseClassForTests = "hm.binkley.basilisk.contracts.ContractTestBase"
-    testFramework = "JUNIT5"
-    testMode = "EXPLICIT"
+    testFramework = TestFramework.JUNIT
+    testMode = TestMode.EXPLICIT
 }
 
 pmdTest {
