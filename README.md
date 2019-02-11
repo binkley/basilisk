@@ -85,6 +85,9 @@ nice web interface.
 
 Build the project with `./gradlew`.  The default task is "build".
 
+Note the common build configuration for [Spring Boot](spring-boot.gradle),
+used in [Basilisk service](basilisk-service/build.gradle).
+
 ### Dependencies
 
 Periodically check for updates to gradle, plugins, and dependencies with
