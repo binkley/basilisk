@@ -1,3 +1,4 @@
+import com.github.spotbugs.SpotBugsTask
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 
 buildscript {
@@ -26,6 +27,7 @@ plugins {
 
 apply plugin: "io.spring.dependency-management" // TODO: Use plugins.id
 
+//noinspection GroovyAssignabilityCheck
 allprojects {
     group = "hm.binkley"
     version = "0"
@@ -39,6 +41,7 @@ allprojects {
     }
 
     dependencyUpdates {
+        //noinspection GroovyAssignabilityCheck
         resolutionStrategy {
             componentSelection { rules ->
                 rules.all { ComponentSelection selection ->
@@ -60,6 +63,7 @@ allprojects {
     defaultTasks "build"
 }
 
+//noinspection GroovyAssignabilityCheck
 subprojects {
     ext {
         spotbugsVersion = "3.1.11"
@@ -76,6 +80,7 @@ subprojects {
     apply plugin: "pmd"
 
     dependencyManagement {
+        //noinspection GroovyAssignabilityCheck
         imports {
             mavenBom "org.springframework.boot:spring-boot-dependencies:${springBootVersion}"
             mavenBom "org.springframework.cloud:spring-cloud-dependencies:Greenwich.RELEASE"
@@ -172,7 +177,7 @@ subprojects {
         }
     }
 
-    tasks.withType(com.github.spotbugs.SpotBugsTask) {
+    tasks.withType(SpotBugsTask) {
         reports {
             xml.enabled = false
             html.enabled = true
@@ -217,6 +222,7 @@ task jacocoMergedTestReport(type: JacocoReport) {
     sourceDirectories.setFrom(files(subprojects.sourceSets.main.allSource.srcDirs))
     classDirectories.setFrom(files(subprojects.sourceSets.main.output))
 
+    //noinspection GroovyAssignabilityCheck
     reports {
         html.enabled = true
         xml.enabled = true
