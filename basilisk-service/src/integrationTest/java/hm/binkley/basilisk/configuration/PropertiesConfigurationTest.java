@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
         "basilisk.nested.number=7",
         "basilisk.overlapped.endpoint-base=ftp://old/school"
 })
-class BasiliskPropertiesTest {
+class PropertiesConfigurationTest {
     private final BasiliskProperties basilisk;
 
     @Test

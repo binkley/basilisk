@@ -233,11 +233,11 @@ Recall that package names are stylistically singular, not plural, _eg_,
 - [application (live)](basilisk-service/src/liveTest/java/hm/binkley/basilisk/BasiliskLiveTest.java)
 - [application (contract)](basilisk-contracts/src/test/resources/contracts/basilisk/make_basilisk.yml)
 - [configuration (unit)](basilisk-service/src/test/java/hm/binkley/basilisk/configuration/JsonConfigurationTest.java)
+- [configuration (integration)](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/configuration/PropertiesConfigurationTest.java)
 - [controller (integration)](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/rest/BasiliskControllerTest.java)
 - [controller validation (integration)](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/rest/BasiliskControllerValidationTest.java)
 - [json request (unit)](basilisk-service/src/test/java/hm/binkley/basilisk/rest/BasiliskRequestTest.java)
 - [json response (integration)](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/rest/BasiliskResponseTest.java)
-- [properties (integration)](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/configuration/BasiliskPropertiesTest.java)
 - [record validation (unit)](basilisk-service/src/test/java/hm/binkley/basilisk/store/BasiliskRecordValidationTest.java)
 - [repository (database)](basilisk-service/src/databaseTest/java/hm/binkley/basilisk/store/BasiliskRepositoryTest.java)
 - [service (unit)](basilisk-service/src/test/java/hm/binkley/basilisk/service/BasiliskServiceTest.java)
@@ -393,4 +393,6 @@ for an example of writing your own.
 See
 [`JsonConfiguration`](basilisk-service/src/main/java/hm/binkley/basilisk/configuration/JsonConfiguration.java)
 for an example of global custom JSON formatting, in this case, showing
-`Instant` as "2011-02-03T04:05:06Z" (no milliseconds; UTC timezone).
+`Instant` as, _eg_, "2011-02-03T04:05:06Z" (no milliseconds; UTC timezone),
+based on `spring.jackson.date-format` and `spring.jackson.time-zone`
+application properties. 
