@@ -3,7 +3,7 @@ basilisk:
   nested:
     number: 3
   overlapped:
-    endpoint-base: 'http://some-where/else'
+    endpoint-base: http://some-where/else
 
 logging:
   level:
@@ -24,14 +24,16 @@ server:
 
 spring:
   application:
-    name: 'basilisk'
+    name: basilisk
   data:
     rest:
-      base-path: '/data'
+      base-path: /data
       detection-strategy: annotated
   datasource:
     platform: postgresql
     url: jdbc:postgresql:basilisk
+  jackson:
+    date-format: "yyyy-MM-dd'T'HH:mm:ssXXX"
   main:
     banner-mode: 'off'
 
@@ -40,12 +42,12 @@ swagger:
     description: 'A demonstration Spring Boot program'
     contact:
       name: 'Brian Oxley'
-      url: 'https://github.com/binkley/basilisk'
-      email: 'binkley@alumni.rice.edu'
+      url: https://github.com/binkley/basilisk
+      email: binkley@alumni.rice.edu
     licence: 'Public Domain'
-    license-url: 'https://github.com/binkley/basilisk/blob/master/LICENSE.md'
-    title: 'Basilisk'
-    version: '0'
+    license-url: https://github.com/binkley/basilisk/blob/master/LICENSE.md
+    title: Basilisk
+    version: 0
 
 ---
 

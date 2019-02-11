@@ -3,34 +3,54 @@ package hm.binkley.basilisk.configuration;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdScalarSerializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.InstantSerializerBase;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
+import org.springframework.boot.autoconfigure.jackson.JacksonProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
 import java.io.IOException;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
+import java.util.TimeZone;
 
-import static java.time.ZoneOffset.UTC;
+import static java.time.format.DateTimeFormatter.ISO_INSTANT;
 
+@ConditionalOnClass(Jackson2ObjectMapperBuilder.class)
 @Configuration
 public class JsonConfiguration {
-    static final InstantFormatSerializer INSTANT_FORMAT_SERIALIZER
-            = new InstantFormatSerializer();
-    private static final DateTimeFormatter INSTANT_FORMATTER
-            = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
-            .withZone(UTC.normalized());
-
     @Bean
-    public Jackson2ObjectMapperBuilderCustomizer instantFormat() {
-        return builder -> builder.serializerByType(
-                Instant.class, INSTANT_FORMAT_SERIALIZER);
+    public Jackson2ObjectMapperBuilderCustomizer instantFormat(
+            final JacksonProperties jackson) {
+        return builder -> builder.serializerByType(Instant.class,
+                new InstantFormatSerializer(
+                        jackson.getDateFormat(), jackson.getTimeZone()));
     }
 
-    static class InstantFormatSerializer
+    /** @todo Figure out how to use {@link InstantSerializerBase} */
+    private static class InstantFormatSerializer
             extends StdScalarSerializer<Instant> {
-        private InstantFormatSerializer() {
+        private final DateTimeFormatter formatter;
+
+        private InstantFormatSerializer(final String format,
+                final TimeZone timeZone) {
             super(Instant.class);
+
+            if (null == format && null != timeZone) {
+                throw new IllegalArgumentException(
+                        "Setting timeZone without dateFormat: default "
+                                + "ISO_INSTANT format ignores timeZone");
+            }
+
+            final var formatter = null == format
+                    ? ISO_INSTANT : DateTimeFormatter.ofPattern(format);
+            final var thisTimeZone = null == timeZone
+                    ? TimeZone.getTimeZone("UTC") : timeZone;
+
+            this.formatter = formatter
+                    .withZone(thisTimeZone.toZoneId().normalized());
         }
 
         @Override
@@ -38,7 +58,7 @@ public class JsonConfiguration {
                 final JsonGenerator gen,
                 final SerializerProvider provider)
                 throws IOException {
-            gen.writeString(INSTANT_FORMATTER.format(value));
+            gen.writeString(formatter.format(value));
         }
     }
 }
