@@ -37,28 +37,28 @@ class JsonConfigurationTest {
     void shouldFormatDefault()
             throws IOException {
         assertFormatInstant(null, null,
-                "2011-02-03T04:05:06.007Z");
+                "2011-02-03T14:05:06.007Z");
     }
 
     @Test
     void shouldFormatWithDateFormatOnly()
             throws IOException {
         assertFormatInstant("yyyy-MM-dd'T'HH:mm:ssXXX", null,
-                "2011-02-03T04:05:06Z");
+                "2011-02-03T14:05:06Z");
     }
 
     @Test
     void shouldFormatWithSymbolicDateFormat()
             throws IOException {
         assertFormatInstant("RFC_1123_DATE_TIME", null,
-                "Thu, 3 Feb 2011 04:05:06 GMT");
+                "Thu, 3 Feb 2011 14:05:06 GMT");
     }
 
     @Test
     void shouldFormatWithDateFormatAndTimeZone()
             throws IOException {
         assertFormatInstant("yyyy-MM-dd'T'HH:mm:ssXXX", "GMT+1",
-                "2011-02-03T05:05:06+01:00");
+                "2011-02-03T15:05:06+01:00");
     }
 
     @Test
@@ -92,7 +92,7 @@ class JsonConfigurationTest {
 
         serializer.getValue().serialize(ZonedDateTime.of(
                 LocalDate.of(2011, 2, 3),
-                LocalTime.of(4, 5, 6, 7_000_000),
+                LocalTime.of(14, 5, 6, 7_000_000),
                 ZoneId.of("UTC").normalized())
                 .toInstant(), gen, null);
 

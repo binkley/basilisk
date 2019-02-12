@@ -12,7 +12,7 @@ class BasiliskRequestTest {
     @Test
     void shouldConvertToRecord() {
         final var at = OffsetDateTime.of(
-                2011, 2, 3, 4, 5, 6, 7_000_000, UTC)
+                2011, 2, 3, 14, 5, 6, 7_000_000, UTC)
                 .toInstant();
         final var request = BasiliskRequest.builder()
                 .word("FOO")

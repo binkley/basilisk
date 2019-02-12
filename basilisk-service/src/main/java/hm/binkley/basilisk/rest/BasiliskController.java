@@ -38,7 +38,6 @@ public class BasiliskController {
     public List<BasiliskResponse> getAll() {
         return stream(basilisks.readAll().spliterator(), false)
                 .map(this::from)
-                // TODO: Return Stream, but needs Web Flux
                 .collect(toList());
     }
 
