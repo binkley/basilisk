@@ -238,5 +238,5 @@ check {
 
 wrapper {
     distributionType = Wrapper.DistributionType.ALL
-    gradleVersion = "5.2"
+    gradleVersion = "5.2.1"
 }
