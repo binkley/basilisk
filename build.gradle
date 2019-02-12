@@ -72,6 +72,7 @@ subprojects {
     }
 
     ext["junit-jupiter.version"] = "5.4.0"
+    ext["mockito.version"] = "2.24.0"
 
     apply plugin: JavaPlugin
     apply plugin: "net.ltgt.apt"
