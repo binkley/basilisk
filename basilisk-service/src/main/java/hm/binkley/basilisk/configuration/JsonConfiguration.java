@@ -55,7 +55,7 @@ public class JsonConfiguration {
             if (null == format && null != timeZone) {
                 throw new IllegalArgumentException(
                         "Setting timeZone without dateFormat: default "
-                                + "ISO_INSTANT format ignores timeZone");
+                                + "ISO_INSTANT format does not use timeZone");
             }
 
             final var formatter = formatterFor(format);
