@@ -1,6 +1,5 @@
 package hm.binkley.basilisk.store;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
@@ -20,7 +19,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 class BasiliskRepositoryTest {
     private final BasiliskRepository basilisks;
 
-    @SuppressFBWarnings("NP")
     @Test
     void shouldRoundtrip() {
         final var unsaved = BasiliskRecord.builder()
