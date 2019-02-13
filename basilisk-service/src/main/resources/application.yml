@@ -48,11 +48,3 @@ swagger:
     license-url: https://github.com/binkley/basilisk/blob/master/LICENSE.md
     title: Basilisk
     version: 0
-
----
-
-spring:
-  profiles: production
-  datasource:
-    platform: postgresql
-    url: jdbc:postgresql:basilisk
