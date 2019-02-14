@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.List;
@@ -16,6 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @AutoConfigureEmbeddedDatabase
 @DataJdbcTest
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
+@Transactional
 class BasiliskRepositoryTest {
     private final BasiliskRepository basilisks;
 
@@ -29,6 +31,23 @@ class BasiliskRepositoryTest {
                 basilisks.save(unsaved).getId());
 
         assertThat(found).contains(unsaved);
+    }
+
+    @Test
+    void shouldFindByWord() {
+        final var unsavedLeft = BasiliskRecord.builder()
+                .word("LEFT")
+                .at(Instant.ofEpochSecond(1_000_000))
+                .build();
+        final var unsavedRight = BasiliskRecord.builder()
+                .word("RIGHT")
+                .at(Instant.ofEpochSecond(1_000_000))
+                .build();
+        basilisks.saveAll(List.of(unsavedLeft, unsavedRight));
+
+        assertThat(basilisks.findByWord("LEFT"))
+                .isEqualTo(List.of(unsavedLeft));
+        assertThat(basilisks.findByWord("MIDDLE")).isEmpty();
     }
 
     @Test
