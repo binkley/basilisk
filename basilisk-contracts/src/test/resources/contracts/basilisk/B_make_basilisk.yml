@@ -1,4 +1,4 @@
-description: Make a basilisk, and find it
+description: Make a basilisk
 request:
   method: POST
   url: /basilisk
@@ -12,6 +12,22 @@ response:
   headers:
     Content-Type: application/json;charset=UTF-8
     Location: /basilisk/1
+  body:
+    id: 1
+    word: BOB
+    at: '2011-02-03T04:05:06Z'
+    extra: Uncle Bob is BOB
+
+---
+
+description: Find the basilisk
+request:
+  method: GET
+  url: /basilisk/1
+response:
+  status: 200
+  headers:
+    Content-Type: application/json;charset=UTF-8
   body:
     id: 1
     word: BOB

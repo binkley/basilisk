@@ -15,7 +15,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @AutoConfigureEmbeddedDatabase
 @ContextConfiguration(classes = BasiliskApplication.class)
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-abstract class ContractTestBase {
+class ContractTestBase {
     @LocalServerPort
     private int port;
 

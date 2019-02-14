@@ -203,6 +203,8 @@ Among them:
   is a `response.body`, though the latter is ignored)
 - Testing for an empty root array is particularly challenging
 - There is little configuration over JSON parsing
+- It believes JUnit 5 test-ordering annotations are not yet implemented by
+  JUnit
 
 
 ## Advice and examples

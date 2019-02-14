@@ -1,3 +1,4 @@
+# Because contract tests run from `src/test`, show the connection
 logging:
   level:
     io.zonky.test.db.logging.EmbeddedDatabaseReporter: INFO
