@@ -122,9 +122,7 @@ subprojects {
         testCompileOnly "org.projectlombok:lombok"
         testCompileOnly "com.github.spotbugs:spotbugs-annotations:${spotbugsVersion}"
 
-        testImplementation("org.springframework.boot:spring-boot-starter-test") {
-            exclude module: "junit"
-        }
+        testImplementation "org.springframework.boot:spring-boot-starter-test"
         testImplementation "org.springframework.boot:spring-boot-starter-webflux"
         testImplementation "org.junit.jupiter:junit-jupiter-api"
         testImplementation "org.mockito:mockito-core"

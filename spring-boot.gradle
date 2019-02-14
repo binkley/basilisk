@@ -6,6 +6,10 @@ testSets {
     liveTest { extendsFrom databaseTest }
 }
 
+configurations {
+    all*.exclude module: 'junit'
+}
+
 jar {
     enabled = true
 }
