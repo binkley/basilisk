@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import hm.binkley.basilisk.configuration.JsonConfiguration;
 import hm.binkley.basilisk.configuration.JsonWebMvcTest;
 import hm.binkley.basilisk.service.BasiliskService;
-import hm.binkley.basilisk.store.BasiliskRecord;
+import hm.binkley.basilisk.store.BasiliskRepository.BasiliskRecord;
 import hm.binkley.basilisk.store.BasiliskRepository;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;

@@ -1,7 +1,7 @@
 package hm.binkley.basilisk.rest;
 
 import hm.binkley.basilisk.service.BasiliskService;
-import hm.binkley.basilisk.store.BasiliskRecord;
+import hm.binkley.basilisk.store.BasiliskRepository.BasiliskRecord;
 import lombok.Builder;
 import lombok.Value;
 

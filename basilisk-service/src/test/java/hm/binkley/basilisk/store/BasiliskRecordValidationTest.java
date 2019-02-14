@@ -15,7 +15,7 @@ class BasiliskRecordValidationTest {
     @Test
     void shouldComplainWhenWordIsMissing() {
         assertThatThrownBy(() ->
-                BasiliskRecord.builder()
+                BasiliskRepository.BasiliskRecord.builder()
                         .word(null)
                         .at(Instant.ofEpochSecond(1_000_000))
                         .build())
@@ -26,7 +26,7 @@ class BasiliskRecordValidationTest {
     @Test
     void shouldComplainWhenWhenIsMissing() {
         assertThatThrownBy(() ->
-                BasiliskRecord.builder()
+                BasiliskRepository.BasiliskRecord.builder()
                         .word("IN THE BEGINNING")
                         .at(null)
                         .build())
