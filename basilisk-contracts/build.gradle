@@ -9,7 +9,7 @@ dependencies {
 
 contracts {
     baseClassForTests = "hm.binkley.basilisk.contracts.ContractTestBase"
-    testFramework = TestFramework.JUNIT
+    testFramework = TestFramework.JUNIT5
     testMode = TestMode.EXPLICIT
 }
 
