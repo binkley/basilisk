@@ -5,6 +5,8 @@ import io.restassured.RestAssured;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import net.minidev.json.JSONArray;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer.Alphanumeric;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.ContextConfiguration;
@@ -15,6 +17,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @AutoConfigureEmbeddedDatabase
 @ContextConfiguration(classes = BasiliskApplication.class)
 @SpringBootTest(webEnvironment = RANDOM_PORT)
+@TestMethodOrder(Alphanumeric.class)
 class ContractTestBase {
     @LocalServerPort
     private int port;
