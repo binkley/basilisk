@@ -14,8 +14,7 @@ class BasiliskRecordValidationTest {
     @Test
     void shouldComplainWhenWordIsMissing() {
         assertThatThrownBy(() ->
-                new BasiliskRecord(null, null, null,
-                        Instant.ofEpochSecond(1_000_000)))
+                BasiliskRecord.create(null, Instant.ofEpochSecond(1_000_000)))
                 .isInstanceOf(NullPointerException.class)
                 .hasMessageContaining("word is marked @NonNull");
     }
@@ -23,7 +22,7 @@ class BasiliskRecordValidationTest {
     @Test
     void shouldComplainWhenWhenIsMissing() {
         assertThatThrownBy(() ->
-                new BasiliskRecord(null, null, "IN THE BEGINNING", null))
+                BasiliskRecord.create("IN THE BEGINNING", null))
                 .isInstanceOf(NullPointerException.class)
                 .hasMessageContaining("at is marked @NonNull");
     }

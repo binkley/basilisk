@@ -23,7 +23,7 @@ class BasiliskRepositoryTest {
 
     @Test
     void shouldRoundtrip() {
-        final var unsaved = new BasiliskRecord(null, null, "BIRD",
+        final var unsaved = BasiliskRecord.create("BIRD",
                 Instant.ofEpochSecond(1_000_000));
         final var found = basilisks.findById(
                 basilisks.save(unsaved).getId());
@@ -33,9 +33,9 @@ class BasiliskRepositoryTest {
 
     @Test
     void shouldFindByWord() {
-        final var unsavedLeft = new BasiliskRecord(null, null, "LEFT",
+        final var unsavedLeft = BasiliskRecord.create("LEFT",
                 Instant.ofEpochSecond(1_000_000));
-        final var unsavedRight = new BasiliskRecord(null, null, "RIGHT",
+        final var unsavedRight = BasiliskRecord.create("RIGHT",
                 Instant.ofEpochSecond(1_000_000));
         basilisks.saveAll(List.of(unsavedLeft, unsavedRight));
 
@@ -46,9 +46,9 @@ class BasiliskRepositoryTest {
 
     @Test
     void shouldStream() {
-        final var unsavedA = new BasiliskRecord(null, null, "BIRD",
+        final var unsavedA = BasiliskRecord.create("BIRD",
                 Instant.ofEpochSecond(1_000_000));
-        final var unsavedB = new BasiliskRecord(null, null, "WORD",
+        final var unsavedB = BasiliskRecord.create("WORD",
                 Instant.ofEpochSecond(1_000_000));
         basilisks.saveAll(List.of(unsavedA, unsavedB));
 

@@ -22,4 +22,8 @@ public final class BasiliskRecord {
     private final String word;
     @NonNull
     private final Instant at;
+
+    static BasiliskRecord create(final String word, final Instant at) {
+        return new BasiliskRecord(null, null, word, at);
+    }
 }
