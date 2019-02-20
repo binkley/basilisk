@@ -1,4 +1,4 @@
-package hm.binkley.basilisk.store;
+package hm.binkley.basilisk.domain.store;
 
 import org.junit.jupiter.api.Test;
 

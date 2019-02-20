@@ -1,6 +1,6 @@
 package hm.binkley.basilisk.rest;
 
-import hm.binkley.basilisk.store.BasiliskRepository.BasiliskRecord;
+import hm.binkley.basilisk.domain.store.BasiliskRepository.BasiliskRecord;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;

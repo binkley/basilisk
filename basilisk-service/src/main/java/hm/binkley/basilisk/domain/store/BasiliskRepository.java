@@ -1,4 +1,4 @@
-package hm.binkley.basilisk.store;
+package hm.binkley.basilisk.domain.store;
 
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
