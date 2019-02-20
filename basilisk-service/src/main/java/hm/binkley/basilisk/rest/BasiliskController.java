@@ -1,7 +1,7 @@
 package hm.binkley.basilisk.rest;
 
 import hm.binkley.basilisk.service.BasiliskService;
-import hm.binkley.basilisk.domain.store.BasiliskRepository.BasiliskRecord;
+import hm.binkley.basilisk.domain.store.BasiliskRecord;
 import hm.binkley.basilisk.domain.store.BasiliskRepository;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.Length;

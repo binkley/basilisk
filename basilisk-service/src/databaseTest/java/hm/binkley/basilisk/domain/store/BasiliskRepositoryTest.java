@@ -23,7 +23,7 @@ class BasiliskRepositoryTest {
 
     @Test
     void shouldRoundtrip() {
-        final var unsaved = BasiliskRepository.BasiliskRecord.builder()
+        final var unsaved = BasiliskRecord.builder()
                 .word("BIRD")
                 .at(Instant.ofEpochSecond(1_000_000))
                 .build();
@@ -35,11 +35,11 @@ class BasiliskRepositoryTest {
 
     @Test
     void shouldFindByWord() {
-        final var unsavedLeft = BasiliskRepository.BasiliskRecord.builder()
+        final var unsavedLeft = BasiliskRecord.builder()
                 .word("LEFT")
                 .at(Instant.ofEpochSecond(1_000_000))
                 .build();
-        final var unsavedRight = BasiliskRepository.BasiliskRecord.builder()
+        final var unsavedRight = BasiliskRecord.builder()
                 .word("RIGHT")
                 .at(Instant.ofEpochSecond(1_000_000))
                 .build();
@@ -52,11 +52,11 @@ class BasiliskRepositoryTest {
 
     @Test
     void shouldStream() {
-        final var unsavedA = BasiliskRepository.BasiliskRecord.builder()
+        final var unsavedA = BasiliskRecord.builder()
                 .word("BIRD")
                 .at(Instant.ofEpochSecond(1_000_000))
                 .build();
-        final var unsavedB = BasiliskRepository.BasiliskRecord.builder()
+        final var unsavedB = BasiliskRecord.builder()
                 .word("WORD")
                 .at(Instant.ofEpochSecond(1_000_000))
                 .build();

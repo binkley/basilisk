@@ -1,6 +1,6 @@
 package hm.binkley.basilisk.rest;
 
-import hm.binkley.basilisk.domain.store.BasiliskRepository.BasiliskRecord;
+import hm.binkley.basilisk.domain.store.BasiliskRecord;
 import org.junit.jupiter.api.Test;
 
 import java.time.OffsetDateTime;
