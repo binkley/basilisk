@@ -23,10 +23,8 @@ class BasiliskRepositoryTest {
 
     @Test
     void shouldRoundtrip() {
-        final var unsaved = BasiliskRecord.builder()
-                .word("BIRD")
-                .at(Instant.ofEpochSecond(1_000_000))
-                .build();
+        final var unsaved = new BasiliskRecord(null, null, "BIRD",
+                Instant.ofEpochSecond(1_000_000));
         final var found = basilisks.findById(
                 basilisks.save(unsaved).getId());
 
@@ -35,14 +33,10 @@ class BasiliskRepositoryTest {
 
     @Test
     void shouldFindByWord() {
-        final var unsavedLeft = BasiliskRecord.builder()
-                .word("LEFT")
-                .at(Instant.ofEpochSecond(1_000_000))
-                .build();
-        final var unsavedRight = BasiliskRecord.builder()
-                .word("RIGHT")
-                .at(Instant.ofEpochSecond(1_000_000))
-                .build();
+        final var unsavedLeft = new BasiliskRecord(null, null, "LEFT",
+                Instant.ofEpochSecond(1_000_000));
+        final var unsavedRight = new BasiliskRecord(null, null, "RIGHT",
+                Instant.ofEpochSecond(1_000_000));
         basilisks.saveAll(List.of(unsavedLeft, unsavedRight));
 
         assertThat(basilisks.findByWord("LEFT"))
@@ -52,14 +46,10 @@ class BasiliskRepositoryTest {
 
     @Test
     void shouldStream() {
-        final var unsavedA = BasiliskRecord.builder()
-                .word("BIRD")
-                .at(Instant.ofEpochSecond(1_000_000))
-                .build();
-        final var unsavedB = BasiliskRecord.builder()
-                .word("WORD")
-                .at(Instant.ofEpochSecond(1_000_000))
-                .build();
+        final var unsavedA = new BasiliskRecord(null, null, "BIRD",
+                Instant.ofEpochSecond(1_000_000));
+        final var unsavedB = new BasiliskRecord(null, null, "WORD",
+                Instant.ofEpochSecond(1_000_000));
         basilisks.saveAll(List.of(unsavedA, unsavedB));
 
         // Wrap in try-with-resources to close the stream at done; this

@@ -1,6 +1,5 @@
 package hm.binkley.basilisk.domain.store;
 
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Wither;
@@ -11,7 +10,6 @@ import org.springframework.lang.NonNull;
 import java.time.Instant;
 
 @Data
-@Builder
 @EqualsAndHashCode(exclude = {"id", "receivedAt"})
 @Table("BASILISK.BASILISK")
 public final class BasiliskRecord {

@@ -4,9 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hm.binkley.basilisk.configuration.JsonConfiguration;
 import hm.binkley.basilisk.configuration.JsonWebMvcTest;
-import hm.binkley.basilisk.service.BasiliskService;
 import hm.binkley.basilisk.domain.store.BasiliskRecord;
 import hm.binkley.basilisk.domain.store.BasiliskRepository;
+import hm.binkley.basilisk.service.BasiliskService;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,12 +62,8 @@ class BasiliskControllerTest {
             throws Exception {
         final String word = "foo";
         final String extra = "Bob Barker";
-        final List<BasiliskRecord> found = List.of(BasiliskRecord.builder()
-                .id(ID)
-                .receivedAt(EPOCH)
-                .word(word)
-                .at(AT)
-                .build());
+        final List<BasiliskRecord> found = List.of(
+                new BasiliskRecord(ID, EPOCH, word, AT));
 
         when(basilisks.readAll())
                 .thenReturn(found.stream());
@@ -88,12 +84,8 @@ class BasiliskControllerTest {
         final String extra = "Howard";
 
         when(basilisks.findById(id))
-                .thenReturn(Optional.of(BasiliskRecord.builder()
-                        .id(id)
-                        .receivedAt(EPOCH)
-                        .word(word)
-                        .at(AT)
-                        .build()));
+                .thenReturn(Optional.of(
+                        new BasiliskRecord(id, EPOCH, word, AT)));
         when(service.extra(word))
                 .thenReturn(extra);
 
@@ -123,12 +115,7 @@ class BasiliskControllerTest {
         final String extra = "Margaret Hamilton";
 
         when(basilisks.findByWord(word))
-                .thenReturn(List.of(BasiliskRecord.builder()
-                        .id(id)
-                        .receivedAt(EPOCH)
-                        .word(word)
-                        .at(AT)
-                        .build()));
+                .thenReturn(List.of(new BasiliskRecord(id, EPOCH, word, AT)));
         when(service.extra(word))
                 .thenReturn(extra);
 
@@ -144,10 +131,8 @@ class BasiliskControllerTest {
         final long id = 1L;
         final String word = "FOO";
         final String extra = "Alice";
-        final BasiliskRecord record = BasiliskRecord.builder()
-                .word(word)
-                .at(AT)
-                .build();
+        final BasiliskRecord record
+                = new BasiliskRecord(null, null, word, AT);
 
         when(basilisks.save(record))
                 .thenReturn(record

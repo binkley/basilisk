@@ -20,9 +20,6 @@ class BasiliskRequestTest {
                 .build();
 
         assertThat(request.toRecord()).isEqualTo(
-                BasiliskRecord.builder()
-                        .word(request.getWord())
-                        .at(at)
-                        .build());
+                new BasiliskRecord(null, null, request.getWord(), at));
     }
 }

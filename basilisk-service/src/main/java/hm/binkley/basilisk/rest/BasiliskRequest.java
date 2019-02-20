@@ -17,9 +17,6 @@ public final class BasiliskRequest {
     private final @NotNull Instant at;
 
     public BasiliskRecord toRecord() {
-        return BasiliskRecord.builder()
-                .word(word)
-                .at(at)
-                .build();
+        return new BasiliskRecord(null, null, word, at);
     }
 }
