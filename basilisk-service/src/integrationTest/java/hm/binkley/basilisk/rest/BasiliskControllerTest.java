@@ -135,9 +135,9 @@ class BasiliskControllerTest {
                 = new BasiliskRecord(null, null, word, AT);
 
         when(basilisks.save(record))
-                .thenReturn(record
-                        .withId(id)
-                        .withReceivedAt(Instant.ofEpochSecond(1_000_000)));
+                .thenReturn(new BasiliskRecord(id,
+                        Instant.ofEpochSecond(1_000_000), record.getWord(),
+                        record.getAt()));
         when(service.extra(word))
                 .thenReturn(extra);
 
