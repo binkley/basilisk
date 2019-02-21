@@ -1,8 +1,8 @@
 package hm.binkley.basilisk.rest;
 
-import hm.binkley.basilisk.service.BasiliskService;
 import hm.binkley.basilisk.domain.store.BasiliskRecord;
 import hm.binkley.basilisk.domain.store.BasiliskRepository;
+import hm.binkley.basilisk.service.BasiliskService;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Autowired;
