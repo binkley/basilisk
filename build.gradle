@@ -9,11 +9,11 @@ buildscript {
 
     dependencies {
         classpath "io.spring.gradle:dependency-management-plugin:1.0.6.RELEASE"
-        classpath "org.springframework.boot:spring-boot-gradle-plugin:2.1.2.RELEASE"
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:2.1.3.RELEASE"
         classpath "org.springframework.cloud:spring-cloud-contract-gradle-plugin:2.1.0.RELEASE"
         classpath "org.unbroken-dome.gradle-plugins:gradle-testsets-plugin:2.1.1"
         classpath "net.ltgt.gradle:gradle-apt-plugin:0.21"
-        classpath "gradle.plugin.com.github.spotbugs:spotbugs-gradle-plugin:1.6.9"
+        classpath "gradle.plugin.com.github.spotbugs:spotbugs-gradle-plugin:1.6.10"
     }
 }
 
@@ -70,7 +70,7 @@ subprojects {
     ext {
         postgresVersion = "10.6.0"
         spotbugsVersion = "3.1.11"
-        springBootVersion = "2.1.2.RELEASE"
+        springBootVersion = "2.1.3.RELEASE"
         springCloudVersion = "Greenwich.RELEASE"
         swaggerVersion = "2.9.2"
     }
