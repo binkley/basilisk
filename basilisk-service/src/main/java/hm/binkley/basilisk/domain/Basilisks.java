@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 public class Basilisks {
     private final BasiliskStore store;
 
-    public Optional<Basilisk> byId(final long id) {
+    public Optional<Basilisk> byId(final Long id) {
         return store.byId(id).map(Basilisk::new);
     }
 

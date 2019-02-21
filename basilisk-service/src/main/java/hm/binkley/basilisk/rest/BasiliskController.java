@@ -1,5 +1,6 @@
 package hm.binkley.basilisk.rest;
 
+import hm.binkley.basilisk.domain.Basilisk;
 import hm.binkley.basilisk.domain.Basilisks;
 import hm.binkley.basilisk.domain.store.BasiliskRecord;
 import hm.binkley.basilisk.domain.store.BasiliskRepository;
@@ -22,6 +23,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
+import java.util.function.Function;
 
 import static java.util.stream.Collectors.toList;
 import static org.springframework.http.HttpStatus.CREATED;
@@ -40,14 +42,14 @@ public class BasiliskController {
     @GetMapping
     public List<BasiliskResponse> getAll() {
         return basilisks.all()
-                .map(it -> it.as(BasiliskResponse.with(service)))
+                .map(toResponse())
                 .collect(toList());
     }
 
     @GetMapping("{id}")
     public BasiliskResponse findById(
-            @PathVariable("id") final BasiliskRecord record) {
-        return from(record);
+            @PathVariable("id") final Basilisk basilisk) {
+        return basilisk.as(BasiliskResponse.with(service));
     }
 
     @GetMapping("find/{word}")
@@ -55,7 +57,7 @@ public class BasiliskController {
             @PathVariable("word") final @Length(min = 3, max = 32)
                     String word) {
         return basilisks.byWord(word)
-                .map(it -> it.as(BasiliskResponse.with(service)))
+                .map(toResponse())
                 .collect(toList());
     }
 
@@ -67,6 +69,10 @@ public class BasiliskController {
 
         return created(URI.create("/basilisk/" + saved.getId()))
                 .body(from(saved));
+    }
+
+    private Function<Basilisk, BasiliskResponse> toResponse() {
+        return it -> it.as(BasiliskResponse.with(service));
     }
 
     private BasiliskResponse from(final BasiliskRecord record) {

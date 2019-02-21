@@ -83,17 +83,16 @@ class BasiliskControllerTest {
     @Test
     void shouldFindExplicitly()
             throws Exception {
-        final long id = 1L;
         final String word = "BIRD";
         final String extra = "Howard";
 
-        when(repository.findById(id))
-                .thenReturn(Optional.of(
-                        new BasiliskRecord(id, EPOCH, word, AT)));
+        when(basilisks.byId(ID))
+                .thenReturn(Optional.of(new Basilisk(
+                        new BasiliskRecord(ID, EPOCH, word, AT))));
         when(service.extra(word))
                 .thenReturn(extra);
 
-        jsonMvc.perform(get("/basilisk/" + id))
+        jsonMvc.perform(get("/basilisk/" + ID))
                 .andExpect(status().isOk())
                 .andExpect(content().json(
                         asJson(responseMapFor(word, extra))));
@@ -102,25 +101,22 @@ class BasiliskControllerTest {
     @Test
     void shouldNotFindExplicitly()
             throws Exception {
-        final long id = 1L;
-
-        when(repository.findById(id))
+        when(repository.findById(ID))
                 .thenReturn(Optional.empty());
 
-        jsonMvc.perform(get("/basilisk/" + id))
+        jsonMvc.perform(get("/basilisk/" + ID))
                 .andExpect(status().isNotFound());
     }
 
     @Test
     void shouldAcceptWords()
             throws Exception {
-        final long id = 1L;
         final String word = "foo";
         final String extra = "Margaret Hamilton";
 
         when(basilisks.byWord(word))
                 .thenReturn(Stream.of(new Basilisk(
-                        new BasiliskRecord(id, EPOCH, word, AT))));
+                        new BasiliskRecord(ID, EPOCH, word, AT))));
         when(service.extra(word))
                 .thenReturn(extra);
 
@@ -133,14 +129,13 @@ class BasiliskControllerTest {
     @Test
     void shouldAddRecords()
             throws Exception {
-        final long id = 1L;
         final String word = "FOO";
         final String extra = "Alice";
         final BasiliskRecord record
                 = new BasiliskRecord(null, null, word, AT);
 
         when(repository.save(record))
-                .thenReturn(new BasiliskRecord(id,
+                .thenReturn(new BasiliskRecord(ID,
                         Instant.ofEpochSecond(1_000_000), record.getWord(),
                         record.getAt()));
         when(service.extra(word))
@@ -153,7 +148,7 @@ class BasiliskControllerTest {
                         .build())))
                 .andExpect(status().isCreated())
                 .andExpect(header().string(
-                        LOCATION, "/basilisk/" + id))
+                        LOCATION, "/basilisk/" + ID))
                 .andExpect(content().json(
                         asJson(responseMapFor(word, extra))));
     }

@@ -12,7 +12,7 @@ import java.util.stream.Stream;
 public class BasiliskStore {
     private final BasiliskRepository springData;
 
-    public Optional<BasiliskRecord> byId(final long id) {
+    public Optional<BasiliskRecord> byId(final Long id) {
         final Optional<BasiliskRecord> record = springData.findById(id);
         record.ifPresent(it -> it.store = this);
         return record;
