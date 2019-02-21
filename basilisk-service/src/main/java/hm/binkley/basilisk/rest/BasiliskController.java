@@ -53,7 +53,7 @@ public class BasiliskController {
     public List<BasiliskResponse> findByWord(
             @PathVariable("word") final @Length(min = 3, max = 32)
                     String word) {
-        return basilisks.findByWord(word).stream()
+        return basilisks.findByWord(word)
                 .map(this::from)
                 .collect(toList());
     }

@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Instant;
 import java.util.List;
 
+import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ActiveProfiles("test")
@@ -39,9 +40,10 @@ class BasiliskRepositoryTest {
                 Instant.ofEpochSecond(1_000_000));
         basilisks.saveAll(List.of(unsavedLeft, unsavedRight));
 
-        assertThat(basilisks.findByWord("LEFT"))
+        assertThat(basilisks.findByWord("LEFT").collect(toList()))
                 .isEqualTo(List.of(unsavedLeft));
-        assertThat(basilisks.findByWord("MIDDLE")).isEmpty();
+        assertThat(basilisks.findByWord("MIDDLE").collect(toList()))
+                .isEmpty();
     }
 
     @Test

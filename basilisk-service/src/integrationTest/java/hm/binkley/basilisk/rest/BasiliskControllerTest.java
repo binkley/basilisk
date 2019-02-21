@@ -20,6 +20,7 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static java.time.Instant.EPOCH;
 import static java.time.ZoneOffset.UTC;
@@ -115,7 +116,8 @@ class BasiliskControllerTest {
         final String extra = "Margaret Hamilton";
 
         when(basilisks.findByWord(word))
-                .thenReturn(List.of(new BasiliskRecord(id, EPOCH, word, AT)));
+                .thenReturn(
+                        Stream.of(new BasiliskRecord(id, EPOCH, word, AT)));
         when(service.extra(word))
                 .thenReturn(extra);
 
