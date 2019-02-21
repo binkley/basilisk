@@ -33,9 +33,32 @@ Demonstrate Java 11, Spring Boot 2, JUnit 5, et al
 
 ## Feedback
 
-_Please_ file GitHub issues for questions, suggestions, additions or
+_Please_ file GitHub issues for questions, suggestions, additions, bugs, or
 improvements!
 
+## Design
+
+Demonstrating an alternative to classic Spring "layer cack" design, this
+project uses a more domain-oriented approach:
+
+* REST layer with controllers
+* Domain objects with business logic
+* Pure-function services for non-domain concerns
+* Persistence layer with stores
+* Strong separation of objects between layers  
+
+Originally, this project followed:
+
+* REST layer with controllers
+* Entities which were simply data bags ("anemic object" anti-pattern)
+* Service layer with business logic (more "anemic object" anti-pattern)
+* Persistence layer with repositories
+* Weak separation of objects between layers
+
+Some reading:
+
+* [Anemic Domain Model](https://martinfowler.com/bliki/AnemicDomainModel.html)
+* [How accurate is “Business logic should be in a service, not in a model”?](https://softwareengineering.stackexchange.com/questions/218011/how-accurate-is-business-logic-should-be-in-a-service-not-in-a-model)
 
 ## Production
 
