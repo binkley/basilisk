@@ -20,14 +20,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Transactional
 class BasiliskRepositoryTest {
-    private final BasiliskRepository basilisks;
+    private final BasiliskRepository repository;
 
     @Test
     void shouldRoundtrip() {
         final var unsaved = BasiliskRecord.createRaw("BIRD",
                 Instant.ofEpochSecond(1_000_000));
-        final var found = basilisks.findById(
-                basilisks.save(unsaved).getId());
+        final var found = repository.findById(
+                repository.save(unsaved).getId());
 
         assertThat(found).contains(unsaved);
     }
@@ -38,11 +38,11 @@ class BasiliskRepositoryTest {
                 Instant.ofEpochSecond(1_000_000));
         final var unsavedRight = BasiliskRecord.createRaw("RIGHT",
                 Instant.ofEpochSecond(1_000_000));
-        basilisks.saveAll(List.of(unsavedLeft, unsavedRight));
+        repository.saveAll(List.of(unsavedLeft, unsavedRight));
 
-        assertThat(basilisks.findByWord("LEFT").collect(toList()))
+        assertThat(repository.findByWord("LEFT").collect(toList()))
                 .isEqualTo(List.of(unsavedLeft));
-        assertThat(basilisks.findByWord("MIDDLE").collect(toList()))
+        assertThat(repository.findByWord("MIDDLE").collect(toList()))
                 .isEmpty();
     }
 
@@ -52,11 +52,11 @@ class BasiliskRepositoryTest {
                 Instant.ofEpochSecond(1_000_000));
         final var unsavedB = BasiliskRecord.createRaw("WORD",
                 Instant.ofEpochSecond(1_000_000));
-        basilisks.saveAll(List.of(unsavedA, unsavedB));
+        repository.saveAll(List.of(unsavedA, unsavedB));
 
         // Wrap in try-with-resources to close the stream at done; this
         // frees up DB resources as a stream is potentially very long
-        try (final var found = basilisks.readAll()) {
+        try (final var found = repository.readAll()) {
             assertThat(found).containsExactly(unsavedA, unsavedB);
         }
     }
