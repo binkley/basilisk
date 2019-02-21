@@ -110,7 +110,9 @@ nice web interface.
 Build the project with `./gradlew`.  The default task is "build".
 
 Note the common build configuration for [Spring Boot](spring-boot.gradle),
-used in [Basilisk service](basilisk-service/build.gradle).
+used in [Basilisk service](basilisk-service/build.gradle).  For example, when
+adding Spring Boot Admin, the dependencies go into `spring-boot.gradle` as
+they are only for running boot programs.
 
 ### Dependencies
 
