@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hm.binkley.basilisk.configuration.JsonConfiguration;
 import hm.binkley.basilisk.configuration.ProblemWebMvcTest;
+import hm.binkley.basilisk.domain.Basilisks;
 import hm.binkley.basilisk.domain.store.BasiliskRepository;
 import hm.binkley.basilisk.service.BasiliskService;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +39,9 @@ class BasiliskControllerValidationTest {
     private final ObjectMapper objectMapper;
 
     @MockBean
-    private BasiliskRepository basilisks;
+    private Basilisks basilisks;
+    @MockBean
+    private BasiliskRepository repository;
     @MockBean
     private BasiliskService service;
 
@@ -58,7 +61,7 @@ class BasiliskControllerValidationTest {
         //      .andExpect(jsonPath("$.stackTrace").doesNotExist())
         ;
 
-        verifyNoMoreInteractions(basilisks, service);
+        verifyNoMoreInteractions(repository, service);
     }
 
     @Test
@@ -80,7 +83,7 @@ class BasiliskControllerValidationTest {
         //      .andExpect(jsonPath("$.stackTrace").doesNotExist())
         ;
 
-        verifyNoMoreInteractions(basilisks, service);
+        verifyNoMoreInteractions(repository, service);
     }
 
     @Test
@@ -102,7 +105,7 @@ class BasiliskControllerValidationTest {
         //      .andExpect(jsonPath("$.stackTrace").doesNotExist())
         ;
 
-        verifyNoMoreInteractions(basilisks, service);
+        verifyNoMoreInteractions(repository, service);
     }
 
     private String asJson(final Object o)

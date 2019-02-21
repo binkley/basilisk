@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -15,6 +16,11 @@ public class BasiliskStore {
         final Optional<BasiliskRecord> record = springData.findById(id);
         record.ifPresent(it -> it.store = this);
         return record;
+    }
+
+    public Stream<BasiliskRecord> byWord(final String word) {
+        return springData.findByWord(word)
+                .peek(it -> it.store = this);
     }
 
     public BasiliskRecord save(final BasiliskRecord record) {

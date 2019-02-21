@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hm.binkley.basilisk.configuration.JsonConfiguration;
 import hm.binkley.basilisk.configuration.JsonWebMvcTest;
+import hm.binkley.basilisk.domain.Basilisk;
+import hm.binkley.basilisk.domain.Basilisks;
 import hm.binkley.basilisk.domain.store.BasiliskRecord;
 import hm.binkley.basilisk.domain.store.BasiliskRepository;
 import hm.binkley.basilisk.service.BasiliskService;
@@ -45,7 +47,9 @@ class BasiliskControllerTest {
     private final ObjectMapper objectMapper;
 
     @MockBean
-    private BasiliskRepository basilisks;
+    private Basilisks basilisks;
+    @MockBean
+    private BasiliskRepository repository;
     @MockBean
     private BasiliskService service;
 
@@ -66,7 +70,7 @@ class BasiliskControllerTest {
         final List<BasiliskRecord> found = List.of(
                 new BasiliskRecord(ID, EPOCH, word, AT));
 
-        when(basilisks.readAll())
+        when(repository.readAll())
                 .thenReturn(found.stream());
         when(service.extra(word))
                 .thenReturn(extra);
@@ -84,7 +88,7 @@ class BasiliskControllerTest {
         final String word = "BIRD";
         final String extra = "Howard";
 
-        when(basilisks.findById(id))
+        when(repository.findById(id))
                 .thenReturn(Optional.of(
                         new BasiliskRecord(id, EPOCH, word, AT)));
         when(service.extra(word))
@@ -101,7 +105,7 @@ class BasiliskControllerTest {
             throws Exception {
         final long id = 1L;
 
-        when(basilisks.findById(id))
+        when(repository.findById(id))
                 .thenReturn(Optional.empty());
 
         jsonMvc.perform(get("/basilisk/" + id))
@@ -115,9 +119,9 @@ class BasiliskControllerTest {
         final String word = "foo";
         final String extra = "Margaret Hamilton";
 
-        when(basilisks.findByWord(word))
-                .thenReturn(
-                        Stream.of(new BasiliskRecord(id, EPOCH, word, AT)));
+        when(basilisks.byWord(word))
+                .thenReturn(Stream.of(new Basilisk(
+                        new BasiliskRecord(id, EPOCH, word, AT))));
         when(service.extra(word))
                 .thenReturn(extra);
 
@@ -136,7 +140,7 @@ class BasiliskControllerTest {
         final BasiliskRecord record
                 = new BasiliskRecord(null, null, word, AT);
 
-        when(basilisks.save(record))
+        when(repository.save(record))
                 .thenReturn(new BasiliskRecord(id,
                         Instant.ofEpochSecond(1_000_000), record.getWord(),
                         record.getAt()));

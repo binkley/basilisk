@@ -20,10 +20,10 @@ class BasiliskRecordTest {
 
     @Test
     void shouldSave() {
-        final BasiliskRecord unsaved = new BasiliskRecord(
+        final var unsaved = new BasiliskRecord(
                 null, null, "FOO", Instant.ofEpochSecond(13L));
         unsaved.store = store;
-        final BasiliskRecord saved = new BasiliskRecord(
+        final var saved = new BasiliskRecord(
                 3L, EPOCH, unsaved.getWord(), unsaved.getAt());
         saved.store = store;
         when(store.save(unsaved))

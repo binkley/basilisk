@@ -8,8 +8,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.Instant;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static java.time.Instant.EPOCH;
+import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -29,23 +31,41 @@ class BasiliskStoreTest {
 
     @Test
     void shouldFindById() {
-        final BasiliskRecord saved = new BasiliskRecord(
+        final var saved = new BasiliskRecord(
                 3L, EPOCH, "FOO", Instant.ofEpochSecond(1L));
-        when(springData.findById(3L))
+        when(springData.findById(saved.getId()))
                 .thenReturn(Optional.of(saved));
 
-        final BasiliskRecord found = store.byId(3L).orElseThrow();
+        final var found = store.byId(saved.getId());
 
-        assertThat(found).isEqualTo(saved);
-        assertThat(found.store).isSameAs(store);
+        assertThat(found).contains(saved);
+        assertThat(found.orElseThrow().store).isSameAs(store);
+
+        verifyNoMoreInteractions(springData);
+    }
+
+    @Test
+    void shouldFindByWord() {
+        final var saved = new BasiliskRecord(
+                3L, EPOCH, "FOO", Instant.ofEpochSecond(1L));
+        when(springData.findByWord(saved.getWord()))
+                .thenReturn(Stream.of(saved));
+
+        final var found = store.byWord(saved.getWord()).collect(toList());
+
+        assertThat(found).containsExactly(saved);
+        assertThat(found.stream().map(it -> it.store).collect(toList()))
+                .containsExactly(store);
+
+        verifyNoMoreInteractions(springData);
     }
 
     @Test
     void shouldSave() {
-        final BasiliskRecord unsaved = new BasiliskRecord(
+        final var unsaved = new BasiliskRecord(
                 null, null, "FOO", Instant.ofEpochSecond(1L));
-        final BasiliskRecord saved = new BasiliskRecord(
-                3L, EPOCH, "FOO", Instant.ofEpochSecond(1L));
+        final var saved = new BasiliskRecord(
+                3L, EPOCH, unsaved.getWord(), unsaved.getAt());
 
         when(springData.save(unsaved))
                 .thenReturn(saved);

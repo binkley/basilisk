@@ -1,5 +1,6 @@
 package hm.binkley.basilisk.rest;
 
+import hm.binkley.basilisk.domain.Basilisks;
 import hm.binkley.basilisk.domain.store.BasiliskRecord;
 import hm.binkley.basilisk.domain.store.BasiliskRepository;
 import hm.binkley.basilisk.service.BasiliskService;
@@ -23,7 +24,6 @@ import java.net.URI;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.StreamSupport.stream;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.ResponseEntity.created;
@@ -33,12 +33,13 @@ import static org.springframework.http.ResponseEntity.created;
 @RestController
 @Validated
 public class BasiliskController {
-    private final BasiliskRepository basilisks;
+    private final Basilisks basilisks;
+    private final BasiliskRepository repository;
     private final BasiliskService service;
 
     @GetMapping
     public List<BasiliskResponse> getAll() {
-        return stream(basilisks.readAll().spliterator(), false)
+        return repository.readAll()
                 .map(this::from)
                 .collect(toList());
     }
@@ -53,8 +54,8 @@ public class BasiliskController {
     public List<BasiliskResponse> findByWord(
             @PathVariable("word") final @Length(min = 3, max = 32)
                     String word) {
-        return basilisks.findByWord(word)
-                .map(this::from)
+        return basilisks.byWord(word)
+                .map(it -> it.as(BasiliskResponse.with(service)))
                 .collect(toList());
     }
 
@@ -62,7 +63,7 @@ public class BasiliskController {
     @ResponseStatus(CREATED)
     public ResponseEntity<BasiliskResponse> postBasilisk(
             @RequestBody final @Valid BasiliskRequest request) {
-        final BasiliskRecord saved = basilisks.save(request.toRecord());
+        final BasiliskRecord saved = repository.save(request.toRecord());
 
         return created(URI.create("/basilisk/" + saved.getId()))
                 .body(from(saved));
