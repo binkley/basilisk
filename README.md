@@ -34,8 +34,8 @@ Demonstrate Java 11, Spring Boot 2, JUnit 5, et al
 
 ## Feedback
 
-_Please_ file GitHub issues for questions, suggestions, additions, bugs, or
-improvements!
+_Please_ file [GitHub issues](https://github.com/binkley/basilisk/issues) for
+questions, suggestions, additions, bugs, or improvements!
 
 ## Design
 
