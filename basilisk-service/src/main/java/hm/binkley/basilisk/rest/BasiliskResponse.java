@@ -1,7 +1,6 @@
 package hm.binkley.basilisk.rest;
 
 import hm.binkley.basilisk.domain.Basilisk.As;
-import hm.binkley.basilisk.domain.store.BasiliskRecord;
 import hm.binkley.basilisk.service.BasiliskService;
 import lombok.Builder;
 import lombok.Value;
@@ -15,17 +14,6 @@ public final class BasiliskResponse {
     String word;
     Instant at;
     String extra;
-
-    static BasiliskResponse from(
-            final BasiliskService service,
-            final BasiliskRecord record) {
-        return builder()
-                .id(record.getId())
-                .word(record.getWord())
-                .at(record.getAt())
-                .extra(service.extra(record.getWord()))
-                .build();
-    }
 
     static As<BasiliskResponse> with(final BasiliskService service) {
         return (id, receivedAt, word, at) -> new BasiliskResponse(

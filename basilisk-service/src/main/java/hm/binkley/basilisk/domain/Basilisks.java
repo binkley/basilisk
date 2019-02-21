@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -23,5 +24,9 @@ public class Basilisks {
 
     public Stream<Basilisk> all() {
         return store.all().map(Basilisk::new);
+    }
+
+    public Basilisk create(final String word, final Instant at) {
+        return new Basilisk(store.create(word, at));
     }
 }

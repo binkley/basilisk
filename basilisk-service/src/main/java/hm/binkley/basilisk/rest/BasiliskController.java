@@ -2,8 +2,6 @@ package hm.binkley.basilisk.rest;
 
 import hm.binkley.basilisk.domain.Basilisk;
 import hm.binkley.basilisk.domain.Basilisks;
-import hm.binkley.basilisk.domain.store.BasiliskRecord;
-import hm.binkley.basilisk.domain.store.BasiliskRepository;
 import hm.binkley.basilisk.service.BasiliskService;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.Length;
@@ -36,7 +34,6 @@ import static org.springframework.http.ResponseEntity.created;
 @Validated
 public class BasiliskController {
     private final Basilisks basilisks;
-    private final BasiliskRepository repository;
     private final BasiliskService service;
 
     @GetMapping
@@ -49,7 +46,7 @@ public class BasiliskController {
     @GetMapping("{id}")
     public BasiliskResponse findById(
             @PathVariable("id") final Basilisk basilisk) {
-        return basilisk.as(BasiliskResponse.with(service));
+        return toResponse().apply(basilisk);
     }
 
     @GetMapping("find/{word}")
@@ -65,18 +62,16 @@ public class BasiliskController {
     @ResponseStatus(CREATED)
     public ResponseEntity<BasiliskResponse> postBasilisk(
             @RequestBody final @Valid BasiliskRequest request) {
-        final BasiliskRecord saved = repository.save(request.toRecord());
+        final var basilisk = basilisks
+                .create(request.getWord(), request.getAt());
 
-        return created(URI.create("/basilisk/" + saved.getId()))
-                .body(from(saved));
+        return created(URI.create("/basilisk/"
+                + basilisk.as((id, receivedAt, word, at) -> id)))
+                .body(toResponse().apply(basilisk));
     }
 
     private Function<Basilisk, BasiliskResponse> toResponse() {
         return it -> it.as(BasiliskResponse.with(service));
-    }
-
-    private BasiliskResponse from(final BasiliskRecord record) {
-        return BasiliskResponse.from(service, record);
     }
 
     /** @todo Think more deeply about global controller advice */

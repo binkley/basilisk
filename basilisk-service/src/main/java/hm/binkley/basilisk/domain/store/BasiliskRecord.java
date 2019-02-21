@@ -34,7 +34,7 @@ public final class BasiliskRecord {
         this.at = at;
     }
 
-    static BasiliskRecord create(final String word, final Instant at) {
+    static BasiliskRecord createRaw(final String word, final Instant at) {
         return new BasiliskRecord(null, null, word, at);
     }
 

@@ -70,4 +70,19 @@ class BasilisksTest {
 
         verifyNoMoreInteractions(store);
     }
+
+    @Test
+    void shouldCreate() {
+        final var word = "QUX";
+        final var at = Instant.ofEpochSecond(1L);
+        final var record = new BasiliskRecord(3L, EPOCH, word, at);
+
+        when(store.create(word, at))
+                .thenReturn(record);
+
+        assertThat(basilisks.create(word, at))
+                .isEqualTo(new Basilisk(record));
+
+        verifyNoMoreInteractions(store);
+    }
 }

@@ -6,7 +6,6 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hm.binkley.basilisk.configuration.JsonConfiguration;
 import hm.binkley.basilisk.configuration.ProblemWebMvcTest;
 import hm.binkley.basilisk.domain.Basilisks;
-import hm.binkley.basilisk.domain.store.BasiliskRepository;
 import hm.binkley.basilisk.service.BasiliskService;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
@@ -41,8 +40,6 @@ class BasiliskControllerValidationTest {
     @MockBean
     private Basilisks basilisks;
     @MockBean
-    private BasiliskRepository repository;
-    @MockBean
     private BasiliskService service;
 
     @SuppressFBWarnings("RV")
@@ -61,7 +58,7 @@ class BasiliskControllerValidationTest {
         //      .andExpect(jsonPath("$.stackTrace").doesNotExist())
         ;
 
-        verifyNoMoreInteractions(repository, service);
+        verifyNoMoreInteractions(basilisks, service);
     }
 
     @Test
@@ -83,7 +80,7 @@ class BasiliskControllerValidationTest {
         //      .andExpect(jsonPath("$.stackTrace").doesNotExist())
         ;
 
-        verifyNoMoreInteractions(repository, service);
+        verifyNoMoreInteractions(basilisks, service);
     }
 
     @Test
@@ -105,7 +102,7 @@ class BasiliskControllerValidationTest {
         //      .andExpect(jsonPath("$.stackTrace").doesNotExist())
         ;
 
-        verifyNoMoreInteractions(repository, service);
+        verifyNoMoreInteractions(basilisks, service);
     }
 
     private String asJson(final Object o)

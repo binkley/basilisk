@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -26,6 +27,12 @@ public class BasiliskStore {
     public Stream<BasiliskRecord> all() {
         return springData.readAll()
                 .peek(it -> it.store = this);
+    }
+
+    public BasiliskRecord create(final String word, final Instant at) {
+        final BasiliskRecord record = BasiliskRecord.createRaw(word, at);
+        record.store = this;
+        return record.save();
     }
 
     public BasiliskRecord save(final BasiliskRecord record) {

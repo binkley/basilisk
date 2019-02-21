@@ -7,7 +7,6 @@ import hm.binkley.basilisk.configuration.JsonWebMvcTest;
 import hm.binkley.basilisk.domain.Basilisk;
 import hm.binkley.basilisk.domain.Basilisks;
 import hm.binkley.basilisk.domain.store.BasiliskRecord;
-import hm.binkley.basilisk.domain.store.BasiliskRepository;
 import hm.binkley.basilisk.service.BasiliskService;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
@@ -48,8 +47,6 @@ class BasiliskControllerTest {
 
     @MockBean
     private Basilisks basilisks;
-    @MockBean
-    private BasiliskRepository repository;
     @MockBean
     private BasiliskService service;
 
@@ -101,9 +98,6 @@ class BasiliskControllerTest {
     @Test
     void shouldNotFindExplicitly()
             throws Exception {
-        when(repository.findById(ID))
-                .thenReturn(Optional.empty());
-
         jsonMvc.perform(get("/basilisk/" + ID))
                 .andExpect(status().isNotFound());
     }
@@ -134,10 +128,10 @@ class BasiliskControllerTest {
         final BasiliskRecord record
                 = new BasiliskRecord(null, null, word, AT);
 
-        when(repository.save(record))
-                .thenReturn(new BasiliskRecord(ID,
-                        Instant.ofEpochSecond(1_000_000), record.getWord(),
-                        record.getAt()));
+        when(basilisks.create(word, AT))
+                .thenReturn(new Basilisk(new BasiliskRecord(ID,
+                        Instant.ofEpochSecond(1_000_000),
+                        record.getWord(), record.getAt())));
         when(service.extra(word))
                 .thenReturn(extra);
 

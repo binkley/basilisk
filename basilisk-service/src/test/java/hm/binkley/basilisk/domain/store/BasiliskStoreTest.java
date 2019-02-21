@@ -77,9 +77,25 @@ class BasiliskStoreTest {
     }
 
     @Test
+    void shouldCreate() {
+        final var word = "QUZ";
+        final var at = Instant.ofEpochSecond(1L);
+        final var unsaved = new BasiliskRecord(null, null, word, at);
+        final var saved = new BasiliskRecord(
+                3L, EPOCH, unsaved.getWord(), unsaved.getAt());
+        when(springData.save(unsaved))
+                .thenReturn(saved);
+
+        assertThat(store.create(word, at)).isEqualTo(saved);
+
+        verify(springData).save(unsaved);
+        verifyNoMoreInteractions(springData);
+    }
+
+    @Test
     void shouldSave() {
         final var unsaved = new BasiliskRecord(
-                null, null, "QUX", Instant.ofEpochSecond(1L));
+                null, null, "QUUX", Instant.ofEpochSecond(1L));
         final var saved = new BasiliskRecord(
                 3L, EPOCH, unsaved.getWord(), unsaved.getAt());
 
