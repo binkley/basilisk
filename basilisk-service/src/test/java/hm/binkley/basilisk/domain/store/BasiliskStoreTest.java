@@ -47,7 +47,7 @@ class BasiliskStoreTest {
     @Test
     void shouldFindByWord() {
         final var saved = new BasiliskRecord(
-                3L, EPOCH, "FOO", Instant.ofEpochSecond(1L));
+                3L, EPOCH, "BAR", Instant.ofEpochSecond(1L));
         when(springData.findByWord(saved.getWord()))
                 .thenReturn(Stream.of(saved));
 
@@ -61,9 +61,25 @@ class BasiliskStoreTest {
     }
 
     @Test
+    void shouldFindAll() {
+        final var saved = new BasiliskRecord(
+                3L, EPOCH, "BAZ", Instant.ofEpochSecond(1L));
+        when(springData.readAll())
+                .thenReturn(Stream.of(saved));
+
+        final var found = store.all().collect(toList());
+
+        assertThat(found).containsExactly(saved);
+        assertThat(found.stream().map(it -> it.store).collect(toList()))
+                .containsExactly(store);
+
+        verifyNoMoreInteractions(springData);
+    }
+
+    @Test
     void shouldSave() {
         final var unsaved = new BasiliskRecord(
-                null, null, "FOO", Instant.ofEpochSecond(1L));
+                null, null, "QUX", Instant.ofEpochSecond(1L));
         final var saved = new BasiliskRecord(
                 3L, EPOCH, unsaved.getWord(), unsaved.getAt());
 

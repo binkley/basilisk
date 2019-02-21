@@ -39,8 +39,8 @@ public class BasiliskController {
 
     @GetMapping
     public List<BasiliskResponse> getAll() {
-        return repository.readAll()
-                .map(this::from)
+        return basilisks.all()
+                .map(it -> it.as(BasiliskResponse.with(service)))
                 .collect(toList());
     }
 

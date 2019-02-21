@@ -46,11 +46,25 @@ class BasilisksTest {
     @Test
     void shouldFindByWord() {
         final var record = new BasiliskRecord(
-                3L, EPOCH, "FOO", Instant.ofEpochSecond(1L));
+                3L, EPOCH, "BAR", Instant.ofEpochSecond(1L));
         when(store.byWord(record.getWord()))
                 .thenReturn(Stream.of(record));
 
         final Stream<Basilisk> found = basilisks.byWord(record.getWord());
+
+        assertThat(found).containsExactly(new Basilisk(record));
+
+        verifyNoMoreInteractions(store);
+    }
+
+    @Test
+    void shouldFindAll() {
+        final var record = new BasiliskRecord(
+                3L, EPOCH, "BAZ", Instant.ofEpochSecond(1L));
+        when(store.all())
+                .thenReturn(Stream.of(record));
+
+        final Stream<Basilisk> found = basilisks.all();
 
         assertThat(found).containsExactly(new Basilisk(record));
 

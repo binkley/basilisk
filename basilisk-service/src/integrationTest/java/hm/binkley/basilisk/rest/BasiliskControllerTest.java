@@ -67,11 +67,10 @@ class BasiliskControllerTest {
             throws Exception {
         final String word = "foo";
         final String extra = "Bob Barker";
-        final List<BasiliskRecord> found = List.of(
-                new BasiliskRecord(ID, EPOCH, word, AT));
 
-        when(repository.readAll())
-                .thenReturn(found.stream());
+        when(basilisks.all())
+                .thenReturn(Stream.of(new Basilisk(
+                        new BasiliskRecord(ID, EPOCH, word, AT))));
         when(service.extra(word))
                 .thenReturn(extra);
 

@@ -20,4 +20,8 @@ public class Basilisks {
     public Stream<Basilisk> byWord(final String word) {
         return store.byWord(word).map(Basilisk::new);
     }
+
+    public Stream<Basilisk> all() {
+        return store.all().map(Basilisk::new);
+    }
 }

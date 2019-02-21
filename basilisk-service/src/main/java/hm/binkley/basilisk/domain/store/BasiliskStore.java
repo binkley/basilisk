@@ -23,6 +23,11 @@ public class BasiliskStore {
                 .peek(it -> it.store = this);
     }
 
+    public Stream<BasiliskRecord> all() {
+        return springData.readAll()
+                .peek(it -> it.store = this);
+    }
+
     public BasiliskRecord save(final BasiliskRecord record) {
         return springData.save(record);
     }
