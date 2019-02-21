@@ -403,3 +403,10 @@ based on `spring.jackson.date-format` and `spring.jackson.time-zone`
 application properties.  Comare to
 `@org.springframework.format.annotation.DateTimeFormat`
 (which does not handle `Instant`).
+
+### Automatic object lookup in controllers
+
+See [`StringToBasiliskRecord`](basilisk-service/src/main/java/hm/binkley/basilisk/rest/StringToBasiliskRecordConverter.java)
+and the `/basilisk/{id}` controller endpoint for an example of Spring
+automatically converting types, in this case, from a "string" (a path
+component of a URL) to a `BasiliskRecord`. 
