@@ -15,9 +15,10 @@ Demonstrate Java 11, Spring Boot 2, JUnit 5, et al
 ## Features
 
 * Modern Spring Boot
+* Spring Boot Admin
 * Spring Data JDBC
 * Incremental build
-* Build dashboard
+* Domain-oriented design
 * Pure service layer
 * Schema and data migrations
 * YAML configuration
