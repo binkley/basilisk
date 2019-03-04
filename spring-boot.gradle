@@ -10,6 +10,14 @@ configurations {
     all*.exclude module: 'junit'
 }
 
+dependencies {
+    integrationTestImplementation sourceSets.test.output
+
+    databaseTestImplementation sourceSets.test.output
+
+    liveTestImplementation sourceSets.test.output
+}
+
 jar {
     enabled = true
 }
