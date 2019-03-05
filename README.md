@@ -31,6 +31,7 @@ Demonstrate Java 11, Spring Boot 2, JUnit 5, et al
 * YAML Spring Cloud Contract tests
 * Custom JSON formatting
 * Semantic UI CSS-only for home page
+* Custom health check
 
 ## Feedback
 
@@ -444,3 +445,13 @@ See [`StringToBasiliskRecord`](basilisk-service/src/main/java/hm/binkley/basilis
 and the `/basilisk/{id}` controller endpoint for an example of Spring
 automatically converting types, in this case, from a "string" (a path
 component of a URL) to a `BasiliskRecord`. 
+
+## Custom health check
+
+See
+[`Happy`](basilisk-service/src/main/java/hm/binkley/basilisk/rest/Happy.java)
+as an example custom health check;
+[`TimeConfiguration`](basilisk-service/src/main/java/hm/binkley/basilisk/configuration/TimeConfiguration.java)
+for setting a default, UTC clock; and
+[`HappyTest`](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/rest/HappyTest.java)
+for testing time. 
