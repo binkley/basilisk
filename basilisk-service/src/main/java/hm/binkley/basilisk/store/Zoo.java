@@ -6,7 +6,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 @EqualsAndHashCode(exclude = "id")
@@ -17,5 +17,5 @@ public class Zoo {
     public Long id;
     public String name;
     @Column("ZOO")
-    public Set<Animal> animals = new HashSet<>();
+    public Set<Animal> animals = new LinkedHashSet<>();
 }

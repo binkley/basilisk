@@ -6,7 +6,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 @EqualsAndHashCode(exclude = "id")
@@ -17,7 +17,7 @@ public class Roost {
     public Long id;
     public String name;
     @Column("ROOST")
-    public Set<RoostMigrationRef> migrations = new HashSet<>();
+    public Set<RoostMigrationRef> migrations = new LinkedHashSet<>();
 
     public Roost add(final Migration migration) {
         migrations.add(new RoostMigrationRef(migration.id));
