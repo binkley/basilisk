@@ -462,7 +462,9 @@ for testing time.
 
 ### Quieter Spring Boot tests
 
-See [`QuietApplicationListener`](basilisk-testing/src/test/java/hm/binkley/basilisk/QuietApplicationListener.java)
-and matching [`spring.factories`](basilisk-testing/src/test/resources/META-INF/spring.factories)
-for one approach to suppressing "started application" INFO logs during `@SpringBootTest`
-tests.
+See
+[`SuppressSpringBootTestsLoggingApplicationListener`](basilisk-testing/src/test/java/hm/binkley/basilisk/SuppressSpringBootTestsLoggingApplicationListenerTest.java)
+and matching
+[`spring.factories`](basilisk-testing/src/test/resources/META-INF/spring.factories)
+for one approach to suppressing "started application" INFO logs during
+`@SpringBootTest` tests.

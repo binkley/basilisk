@@ -1,2 +1,2 @@
 org.springframework.context.ApplicationListener=\
-hm.binkley.basilisk.QuietApplicationListener
+hm.binkley.basilisk.SuppressSpringBootTestsLoggingApplicationListener

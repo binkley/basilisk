@@ -4,7 +4,9 @@ import org.springframework.boot.context.event.ApplicationStartingEvent;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.event.SmartApplicationListener;
 
-public class QuietApplicationListener
+import static org.springframework.boot.Banner.Mode.OFF;
+
+public class SuppressSpringBootTestsLoggingApplicationListener
         implements SmartApplicationListener {
     @Override
     public boolean supportsEventType(
@@ -14,7 +16,9 @@ public class QuietApplicationListener
 
     @Override
     public void onApplicationEvent(final ApplicationEvent event) {
-        final var startingEvent = (ApplicationStartingEvent) event;
-        startingEvent.getSpringApplication().setLogStartupInfo(false);
+        final var application = ((ApplicationStartingEvent) event)
+                .getSpringApplication();
+        application.setBannerMode(OFF);
+        application.setLogStartupInfo(false);
     }
 }
