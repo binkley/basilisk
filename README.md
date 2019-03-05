@@ -30,7 +30,7 @@ Demonstrate Java 11, Spring Boot 2, JUnit 5, et al
 * Build analysis
 * YAML Spring Cloud Contract tests
 * Custom JSON formatting
-
+* Semantic UI CSS-only for home page
 
 ## Feedback
 
