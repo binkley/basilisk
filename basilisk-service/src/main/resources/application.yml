@@ -31,6 +31,8 @@ spring:
       client:
         url: http://localhost:8080/admin
       context-path: /admin
+      ui:
+        title: Basilisk
   data:
     rest:
       base-path: /data
