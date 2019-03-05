@@ -11,6 +11,8 @@ configurations {
 }
 
 dependencies {
+    runtimeOnly "org.jolokia:jolokia-core"
+    
     integrationTestImplementation sourceSets.test.output
 
     databaseTestImplementation sourceSets.test.output
