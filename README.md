@@ -15,8 +15,10 @@ Demonstrate Java 11, Spring Boot 2, JUnit 5, et al
 ## Features
 
 * Modern Spring Boot
-* Spring Boot Admin
+* [Spring Boot Actuator](#actuator)
+* [Spring Boot Admin](#admin)
 * Spring Data JDBC
+* [Swagger](#swagger)
 * Incremental build
 * Domain-oriented design
 * Pure service layer
@@ -29,9 +31,10 @@ Demonstrate Java 11, Spring Boot 2, JUnit 5, et al
 * Static code analysis
 * Build analysis
 * YAML Spring Cloud Contract tests
-* Custom JSON formatting
+* [Custom JSON formatting](#custom-json-formatting)
 * Semantic UI CSS-only for home page
-* Custom health check
+* [Custom health check](#custom-health-check)
+
 
 ## Feedback
 
@@ -446,7 +449,7 @@ and the `/basilisk/{id}` controller endpoint for an example of Spring
 automatically converting types, in this case, from a "string" (a path
 component of a URL) to a `BasiliskRecord`. 
 
-## Custom health check
+### Custom health check
 
 See
 [`Happy`](basilisk-service/src/main/java/hm/binkley/basilisk/rest/Happy.java)
