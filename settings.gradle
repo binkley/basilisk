@@ -1,4 +1,5 @@
 rootProject.name = "basilisk"
 
+include "basilisk-testing"
 include "basilisk-service"
 include "basilisk-contracts"

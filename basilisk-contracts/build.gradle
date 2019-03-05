@@ -8,6 +8,7 @@ configurations {
 }
 
 dependencies {
+    testImplementation project(":basilisk-testing")
     testImplementation project(":basilisk-service")
 }
 

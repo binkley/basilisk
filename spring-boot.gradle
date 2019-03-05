@@ -12,6 +12,8 @@ configurations {
 
 dependencies {
     runtimeOnly "org.jolokia:jolokia-core"
+
+    testImplementation project(":basilisk-testing")
     
     integrationTestImplementation sourceSets.test.output
 
