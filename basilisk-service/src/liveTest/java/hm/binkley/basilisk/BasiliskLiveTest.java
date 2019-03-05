@@ -16,6 +16,13 @@ class BasiliskLiveTest {
     private final WebTestClient client;
 
     @Test
+    void shouldFindApplicationHomePage() {
+        client.get().uri("/index.html")
+                .exchange()
+                .expectStatus().isOk();
+    }
+
+    @Test
     void shouldFindActuatorHealth() {
         client.get().uri("/actuator/health")
                 .exchange()

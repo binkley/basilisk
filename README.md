@@ -63,6 +63,14 @@ Some reading:
 
 ## Production
 
+Start the program, then try the [Home Page](http://localhost:8080).
+
+### Admin
+
+Try [Spring Boot Admin](http://localhost:8080/admin)
+(see [GitHub](https://github.com/codecentric/spring-boot-admin) for an
+explanation).
+
 ### Actuator
 
 After spinning up the program with `./gradlew bootRun`, try
