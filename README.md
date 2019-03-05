@@ -34,6 +34,7 @@ Demonstrate Java 11, Spring Boot 2, JUnit 5, et al
 * [Custom JSON formatting](#custom-json-formatting)
 * Semantic UI CSS-only for home page
 * [Custom health check](#custom-health-check)
+* [Quieter Spring Boot tests](#quieter-spring-boot-tests)
 
 
 ## Feedback
@@ -458,3 +459,10 @@ as an example custom health check;
 for setting a default, UTC clock; and
 [`HappyTest`](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/rest/HappyTest.java)
 for testing time. 
+
+### Quieter Spring Boot tests
+
+See [`QuietApplicationListener`](basilisk-service/src/test/java/hm/binkley/basilisk/QuietApplicationListener.java)
+and matching [`spring.factories`](basilisk-service/src/test/resources/META-INF/spring.factories)
+for one approach to suppressing "started application" INFO logs during `@SpringBootTest`
+tests.
