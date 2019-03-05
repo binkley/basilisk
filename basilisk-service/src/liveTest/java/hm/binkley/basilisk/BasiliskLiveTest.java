@@ -49,4 +49,11 @@ class BasiliskLiveTest {
                 .exchange()
                 .expectStatus().isOk();
     }
+
+    @Test
+    void shouldFindAdminHomePage() {
+        client.get().uri("/admin")
+                .exchange()
+                .expectStatus().isOk();
+    }
 }
