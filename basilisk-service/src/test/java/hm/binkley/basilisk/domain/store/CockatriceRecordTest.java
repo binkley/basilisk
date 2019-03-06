@@ -5,8 +5,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.Instant;
-
+import static java.math.BigDecimal.TEN;
 import static java.time.Instant.EPOCH;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
@@ -14,17 +13,16 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class BasiliskRecordTest {
+class CockatriceRecordTest {
     @Mock
-    private BasiliskStore store;
+    private CockatriceStore store;
 
     @Test
     void shouldSave() {
-        final var unsaved = BasiliskRecord.createRaw(
-                "FOO", Instant.ofEpochSecond(13L));
+        final var unsaved = CockatriceRecord.createRaw(TEN);
         unsaved.store = store;
-        final var saved = new BasiliskRecord(
-                3L, EPOCH, unsaved.getWord(), unsaved.getAt());
+        final var saved = new CockatriceRecord(3L, EPOCH,
+                unsaved.getBeakSize());
         saved.store = store;
         when(store.save(unsaved))
                 .thenReturn(saved);
