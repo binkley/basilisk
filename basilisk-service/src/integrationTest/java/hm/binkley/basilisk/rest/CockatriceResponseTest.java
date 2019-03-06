@@ -11,35 +11,24 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.IOException;
-import java.time.ZonedDateTime;
-import java.util.Set;
 
 import static java.math.BigDecimal.TEN;
-import static java.time.ZoneOffset.UTC;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
 @Import(JsonConfiguration.class)
 @JsonTest
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-class BasiliskResponseTest {
-    private final JacksonTester<BasiliskResponse> json;
+class CockatriceResponseTest {
+    private final JacksonTester<CockatriceResponse> json;
 
     @Test
     void shouldBecomeGoodJson()
             throws IOException {
-        assertThat(json.write(BasiliskResponse.builder()
+        assertThat(json.write(CockatriceResponse.builder()
                 .id(31L)
-                .word("BOB")
-                .at(ZonedDateTime.of(
-                        2011, 2, 3, 14, 5, 6, 7_000_000, UTC.normalized())
-                        .toInstant())
-                .extra("BONUS")
-                .cockatrices(Set.of(CockatriceResponse.builder()
-                        .id(33L)
-                        .beakSize(TEN)
-                        .build()))
+                .beakSize(TEN)
                 .build()))
-                .isEqualToJson("basilisk-response-test.json");
+                .isEqualToJson("cockatrice-response-test.json");
     }
 }

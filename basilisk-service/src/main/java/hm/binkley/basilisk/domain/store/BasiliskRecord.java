@@ -26,6 +26,7 @@ public final class BasiliskRecord {
     @Getter
     Instant at;
     @Column("basilisk_id")
+    @Getter
     Set<CockatriceRecord> cocatrices = new LinkedHashSet<>();
     @Transient
     BasiliskStore store;
@@ -38,7 +39,8 @@ public final class BasiliskRecord {
         this.at = at;
     }
 
-    static BasiliskRecord createRaw(final String word, final Instant at) {
+    public static BasiliskRecord createRaw(
+            final String word, final Instant at) {
         return new BasiliskRecord(null, null, word, at);
     }
 

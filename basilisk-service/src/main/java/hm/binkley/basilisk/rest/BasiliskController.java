@@ -66,7 +66,7 @@ public class BasiliskController {
                 .create(request.getWord(), request.getAt());
 
         return created(URI.create("/basilisk/"
-                + basilisk.as((id, receivedAt, word, at) -> id)))
+                + basilisk.as((id, receivedAt, word, at, cockatrices) -> id)))
                 .body(toResponse().apply(basilisk));
     }
 
