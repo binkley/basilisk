@@ -6,7 +6,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.Instant;
+import java.util.Set;
 
+import static java.math.BigDecimal.TEN;
 import static java.time.Instant.EPOCH;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
@@ -33,5 +35,15 @@ class BasiliskRecordTest {
 
         verify(store).save(unsaved);
         verifyNoMoreInteractions(store);
+    }
+
+    @Test
+    void shouldAddCockatrice() {
+        final var cockatrice = CockatriceRecord.createRaw(TEN);
+        final var basilisk = BasiliskRecord.createRaw(
+                "FOO", Instant.ofEpochSecond(13L))
+                .add(cockatrice);
+
+        assertThat(basilisk.cocatrices).isEqualTo(Set.of(cockatrice));
     }
 }

@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Instant;
 import java.util.List;
 
+import static java.math.BigDecimal.TEN;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -26,6 +27,17 @@ class BasiliskRepositoryTest {
     void shouldRoundtrip() {
         final var unsaved = BasiliskRecord.createRaw("BIRD",
                 Instant.ofEpochSecond(1_000_000));
+        final var found = repository.findById(
+                repository.save(unsaved).getId());
+
+        assertThat(found).contains(unsaved);
+    }
+
+    @Test
+    void shouldRoundtripWithCockatrice() {
+        final var unsaved = BasiliskRecord.createRaw("BIRD",
+                Instant.ofEpochSecond(1_000_000))
+                .add(CockatriceRecord.createRaw(TEN));
         final var found = repository.findById(
                 repository.save(unsaved).getId());
 

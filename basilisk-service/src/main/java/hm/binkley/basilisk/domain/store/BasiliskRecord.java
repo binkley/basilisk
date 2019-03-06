@@ -5,9 +5,12 @@ import lombok.Getter;
 import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
+import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.Instant;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @EqualsAndHashCode(exclude = {"id", "receivedAt", "store"})
 @Table("BASILISK.BASILISK")
@@ -22,12 +25,13 @@ public final class BasiliskRecord {
     String word;
     @Getter
     Instant at;
+    @Column("basilisk_id")
+    Set<CockatriceRecord> cocatrices = new LinkedHashSet<>();
     @Transient
     BasiliskStore store;
 
     public BasiliskRecord(final Long id, final Instant receivedAt,
-            final String word,
-            final Instant at) {
+            final String word, final Instant at) {
         this.id = id;
         this.receivedAt = receivedAt;
         this.word = word;
@@ -36,6 +40,11 @@ public final class BasiliskRecord {
 
     static BasiliskRecord createRaw(final String word, final Instant at) {
         return new BasiliskRecord(null, null, word, at);
+    }
+
+    public BasiliskRecord add(final CockatriceRecord cockatrice) {
+        cocatrices.add(cockatrice);
+        return this;
     }
 
     public BasiliskRecord save() {
