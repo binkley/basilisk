@@ -3,15 +3,18 @@ package hm.binkley.basilisk;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
+import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @AutoConfigureEmbeddedDatabase
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @SpringBootTest(webEnvironment = RANDOM_PORT)
+@TestInstance(PER_CLASS)
 class BasiliskLiveTest {
     private final WebTestClient client;
 
