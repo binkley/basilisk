@@ -4,12 +4,105 @@
 
 Demonstrate Java 11, Spring Boot 2, JUnit 5, et al
 
+* [Model](#model)
 * [Features](#features)
 * [Feedback](#feedback)
 * [Production](#production)
 * [Development](#development)
 * [Testing](#testing)
 * [Advice and examples](#advice-and-examples)
+
+
+## Model
+
+### Basil Lisp B&B Chain
+
+Picture that you own a chain of B&Bs (bed and breakfast) located around the
+globe:
+
+- ["The Dallas Yellow Rose"](https://www.history.com/news/who-was-the-yellow-rose-of-texas)
+- ["Melbourne's Pink Heath"](https://www.anbg.gov.au/emblems/vic.emblem.html)
+- ["Cherry Blossom of Tokyo"](https://www.jrailpass.com/blog/cherry-blossoms-tokyo)
+
+<img src="https://www.featurepics.com/StockImage/20070125/yellow-rose-of-texas-stock-image-200039.jpg"
+width="30%"/>
+<img src="https://jpmbooks.files.wordpress.com/2012/06/img_0185.jpg?w=1000&h=1332"/>
+width="30%"/>
+<img src="https://cdn-images-1.medium.com/max/2000/1*C2nsRby3rpDCA5LFWfDZUw.jpeg"
+width="30%"/>
+
+### The Food
+
+Your business plan includes good food, not just breakfast, so you hire
+several top-shelf chefs, cultivate many impressive recipes, and source the
+best ingredients available subject to restrictions.
+
+### The Rules
+
+1. Chefs rotate through your locations, delighting your guests with their
+   amazing cooking.
+2. Chefs rotate through recipes, and you would like eventually all chefs to
+   try their hand at every recipe.
+3. Ingredients for a recipe can vary somewhat, as substitutions are needed,
+   or to create variety.
+4. Not all ingredients are available at every location, or at every season.
+5. A location may have ingredients available, but not yet consigned to a
+   particular recipe.  You would like to use all ingredients on hand, when
+   feasible
+
+#### Example recipes
+
+- A perfect souffle needs eggs and some other dry goods, yet varies widely in
+  other extra ingredients
+
+#### Example ingredient restrictions
+
+- Eggs are available in all locations at all times
+- The Tokyo fish market has the best fish in the world, year-round
+- Texas strawberries are best only in Dallas and only in Spring
+
+### Thinking about it
+
+You can reach some conclusions from all this information:
+
+- A recipe is not really tied to a chef, and it its "own thing"
+- Some recipes can only be made in some locations, and may depend on season
+- Ingredients may be restricted to a location, but many are simply waiting to
+  be used
+- Unused ingredients are waste, and cost your bottom line
+- Location and season are important, but not the "root" of the picture
+- Likewise, chefs are not the "root" of the picture, but move around, and
+  prepare many, varying meals
+- Recipes seem important, and really your concern is pleasing guests
+
+### Implementing
+
+* `Recipe` is an aggregate root
+* `Ingredient` is a kind of root as well, in that unused ingredients are
+  important, but ingredients can also belong to a recipe as well, as your
+  "meal planners" schedule stock for each location and season
+* `Chef` is important, but _not_ an aggregate root.  You move chefs around
+  your locations over time, but the recipes are tied more to ingredients, and
+  possibly restricted by location and season
+
+### Sort of a picture (if you turn the page sideways and squint)
+
+These are the most basic aggregates, what is most important in pleasing your
+guests and helping the "meal planners":
+
+- RECIPE <-- INGREDIENTs <-- RESTRICTIONs (consigned ingredients)
+- INGREDIENTs <-- RESTRICTIONs (available ingredients)
+
+These are "2nd-class objects", needed by "meal planners", but not as
+important:
+
+- CHEF
+- RESTRICTION
+- LOCATION
+
+Sure, guests care about where they stay, but they are not staying at a
+location because of a particular recipe.  However, once there, they care about
+having a fabulous meal!
 
 
 ## Features
