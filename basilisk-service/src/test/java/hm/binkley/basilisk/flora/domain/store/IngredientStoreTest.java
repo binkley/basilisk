@@ -43,6 +43,21 @@ class IngredientStoreTest {
     }
 
     @Test
+    void shouldFindByName() {
+        final var saved = new IngredientRecord(3L, EPOCH, "BACON");
+        when(springData.findByName(saved.getName()))
+                .thenReturn(Stream.of(saved));
+
+        final var found = store.byName(saved.getName()).collect(toList());
+
+        assertThat(found).containsExactly(saved);
+        assertThat(found.stream().map(it -> it.store).collect(toList()))
+                .containsExactly(store);
+
+        verifyNoMoreInteractions(springData);
+    }
+
+    @Test
     void shouldFindAll() {
         final var saved = new IngredientRecord(3L, EPOCH, "MILK");
         when(springData.readAll())
