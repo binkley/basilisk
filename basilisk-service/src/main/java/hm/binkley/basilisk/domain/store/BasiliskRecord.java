@@ -11,6 +11,7 @@ import org.springframework.data.relational.core.mapping.Table;
 import java.time.Instant;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.stream.Stream;
 
 @EqualsAndHashCode(exclude = {"id", "receivedAt", "store"})
 @Table("BASILISK.BASILISK")
@@ -39,13 +40,17 @@ public final class BasiliskRecord {
         this.at = at;
     }
 
-    public static BasiliskRecord createRaw(
-            final String word, final Instant at) {
+    public static BasiliskRecord raw(final String word, final Instant at) {
         return new BasiliskRecord(null, null, word, at);
     }
 
     public BasiliskRecord add(final CockatriceRecord cockatrice) {
         cocatrices.add(cockatrice);
+        return this;
+    }
+
+    public BasiliskRecord addAll(final Stream<CockatriceRecord> cockatrices) {
+        cockatrices.forEach(this::add);
         return this;
     }
 

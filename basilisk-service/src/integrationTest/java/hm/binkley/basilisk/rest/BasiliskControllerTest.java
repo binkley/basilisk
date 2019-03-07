@@ -10,8 +10,6 @@ import hm.binkley.basilisk.domain.store.BasiliskRecord;
 import hm.binkley.basilisk.domain.store.CockatriceRecord;
 import hm.binkley.basilisk.service.BasiliskService;
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -153,9 +151,13 @@ class BasiliskControllerTest {
             throws Exception {
         final var word = "FOO";
         final var extra = "Alice";
-        final var record = BasiliskRecord.createRaw(word, AT);
+        final var record = BasiliskRecord.raw(word, AT);
+        final BasiliskRequest request = BasiliskRequest.builder()
+                .word(word)
+                .at(AT)
+                .build();
 
-        when(basilisks.create(word, AT))
+        when(basilisks.create(request))
                 .thenReturn(new Basilisk(new BasiliskRecord(BASILISK_ID,
                         Instant.ofEpochSecond(1_000_000),
                         record.getWord(), record.getAt())));
@@ -163,27 +165,30 @@ class BasiliskControllerTest {
                 .thenReturn(extra);
 
         jsonMvc.perform(post("/basilisk")
-                .content(asJson(BasiliskRequest.builder()
-                        .word(word)
-                        .at(AT)
-                        .build())))
+                .content(asJson(request)))
                 .andExpect(status().isCreated())
                 .andExpect(header().string(LOCATION, endpointWithId()))
                 .andExpect(content().json(asJson(
                         responseMapWithNoCockatricesFor(word, extra))));
     }
 
-    @Disabled("TODO: POST with cockatrices")
     @Test
     void shouldAddRecordWithSomeCockatrices()
             throws Exception {
         final var word = "FOO";
         final var extra = "Alice";
-        final var cockatriceRecord = CockatriceRecord.createRaw(BEAK_SIZE);
-        final var record = BasiliskRecord.createRaw(word, AT)
+        final var cockatriceRecord = CockatriceRecord.raw(BEAK_SIZE);
+        final var record = BasiliskRecord.raw(word, AT)
                 .add(cockatriceRecord);
+        final BasiliskRequest request = BasiliskRequest.builder()
+                .word(record.getWord())
+                .at(record.getAt())
+                .cockatrices(List.of(CockatriceRequest.builder()
+                        .beakSize(cockatriceRecord.getBeakSize())
+                        .build()))
+                .build();
 
-        when(basilisks.create(word, AT))
+        when(basilisks.create(request))
                 .thenReturn(new Basilisk(new BasiliskRecord(BASILISK_ID,
                         Instant.ofEpochSecond(1_000_000),
                         record.getWord(), record.getAt())
@@ -194,16 +199,11 @@ class BasiliskControllerTest {
                 .thenReturn(extra);
 
         jsonMvc.perform(post("/basilisk")
-                .content(asJson(BasiliskRequest.builder()
-                        .word(word)
-                        .at(AT)
-                        .build())))
+                .content(asJson(request)))
                 .andExpect(status().isCreated())
                 .andExpect(header().string(LOCATION, endpointWithId()))
                 .andExpect(content().json(asJson(
                         responseMapWithSomeCockatricesFor(word, extra))));
-
-        Assertions.fail("DID NOT POST COCKATRICE, YET TEST PASSES");
     }
 
     private String asJson(final Object o)

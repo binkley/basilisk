@@ -60,7 +60,7 @@ class CockatriceStoreTest {
 
     @Test
     void shouldCreate() {
-        final var unsaved = CockatriceRecord.createRaw(TEN);
+        final var unsaved = CockatriceRecord.raw(TEN);
         final var saved = new CockatriceRecord(3L, EPOCH,
                 unsaved.getBeakSize());
         when(springData.save(unsaved))
@@ -74,7 +74,7 @@ class CockatriceStoreTest {
 
     @Test
     void shouldSave() {
-        final var unsaved = CockatriceRecord.createRaw(TEN);
+        final var unsaved = CockatriceRecord.raw(TEN);
         final var saved = new CockatriceRecord(3L, EPOCH,
                 unsaved.getBeakSize());
 

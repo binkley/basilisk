@@ -26,7 +26,7 @@ public class CockatriceStore {
     }
 
     public CockatriceRecord create() {
-        final CockatriceRecord record = CockatriceRecord.createRaw(TEN);
+        final CockatriceRecord record = CockatriceRecord.raw(TEN);
         record.store = this;
         return record.save();
     }

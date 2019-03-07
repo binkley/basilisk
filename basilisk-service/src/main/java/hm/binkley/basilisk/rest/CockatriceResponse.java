@@ -12,8 +12,9 @@ public final class CockatriceResponse {
     Long id;
     BigDecimal beakSize;
 
-    static As<CockatriceResponse> with() {
-        return (id, receivedAt, beakSize) -> new CockatriceResponse(id,
-                beakSize);
+    static As<CockatriceResponse> using() {
+        return (id, receivedAt, beakSize) ->
+                new CockatriceResponse(id, beakSize);
     }
 }
+

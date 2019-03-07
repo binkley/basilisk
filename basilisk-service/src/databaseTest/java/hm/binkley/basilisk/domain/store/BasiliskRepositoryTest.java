@@ -25,7 +25,7 @@ class BasiliskRepositoryTest {
 
     @Test
     void shouldRoundtrip() {
-        final var unsaved = BasiliskRecord.createRaw("BIRD",
+        final var unsaved = BasiliskRecord.raw("BIRD",
                 Instant.ofEpochSecond(1_000_000));
         final var found = repository.findById(
                 repository.save(unsaved).getId());
@@ -35,9 +35,9 @@ class BasiliskRepositoryTest {
 
     @Test
     void shouldRoundtripWithCockatrice() {
-        final var unsaved = BasiliskRecord.createRaw("BIRD",
+        final var unsaved = BasiliskRecord.raw("BIRD",
                 Instant.ofEpochSecond(1_000_000))
-                .add(CockatriceRecord.createRaw(TEN));
+                .add(CockatriceRecord.raw(TEN));
         final var found = repository.findById(
                 repository.save(unsaved).getId());
 
@@ -46,9 +46,9 @@ class BasiliskRepositoryTest {
 
     @Test
     void shouldFindByWord() {
-        final var unsavedLeft = BasiliskRecord.createRaw("LEFT",
+        final var unsavedLeft = BasiliskRecord.raw("LEFT",
                 Instant.ofEpochSecond(1_000_000));
-        final var unsavedRight = BasiliskRecord.createRaw("RIGHT",
+        final var unsavedRight = BasiliskRecord.raw("RIGHT",
                 Instant.ofEpochSecond(1_000_000));
         repository.saveAll(List.of(unsavedLeft, unsavedRight));
 
@@ -60,9 +60,9 @@ class BasiliskRepositoryTest {
 
     @Test
     void shouldStream() {
-        final var unsavedA = BasiliskRecord.createRaw("BIRD",
+        final var unsavedA = BasiliskRecord.raw("BIRD",
                 Instant.ofEpochSecond(1_000_000));
-        final var unsavedB = BasiliskRecord.createRaw("WORD",
+        final var unsavedB = BasiliskRecord.raw("WORD",
                 Instant.ofEpochSecond(1_000_000));
         repository.saveAll(List.of(unsavedA, unsavedB));
 

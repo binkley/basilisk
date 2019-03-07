@@ -31,7 +31,7 @@ public final class CockatriceRecord {
         this.beakSize = beakSize;
     }
 
-    public static CockatriceRecord createRaw(final BigDecimal beakSize) {
+    public static CockatriceRecord raw(final BigDecimal beakSize) {
         return new CockatriceRecord(null, null, beakSize);
     }
 

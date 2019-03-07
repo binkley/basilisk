@@ -80,7 +80,7 @@ class BasiliskStoreTest {
     void shouldCreate() {
         final var word = "QUZ";
         final var at = Instant.ofEpochSecond(1L);
-        final var unsaved = BasiliskRecord.createRaw(word, at);
+        final var unsaved = BasiliskRecord.raw(word, at);
         final var saved = new BasiliskRecord(
                 3L, EPOCH, unsaved.getWord(), unsaved.getAt());
         when(springData.save(unsaved))
@@ -94,7 +94,7 @@ class BasiliskStoreTest {
 
     @Test
     void shouldSave() {
-        final var unsaved = BasiliskRecord.createRaw(
+        final var unsaved = BasiliskRecord.raw(
                 "QUUX", Instant.ofEpochSecond(1L));
         final var saved = new BasiliskRecord(
                 3L, EPOCH, unsaved.getWord(), unsaved.getAt());

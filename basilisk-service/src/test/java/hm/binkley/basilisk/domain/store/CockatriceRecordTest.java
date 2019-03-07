@@ -19,7 +19,7 @@ class CockatriceRecordTest {
 
     @Test
     void shouldSave() {
-        final var unsaved = CockatriceRecord.createRaw(TEN);
+        final var unsaved = CockatriceRecord.raw(TEN);
         unsaved.store = store;
         final var saved = new CockatriceRecord(3L, EPOCH,
                 unsaved.getBeakSize());

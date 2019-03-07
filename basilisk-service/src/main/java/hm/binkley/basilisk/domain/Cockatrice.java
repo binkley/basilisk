@@ -14,6 +14,12 @@ import java.time.Instant;
 public class Cockatrice {
     private final CockatriceRecord record;
 
+    public Long getId() { return record.getId(); }
+
+    public Instant getReceivedAt() { return record.getReceivedAt(); }
+
+    public BigDecimal getBeakSize() { return record.getBeakSize(); }
+
     public <T> T as(final As<T> as) {
         return as.from(record.getId(), record.getReceivedAt(),
                 record.getBeakSize());

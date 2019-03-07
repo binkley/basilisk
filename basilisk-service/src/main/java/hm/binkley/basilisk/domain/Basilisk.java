@@ -19,14 +19,19 @@ public class Basilisk {
                 .map(Cockatrice::new);
     }
 
-    public <T> T as(final As<T> as) {
-        return as.from(record.getId(), record.getReceivedAt(),
-                record.getWord(), record.getAt(), cockatrices());
+    public <T, U> T as(final As<T, U> asBasilisk,
+            final Cockatrice.As<U> asCockatrice) {
+        return asBasilisk.from(record.getId(), record.getReceivedAt(),
+                record.getWord(), record.getAt(),
+                cockatrices().map(it -> asCockatrice.from(
+                        it.getId(),
+                        it.getReceivedAt(),
+                        it.getBeakSize())));
     }
 
-    public interface As<T> {
+    public interface As<T, U> {
         T from(final Long id, final Instant receivedAt,
                 final String word, final Instant at,
-                final Stream<Cockatrice> cockatrice);
+                final Stream<U> cockatrices);
     }
 }

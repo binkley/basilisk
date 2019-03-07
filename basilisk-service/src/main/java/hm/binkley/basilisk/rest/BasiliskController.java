@@ -62,16 +62,16 @@ public class BasiliskController {
     @ResponseStatus(CREATED)
     public ResponseEntity<BasiliskResponse> postBasilisk(
             @RequestBody final @Valid BasiliskRequest request) {
-        final var basilisk = basilisks
-                .create(request.getWord(), request.getAt());
+        final var basilisk = basilisks.create(request);
+        final var response = toResponse().apply(basilisk);
 
-        return created(URI.create("/basilisk/"
-                + basilisk.as((id, receivedAt, word, at, cockatrices) -> id)))
-                .body(toResponse().apply(basilisk));
+        return created(URI.create("/basilisk/" + response.getId()))
+                .body(response);
     }
 
     private Function<Basilisk, BasiliskResponse> toResponse() {
-        return it -> it.as(BasiliskResponse.with(service));
+        return it -> it.as(
+                BasiliskResponse.using(service), CockatriceResponse.using());
     }
 
     /** @todo Think more deeply about global controller advice */

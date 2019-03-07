@@ -2,6 +2,9 @@ package hm.binkley.basilisk.domain;
 
 import hm.binkley.basilisk.domain.store.BasiliskRecord;
 import hm.binkley.basilisk.domain.store.BasiliskStore;
+import hm.binkley.basilisk.domain.store.CockatriceRecord;
+import hm.binkley.basilisk.rest.BasiliskRequest;
+import hm.binkley.basilisk.rest.CockatriceRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -9,9 +12,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import static java.math.BigDecimal.TEN;
 import static java.time.Instant.EPOCH;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -75,12 +80,23 @@ class BasilisksTest {
     void shouldCreate() {
         final var word = "QUX";
         final var at = Instant.ofEpochSecond(1L);
-        final var record = new BasiliskRecord(3L, EPOCH, word, at);
+        final var beakSize = TEN;
+        final CockatriceRecord cockatriceRecord = new CockatriceRecord(
+                5L, EPOCH.plusSeconds(11L), beakSize);
+        final var record = new BasiliskRecord(3L, EPOCH, word, at)
+                .add(cockatriceRecord);
 
-        when(store.create(word, at))
+        when(store.save(BasiliskRecord.raw(record.getWord(), record.getAt())
+                .add(CockatriceRecord.raw(cockatriceRecord.getBeakSize()))))
                 .thenReturn(record);
 
-        assertThat(basilisks.create(word, at))
+        assertThat(basilisks.create(BasiliskRequest.builder()
+                .word(word)
+                .at(at)
+                .cockatrices(List.of(CockatriceRequest.builder()
+                        .beakSize(beakSize)
+                        .build()))
+                .build()))
                 .isEqualTo(new Basilisk(record));
 
         verifyNoMoreInteractions(store);

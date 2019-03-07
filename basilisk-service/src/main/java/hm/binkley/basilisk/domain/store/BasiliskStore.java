@@ -30,7 +30,7 @@ public class BasiliskStore {
     }
 
     public BasiliskRecord create(final String word, final Instant at) {
-        final BasiliskRecord record = BasiliskRecord.createRaw(word, at);
+        final BasiliskRecord record = BasiliskRecord.raw(word, at);
         record.store = this;
         return record.save();
     }

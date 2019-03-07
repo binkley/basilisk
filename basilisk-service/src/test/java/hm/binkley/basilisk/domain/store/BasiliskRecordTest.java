@@ -22,7 +22,7 @@ class BasiliskRecordTest {
 
     @Test
     void shouldSave() {
-        final var unsaved = BasiliskRecord.createRaw(
+        final var unsaved = BasiliskRecord.raw(
                 "FOO", Instant.ofEpochSecond(13L));
         unsaved.store = store;
         final var saved = new BasiliskRecord(
@@ -39,8 +39,8 @@ class BasiliskRecordTest {
 
     @Test
     void shouldAddCockatrice() {
-        final var cockatrice = CockatriceRecord.createRaw(TEN);
-        final var basilisk = BasiliskRecord.createRaw(
+        final var cockatrice = CockatriceRecord.raw(TEN);
+        final var basilisk = BasiliskRecord.raw(
                 "FOO", Instant.ofEpochSecond(13L))
                 .add(cockatrice);
 

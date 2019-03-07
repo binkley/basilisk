@@ -23,7 +23,7 @@ class CockatriceRepositoryTest {
 
     @Test
     void shouldRoundtrip() {
-        final var unsaved = CockatriceRecord.createRaw(TEN);
+        final var unsaved = CockatriceRecord.raw(TEN);
         final var found = repository.findById(
                 repository.save(unsaved).getId());
 
@@ -32,8 +32,8 @@ class CockatriceRepositoryTest {
 
     @Test
     void shouldStream() {
-        final var unsavedA = CockatriceRecord.createRaw(TEN);
-        final var unsavedB = CockatriceRecord.createRaw(TEN);
+        final var unsavedA = CockatriceRecord.raw(TEN);
+        final var unsavedB = CockatriceRecord.raw(TEN);
         repository.saveAll(List.of(unsavedA, unsavedB));
 
         try (final var found = repository.readAll()) {

@@ -21,11 +21,11 @@ public final class BasiliskResponse {
     @Builder.Default
     Set<CockatriceResponse> cockatrices = new LinkedHashSet<>();
 
-    static As<BasiliskResponse> with(final BasiliskService service) {
+    static As<BasiliskResponse, CockatriceResponse> using(
+            final BasiliskService service) {
         return (id, receivedAt, word, at, cockatrices) ->
                 new BasiliskResponse(
                         id, word, at, service.extra(word), cockatrices
-                        .map(it -> it.as(CockatriceResponse.with()))
                         .collect(toCollection(LinkedHashSet::new)));
     }
 }
