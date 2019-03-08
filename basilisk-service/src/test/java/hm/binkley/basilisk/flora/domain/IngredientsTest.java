@@ -31,7 +31,7 @@ class IngredientsTest {
 
     @Test
     void shouldFindById() {
-        final var record = new IngredientRecord(3L, EPOCH, "EGGS");
+        final var record = new IngredientRecord(3L, EPOCH, "EGGS", 2L);
         when(store.byId(record.getId()))
                 .thenReturn(Optional.of(record));
 
@@ -44,7 +44,7 @@ class IngredientsTest {
 
     @Test
     void shouldFindByName() {
-        final var record = new IngredientRecord(3L, EPOCH, "MILK");
+        final var record = new IngredientRecord(3L, EPOCH, "MILK", 2L);
         when(store.byName(record.getName()))
                 .thenReturn(Stream.of(record));
 
@@ -57,7 +57,7 @@ class IngredientsTest {
 
     @Test
     void shouldFindAll() {
-        final var record = new IngredientRecord(3L, EPOCH, "SALT");
+        final var record = new IngredientRecord(3L, EPOCH, "SALT", 2L);
         when(store.all())
                 .thenReturn(Stream.of(record));
 
@@ -71,7 +71,7 @@ class IngredientsTest {
     @Test
     void shouldCreate() {
         final var name = "QUX";
-        final var record = new IngredientRecord(3L, EPOCH, name);
+        final var record = new IngredientRecord(3L, EPOCH, name, 2L);
 
         when(store.save(IngredientRecord.raw(record.getName())))
                 .thenReturn(record);

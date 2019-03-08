@@ -3,11 +3,11 @@ package hm.binkley.basilisk.flora.rest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hm.binkley.basilisk.basilisk.domain.Basilisks;
+import hm.binkley.basilisk.configuration.JsonConfiguration;
+import hm.binkley.basilisk.configuration.JsonWebMvcTest;
 import hm.binkley.basilisk.flora.domain.Ingredient;
 import hm.binkley.basilisk.flora.domain.Ingredients;
 import hm.binkley.basilisk.flora.domain.store.IngredientRecord;
-import hm.binkley.basilisk.configuration.JsonConfiguration;
-import hm.binkley.basilisk.configuration.JsonWebMvcTest;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 class IngredientControllerTest {
     private static final long ID = 1L;
+    private static final long PARENT_ID = 2L;
 
     private final MockMvc jsonMvc;
     private final ObjectMapper objectMapper;
@@ -62,7 +63,7 @@ class IngredientControllerTest {
 
         when(ingredients.all())
                 .thenReturn(Stream.of(new Ingredient(
-                        new IngredientRecord(ID, EPOCH, name))));
+                        new IngredientRecord(ID, EPOCH, name, PARENT_ID))));
 
         jsonMvc.perform(get("/ingredient"))
                 .andExpect(status().isOk())
@@ -77,7 +78,7 @@ class IngredientControllerTest {
 
         when(ingredients.byId(ID))
                 .thenReturn(Optional.of(new Ingredient(
-                        new IngredientRecord(ID, EPOCH, name))));
+                        new IngredientRecord(ID, EPOCH, name, PARENT_ID))));
 
         jsonMvc.perform(get(endpointWithId()))
                 .andExpect(status().isOk())
@@ -99,7 +100,7 @@ class IngredientControllerTest {
 
         when(ingredients.byName(name))
                 .thenReturn(Stream.of(new Ingredient(
-                        new IngredientRecord(ID, EPOCH, name))));
+                        new IngredientRecord(ID, EPOCH, name, PARENT_ID))));
 
         jsonMvc.perform(get("/ingredient/find/" + name))
                 .andExpect(status().isOk())
@@ -119,7 +120,7 @@ class IngredientControllerTest {
         when(ingredients.create(request))
                 .thenReturn(new Ingredient(new IngredientRecord(ID,
                         Instant.ofEpochSecond(1_000_000),
-                        record.getName())));
+                        record.getName(), PARENT_ID)));
 
         jsonMvc.perform(post("/ingredient")
                 .content(asJson(request)))

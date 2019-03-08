@@ -14,4 +14,7 @@ public interface IngredientRepository
 
     @Query("SELECT * FROM FLORA.INGREDIENT")
     Stream<IngredientRecord> readAll();
+
+    @Query("SELECT * FROM FLORA.INGREDIENT WHERE recipe_id IS NULL")
+    Stream<IngredientRecord> findAllByRecipeIdIsNull();
 }

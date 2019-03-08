@@ -14,11 +14,12 @@ public class Ingredient {
     private final IngredientRecord record;
 
     public <T> T as(final Ingredient.As<T> asIngredient) {
-        return asIngredient.from(
-                record.getId(), record.getReceivedAt(), record.getName());
+        return asIngredient.from(record.getId(), record.getReceivedAt(),
+                record.getName(), record.getRecipeId());
     }
 
     public interface As<T> {
-        T from(final Long id, final Instant receivedAt, final String name);
+        T from(final Long id, final Instant receivedAt, final String name,
+                final Long recipeId);
     }
 }

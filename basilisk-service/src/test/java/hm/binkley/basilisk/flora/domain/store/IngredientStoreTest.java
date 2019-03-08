@@ -30,7 +30,7 @@ class IngredientStoreTest {
 
     @Test
     void shouldFindById() {
-        final var saved = new IngredientRecord(3L, EPOCH, "EGGS");
+        final var saved = new IngredientRecord(3L, EPOCH, "EGGS", 2L);
         when(springData.findById(saved.getId()))
                 .thenReturn(Optional.of(saved));
 
@@ -44,7 +44,7 @@ class IngredientStoreTest {
 
     @Test
     void shouldFindByName() {
-        final var saved = new IngredientRecord(3L, EPOCH, "BACON");
+        final var saved = new IngredientRecord(3L, EPOCH, "BACON", 2L);
         when(springData.findByName(saved.getName()))
                 .thenReturn(Stream.of(saved));
 
@@ -59,7 +59,7 @@ class IngredientStoreTest {
 
     @Test
     void shouldFindAll() {
-        final var saved = new IngredientRecord(3L, EPOCH, "MILK");
+        final var saved = new IngredientRecord(3L, EPOCH, "MILK", 2L);
         when(springData.readAll())
                 .thenReturn(Stream.of(saved));
 
@@ -75,7 +75,8 @@ class IngredientStoreTest {
     @Test
     void shouldCreate() {
         final var unsaved = IngredientRecord.raw("SALT");
-        final var saved = new IngredientRecord(3L, EPOCH, "SALT");
+        final var saved = new IngredientRecord(3L, EPOCH, unsaved
+                .getName(), 2L);
         when(springData.save(unsaved))
                 .thenReturn(saved);
 
@@ -89,7 +90,7 @@ class IngredientStoreTest {
     void shouldSave() {
         final var unsaved = IngredientRecord.raw("PEPPER");
         final var saved = new IngredientRecord(3L, EPOCH,
-                unsaved.getName());
+                unsaved.getName(), 2L);
 
         when(springData.save(unsaved))
                 .thenReturn(saved);

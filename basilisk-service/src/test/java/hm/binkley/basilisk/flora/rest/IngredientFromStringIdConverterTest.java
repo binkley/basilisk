@@ -32,7 +32,7 @@ class IngredientFromStringIdConverterTest {
 
     @Test
     void shouldConvert() {
-        final var record = new IngredientRecord(3L, EPOCH, "EGGS");
+        final var record = new IngredientRecord(3L, EPOCH, "EGGS", 2L);
         final var ingredient = new Ingredient(record);
         when(ingredients.byId(record.getId()))
                 .thenReturn(Optional.of(ingredient));

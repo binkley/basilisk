@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ActiveProfiles("test")
@@ -27,6 +28,18 @@ class IngredientRepositoryTest {
                 repository.save(unsaved).getId());
 
         assertThat(found).contains(unsaved);
+    }
+
+    @Test
+    void shouldFindByName() {
+        final var unsavedLeft = IngredientRecord.raw("EGGS");
+        final var unsavedRight = IngredientRecord.raw("SALT");
+        repository.saveAll(List.of(unsavedLeft, unsavedRight));
+
+        assertThat(repository.findByName("EGGS").collect(toList()))
+                .isEqualTo(List.of(unsavedLeft));
+        assertThat(repository.findByName("BUTTER").collect(toList()))
+                .isEmpty();
     }
 
     @Test

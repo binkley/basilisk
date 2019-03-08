@@ -10,13 +10,14 @@ class IngredientTest {
     @Test
     void shouldAs() {
         final var record = new IngredientRecord(
-                5L, EPOCH.plusSeconds(1L), "EGG");
+                5L, EPOCH.plusSeconds(1L), "EGG", 2L);
 
         @SuppressWarnings("PMD") final var that = new Ingredient(record).as(
-                (id, receivedAt, name) -> {
+                (id, receivedAt, name, recipeId) -> {
                     assertThat(id).isEqualTo(record.getId());
                     assertThat(receivedAt).isEqualTo(record.getReceivedAt());
                     assertThat(name).isEqualTo(record.getName());
+                    assertThat(recipeId).isEqualTo(record.getRecipeId());
                     return this;
                 });
 

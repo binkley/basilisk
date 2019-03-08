@@ -20,18 +20,21 @@ public final class IngredientRecord {
     Instant receivedAt;
     @Getter
     String name;
+    @Getter
+    Long recipeId;
     @Transient
     IngredientStore store;
 
     public IngredientRecord(final Long id, final Instant receivedAt,
-            final String name) {
+            final String name, final Long recipeId) {
         this.id = id;
         this.receivedAt = receivedAt;
         this.name = name;
+        this.recipeId = recipeId;
     }
 
     public static IngredientRecord raw(final String name) {
-        return new IngredientRecord(null, null, name);
+        return new IngredientRecord(null, null, name, null);
     }
 
     public IngredientRecord save() {
