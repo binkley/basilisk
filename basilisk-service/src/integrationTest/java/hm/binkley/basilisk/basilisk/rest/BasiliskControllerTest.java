@@ -37,11 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Import(JsonConfiguration.class)
-@JsonWebMvcTest(
-        controllers = BasiliskController.class // ,
-//        excludeFilters = @Filter(
-//                type = REGEX, pattern = "^(?!hm.binkley.basilisk.basilisk)")
-)
+@JsonWebMvcTest(BasiliskController.class)
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 class BasiliskControllerTest {
     private static final long BASILISK_ID = 1L;
