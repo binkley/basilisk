@@ -1,8 +1,8 @@
 package hm.binkley.basilisk.flora.rest;
 
-import hm.binkley.basilisk.flora.domain.Ingredient;
-import hm.binkley.basilisk.flora.domain.Ingredients;
-import hm.binkley.basilisk.flora.domain.store.IngredientRecord;
+import hm.binkley.basilisk.flora.domain.Recipe;
+import hm.binkley.basilisk.flora.domain.Recipes;
+import hm.binkley.basilisk.flora.domain.store.RecipeRecord;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,21 +19,21 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class IngredientFromStringIdConverterTest {
+class RecipeFromStringIdConverterTest {
     @Mock
-    private Ingredients ingredients;
+    private Recipes ingredients;
 
-    private IngredientFromStringIdConverter converter;
+    private RecipeFromStringIdConverter converter;
 
     @BeforeEach
     void setUp() {
-        converter = new IngredientFromStringIdConverter(ingredients);
+        converter = new RecipeFromStringIdConverter(ingredients);
     }
 
     @Test
     void shouldConvert() {
-        final var record = new IngredientRecord(3L, EPOCH, "EGGS", 2L);
-        final var domain = new Ingredient(record);
+        final var record = new RecipeRecord(3L, EPOCH, "SOUFFLE");
+        final var domain = new Recipe(record);
         when(ingredients.byId(record.getId()))
                 .thenReturn(Optional.of(domain));
 

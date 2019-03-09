@@ -5,10 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import hm.binkley.basilisk.basilisk.domain.Basilisks;
 import hm.binkley.basilisk.configuration.JsonConfiguration;
 import hm.binkley.basilisk.configuration.JsonWebMvcTest;
-import hm.binkley.basilisk.flora.domain.Ingredient;
 import hm.binkley.basilisk.flora.domain.Ingredients;
+import hm.binkley.basilisk.flora.domain.Recipe;
 import hm.binkley.basilisk.flora.domain.Recipes;
-import hm.binkley.basilisk.flora.domain.store.IngredientRecord;
+import hm.binkley.basilisk.flora.domain.store.RecipeRecord;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,25 +32,24 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Import(JsonConfiguration.class)
-@JsonWebMvcTest(IngredientController.class)
+@JsonWebMvcTest(RecipeController.class)
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-class IngredientControllerTest {
+class RecipeControllerTest {
     private static final long ID = 1L;
-    private static final long RECIPE_ID = 2L;
 
     private final MockMvc jsonMvc;
     private final ObjectMapper objectMapper;
 
     @MockBean
-    private Ingredients ingredients;
+    private Recipes recipes;
 
     @MockBean
     private Basilisks thisIsSad;
     @MockBean
-    private Recipes thisIsMoreSad;
+    private Ingredients thisIsMoreSad;
 
     private static String endpointWithId() {
-        return "/ingredient/" + ID;
+        return "/recipe/" + ID;
     }
 
     private static Map<String, Object> responseMapFor(final String name) {
@@ -62,13 +61,13 @@ class IngredientControllerTest {
     @Test
     void shouldFindAll()
             throws Exception {
-        final String name = "EGGS";
+        final String name = "POACHED EGGS";
 
-        when(ingredients.all())
-                .thenReturn(Stream.of(new Ingredient(
-                        new IngredientRecord(ID, EPOCH, name, RECIPE_ID))));
+        when(recipes.all())
+                .thenReturn(Stream.of(new Recipe(
+                        new RecipeRecord(ID, EPOCH, name))));
 
-        jsonMvc.perform(get("/ingredient"))
+        jsonMvc.perform(get("/recipe"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(asJson(List.of(
                         responseMapFor(name)))));
@@ -77,11 +76,11 @@ class IngredientControllerTest {
     @Test
     void shouldFindExplicitly()
             throws Exception {
-        final String name = "MILK";
+        final String name = "FRIED EGGS";
 
-        when(ingredients.byId(ID))
-                .thenReturn(Optional.of(new Ingredient(
-                        new IngredientRecord(ID, EPOCH, name, RECIPE_ID))));
+        when(recipes.byId(ID))
+                .thenReturn(Optional.of(new Recipe(
+                        new RecipeRecord(ID, EPOCH, name))));
 
         jsonMvc.perform(get(endpointWithId()))
                 .andExpect(status().isOk())
@@ -99,13 +98,13 @@ class IngredientControllerTest {
     @Test
     void shouldFindByName()
             throws Exception {
-        final String name = "BACON";
+        final String name = "BOILED EGGS";
 
-        when(ingredients.byName(name))
-                .thenReturn(Stream.of(new Ingredient(
-                        new IngredientRecord(ID, EPOCH, name, RECIPE_ID))));
+        when(recipes.byName(name))
+                .thenReturn(Stream.of(new Recipe(
+                        new RecipeRecord(ID, EPOCH, name))));
 
-        jsonMvc.perform(get("/ingredient/find/" + name))
+        jsonMvc.perform(get("/recipe/find/" + name))
                 .andExpect(status().isOk())
                 .andExpect(content().json(asJson(List.of(
                         responseMapFor(name)))));
@@ -114,18 +113,18 @@ class IngredientControllerTest {
     @Test
     void shouldCreateNew()
             throws Exception {
-        final var name = "SALT";
-        final var record = IngredientRecord.raw(name);
-        final IngredientRequest request = IngredientRequest.builder()
+        final var name = "SOUFFLE";
+        final var record = RecipeRecord.raw(name);
+        final RecipeRequest request = RecipeRequest.builder()
                 .name(name)
                 .build();
 
-        when(ingredients.create(request))
-                .thenReturn(new Ingredient(new IngredientRecord(ID,
+        when(recipes.create(request))
+                .thenReturn(new Recipe(new RecipeRecord(ID,
                         Instant.ofEpochSecond(1_000_000),
-                        record.getName(), RECIPE_ID)));
+                        record.getName())));
 
-        jsonMvc.perform(post("/ingredient")
+        jsonMvc.perform(post("/recipe")
                 .content(asJson(request)))
                 .andExpect(status().isCreated())
                 .andExpect(header().string(LOCATION, endpointWithId()))

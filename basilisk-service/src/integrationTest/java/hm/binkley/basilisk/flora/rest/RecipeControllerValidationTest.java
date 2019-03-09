@@ -1,10 +1,9 @@
-package hm.binkley.basilisk.basilisk.rest;
+package hm.binkley.basilisk.flora.rest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hm.binkley.basilisk.basilisk.domain.Basilisks;
-import hm.binkley.basilisk.basilisk.service.BasiliskService;
 import hm.binkley.basilisk.configuration.JsonConfiguration;
 import hm.binkley.basilisk.configuration.ProblemWebMvcTest;
 import hm.binkley.basilisk.flora.domain.Ingredients;
@@ -16,10 +15,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.time.Instant;
-import java.time.OffsetDateTime;
-
-import static java.time.ZoneOffset.UTC;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
@@ -29,34 +24,28 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Import(JsonConfiguration.class)
-@ProblemWebMvcTest(BasiliskController.class)
+@ProblemWebMvcTest(RecipeController.class)
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-class BasiliskControllerValidationTest {
-    private static final Instant AT = OffsetDateTime.of(
-            2011, 2, 3, 14, 5, 6, 0, UTC)
-            .toInstant();
-
+class RecipeControllerValidationTest {
     private final MockMvc problemMvc;
     private final ObjectMapper objectMapper;
 
     @MockBean
-    private Basilisks basilisks;
-    @MockBean
-    private BasiliskService service;
+    private Recipes recipes;
 
     @MockBean
-    private Ingredients thisIsSad;
+    private Basilisks thisIsSad;
     @MockBean
-    private Recipes thisIsMoreSad;
+    private Ingredients thisIsMoreSad;
 
     @SuppressFBWarnings("RV")
     @Test
-    void shouldRejectShortWords()
+    void shouldRejectShortNames()
             throws Exception {
-        problemMvc.perform(get("/basilisk/find/F"))
+        problemMvc.perform(get("/recipe/find/F"))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.violations[0].field",
-                        equalTo("findByWord.word")))
+                        equalTo("findByName.name")))
                 .andExpect(jsonPath("$.violations[0].message",
                         equalTo("length must be between 3 and 32")))
                 .andExpect(jsonPath("$.status",
@@ -65,20 +54,19 @@ class BasiliskControllerValidationTest {
         //      .andExpect(jsonPath("$.stackTrace").doesNotExist())
         ;
 
-        verifyNoMoreInteractions(basilisks, service);
+        verifyNoMoreInteractions(recipes);
     }
 
     @Test
-    void shouldRejectShortRequestWords()
+    void shouldRejectShortRequestNames()
             throws Exception {
-        problemMvc.perform(post("/basilisk")
-                .content(asJson(BasiliskRequest.builder()
-                        .word("F")
-                        .at(AT)
+        problemMvc.perform(post("/recipe")
+                .content(asJson(RecipeRequest.builder()
+                        .name("F")
                         .build())))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.violations[0].field",
-                        equalTo("word")))
+                        equalTo("name")))
                 .andExpect(jsonPath("$.violations[0].message",
                         equalTo("length must be between 3 and 32")))
                 .andExpect(jsonPath("$.status",
@@ -87,29 +75,7 @@ class BasiliskControllerValidationTest {
         //      .andExpect(jsonPath("$.stackTrace").doesNotExist())
         ;
 
-        verifyNoMoreInteractions(basilisks, service);
-    }
-
-    @Test
-    void shouldRejectShortMissingWhens()
-            throws Exception {
-        problemMvc.perform(post("/basilisk")
-                .content(asJson(BasiliskRequest.builder()
-                        .word("FOO")
-                        .at(null)
-                        .build())))
-                .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.violations[0].field",
-                        equalTo("at")))
-                .andExpect(jsonPath("$.violations[0].message",
-                        equalTo("must not be null")))
-                .andExpect(jsonPath("$.status",
-                        equalTo(UNPROCESSABLE_ENTITY.name())))
-        // TODO: Turn off stack traces
-        //      .andExpect(jsonPath("$.stackTrace").doesNotExist())
-        ;
-
-        verifyNoMoreInteractions(basilisks, service);
+        verifyNoMoreInteractions(recipes);
     }
 
     private String asJson(final Object o)

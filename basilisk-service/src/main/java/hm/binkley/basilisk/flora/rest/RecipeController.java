@@ -1,7 +1,7 @@
 package hm.binkley.basilisk.flora.rest;
 
-import hm.binkley.basilisk.flora.domain.Ingredient;
-import hm.binkley.basilisk.flora.domain.Ingredients;
+import hm.binkley.basilisk.flora.domain.Recipe;
+import hm.binkley.basilisk.flora.domain.Recipes;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,48 +27,48 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.ResponseEntity.created;
 
-@RequestMapping("/ingredient")
+@RequestMapping("/recipe")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @RestController
 @Validated
-public class IngredientController {
-    private final Ingredients ingredients;
+public class RecipeController {
+    private final Recipes recipes;
 
     @GetMapping
-    public List<IngredientResponse> getAll() {
-        return ingredients.all()
+    public List<RecipeResponse> getAll() {
+        return recipes.all()
                 .map(toResponse())
                 .collect(toList());
     }
 
     @GetMapping("{id}")
-    public IngredientResponse findById(
-            @PathVariable("id") final Ingredient ingredient) {
-        return toResponse().apply(ingredient);
+    public RecipeResponse findById(
+            @PathVariable("id") final Recipe recipe) {
+        return toResponse().apply(recipe);
     }
 
     @GetMapping("find/{name}")
-    public List<IngredientResponse> findByName(
+    public List<RecipeResponse> findByName(
             @PathVariable("name") final @Length(min = 3, max = 32)
                     String name) {
-        return ingredients.byName(name)
+        return recipes.byName(name)
                 .map(toResponse())
                 .collect(toList());
     }
 
     @PostMapping
     @ResponseStatus(CREATED)
-    public ResponseEntity<IngredientResponse> postIngredient(
-            @RequestBody final @Valid IngredientRequest request) {
-        final var domain = ingredients.create(request);
+    public ResponseEntity<RecipeResponse> postRecipe(
+            @RequestBody final @Valid RecipeRequest request) {
+        final var domain = recipes.create(request);
         final var response = toResponse().apply(domain);
 
-        return created(URI.create("/ingredient/" + response.getId()))
+        return created(URI.create("/recipe/" + response.getId()))
                 .body(response);
     }
 
-    private Function<Ingredient, IngredientResponse> toResponse() {
-        return it -> it.as(IngredientResponse.using());
+    private Function<Recipe, RecipeResponse> toResponse() {
+        return it -> it.as(RecipeResponse.using());
     }
 
     /** @todo Think more deeply about global controller advice */

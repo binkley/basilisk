@@ -7,6 +7,7 @@ import hm.binkley.basilisk.basilisk.domain.Basilisks;
 import hm.binkley.basilisk.configuration.JsonConfiguration;
 import hm.binkley.basilisk.configuration.ProblemWebMvcTest;
 import hm.binkley.basilisk.flora.domain.Ingredients;
+import hm.binkley.basilisk.flora.domain.Recipes;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,8 @@ class IngredientControllerValidationTest {
 
     @MockBean
     private Basilisks thisIsSad;
+    @MockBean
+    private Recipes thisIsMoreSad;
 
     @SuppressFBWarnings("RV")
     @Test

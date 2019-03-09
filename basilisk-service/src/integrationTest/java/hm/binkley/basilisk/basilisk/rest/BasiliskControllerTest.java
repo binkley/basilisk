@@ -10,6 +10,7 @@ import hm.binkley.basilisk.basilisk.service.BasiliskService;
 import hm.binkley.basilisk.configuration.JsonConfiguration;
 import hm.binkley.basilisk.configuration.JsonWebMvcTest;
 import hm.binkley.basilisk.flora.domain.Ingredients;
+import hm.binkley.basilisk.flora.domain.Recipes;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +56,8 @@ class BasiliskControllerTest {
 
     @MockBean
     private Ingredients thisIsSad;
+    @MockBean
+    private Recipes thisIsMoreSad;
 
     private static String endpointWithId() {
         return "/basilisk/" + BASILISK_ID;
