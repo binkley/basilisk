@@ -20,7 +20,8 @@ class IngredientRecordTest {
     void shouldSave() {
         final var unsaved = IngredientRecord.raw("EGGS");
         unsaved.store = store;
-        final var saved = new IngredientRecord(3L, EPOCH, "EGGS", 2L);
+        final var saved = new IngredientRecord(
+                3L, EPOCH, unsaved.getName(), 2L);
         saved.store = store;
         when(store.save(unsaved))
                 .thenReturn(saved);

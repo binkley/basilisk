@@ -58,6 +58,21 @@ class IngredientStoreTest {
     }
 
     @Test
+    void shouldFindUnallocated() {
+        final var saved = new IngredientRecord(3L, EPOCH, "THYME", null);
+        when(springData.findAllByRecipeIdIsNull()).
+                thenReturn(Stream.of(saved));
+
+        final var found = store.unallocated().collect(toList());
+
+        assertThat(found).containsExactly(saved);
+        assertThat(found.stream().map(it -> it.store).collect(toList()))
+                .containsExactly(store);
+
+        verifyNoMoreInteractions(springData);
+    }
+
+    @Test
     void shouldFindAll() {
         final var saved = new IngredientRecord(3L, EPOCH, "MILK", 2L);
         when(springData.readAll())

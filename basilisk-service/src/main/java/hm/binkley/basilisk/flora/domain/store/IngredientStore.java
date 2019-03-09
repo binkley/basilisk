@@ -23,6 +23,11 @@ public class IngredientStore {
                 .peek(it -> it.store = this);
     }
 
+    public Stream<IngredientRecord> unallocated() {
+        return springData.findAllByRecipeIdIsNull()
+                .peek(it -> it.store = this);
+    }
+
     public Stream<IngredientRecord> all() {
         return springData.readAll()
                 .peek(it -> it.store = this);
