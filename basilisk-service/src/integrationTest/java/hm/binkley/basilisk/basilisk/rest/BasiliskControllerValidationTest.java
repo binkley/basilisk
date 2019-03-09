@@ -7,8 +7,7 @@ import hm.binkley.basilisk.basilisk.domain.Basilisks;
 import hm.binkley.basilisk.basilisk.service.BasiliskService;
 import hm.binkley.basilisk.configuration.JsonConfiguration;
 import hm.binkley.basilisk.configuration.ProblemWebMvcTest;
-import hm.binkley.basilisk.flora.domain.Ingredients;
-import hm.binkley.basilisk.flora.domain.Recipes;
+import hm.binkley.basilisk.flora.rest.WorkaroundComponentScanFindingAllConverters;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +27,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Import(JsonConfiguration.class)
+@Import({JsonConfiguration.class,
+        WorkaroundComponentScanFindingAllConverters.class})
 @ProblemWebMvcTest(BasiliskController.class)
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 class BasiliskControllerValidationTest {
@@ -38,16 +38,10 @@ class BasiliskControllerValidationTest {
 
     private final MockMvc problemMvc;
     private final ObjectMapper objectMapper;
+    private final Basilisks basilisks;
 
-    @MockBean
-    private Basilisks basilisks;
     @MockBean
     private BasiliskService service;
-
-    @MockBean
-    private Ingredients thisIsSad;
-    @MockBean
-    private Recipes thisIsMoreSad;
 
     @SuppressFBWarnings("RV")
     @Test

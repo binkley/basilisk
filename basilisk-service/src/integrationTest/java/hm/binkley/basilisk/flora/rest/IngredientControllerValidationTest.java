@@ -3,15 +3,12 @@ package hm.binkley.basilisk.flora.rest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import hm.binkley.basilisk.basilisk.domain.Basilisks;
 import hm.binkley.basilisk.configuration.JsonConfiguration;
 import hm.binkley.basilisk.configuration.ProblemWebMvcTest;
 import hm.binkley.basilisk.flora.domain.Ingredients;
-import hm.binkley.basilisk.flora.domain.Recipes;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -23,20 +20,14 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Import(JsonConfiguration.class)
+@Import({JsonConfiguration.class,
+        WorkaroundComponentScanFindingAllConverters.class})
 @ProblemWebMvcTest(IngredientController.class)
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 class IngredientControllerValidationTest {
     private final MockMvc problemMvc;
     private final ObjectMapper objectMapper;
-
-    @MockBean
-    private Ingredients ingredients;
-
-    @MockBean
-    private Basilisks thisIsSad;
-    @MockBean
-    private Recipes thisIsMoreSad;
+    private final Ingredients ingredients;
 
     @SuppressFBWarnings("RV")
     @Test

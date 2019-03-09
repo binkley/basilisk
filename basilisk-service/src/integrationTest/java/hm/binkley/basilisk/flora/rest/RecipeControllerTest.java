@@ -2,17 +2,14 @@ package hm.binkley.basilisk.flora.rest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import hm.binkley.basilisk.basilisk.domain.Basilisks;
 import hm.binkley.basilisk.configuration.JsonConfiguration;
 import hm.binkley.basilisk.configuration.JsonWebMvcTest;
-import hm.binkley.basilisk.flora.domain.Ingredients;
 import hm.binkley.basilisk.flora.domain.Recipe;
 import hm.binkley.basilisk.flora.domain.Recipes;
 import hm.binkley.basilisk.flora.domain.store.RecipeRecord;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -31,7 +28,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Import(JsonConfiguration.class)
+@Import({JsonConfiguration.class,
+        WorkaroundComponentScanFindingAllConverters.class})
 @JsonWebMvcTest(RecipeController.class)
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 class RecipeControllerTest {
@@ -39,14 +37,7 @@ class RecipeControllerTest {
 
     private final MockMvc jsonMvc;
     private final ObjectMapper objectMapper;
-
-    @MockBean
-    private Recipes recipes;
-
-    @MockBean
-    private Basilisks thisIsSad;
-    @MockBean
-    private Ingredients thisIsMoreSad;
+    private final Recipes recipes;
 
     private static String endpointWithId() {
         return "/recipe/" + ID;

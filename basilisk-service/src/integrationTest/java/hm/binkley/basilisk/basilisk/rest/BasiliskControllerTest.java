@@ -9,8 +9,7 @@ import hm.binkley.basilisk.basilisk.domain.store.CockatriceRecord;
 import hm.binkley.basilisk.basilisk.service.BasiliskService;
 import hm.binkley.basilisk.configuration.JsonConfiguration;
 import hm.binkley.basilisk.configuration.JsonWebMvcTest;
-import hm.binkley.basilisk.flora.domain.Ingredients;
-import hm.binkley.basilisk.flora.domain.Recipes;
+import hm.binkley.basilisk.flora.rest.WorkaroundComponentScanFindingAllConverters;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +36,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Import(JsonConfiguration.class)
+@Import({JsonConfiguration.class,
+        WorkaroundComponentScanFindingAllConverters.class})
 @JsonWebMvcTest(BasiliskController.class)
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 class BasiliskControllerTest {
@@ -47,17 +47,13 @@ class BasiliskControllerTest {
             .toInstant();
     private static final long COCKATRICE_ID = 3L;
     private static final BigDecimal BEAK_SIZE = TEN;
+
     private final MockMvc jsonMvc;
     private final ObjectMapper objectMapper;
-    @MockBean
-    private Basilisks basilisks;
-    @MockBean
-    private BasiliskService service;
+    private final Basilisks basilisks;
 
     @MockBean
-    private Ingredients thisIsSad;
-    @MockBean
-    private Recipes thisIsMoreSad;
+    private BasiliskService service;
 
     private static String endpointWithId() {
         return "/basilisk/" + BASILISK_ID;
