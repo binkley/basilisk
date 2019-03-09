@@ -11,7 +11,7 @@ public final class IngredientResponse {
     String name;
 
     static Ingredient.As<IngredientResponse> using() {
-        return (id, receivedAt, name, recipeId) ->
+        return (id, receivedAt, name) ->
                 new IngredientResponse(id, name);
     }
 }

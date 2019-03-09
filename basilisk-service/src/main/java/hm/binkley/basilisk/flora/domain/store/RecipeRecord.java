@@ -5,9 +5,12 @@ import lombok.Getter;
 import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
+import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.Instant;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @EqualsAndHashCode(exclude = {"id", "receivedAt", "store"})
 @Table("FLORA.RECIPE")
@@ -20,6 +23,9 @@ public final class RecipeRecord {
     Instant receivedAt;
     @Getter
     String name;
+    @Column("recipe_id")
+    @Getter
+    Set<IngredientRecord> ingredients = new LinkedHashSet<>();
     @Transient
     RecipeStore store;
 

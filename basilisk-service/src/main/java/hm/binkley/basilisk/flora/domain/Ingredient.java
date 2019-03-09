@@ -15,11 +15,10 @@ public class Ingredient {
 
     public <T> T as(final Ingredient.As<T> asIngredient) {
         return asIngredient.from(record.getId(), record.getReceivedAt(),
-                record.getName(), record.getRecipeId());
+                record.getName());
     }
 
     public interface As<T> {
-        T from(final Long id, final Instant receivedAt, final String name,
-                final Long recipeId);
+        T from(final Long id, final Instant receivedAt, final String name);
     }
 }

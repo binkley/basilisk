@@ -57,7 +57,7 @@ class IngredientControllerTest {
 
         when(ingredients.all())
                 .thenReturn(Stream.of(new Ingredient(
-                        new IngredientRecord(ID, EPOCH, name, RECIPE_ID))));
+                        new IngredientRecord(ID, EPOCH, name))));
 
         jsonMvc.perform(get("/ingredient"))
                 .andExpect(status().isOk())
@@ -72,7 +72,7 @@ class IngredientControllerTest {
 
         when(ingredients.byId(ID))
                 .thenReturn(Optional.of(new Ingredient(
-                        new IngredientRecord(ID, EPOCH, name, RECIPE_ID))));
+                        new IngredientRecord(ID, EPOCH, name))));
 
         jsonMvc.perform(get(endpointWithId()))
                 .andExpect(status().isOk())
@@ -94,7 +94,7 @@ class IngredientControllerTest {
 
         when(ingredients.byName(name))
                 .thenReturn(Stream.of(new Ingredient(
-                        new IngredientRecord(ID, EPOCH, name, RECIPE_ID))));
+                        new IngredientRecord(ID, EPOCH, name))));
 
         jsonMvc.perform(get("/ingredient/find/" + name))
                 .andExpect(status().isOk())
@@ -114,7 +114,7 @@ class IngredientControllerTest {
         when(ingredients.create(request))
                 .thenReturn(new Ingredient(new IngredientRecord(ID,
                         Instant.ofEpochSecond(1_000_000),
-                        record.getName(), RECIPE_ID)));
+                        record.getName())));
 
         jsonMvc.perform(post("/ingredient")
                 .content(asJson(request)))

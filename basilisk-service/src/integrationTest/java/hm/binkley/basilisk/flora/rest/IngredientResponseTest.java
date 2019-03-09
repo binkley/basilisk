@@ -38,7 +38,7 @@ class IngredientResponseTest {
         final var id = 31L;
         final var name = "EGGS";
 
-        assertThat(using().from(id, EPOCH, name, 2L))
+        assertThat(using().from(id, EPOCH, name))
                 .isEqualTo(new IngredientResponse(id, name));
     }
 }
