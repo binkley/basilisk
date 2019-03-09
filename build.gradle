@@ -11,10 +11,11 @@ buildscript {
     dependencies {
         classpath "io.spring.gradle:dependency-management-plugin:1.0.7.RELEASE"
         classpath "org.springframework.boot:spring-boot-gradle-plugin:2.1.3.RELEASE"
-        classpath "org.springframework.cloud:spring-cloud-contract-gradle-plugin:2.1.0.RELEASE"
+        classpath "org.springframework.cloud:spring-cloud-contract-gradle-plugin:2.1.1.RELEASE"
         classpath "org.unbroken-dome.gradle-plugins:gradle-testsets-plugin:2.1.1"
         classpath "net.ltgt.gradle:gradle-apt-plugin:0.21"
         classpath "gradle.plugin.com.github.spotbugs:spotbugs-gradle-plugin:1.6.10"
+        classpath "com.google.guava:guava:27.1-jre" // For SpotBugs
     }
 }
 
@@ -70,7 +71,7 @@ subprojects {
         spotbugsVersion = "3.1.12"
         springBootVersion = "2.1.3.RELEASE"
         springBootAdminVersion = "2.1.3"
-        springCloudVersion = "Greenwich.RELEASE"
+        springCloudContractVersion = "2.1.1.RELEASE"
         swaggerVersion = "2.9.2"
     }
 
@@ -93,7 +94,7 @@ subprojects {
         //noinspection GroovyAssignabilityCheck
         imports {
             mavenBom "org.springframework.boot:spring-boot-dependencies:${springBootVersion}"
-            mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+            mavenBom "org.springframework.cloud:spring-cloud-contract-dependencies:${springCloudContractVersion}"
             mavenBom "io.zonky.test.postgres:embedded-postgres-binaries-bom:${postgresVersion}"
             mavenBom "de.codecentric:spring-boot-admin-dependencies:${springBootAdminVersion}"
         }
