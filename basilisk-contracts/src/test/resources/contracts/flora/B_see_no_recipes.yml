@@ -1,7 +1,7 @@
-description: Find no basilisks
+description: Find no recipes
 request:
   method: GET
-  url: /basilisk
+  url: /recipe
   headers:
     Content-Type: application/json;charset=UTF-8
 response:

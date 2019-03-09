@@ -1,7 +1,7 @@
-description: Find no basilisks
+description: Find no ingredients
 request:
   method: GET
-  url: /basilisk
+  url: /ingredient
   headers:
     Content-Type: application/json;charset=UTF-8
 response:

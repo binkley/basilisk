@@ -1,4 +1,4 @@
-description: Make a basilisk
+description: Make a basilisk with no cockatrices
 request:
   method: POST
   url: /basilisk

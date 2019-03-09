@@ -21,7 +21,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @TestInstance(PER_METHOD)
 @TestMethodOrder(Alphanumeric.class)
-class ContractTestBase {
+abstract class ContractTestBase {
     @LocalServerPort
     private int port;
 
