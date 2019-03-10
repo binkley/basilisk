@@ -1,0 +1,21 @@
+description: Make a recipe with some ingredients
+request:
+  method: POST
+  url: /recipe
+  headers:
+    Content-Type: application/json;charset=UTF-8
+  body:
+    name: "SOUFFLE"
+    ingredients:
+      - name: "EGGS"
+response:
+  status: 201
+  headers:
+    Content-Type: application/json;charset=UTF-8
+    Location: /recipe/2
+  body:
+    id: 2
+    name: "SOUFFLE"
+    ingredients:
+      - id: 1
+        name: "EGGS"
