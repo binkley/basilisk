@@ -22,7 +22,7 @@ class RecipeRepositoryTest {
     private final RecipeRepository repository;
 
     @Test
-    void shouldRoundtrip() {
+    void shouldSaveWithNoIngredients() {
         final var unsaved = RecipeRecord.raw("EGGS");
         final var found = repository.findById(
                 repository.save(unsaved).getId());
@@ -31,25 +31,50 @@ class RecipeRepositoryTest {
     }
 
     @Test
+    void shouldSaveWithSomeIngredients() {
+        final var unsaved = RecipeRecord.raw("SOUFFLE");
+        unsaved.ingredients.add(IngredientRecord.raw("EGGS"));
+
+        final var saved = repository.save(unsaved);
+        final var found = repository.findById(saved.getId());
+        final var record = found.orElseThrow();
+
+        assertThat(record).isEqualTo(unsaved);
+        assertThat(first(record.ingredients).getId())
+                .withFailMessage("No ID on children")
+                .isNotNull();
+    }
+
+    @Test
     void shouldFindByName() {
-        final var unsavedLeft = RecipeRecord.raw("EGGS");
-        final var unsavedRight = RecipeRecord.raw("SALT");
+        final var unsavedLeft = RecipeRecord.raw("BOILED EGGS");
+        final var unsavedRight = RecipeRecord.raw("POACHED EGGS");
         repository.saveAll(List.of(unsavedLeft, unsavedRight));
 
-        assertThat(repository.findByName("EGGS").collect(toList()))
+        assertThat(repository.findByName(unsavedLeft.getName())
+                .collect(toList()))
                 .isEqualTo(List.of(unsavedLeft));
-        assertThat(repository.findByName("BUTTER").collect(toList()))
+        assertThat(repository.findByName("FRIED EGGS")
+                .collect(toList()))
                 .isEmpty();
     }
 
     @Test
     void shouldStream() {
-        final var unsavedA = RecipeRecord.raw("MILK");
-        final var unsavedB = RecipeRecord.raw("SALT");
+        final var unsavedA = RecipeRecord.raw("SCRAMBLED EGGS");
+        final var unsavedB = RecipeRecord.raw("BOILED EGGS");
         repository.saveAll(List.of(unsavedA, unsavedB));
 
         try (final var found = repository.readAll()) {
             assertThat(found).containsExactly(unsavedA, unsavedB);
         }
+    }
+
+    private static <T> T first(final Iterable<T> children) {
+        final var it = children.iterator();
+        assertThat(it.hasNext())
+                .withFailMessage("No children")
+                .isTrue();
+        return it.next();
     }
 }

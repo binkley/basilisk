@@ -17,12 +17,30 @@ class RecipeRecordTest {
     private RecipeStore store;
 
     @Test
-    void shouldSave() {
+    void shouldSaveWithoutIngredients() {
         final var unsaved = RecipeRecord.raw("SOUFFLE");
         unsaved.store = store;
         final var saved = new RecipeRecord(
                 3L, EPOCH, unsaved.getName());
         saved.store = store;
+        when(store.save(unsaved))
+                .thenReturn(saved);
+
+        assertThat(unsaved.save()).isEqualTo(saved);
+
+        verify(store).save(unsaved);
+        verifyNoMoreInteractions(store);
+    }
+
+    @Test
+    void shouldSaveWithIngredients() {
+        final var unsaved = RecipeRecord.raw("SOUFFLE");
+        unsaved.store = store;
+        final var unsavedIngredient = IngredientRecord.raw("EGGS");
+        unsaved.ingredients.add(unsavedIngredient);
+        final var saved = new RecipeRecord(3L, EPOCH, unsaved.getName());
+        saved.store = store;
+        saved.ingredients.add(unsavedIngredient);
         when(store.save(unsaved))
                 .thenReturn(saved);
 
