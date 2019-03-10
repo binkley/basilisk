@@ -21,8 +21,8 @@ public class Recipe {
 
     public <T, U> T as(final Recipe.As<T, U> asRecipe,
             final Ingredient.As<U> asIngredient) {
-        return asRecipe.from(record.getId(), record.getReceivedAt(),
-                record.getName(),
+        return asRecipe.from(
+                record.getId(), record.getReceivedAt(), record.getName(),
                 ingredients().map(it -> asIngredient.from(
                         it.getId(), it.getReceivedAt(), it.getName())));
     }
