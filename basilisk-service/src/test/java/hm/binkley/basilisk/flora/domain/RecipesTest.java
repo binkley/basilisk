@@ -1,7 +1,9 @@
 package hm.binkley.basilisk.flora.domain;
 
+import hm.binkley.basilisk.flora.domain.store.IngredientRecord;
 import hm.binkley.basilisk.flora.domain.store.RecipeRecord;
 import hm.binkley.basilisk.flora.domain.store.RecipeStore;
+import hm.binkley.basilisk.flora.rest.IngredientRequest;
 import hm.binkley.basilisk.flora.rest.RecipeRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import static java.time.Instant.EPOCH;
@@ -22,11 +25,11 @@ class RecipesTest {
     @Mock
     private RecipeStore store;
 
-    private Recipes ingredients;
+    private Recipes recipes;
 
     @BeforeEach
     void setUp() {
-        ingredients = new Recipes(store);
+        recipes = new Recipes(store);
     }
 
     @Test
@@ -35,7 +38,7 @@ class RecipesTest {
         when(store.byId(record.getId()))
                 .thenReturn(Optional.of(record));
 
-        final Optional<Recipe> found = ingredients.byId(record.getId());
+        final Optional<Recipe> found = recipes.byId(record.getId());
 
         assertThat(found).contains(new Recipe(record));
 
@@ -48,7 +51,7 @@ class RecipesTest {
         when(store.byName(record.getName()))
                 .thenReturn(Stream.of(record));
 
-        final Stream<Recipe> found = ingredients.byName(record.getName());
+        final Stream<Recipe> found = recipes.byName(record.getName());
 
         assertThat(found).containsExactly(new Recipe(record));
 
@@ -61,7 +64,7 @@ class RecipesTest {
         when(store.all())
                 .thenReturn(Stream.of(record));
 
-        final Stream<Recipe> found = ingredients.all();
+        final Stream<Recipe> found = recipes.all();
 
         assertThat(found).containsExactly(new Recipe(record));
 
@@ -70,14 +73,20 @@ class RecipesTest {
 
     @Test
     void shouldCreate() {
-        final var name = "FRIED EGGS";
-        final var record = new RecipeRecord(3L, EPOCH, name);
+        final var ingredientRecord
+                = new IngredientRecord(31L, EPOCH.plusSeconds(1L), "EGGS");
+        final var record = new RecipeRecord(3L, EPOCH, "FRIED EGGS")
+                .add(ingredientRecord);
 
-        when(store.save(RecipeRecord.raw(record.getName())))
+        when(store.save(RecipeRecord.raw(record.getName())
+                .add(IngredientRecord.raw(ingredientRecord.getName()))))
                 .thenReturn(record);
 
-        assertThat(ingredients.create(RecipeRequest.builder()
-                .name(name)
+        assertThat(recipes.create(RecipeRequest.builder()
+                .name(record.getName())
+                .ingredients(Set.of(IngredientRequest.builder()
+                        .name(ingredientRecord.getName())
+                        .build()))
                 .build()))
                 .isEqualTo(new Recipe(record));
 

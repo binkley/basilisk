@@ -20,6 +20,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Transactional
 class RecipeRepositoryTest {
     private final RecipeRepository repository;
+    private final IngredientRepository ingredientRepository;
+
+    private static <T> T first(final Iterable<T> children) {
+        final var it = children.iterator();
+        assertThat(it.hasNext())
+                .withFailMessage("No children")
+                .isTrue();
+        return it.next();
+    }
 
     @Test
     void shouldSaveWithNoIngredients() {
@@ -28,12 +37,14 @@ class RecipeRepositoryTest {
                 repository.save(unsaved).getId());
 
         assertThat(found).contains(unsaved);
+        assertThat(ingredientRepository.readAll()).isEmpty();
     }
 
     @Test
     void shouldSaveWithSomeIngredients() {
         final var unsaved = RecipeRecord.raw("SOUFFLE");
-        unsaved.ingredients.add(IngredientRecord.raw("EGGS"));
+        final var ingredientRecord = IngredientRecord.raw("EGGS");
+        unsaved.ingredients.add(ingredientRecord);
 
         final var saved = repository.save(unsaved);
         final var found = repository.findById(saved.getId());
@@ -43,6 +54,9 @@ class RecipeRepositoryTest {
         assertThat(first(record.ingredients).getId())
                 .withFailMessage("No ID on children")
                 .isNotNull();
+        assertThat(ingredientRepository.findById(first(
+                found.orElseThrow().getIngredients()).getId()))
+                .contains(ingredientRecord);
     }
 
     @Test
@@ -68,13 +82,5 @@ class RecipeRepositoryTest {
         try (final var found = repository.readAll()) {
             assertThat(found).containsExactly(unsavedA, unsavedB);
         }
-    }
-
-    private static <T> T first(final Iterable<T> children) {
-        final var it = children.iterator();
-        assertThat(it.hasNext())
-                .withFailMessage("No children")
-                .isTrue();
-        return it.next();
     }
 }
