@@ -34,7 +34,7 @@ public class IngredientStore {
 
     public IngredientRecord create(final String name) {
         final IngredientRecord record = IngredientRecord.raw(name);
-        record.store = this;
+        assign(record);
         return record.save();
     }
 

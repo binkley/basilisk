@@ -9,35 +9,40 @@ import java.util.stream.Stream;
 
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class RecipeStore {
-    private final RecipeRepository springData;
+public class ChefStore {
+    private final ChefRepository springData;
 
-    public Optional<RecipeRecord> byId(final Long id) {
+    public Optional<ChefRecord> byId(final Long id) {
         return springData.findById(id)
                 .map(this::assign);
     }
 
-    public Optional<RecipeRecord> byName(final String name) {
+    public Optional<ChefRecord> byCode(final String code) {
+        return springData.findByCode(code)
+                .map(this::assign);
+    }
+
+    public Optional<ChefRecord> byName(final String name) {
         return springData.findByName(name)
                 .map(this::assign);
     }
 
-    public Stream<RecipeRecord> all() {
+    public Stream<ChefRecord> all() {
         return springData.readAll()
-                .peek(it -> it.store = this);
+                .map(this::assign);
     }
 
-    public RecipeRecord create(final String name) {
-        final RecipeRecord record = RecipeRecord.raw(name);
+    public ChefRecord create(final String code, final String name) {
+        final ChefRecord record = ChefRecord.raw(code, name);
         assign(record);
         return record.save();
     }
 
-    public RecipeRecord save(final RecipeRecord record) {
+    public ChefRecord save(final ChefRecord record) {
         return springData.save(record);
     }
 
-    private RecipeRecord assign(final RecipeRecord record) {
+    private ChefRecord assign(final ChefRecord record) {
         record.store = this;
         return record;
     }
