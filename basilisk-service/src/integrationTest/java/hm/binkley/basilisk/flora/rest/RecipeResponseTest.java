@@ -30,7 +30,7 @@ class RecipeResponseTest {
                 .id(33L)
                 .name("SOUFFLE")
                 .build()))
-                .isEqualToJson("recipe-response-test.json");
+                .isEqualToJson("recipe-with-no-ingredients-response-test.json");
     }
 
     @Test
