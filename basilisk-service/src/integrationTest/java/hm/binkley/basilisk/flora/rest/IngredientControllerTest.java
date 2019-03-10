@@ -4,8 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hm.binkley.basilisk.configuration.JsonConfiguration;
 import hm.binkley.basilisk.configuration.JsonWebMvcTest;
-import hm.binkley.basilisk.flora.domain.Ingredient;
 import hm.binkley.basilisk.flora.domain.Ingredients;
+import hm.binkley.basilisk.flora.domain.UnusedIngredient;
+import hm.binkley.basilisk.flora.domain.UsedIngredient;
 import hm.binkley.basilisk.flora.domain.store.IngredientRecord;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
@@ -14,9 +15,10 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.Instant;
-import java.util.List;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import static java.time.Instant.EPOCH;
@@ -49,44 +51,63 @@ class IngredientControllerTest {
                 "name", name);
     }
 
+    private static Map<String, Object> responseMapFor(
+            final Long id, final String name, final Long recipeId) {
+        // As recipeId is nullable, cannot use Map.of()
+        final var response = new LinkedHashMap<String, Object>();
+        response.put("id", id);
+        response.put("name", name);
+        response.put("recipe-id", recipeId);
+        return response;
+    }
+
     @Test
     void shouldFindAll()
             throws Exception {
-        final String name = "EGGS";
+        final var unusedIngredient = new UnusedIngredient(
+                new IngredientRecord(ID, EPOCH, "EGGS", null));
+        final var usedIngredient = new UsedIngredient(new IngredientRecord(
+                ID + 1, EPOCH.plusSeconds(1L), "BACON", 2L));
 
         when(ingredients.all())
-                .thenReturn(Stream.of(new Ingredient(
-                        new IngredientRecord(ID, EPOCH, name))));
+                .thenReturn(Stream.of(unusedIngredient, usedIngredient));
 
         jsonMvc.perform(get("/ingredient"))
                 .andExpect(status().isOk())
-                .andExpect(content().json(asJson(List.of(
-                        responseMapFor(name)))));
+                .andExpect(content().json(asJson(Set.of(
+                        responseMapFor(
+                                unusedIngredient.getId(),
+                                unusedIngredient.getName(),
+                                null),
+                        responseMapFor(
+                                usedIngredient.getId(),
+                                usedIngredient.getName(),
+                                usedIngredient.getRecipeId())))));
     }
 
     @Test
     void shouldFindUnused()
             throws Exception {
-        final String name = "EGGS";
+        final var name = "EGGS";
 
         when(ingredients.unused())
-                .thenReturn(Stream.of(new Ingredient(
-                        new IngredientRecord(ID, EPOCH, name))));
+                .thenReturn(Stream.of(new UnusedIngredient(
+                        new IngredientRecord(ID, EPOCH, name, null))));
 
         jsonMvc.perform(get("/ingredient/unused"))
                 .andExpect(status().isOk())
-                .andExpect(content().json(asJson(List.of(
+                .andExpect(content().json(asJson(Set.of(
                         responseMapFor(name)))));
     }
 
     @Test
     void shouldFindExplicitly()
             throws Exception {
-        final String name = "MILK";
+        final var name = "MILK";
 
         when(ingredients.byId(ID))
-                .thenReturn(Optional.of(new Ingredient(
-                        new IngredientRecord(ID, EPOCH, name))));
+                .thenReturn(Optional.of(new UnusedIngredient(
+                        new IngredientRecord(ID, EPOCH, name, null))));
 
         jsonMvc.perform(get(endpointWithId()))
                 .andExpect(status().isOk())
@@ -104,15 +125,15 @@ class IngredientControllerTest {
     @Test
     void shouldFindByName()
             throws Exception {
-        final String name = "BACON";
+        final var name = "BACON";
 
         when(ingredients.byName(name))
-                .thenReturn(Stream.of(new Ingredient(
-                        new IngredientRecord(ID, EPOCH, name))));
+                .thenReturn(Stream.of(new UsedIngredient(
+                        new IngredientRecord(ID, EPOCH, name, 2L))));
 
         jsonMvc.perform(get("/ingredient/find/" + name))
                 .andExpect(status().isOk())
-                .andExpect(content().json(asJson(List.of(
+                .andExpect(content().json(asJson(Set.of(
                         responseMapFor(name)))));
     }
 
@@ -121,14 +142,15 @@ class IngredientControllerTest {
             throws Exception {
         final var name = "SALT";
         final var record = IngredientRecord.raw(name);
-        final IngredientRequest request = IngredientRequest.builder()
+        final UnusedIngredientRequest request = UnusedIngredientRequest
+                .builder()
                 .name(name)
                 .build();
 
-        when(ingredients.create(request))
-                .thenReturn(new Ingredient(new IngredientRecord(ID,
-                        Instant.ofEpochSecond(1_000_000),
-                        record.getName())));
+        when(ingredients.createUnused(request))
+                .thenReturn(new UnusedIngredient(new IngredientRecord(
+                        ID, Instant.ofEpochSecond(1_000_000),
+                        record.getName(), null)));
 
         jsonMvc.perform(post("/ingredient")
                 .content(asJson(request)))

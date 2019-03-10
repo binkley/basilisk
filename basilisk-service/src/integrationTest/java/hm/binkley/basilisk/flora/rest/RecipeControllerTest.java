@@ -14,9 +14,9 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import static java.time.Instant.EPOCH;
@@ -60,7 +60,7 @@ class RecipeControllerTest {
 
         jsonMvc.perform(get("/recipe"))
                 .andExpect(status().isOk())
-                .andExpect(content().json(asJson(List.of(
+                .andExpect(content().json(asJson(Set.of(
                         responseMapFor(name)))));
     }
 
@@ -97,7 +97,7 @@ class RecipeControllerTest {
 
         jsonMvc.perform(get("/recipe/find/" + name))
                 .andExpect(status().isOk())
-                .andExpect(content().json(asJson(List.of(
+                .andExpect(content().json(asJson(Set.of(
                         responseMapFor(name)))));
     }
 

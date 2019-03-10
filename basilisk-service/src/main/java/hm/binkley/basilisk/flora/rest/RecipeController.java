@@ -19,10 +19,10 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.ResponseEntity.created;
@@ -35,25 +35,25 @@ public class RecipeController {
     private final Recipes recipes;
 
     @GetMapping
-    public List<RecipeResponse> getAll() {
+    public Set<RecipeResponse> getAll() {
         return recipes.all()
                 .map(toResponse())
-                .collect(toList());
+                .collect(toSet());
     }
 
     @GetMapping("{id}")
-    public RecipeResponse findById(
+    public RecipeResponse getById(
             @PathVariable("id") final Recipe recipe) {
         return toResponse().apply(recipe);
     }
 
     @GetMapping("find/{name}")
-    public List<RecipeResponse> findByName(
+    public Set<RecipeResponse> getByName(
             @PathVariable("name") final @Length(min = 3, max = 32)
                     String name) {
         return recipes.byName(name)
                 .map(toResponse())
-                .collect(toList());
+                .collect(toSet());
     }
 
     @PostMapping
@@ -69,7 +69,7 @@ public class RecipeController {
 
     private Function<Recipe, RecipeResponse> toResponse() {
         return it -> it.as(
-                RecipeResponse.using(), IngredientResponse.using());
+                RecipeResponse.using(), UsedIngredientResponse.using());
     }
 
     /** @todo Think more deeply about global controller advice */

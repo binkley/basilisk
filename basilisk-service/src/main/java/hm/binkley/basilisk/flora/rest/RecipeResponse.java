@@ -15,9 +15,9 @@ public final class RecipeResponse {
     Long id;
     String name;
     @Builder.Default
-    Set<IngredientResponse> ingredients = new LinkedHashSet<>();
+    Set<UsedIngredientResponse> ingredients = new LinkedHashSet<>();
 
-    static Recipe.As<RecipeResponse, IngredientResponse> using() {
+    static Recipe.As<RecipeResponse, UsedIngredientResponse> using() {
         return (id, receivedAt, name, ingredients) ->
                 new RecipeResponse(id, name, ingredients
                         .collect(toCollection(LinkedHashSet::new)));

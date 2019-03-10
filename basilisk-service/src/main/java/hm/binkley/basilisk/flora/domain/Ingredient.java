@@ -10,7 +10,7 @@ import java.time.Instant;
 @EqualsAndHashCode
 @RequiredArgsConstructor
 @ToString
-public class Ingredient {
+public abstract class Ingredient {
     private final IngredientRecord record;
 
     public Long getId() {
@@ -26,12 +26,17 @@ public class Ingredient {
         return record.getName();
     }
 
-    public <T> T as(final Ingredient.As<T> asIngredient) {
-        return asIngredient.from(record.getId(), record.getReceivedAt(),
-                record.getName());
+    public Long getRecipeId() {
+        return record.getRecipeId();
+    }
+
+    public <T> T asAny(final Ingredient.As<T> asOther) {
+        return asOther
+                .from(getId(), getReceivedAt(), getName(), getRecipeId());
     }
 
     public interface As<T> {
-        T from(final Long id, final Instant receivedAt, final String name);
+        T from(final Long id, final Instant receivedAt, final String name,
+                final Long recipeId);
     }
 }

@@ -1,7 +1,7 @@
 package hm.binkley.basilisk.flora.rest;
 
-import hm.binkley.basilisk.flora.domain.Ingredient;
 import hm.binkley.basilisk.flora.domain.Ingredients;
+import hm.binkley.basilisk.flora.domain.UsedIngredient;
 import hm.binkley.basilisk.flora.domain.store.IngredientRecord;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,8 +32,8 @@ class IngredientFromStringIdConverterTest {
 
     @Test
     void shouldConvert() {
-        final var record = new IngredientRecord(3L, EPOCH, "EGGS");
-        final var domain = new Ingredient(record);
+        final var record = new IngredientRecord(3L, EPOCH, "EGGS", 2L);
+        final var domain = new UsedIngredient(record);
         when(ingredients.byId(record.getId()))
                 .thenReturn(Optional.of(domain));
 

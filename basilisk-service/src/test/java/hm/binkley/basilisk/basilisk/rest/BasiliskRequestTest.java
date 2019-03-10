@@ -8,12 +8,12 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.OffsetDateTime;
-import java.util.List;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import static java.math.BigDecimal.TEN;
 import static java.time.ZoneOffset.UTC;
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class BasiliskRequestTest {
@@ -25,14 +25,14 @@ class BasiliskRequestTest {
         final var request = BasiliskRequest.builder()
                 .word("FOO")
                 .at(at)
-                .cockatrices(List.of(CockatriceRequest.builder()
+                .cockatrices(Set.of(CockatriceRequest.builder()
                         .beakSize(TEN)
                         .build()))
                 .build();
 
         assertThat(request.as(Basilisky::from, Cockatricy::new))
                 .isEqualTo(new Basilisky("FOO", at,
-                        List.of(new Cockatricy(TEN))));
+                        Set.of(new Cockatricy(TEN))));
     }
 
     @EqualsAndHashCode
@@ -41,11 +41,11 @@ class BasiliskRequestTest {
     private static final class Basilisky {
         private final String word;
         private final Instant at;
-        private final List<Cockatricy> cockatrices;
+        private final Set<Cockatricy> cockatrices;
 
         private static Basilisky from(final String word, final Instant at,
                 final Stream<Cockatricy> cockatrices) {
-            return new Basilisky(word, at, cockatrices.collect(toList()));
+            return new Basilisky(word, at, cockatrices.collect(toSet()));
         }
     }
 

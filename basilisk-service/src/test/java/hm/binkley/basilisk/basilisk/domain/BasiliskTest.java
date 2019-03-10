@@ -8,7 +8,7 @@ import java.time.Instant;
 
 import static java.math.BigDecimal.TEN;
 import static java.time.Instant.EPOCH;
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class BasiliskTest {
@@ -26,7 +26,7 @@ class BasiliskTest {
                     assertThat(receivedAt).isEqualTo(record.getReceivedAt());
                     assertThat(word).isEqualTo(record.getWord());
                     assertThat(at).isEqualTo(record.getAt());
-                    final var c = cockatrices.collect(toList());
+                    final var c = cockatrices.collect(toSet());
                     assertThat(c).hasSize(1);
                     assertThat(c).first().isSameAs(this);
                     return this;

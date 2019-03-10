@@ -5,16 +5,17 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import org.junit.jupiter.api.Test;
 
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import static java.util.stream.Collectors.toSet;
+import static java.util.stream.Collectors.toCollection;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class RecipeRequestTest {
     @Test
     void shouldConvert() {
-        final var ingredientRequest = IngredientRequest.builder()
+        final var ingredientRequest = UsedIngredientRequest.builder()
                 .name("EGGS")
                 .build();
         final var request = RecipeRequest.builder()
@@ -36,7 +37,8 @@ class RecipeRequestTest {
 
         private static Recipey from(final String name,
                 final Stream<Ingredientey> ingredients) {
-            return new Recipey(name, ingredients.collect(toSet()));
+            return new Recipey(name,
+                    ingredients.collect(toCollection(LinkedHashSet::new)));
         }
     }
 

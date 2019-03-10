@@ -6,23 +6,21 @@ import org.junit.jupiter.api.Test;
 import static java.time.Instant.EPOCH;
 import static org.assertj.core.api.Assertions.assertThat;
 
-class IngredientTest {
+class UnusedIngredientTest {
     @Test
     void shouldAs() {
         final var record = new IngredientRecord(
-                5L, EPOCH.plusSeconds(1L), "EGGS", 2L);
+                5L, EPOCH.plusSeconds(1L), "EGGS", null);
         // The types are immaterial, just that the transformation worked
         final var targetIngredient = 1;
 
         @SuppressWarnings("PMD") final var that
-                = new UsedIngredient(record).asAny(
-                (id, receivedAt, name, recipeId) -> {
+                = new UnusedIngredient(record).asUnused(
+                (id, receivedAt, name) -> {
                     assertThat(id).isEqualTo(record.getId());
                     assertThat(receivedAt)
                             .isEqualTo(record.getReceivedAt());
                     assertThat(name).isEqualTo(record.getName());
-                    assertThat(recipeId)
-                            .isEqualTo(record.getRecipeId());
                     return targetIngredient;
                 });
 

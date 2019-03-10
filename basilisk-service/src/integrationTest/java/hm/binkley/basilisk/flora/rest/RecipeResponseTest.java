@@ -42,7 +42,7 @@ class RecipeResponseTest {
         assertThat(json.write(RecipeResponse.builder()
                 .id(33L)
                 .name("SOUFFLE")
-                .ingredients(Set.of(IngredientResponse.builder()
+                .ingredients(Set.of(UsedIngredientResponse.builder()
                         .id(31L)
                         .name("EGGS")
                         .build()))
@@ -55,7 +55,7 @@ class RecipeResponseTest {
     void shouldUse() {
         final var id = 33L;
         final var name = "SOUFFLE";
-        final var ingredientResponse = new IngredientResponse(31L, "EGGS");
+        final var ingredientResponse = new UsedIngredientResponse(31L, "EGGS");
 
         assertThat(using().from(id, EPOCH, name,
                 Stream.of(ingredientResponse)))

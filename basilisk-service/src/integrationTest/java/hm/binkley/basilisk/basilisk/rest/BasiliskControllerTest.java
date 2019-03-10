@@ -20,9 +20,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.OffsetDateTime;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import static java.math.BigDecimal.TEN;
@@ -66,7 +66,7 @@ class BasiliskControllerTest {
                 "word", word,
                 "at", AT,
                 "extra", extra,
-                "cockatrices", List.of());
+                "cockatrices", Set.of());
     }
 
     private static Map<String, Object> responseMapWithSomeCockatricesFor(
@@ -76,7 +76,7 @@ class BasiliskControllerTest {
                 "word", word,
                 "at", AT,
                 "extra", extra,
-                "cockatrices", List.of(Map.of(
+                "cockatrices", Set.of(Map.of(
                         "id", COCKATRICE_ID,
                         "beak-size", BEAK_SIZE
                 )));
@@ -98,7 +98,7 @@ class BasiliskControllerTest {
 
         jsonMvc.perform(get("/basilisk"))
                 .andExpect(status().isOk())
-                .andExpect(content().json(asJson(List.of(
+                .andExpect(content().json(asJson(Set.of(
                         responseMapWithSomeCockatricesFor(word, extra)))));
     }
 
@@ -143,7 +143,7 @@ class BasiliskControllerTest {
 
         jsonMvc.perform(get("/basilisk/find/" + word))
                 .andExpect(status().isOk())
-                .andExpect(content().json(asJson(List.of(
+                .andExpect(content().json(asJson(Set.of(
                         responseMapWithNoCockatricesFor(word, extra)))));
     }
 
@@ -184,7 +184,7 @@ class BasiliskControllerTest {
         final BasiliskRequest request = BasiliskRequest.builder()
                 .word(record.getWord())
                 .at(record.getAt())
-                .cockatrices(List.of(CockatriceRequest.builder()
+                .cockatrices(Set.of(CockatriceRequest.builder()
                         .beakSize(cockatriceRecord.getBeakSize())
                         .build()))
                 .build();

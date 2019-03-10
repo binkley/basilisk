@@ -12,7 +12,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.IOException;
 
-import static hm.binkley.basilisk.flora.rest.IngredientResponse.using;
+import static hm.binkley.basilisk.flora.rest.UsedIngredientResponse.using;
 import static java.time.Instant.EPOCH;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -20,13 +20,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import(JsonConfiguration.class)
 @JsonTest
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-class IngredientResponseTest {
-    private final JacksonTester<IngredientResponse> json;
+class UsedIngredientResponseTest {
+    private final JacksonTester<UsedIngredientResponse> json;
 
     @Test
     void shouldBecomeGoodJson()
             throws IOException {
-        assertThat(json.write(IngredientResponse.builder()
+        assertThat(json.write(UsedIngredientResponse.builder()
                 .id(31L)
                 .name("EGGS")
                 .build()))
@@ -38,7 +38,7 @@ class IngredientResponseTest {
         final var id = 31L;
         final var name = "EGGS";
 
-        assertThat(using().from(id, EPOCH, name))
-                .isEqualTo(new IngredientResponse(id, name));
+        assertThat(using().from(id, EPOCH, name, 2L))
+                .isEqualTo(new UsedIngredientResponse(id, name));
     }
 }

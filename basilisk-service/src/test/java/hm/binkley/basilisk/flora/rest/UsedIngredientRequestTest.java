@@ -7,10 +7,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class IngredientRequestTest {
+class UsedIngredientRequestTest {
     @Test
     void shouldConvert() {
-        final var request = IngredientRequest.builder()
+        final var request = UsedIngredientRequest.builder()
                 .name("EGGS")
                 .build();
 

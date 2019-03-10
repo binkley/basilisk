@@ -8,8 +8,8 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotNull;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.stream.Stream;
 
 @Builder
@@ -19,8 +19,8 @@ public final class BasiliskRequest {
     private final @Length(min = 3, max = 32) String word;
     private final @NotNull Instant at;
     @Builder.Default
-    private final @NonNull List<CockatriceRequest> cockatrices
-            = new ArrayList<>();
+    private final @NonNull Set<CockatriceRequest> cockatrices
+            = new LinkedHashSet<>();
 
     public <T, U> T as(final BasiliskRequest.As<T, U> asBasilisk,
             final CockatriceRequest.As<U> asCockatrice) {

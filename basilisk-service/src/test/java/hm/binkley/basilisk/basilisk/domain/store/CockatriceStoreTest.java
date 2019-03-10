@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 
 import static java.math.BigDecimal.TEN;
 import static java.time.Instant.EPOCH;
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -49,11 +49,11 @@ class CockatriceStoreTest {
         when(springData.readAll())
                 .thenReturn(Stream.of(saved));
 
-        final var found = store.all().collect(toList());
+        final var found = store.all().collect(toSet());
 
-        assertThat(found).containsExactly(saved);
-        assertThat(found.stream().map(it -> it.store).collect(toList()))
-                .containsExactly(store);
+        assertThat(found).containsOnly(saved);
+        assertThat(found.stream().map(it -> it.store).collect(toSet()))
+                .containsOnly(store);
 
         verifyNoMoreInteractions(springData);
     }

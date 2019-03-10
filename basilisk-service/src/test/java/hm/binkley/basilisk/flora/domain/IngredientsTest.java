@@ -2,7 +2,7 @@ package hm.binkley.basilisk.flora.domain;
 
 import hm.binkley.basilisk.flora.domain.store.IngredientRecord;
 import hm.binkley.basilisk.flora.domain.store.IngredientStore;
-import hm.binkley.basilisk.flora.rest.IngredientRequest;
+import hm.binkley.basilisk.flora.rest.UnusedIngredientRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,69 +30,100 @@ class IngredientsTest {
     }
 
     @Test
-    void shouldFindById() {
-        final var record = new IngredientRecord(3L, EPOCH, "EGGS");
+    void shouldFindUnusedById() {
+        final var record = new IngredientRecord(3L, EPOCH, "EGGS", null);
         when(store.byId(record.getId()))
                 .thenReturn(Optional.of(record));
 
         final Optional<Ingredient> found = ingredients.byId(record.getId());
 
-        assertThat(found).contains(new Ingredient(record));
+        assertThat(found).contains(new UnusedIngredient(record));
 
         verifyNoMoreInteractions(store);
     }
 
     @Test
-    void shouldFindByName() {
-        final var record = new IngredientRecord(3L, EPOCH, "MILK");
+    void shouldFindUsedById() {
+        final var record = new IngredientRecord(3L, EPOCH, "EGGS", 2L);
+        when(store.byId(record.getId()))
+                .thenReturn(Optional.of(record));
+
+        final Optional<Ingredient> found = ingredients.byId(record.getId());
+
+        assertThat(found).contains(new UsedIngredient(record));
+
+        verifyNoMoreInteractions(store);
+    }
+
+    @Test
+    void shouldUnusedFindByName() {
+        final var record = new IngredientRecord(3L, EPOCH, "MILK", null);
         when(store.byName(record.getName()))
                 .thenReturn(Stream.of(record));
 
         final Stream<Ingredient> found = ingredients.byName(record.getName());
 
-        assertThat(found).containsExactly(new Ingredient(record));
+        assertThat(found).containsOnly(new UnusedIngredient(record));
+
+        verifyNoMoreInteractions(store);
+    }
+
+    @Test
+    void shouldUsedFindByName() {
+        final var record = new IngredientRecord(3L, EPOCH, "MILK", 2L);
+        when(store.byName(record.getName()))
+                .thenReturn(Stream.of(record));
+
+        final Stream<Ingredient> found = ingredients.byName(record.getName());
+
+        assertThat(found).containsOnly(new UsedIngredient(record));
 
         verifyNoMoreInteractions(store);
     }
 
     @Test
     void shouldFindAll() {
-        final var record = new IngredientRecord(3L, EPOCH, "SALT");
+        final var unusedRecord = new IngredientRecord(
+                3L, EPOCH, "SALT", null);
+        final var usedRecord = new IngredientRecord(
+                3L, EPOCH, "SALT", 2L);
         when(store.all())
-                .thenReturn(Stream.of(record));
+                .thenReturn(Stream.of(unusedRecord, usedRecord));
 
         final Stream<Ingredient> found = ingredients.all();
 
-        assertThat(found).containsExactly(new Ingredient(record));
+        assertThat(found).containsOnly(
+                new UnusedIngredient(unusedRecord),
+                new UsedIngredient(usedRecord));
 
         verifyNoMoreInteractions(store);
     }
 
     @Test
     void shouldFindUnused() {
-        final var record = new IngredientRecord(3L, EPOCH, "SALT");
+        final var record = new IngredientRecord(3L, EPOCH, "SALT", null);
         when(store.unused())
                 .thenReturn(Stream.of(record));
 
-        final Stream<Ingredient> found = ingredients.unused();
+        final Stream<UnusedIngredient> found = ingredients.unused();
 
-        assertThat(found).containsExactly(new Ingredient(record));
+        assertThat(found).containsOnly(new UnusedIngredient(record));
 
         verifyNoMoreInteractions(store);
     }
 
     @Test
-    void shouldCreate() {
+    void shouldCreateUnused() {
         final var name = "QUX";
-        final var record = new IngredientRecord(3L, EPOCH, name);
+        final var record = new IngredientRecord(3L, EPOCH, name, null);
 
         when(store.save(IngredientRecord.raw(record.getName())))
                 .thenReturn(record);
 
-        assertThat(ingredients.create(IngredientRequest.builder()
+        assertThat(ingredients.createUnused(UnusedIngredientRequest.builder()
                 .name(name)
                 .build()))
-                .isEqualTo(new Ingredient(record));
+                .isEqualTo(new UnusedIngredient(record));
 
         verifyNoMoreInteractions(store);
     }

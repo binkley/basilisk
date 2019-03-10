@@ -8,8 +8,9 @@ import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.Set;
 
+import static java.math.BigDecimal.ONE;
 import static java.math.BigDecimal.TEN;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -33,11 +34,11 @@ class CockatriceRepositoryTest {
     @Test
     void shouldStream() {
         final var unsavedA = CockatriceRecord.raw(TEN);
-        final var unsavedB = CockatriceRecord.raw(TEN);
-        repository.saveAll(List.of(unsavedA, unsavedB));
+        final var unsavedB = CockatriceRecord.raw(ONE);
+        repository.saveAll(Set.of(unsavedA, unsavedB));
 
         try (final var found = repository.readAll()) {
-            assertThat(found).containsExactly(unsavedA, unsavedB);
+            assertThat(found).containsOnly(unsavedA, unsavedB);
         }
     }
 }

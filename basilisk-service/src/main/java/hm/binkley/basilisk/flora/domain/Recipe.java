@@ -14,17 +14,18 @@ import java.util.stream.Stream;
 public class Recipe {
     private final RecipeRecord record;
 
-    public Stream<Ingredient> ingredients() {
+    public Stream<UsedIngredient> ingredients() {
         return record.getIngredients().stream()
-                .map(Ingredient::new);
+                .map(UsedIngredient::new);
     }
 
     public <T, U> T as(final Recipe.As<T, U> asRecipe,
-            final Ingredient.As<U> asIngredient) {
+            final UsedIngredient.As<U> asUsedIngredient) {
         return asRecipe.from(
                 record.getId(), record.getReceivedAt(), record.getName(),
-                ingredients().map(it -> asIngredient.from(
-                        it.getId(), it.getReceivedAt(), it.getName())));
+                ingredients().map(it -> asUsedIngredient.from(
+                        it.getId(), it.getReceivedAt(), it.getName(),
+                        it.getRecipeId())));
     }
 
     public interface As<T, U> {

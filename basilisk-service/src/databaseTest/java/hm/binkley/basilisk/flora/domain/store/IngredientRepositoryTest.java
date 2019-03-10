@@ -8,9 +8,9 @@ import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.Set;
 
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ActiveProfiles("test")
@@ -34,11 +34,11 @@ class IngredientRepositoryTest {
     void shouldFindByName() {
         final var unsavedLeft = IngredientRecord.raw("EGGS");
         final var unsavedRight = IngredientRecord.raw("SALT");
-        repository.saveAll(List.of(unsavedLeft, unsavedRight));
+        repository.saveAll(Set.of(unsavedLeft, unsavedRight));
 
-        assertThat(repository.findByName("EGGS").collect(toList()))
-                .isEqualTo(List.of(unsavedLeft));
-        assertThat(repository.findByName("BUTTER").collect(toList()))
+        assertThat(repository.findByName("EGGS").collect(toSet()))
+                .isEqualTo(Set.of(unsavedLeft));
+        assertThat(repository.findByName("BUTTER").collect(toSet()))
                 .isEmpty();
     }
 
@@ -46,10 +46,10 @@ class IngredientRepositoryTest {
     void shouldStream() {
         final var unsavedA = IngredientRecord.raw("MILK");
         final var unsavedB = IngredientRecord.raw("SALT");
-        repository.saveAll(List.of(unsavedA, unsavedB));
+        repository.saveAll(Set.of(unsavedA, unsavedB));
 
         try (final var found = repository.readAll()) {
-            assertThat(found).containsExactly(unsavedA, unsavedB);
+            assertThat(found).containsOnly(unsavedA, unsavedB);
         }
     }
 }

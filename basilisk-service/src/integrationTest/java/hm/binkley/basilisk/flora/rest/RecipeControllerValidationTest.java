@@ -36,7 +36,7 @@ class RecipeControllerValidationTest {
         problemMvc.perform(get("/recipe/find/F"))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.violations[0].field",
-                        equalTo("findByName.name")))
+                        equalTo("getByName.name")))
                 .andExpect(jsonPath("$.violations[0].message",
                         equalTo("length must be between 3 and 32")))
                 .andExpect(jsonPath("$.status",

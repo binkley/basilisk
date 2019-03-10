@@ -36,7 +36,7 @@ class IngredientControllerValidationTest {
         problemMvc.perform(get("/ingredient/find/F"))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.violations[0].field",
-                        equalTo("findByName.name")))
+                        equalTo("getByName.name")))
                 .andExpect(jsonPath("$.violations[0].message",
                         equalTo("length must be between 3 and 32")))
                 .andExpect(jsonPath("$.status",
@@ -52,7 +52,7 @@ class IngredientControllerValidationTest {
     void shouldRejectShortRequestNames()
             throws Exception {
         problemMvc.perform(post("/ingredient")
-                .content(asJson(IngredientRequest.builder()
+                .content(asJson(UnusedIngredientRequest.builder()
                         .name("F")
                         .build())))
                 .andExpect(status().isUnprocessableEntity())

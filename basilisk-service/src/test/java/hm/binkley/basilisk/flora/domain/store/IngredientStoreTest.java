@@ -10,7 +10,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import static java.time.Instant.EPOCH;
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -30,72 +30,58 @@ class IngredientStoreTest {
 
     @Test
     void shouldFindById() {
-        final var saved = new IngredientRecord(3L, EPOCH, "EGGS");
-        when(springData.findById(saved.getId()))
+        final var id = 3L;
+        final var saved = new IngredientRecord(id, EPOCH, "EGGS", null);
+        when(springData.findById(id))
                 .thenReturn(Optional.of(saved));
 
-        final var found = store.byId(saved.getId());
+        final var found = store.byId(id).orElseThrow();
 
-        assertThat(found).contains(saved);
-        assertThat(found.orElseThrow().store).isSameAs(store);
+        assertThat(found).isEqualTo(saved);
+        assertThat(found.store).isSameAs(store);
 
         verifyNoMoreInteractions(springData);
     }
 
     @Test
     void shouldFindByName() {
-        final var saved = new IngredientRecord(3L, EPOCH, "BACON");
-        when(springData.findByName(saved.getName()))
+        final var name = "BACON";
+        final var saved = new IngredientRecord(3L, EPOCH, name, null);
+        when(springData.findByName(name))
                 .thenReturn(Stream.of(saved));
 
-        final var found = store.byName(saved.getName()).collect(toList());
+        final var found = store.byName(name).collect(toSet());
 
-        assertThat(found).containsExactly(saved);
-        assertThat(found.stream().map(it -> it.store).collect(toList()))
-                .containsExactly(store);
-
-        verifyNoMoreInteractions(springData);
-    }
-
-    @Test
-    void shouldFindUnallocated() {
-        final var saved = new IngredientRecord(3L, EPOCH, "THYME");
-        when(springData.findAllByRecipeIdIsNull()).
-                thenReturn(Stream.of(saved));
-
-        final var found = store.unused().collect(toList());
-
-        assertThat(found).containsExactly(saved);
-        assertThat(found.stream().map(it -> it.store).collect(toList()))
-                .containsExactly(store);
-
-        verifyNoMoreInteractions(springData);
-    }
-
-    @Test
-    void shouldFindAll() {
-        final var saved = new IngredientRecord(3L, EPOCH, "MILK");
-        when(springData.readAll())
-                .thenReturn(Stream.of(saved));
-
-        final var found = store.all().collect(toList());
-
-        assertThat(found).containsExactly(saved);
-        assertThat(found.stream().map(it -> it.store)).containsExactly(store);
+        assertThat(found).containsOnly(saved);
+        assertThat(found.stream().map(it -> it.store)).containsOnly(store);
 
         verifyNoMoreInteractions(springData);
     }
 
     @Test
     void shouldFindUnused() {
-        final var saved = new IngredientRecord(3L, EPOCH, "MILK");
-        when(springData.findAllByRecipeIdIsNull())
+        final var saved = new IngredientRecord(3L, EPOCH, "THYME", null);
+        when(springData.findAllByRecipeIdIsNull()).
+                thenReturn(Stream.of(saved));
+
+        final var found = store.unused().collect(toSet());
+
+        assertThat(found).containsOnly(saved);
+        assertThat(found.stream().map(it -> it.store)).containsOnly(store);
+
+        verifyNoMoreInteractions(springData);
+    }
+
+    @Test
+    void shouldFindAll() {
+        final var saved = new IngredientRecord(3L, EPOCH, "MILK", null);
+        when(springData.readAll())
                 .thenReturn(Stream.of(saved));
 
-        final var found = store.unused().collect(toList());
+        final var found = store.all().collect(toSet());
 
-        assertThat(found).containsExactly(saved);
-        assertThat(found.stream().map(it -> it.store)).containsExactly(store);
+        assertThat(found).containsOnly(saved);
+        assertThat(found.stream().map(it -> it.store)).containsOnly(store);
 
         verifyNoMoreInteractions(springData);
     }
@@ -103,8 +89,8 @@ class IngredientStoreTest {
     @Test
     void shouldCreate() {
         final var unsaved = IngredientRecord.raw("SALT");
-        final var saved = new IngredientRecord(3L, EPOCH, unsaved
-                .getName());
+        final var saved = new IngredientRecord(
+                3L, EPOCH, unsaved.getName(), null);
         when(springData.save(unsaved))
                 .thenReturn(saved);
 
@@ -117,8 +103,8 @@ class IngredientStoreTest {
     @Test
     void shouldSave() {
         final var unsaved = IngredientRecord.raw("PEPPER");
-        final var saved = new IngredientRecord(3L, EPOCH,
-                unsaved.getName());
+        final var saved = new IngredientRecord(
+                3L, EPOCH, unsaved.getName(), 2L);
 
         when(springData.save(unsaved))
                 .thenReturn(saved);

@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import static java.time.Instant.EPOCH;
 import static org.assertj.core.api.Assertions.assertThat;
 
-class IngredientTest {
+class UsedIngredientTest {
     @Test
     void shouldAs() {
         final var record = new IngredientRecord(
@@ -15,7 +15,7 @@ class IngredientTest {
         final var targetIngredient = 1;
 
         @SuppressWarnings("PMD") final var that
-                = new UsedIngredient(record).asAny(
+                = new UsedIngredient(record).asUsed(
                 (id, receivedAt, name, recipeId) -> {
                     assertThat(id).isEqualTo(record.getId());
                     assertThat(receivedAt)

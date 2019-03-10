@@ -15,12 +15,13 @@ import java.util.stream.Stream;
 public final class RecipeRequest {
     private final @Length(min = 3, max = 32) String name;
     @Builder.Default
-    private final Set<IngredientRequest> ingredients = new LinkedHashSet<>();
+    private final Set<UsedIngredientRequest> ingredients
+            = new LinkedHashSet<>();
 
     public <T, U> T as(final RecipeRequest.As<T, U> asRecipe,
-            final IngredientRequest.As<U> asIngredient) {
+            final UsedIngredientRequest.As<U> asUsedIngredient) {
         return asRecipe.from(name, ingredients.stream()
-                .map(it -> asIngredient.from(it.getName())));
+                .map(it -> asUsedIngredient.from(it.getName())));
     }
 
     public interface As<T, U> {

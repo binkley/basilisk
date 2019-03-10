@@ -8,11 +8,11 @@ import org.hibernate.validator.constraints.Length;
 @Builder
 @Data
 @RequiredArgsConstructor
-public final class IngredientRequest {
+public final class UsedIngredientRequest {
     private final @Length(min = 3, max = 32) String name;
 
-    public <T> T as(final IngredientRequest.As<T> asIngredient) {
-        return asIngredient.from(name);
+    public <T> T as(final UsedIngredientRequest.As<T> asOther) {
+        return asOther.from(getName());
     }
 
     public interface As<T> {

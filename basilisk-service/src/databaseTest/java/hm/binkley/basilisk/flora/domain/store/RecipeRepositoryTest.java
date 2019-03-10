@@ -8,9 +8,9 @@ import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.Set;
 
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ActiveProfiles("test")
@@ -20,7 +20,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Transactional
 class RecipeRepositoryTest {
     private final RecipeRepository repository;
-    private final IngredientRepository ingredientRepository;
 
     private static <T> T first(final Iterable<T> children) {
         final var it = children.iterator();
@@ -37,39 +36,35 @@ class RecipeRepositoryTest {
                 repository.save(unsaved).getId());
 
         assertThat(found).contains(unsaved);
-        assertThat(ingredientRepository.readAll()).isEmpty();
     }
 
     @Test
     void shouldSaveWithSomeIngredients() {
         final var unsaved = RecipeRecord.raw("SOUFFLE");
-        final var ingredientRecord = IngredientRecord.raw("EGGS");
-        unsaved.ingredients.add(ingredientRecord);
+        unsaved.ingredients.add(IngredientRecord.raw("EGGS"));
 
         final var saved = repository.save(unsaved);
         final var found = repository.findById(saved.getId());
         final var record = found.orElseThrow();
 
         assertThat(record).isEqualTo(unsaved);
-        assertThat(first(record.ingredients).getId())
+        assertThat(record.getId()).isNotNull();
+        assertThat(first(record.getIngredients()).getId())
                 .withFailMessage("No ID on children")
                 .isNotNull();
-        assertThat(ingredientRepository.findById(first(
-                found.orElseThrow().getIngredients()).getId()))
-                .contains(ingredientRecord);
     }
 
     @Test
     void shouldFindByName() {
         final var unsavedLeft = RecipeRecord.raw("BOILED EGGS");
         final var unsavedRight = RecipeRecord.raw("POACHED EGGS");
-        repository.saveAll(List.of(unsavedLeft, unsavedRight));
+        repository.saveAll(Set.of(unsavedLeft, unsavedRight));
 
         assertThat(repository.findByName(unsavedLeft.getName())
-                .collect(toList()))
-                .isEqualTo(List.of(unsavedLeft));
+                .collect(toSet()))
+                .isEqualTo(Set.of(unsavedLeft));
         assertThat(repository.findByName("FRIED EGGS")
-                .collect(toList()))
+                .collect(toSet()))
                 .isEmpty();
     }
 
@@ -77,10 +72,10 @@ class RecipeRepositoryTest {
     void shouldStream() {
         final var unsavedA = RecipeRecord.raw("SCRAMBLED EGGS");
         final var unsavedB = RecipeRecord.raw("BOILED EGGS");
-        repository.saveAll(List.of(unsavedA, unsavedB));
+        repository.saveAll(Set.of(unsavedA, unsavedB));
 
         try (final var found = repository.readAll()) {
-            assertThat(found).containsExactly(unsavedA, unsavedB);
+            assertThat(found).containsOnly(unsavedA, unsavedB);
         }
     }
 }

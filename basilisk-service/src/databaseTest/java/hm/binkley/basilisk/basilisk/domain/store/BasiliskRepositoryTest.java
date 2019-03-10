@@ -9,10 +9,10 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
-import java.util.List;
+import java.util.Set;
 
 import static java.math.BigDecimal.TEN;
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ActiveProfiles("test")
@@ -50,11 +50,11 @@ class BasiliskRepositoryTest {
                 Instant.ofEpochSecond(1_000_000));
         final var unsavedRight = BasiliskRecord.raw("RIGHT",
                 Instant.ofEpochSecond(1_000_000));
-        repository.saveAll(List.of(unsavedLeft, unsavedRight));
+        repository.saveAll(Set.of(unsavedLeft, unsavedRight));
 
-        assertThat(repository.findByWord("LEFT").collect(toList()))
-                .isEqualTo(List.of(unsavedLeft));
-        assertThat(repository.findByWord("MIDDLE").collect(toList()))
+        assertThat(repository.findByWord("LEFT").collect(toSet()))
+                .isEqualTo(Set.of(unsavedLeft));
+        assertThat(repository.findByWord("MIDDLE").collect(toSet()))
                 .isEmpty();
     }
 
@@ -64,12 +64,12 @@ class BasiliskRepositoryTest {
                 Instant.ofEpochSecond(1_000_000));
         final var unsavedB = BasiliskRecord.raw("WORD",
                 Instant.ofEpochSecond(1_000_000));
-        repository.saveAll(List.of(unsavedA, unsavedB));
+        repository.saveAll(Set.of(unsavedA, unsavedB));
 
         // Wrap in try-with-resources to close the stream at done; this
         // frees up DB resources as a stream is potentially very long
         try (final var found = repository.readAll()) {
-            assertThat(found).containsExactly(unsavedA, unsavedB);
+            assertThat(found).containsOnly(unsavedA, unsavedB);
         }
     }
 }

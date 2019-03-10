@@ -12,8 +12,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import static java.math.BigDecimal.TEN;
@@ -57,7 +57,7 @@ class BasilisksTest {
 
         final Stream<Basilisk> found = basilisks.byWord(record.getWord());
 
-        assertThat(found).containsExactly(new Basilisk(record));
+        assertThat(found).containsOnly(new Basilisk(record));
 
         verifyNoMoreInteractions(store);
     }
@@ -71,7 +71,7 @@ class BasilisksTest {
 
         final Stream<Basilisk> found = basilisks.all();
 
-        assertThat(found).containsExactly(new Basilisk(record));
+        assertThat(found).containsOnly(new Basilisk(record));
 
         verifyNoMoreInteractions(store);
     }
@@ -93,7 +93,7 @@ class BasilisksTest {
         assertThat(basilisks.create(BasiliskRequest.builder()
                 .word(word)
                 .at(at)
-                .cockatrices(List.of(CockatriceRequest.builder()
+                .cockatrices(Set.of(CockatriceRequest.builder()
                         .beakSize(beakSize)
                         .build()))
                 .build()))

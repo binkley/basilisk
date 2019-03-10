@@ -20,10 +20,10 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.ResponseEntity.created;
@@ -37,10 +37,10 @@ public class BasiliskController {
     private final BasiliskService service;
 
     @GetMapping
-    public List<BasiliskResponse> getAll() {
+    public Set<BasiliskResponse> getAll() {
         return basilisks.all()
                 .map(toResponse())
-                .collect(toList());
+                .collect(toSet());
     }
 
     @GetMapping("{id}")
@@ -50,12 +50,12 @@ public class BasiliskController {
     }
 
     @GetMapping("find/{word}")
-    public List<BasiliskResponse> findByWord(
+    public Set<BasiliskResponse> findByWord(
             @PathVariable("word") final @Length(min = 3, max = 32)
                     String word) {
         return basilisks.byWord(word)
                 .map(toResponse())
-                .collect(toList());
+                .collect(toSet());
     }
 
     @PostMapping

@@ -2,6 +2,7 @@ package hm.binkley.basilisk.flora.rest;
 
 import hm.binkley.basilisk.flora.domain.Ingredient;
 import hm.binkley.basilisk.flora.domain.Ingredients;
+import hm.binkley.basilisk.flora.domain.UnusedIngredient;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +20,10 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.ResponseEntity.created;
@@ -35,47 +36,51 @@ public class IngredientController {
     private final Ingredients ingredients;
 
     @GetMapping
-    public List<IngredientResponse> getAll() {
+    public Set<AnyIngredientResponse> getAll() {
         return ingredients.all()
-                .map(toResponse())
-                .collect(toList());
+                .map(toAnyResponse())
+                .collect(toSet());
     }
 
     @GetMapping("{id}")
-    public IngredientResponse findById(
+    public AnyIngredientResponse getById(
             @PathVariable("id") final Ingredient ingredient) {
-        return toResponse().apply(ingredient);
+        return toAnyResponse().apply(ingredient);
     }
 
     @GetMapping("find/{name}")
-    public List<IngredientResponse> findByName(
+    public Set<AnyIngredientResponse> getByName(
             @PathVariable("name") final @Length(min = 3, max = 32)
                     String name) {
         return ingredients.byName(name)
-                .map(toResponse())
-                .collect(toList());
+                .map(toAnyResponse())
+                .collect(toSet());
     }
 
     @GetMapping("unused")
-    public List<IngredientResponse> findUnused() {
+    public Set<UnusedIngredientResponse> getUnused() {
         return ingredients.unused()
-                .map(toResponse())
-                .collect(toList());
+                .map(toUnusedResponse())
+                .collect(toSet());
     }
 
     @PostMapping
     @ResponseStatus(CREATED)
-    public ResponseEntity<IngredientResponse> postIngredient(
-            @RequestBody final @Valid IngredientRequest request) {
-        final var domain = ingredients.create(request);
-        final var response = toResponse().apply(domain);
+    public ResponseEntity<UnusedIngredientResponse> postIngredient(
+            @RequestBody final @Valid UnusedIngredientRequest request) {
+        final var domain = ingredients.createUnused(request);
+        final var response = toUnusedResponse().apply(domain);
 
         return created(URI.create("/ingredient/" + response.getId()))
                 .body(response);
     }
 
-    private Function<Ingredient, IngredientResponse> toResponse() {
-        return it -> it.as(IngredientResponse.using());
+    private Function<UnusedIngredient, UnusedIngredientResponse> toUnusedResponse() {
+        return it -> it.asUnused(UnusedIngredientResponse.using());
+    }
+
+    private Function<Ingredient, AnyIngredientResponse> toAnyResponse() {
+        return it -> it.asAny(AnyIngredientResponse.using());
     }
 
     /** @todo Think more deeply about global controller advice */

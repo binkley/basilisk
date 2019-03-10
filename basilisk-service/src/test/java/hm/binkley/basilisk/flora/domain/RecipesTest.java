@@ -3,8 +3,8 @@ package hm.binkley.basilisk.flora.domain;
 import hm.binkley.basilisk.flora.domain.store.IngredientRecord;
 import hm.binkley.basilisk.flora.domain.store.RecipeRecord;
 import hm.binkley.basilisk.flora.domain.store.RecipeStore;
-import hm.binkley.basilisk.flora.rest.IngredientRequest;
 import hm.binkley.basilisk.flora.rest.RecipeRequest;
+import hm.binkley.basilisk.flora.rest.UsedIngredientRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -53,7 +53,7 @@ class RecipesTest {
 
         final Stream<Recipe> found = recipes.byName(record.getName());
 
-        assertThat(found).containsExactly(new Recipe(record));
+        assertThat(found).containsOnly(new Recipe(record));
 
         verifyNoMoreInteractions(store);
     }
@@ -66,16 +66,17 @@ class RecipesTest {
 
         final Stream<Recipe> found = recipes.all();
 
-        assertThat(found).containsExactly(new Recipe(record));
+        assertThat(found).containsOnly(new Recipe(record));
 
         verifyNoMoreInteractions(store);
     }
 
     @Test
     void shouldCreate() {
-        final var ingredientRecord
-                = new IngredientRecord(31L, EPOCH.plusSeconds(1L), "EGGS");
-        final var record = new RecipeRecord(3L, EPOCH, "FRIED EGGS")
+        final var recipeId = 3L;
+        final var ingredientRecord = new IngredientRecord(
+                31L, EPOCH.plusSeconds(1L), "EGGS", recipeId);
+        final var record = new RecipeRecord(recipeId, EPOCH, "FRIED EGGS")
                 .add(ingredientRecord);
 
         when(store.save(RecipeRecord.raw(record.getName())
@@ -84,7 +85,7 @@ class RecipesTest {
 
         assertThat(recipes.create(RecipeRequest.builder()
                 .name(record.getName())
-                .ingredients(Set.of(IngredientRequest.builder()
+                .ingredients(Set.of(UsedIngredientRequest.builder()
                         .name(ingredientRecord.getName())
                         .build()))
                 .build()))
