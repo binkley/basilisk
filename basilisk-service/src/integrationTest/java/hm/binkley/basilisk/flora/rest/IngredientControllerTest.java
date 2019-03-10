@@ -11,6 +11,7 @@ import hm.binkley.basilisk.flora.domain.store.IngredientRecord;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -39,7 +40,9 @@ class IngredientControllerTest {
 
     private final MockMvc jsonMvc;
     private final ObjectMapper objectMapper;
-    private final Ingredients ingredients;
+
+    @MockBean
+    private Ingredients ingredients;
 
     private static String endpointWithId() {
         return "/ingredient/" + ID;
@@ -62,7 +65,7 @@ class IngredientControllerTest {
     }
 
     @Test
-    void shouldFindAll()
+    void shouldGetAll()
             throws Exception {
         final var unusedIngredient = new UnusedIngredient(
                 new IngredientRecord(ID, EPOCH, "EGGS", null));
@@ -86,7 +89,7 @@ class IngredientControllerTest {
     }
 
     @Test
-    void shouldFindUnused()
+    void shouldGetUnused()
             throws Exception {
         final var name = "EGGS";
 
@@ -101,7 +104,7 @@ class IngredientControllerTest {
     }
 
     @Test
-    void shouldFindExplicitly()
+    void shouldGetById()
             throws Exception {
         final var name = "MILK";
 
@@ -111,30 +114,28 @@ class IngredientControllerTest {
 
         jsonMvc.perform(get(endpointWithId()))
                 .andExpect(status().isOk())
-                .andExpect(content().json(asJson(
-                        responseMapFor(name))));
+                .andExpect(content().json(asJson(responseMapFor(name))));
     }
 
     @Test
-    void shouldNotFindExplicitly()
+    void shouldNotGetById()
             throws Exception {
         jsonMvc.perform(get(endpointWithId()))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    void shouldFindByName()
+    void shouldGetByName()
             throws Exception {
         final var name = "BACON";
 
         when(ingredients.byName(name))
-                .thenReturn(Stream.of(new UsedIngredient(
+                .thenReturn(Optional.of(new UsedIngredient(
                         new IngredientRecord(ID, EPOCH, name, 2L))));
 
         jsonMvc.perform(get("/ingredient/find/" + name))
                 .andExpect(status().isOk())
-                .andExpect(content().json(asJson(Set.of(
-                        responseMapFor(name)))));
+                .andExpect(content().json(asJson(responseMapFor(name))));
     }
 
     @Test

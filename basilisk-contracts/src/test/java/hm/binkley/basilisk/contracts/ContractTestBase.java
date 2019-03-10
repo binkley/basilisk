@@ -11,6 +11,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.jdbc.Sql;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_METHOD;
@@ -19,6 +20,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @AutoConfigureEmbeddedDatabase
 @ContextConfiguration(classes = BasiliskApplication.class)
 @SpringBootTest(webEnvironment = RANDOM_PORT)
+@Sql("cleanout-database.sql")
 @TestInstance(PER_METHOD)
 @TestMethodOrder(Alphanumeric.class)
 abstract class ContractTestBase {

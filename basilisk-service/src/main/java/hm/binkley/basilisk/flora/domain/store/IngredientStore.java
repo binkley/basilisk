@@ -13,14 +13,13 @@ public class IngredientStore {
     private final IngredientRepository springData;
 
     public Optional<IngredientRecord> byId(final Long id) {
-        final Optional<IngredientRecord> record = springData.findById(id);
-        record.ifPresent(it -> it.store = this);
-        return record;
+        return springData.findById(id)
+                .map(this::assign);
     }
 
-    public Stream<IngredientRecord> byName(final String name) {
+    public Optional<IngredientRecord> byName(final String name) {
         return springData.findByName(name)
-                .peek(it -> it.store = this);
+                .map(this::assign);
     }
 
     public Stream<IngredientRecord> unused() {
@@ -41,5 +40,10 @@ public class IngredientStore {
 
     public IngredientRecord save(final IngredientRecord record) {
         return springData.save(record);
+    }
+
+    private IngredientRecord assign(final IngredientRecord record) {
+        record.store = this;
+        return record;
     }
 }

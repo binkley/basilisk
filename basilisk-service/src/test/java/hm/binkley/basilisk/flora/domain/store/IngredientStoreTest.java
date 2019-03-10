@@ -48,12 +48,12 @@ class IngredientStoreTest {
         final var name = "BACON";
         final var saved = new IngredientRecord(3L, EPOCH, name, null);
         when(springData.findByName(name))
-                .thenReturn(Stream.of(saved));
+                .thenReturn(Optional.of(saved));
 
-        final var found = store.byName(name).collect(toSet());
+        final var found = store.byName(name).orElseThrow();
 
-        assertThat(found).containsOnly(saved);
-        assertThat(found.stream().map(it -> it.store)).containsOnly(store);
+        assertThat(found).isEqualTo(saved);
+        assertThat(found.store).isSameAs(store);
 
         verifyNoMoreInteractions(springData);
     }

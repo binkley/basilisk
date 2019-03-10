@@ -22,7 +22,7 @@ public class Ingredients {
         return store.byId(id).map(this::asUsedOrUnused);
     }
 
-    public Stream<Ingredient> byName(final String name) {
+    public Optional<Ingredient> byName(final String name) {
         return store.byName(name).map(this::asUsedOrUnused);
     }
 
@@ -34,7 +34,8 @@ public class Ingredients {
         return store.unused().map(UnusedIngredient::new);
     }
 
-    public UnusedIngredient createUnused(final UnusedIngredientRequest request) {
+    public UnusedIngredient createUnused(
+            final UnusedIngredientRequest request) {
         return new UnusedIngredient(store.save(
                 request.as(asIngredientRecord)));
     }

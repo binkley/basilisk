@@ -46,12 +46,12 @@ class RecipeStoreTest {
     void shouldFindByName() {
         final var saved = new RecipeRecord(3L, EPOCH, "OMELET");
         when(springData.findByName(saved.getName()))
-                .thenReturn(Stream.of(saved));
+                .thenReturn(Optional.of(saved));
 
-        final var found = store.byName(saved.getName()).collect(toSet());
+        final var found = store.byName(saved.getName()).orElseThrow();
 
-        assertThat(found).containsOnly(saved);
-        assertThat(found.stream().map(it -> it.store)).containsOnly(store);
+        assertThat(found).isEqualTo(saved);
+        assertThat(found.store).isSameAs(store);
 
         verifyNoMoreInteractions(springData);
     }

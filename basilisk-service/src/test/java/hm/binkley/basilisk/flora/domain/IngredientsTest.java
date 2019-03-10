@@ -59,11 +59,11 @@ class IngredientsTest {
     void shouldUnusedFindByName() {
         final var record = new IngredientRecord(3L, EPOCH, "MILK", null);
         when(store.byName(record.getName()))
-                .thenReturn(Stream.of(record));
+                .thenReturn(Optional.of(record));
 
-        final Stream<Ingredient> found = ingredients.byName(record.getName());
+        final var found = ingredients.byName(record.getName()).orElseThrow();
 
-        assertThat(found).containsOnly(new UnusedIngredient(record));
+        assertThat(found).isEqualTo(new UnusedIngredient(record));
 
         verifyNoMoreInteractions(store);
     }
@@ -72,11 +72,11 @@ class IngredientsTest {
     void shouldUsedFindByName() {
         final var record = new IngredientRecord(3L, EPOCH, "MILK", 2L);
         when(store.byName(record.getName()))
-                .thenReturn(Stream.of(record));
+                .thenReturn(Optional.of(record));
 
-        final Stream<Ingredient> found = ingredients.byName(record.getName());
+        final var found = ingredients.byName(record.getName()).orElseThrow();
 
-        assertThat(found).containsOnly(new UsedIngredient(record));
+        assertThat(found).isEqualTo(new UsedIngredient(record));
 
         verifyNoMoreInteractions(store);
     }

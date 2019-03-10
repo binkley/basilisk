@@ -13,14 +13,13 @@ public class RecipeStore {
     private final RecipeRepository springData;
 
     public Optional<RecipeRecord> byId(final Long id) {
-        final Optional<RecipeRecord> record = springData.findById(id);
-        record.ifPresent(it -> it.store = this);
-        return record;
+        return springData.findById(id)
+                .map(this::assign);
     }
 
-    public Stream<RecipeRecord> byName(final String name) {
+    public Optional<RecipeRecord> byName(final String name) {
         return springData.findByName(name)
-                .peek(it -> it.store = this);
+                .map(this::assign);
     }
 
     public Stream<RecipeRecord> all() {
@@ -36,5 +35,10 @@ public class RecipeStore {
 
     public RecipeRecord save(final RecipeRecord record) {
         return springData.save(record);
+    }
+
+    private RecipeRecord assign(final RecipeRecord record) {
+        record.store = this;
+        return record;
     }
 }

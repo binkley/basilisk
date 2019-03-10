@@ -5,13 +5,15 @@ import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.data.relational.core.conversion.DbActionExecutionException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
-import static java.util.stream.Collectors.toSet;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ActiveProfiles("test")
 @AutoConfigureEmbeddedDatabase
@@ -31,7 +33,7 @@ class RecipeRepositoryTest {
 
     @Test
     void shouldSaveWithNoIngredients() {
-        final var unsaved = RecipeRecord.raw("EGGS");
+        final var unsaved = RecipeRecord.raw("SOUFFLE");
         final var found = repository.findById(
                 repository.save(unsaved).getId());
 
@@ -55,17 +57,26 @@ class RecipeRepositoryTest {
     }
 
     @Test
+    void shouldHaveUniqueName() {
+        final var name = "SOUFFLE";
+        repository.save(RecipeRecord.raw(name));
+
+        final var ex = assertThrows(
+                DbActionExecutionException.class,
+                () -> repository.save(RecipeRecord.raw(name)));
+
+        assertThat(ex.getCause()).isInstanceOf(DuplicateKeyException.class);
+    }
+
+    @Test
     void shouldFindByName() {
         final var unsavedLeft = RecipeRecord.raw("BOILED EGGS");
         final var unsavedRight = RecipeRecord.raw("POACHED EGGS");
         repository.saveAll(Set.of(unsavedLeft, unsavedRight));
 
-        assertThat(repository.findByName(unsavedLeft.getName())
-                .collect(toSet()))
-                .isEqualTo(Set.of(unsavedLeft));
-        assertThat(repository.findByName("FRIED EGGS")
-                .collect(toSet()))
-                .isEmpty();
+        assertThat(repository.findByName(unsavedLeft.getName()).orElseThrow())
+                .isEqualTo(unsavedLeft);
+        assertThat(repository.findByName("FRIED EGGS")).isEmpty();
     }
 
     @Test

@@ -5,13 +5,15 @@ import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.data.relational.core.conversion.DbActionExecutionException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
-import static java.util.stream.Collectors.toSet;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ActiveProfiles("test")
 @AutoConfigureEmbeddedDatabase
@@ -31,15 +33,26 @@ class IngredientRepositoryTest {
     }
 
     @Test
+    void shouldHaveUniqueName() {
+        final var name = "BACON";
+        repository.save(IngredientRecord.raw(name));
+
+        final var ex = assertThrows(
+                DbActionExecutionException.class,
+                () -> repository.save(IngredientRecord.raw(name)));
+
+        assertThat(ex.getCause()).isInstanceOf(DuplicateKeyException.class);
+    }
+
+    @Test
     void shouldFindByName() {
-        final var unsavedLeft = IngredientRecord.raw("EGGS");
+        final var unsavedLeft = IngredientRecord.raw("BUTTER");
         final var unsavedRight = IngredientRecord.raw("SALT");
         repository.saveAll(Set.of(unsavedLeft, unsavedRight));
 
-        assertThat(repository.findByName("EGGS").collect(toSet()))
-                .isEqualTo(Set.of(unsavedLeft));
-        assertThat(repository.findByName("BUTTER").collect(toSet()))
-                .isEmpty();
+        assertThat(repository.findByName(unsavedLeft.getName()).orElseThrow())
+                .isEqualTo(unsavedLeft);
+        assertThat(repository.findByName("OLIVE OIL")).isEmpty();
     }
 
     @Test

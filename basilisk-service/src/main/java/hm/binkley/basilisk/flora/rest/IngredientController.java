@@ -20,6 +20,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -44,17 +45,19 @@ public class IngredientController {
 
     @GetMapping("{id}")
     public AnyIngredientResponse getById(
-            @PathVariable("id") final Ingredient ingredient) {
-        return toAnyResponse().apply(ingredient);
+            @PathVariable("id") final Long id) {
+        return ingredients.byId(id)
+                .map(toAnyResponse())
+                .orElseThrow();
     }
 
     @GetMapping("find/{name}")
-    public Set<AnyIngredientResponse> getByName(
+    public AnyIngredientResponse getByName(
             @PathVariable("name") final @Length(min = 3, max = 32)
                     String name) {
         return ingredients.byName(name)
                 .map(toAnyResponse())
-                .collect(toSet());
+                .orElseThrow();
     }
 
     @GetMapping("unused")
@@ -84,7 +87,9 @@ public class IngredientController {
     }
 
     /** @todo Think more deeply about global controller advice */
-    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    @ExceptionHandler({
+            NoSuchElementException.class,
+            MethodArgumentTypeMismatchException.class})
     @ResponseStatus(NOT_FOUND)
     @SuppressWarnings("PMD")
     private void handleNotFound() {

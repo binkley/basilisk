@@ -24,7 +24,7 @@ public class Recipes {
         return store.byId(id).map(Recipe::new);
     }
 
-    public Stream<Recipe> byName(final String name) {
+    public Optional<Recipe> byName(final String name) {
         return store.byName(name).map(Recipe::new);
     }
 

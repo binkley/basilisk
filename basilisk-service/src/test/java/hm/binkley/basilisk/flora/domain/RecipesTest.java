@@ -49,11 +49,11 @@ class RecipesTest {
     void shouldFindByName() {
         final var record = new RecipeRecord(3L, EPOCH, "BOILED EGGS");
         when(store.byName(record.getName()))
-                .thenReturn(Stream.of(record));
+                .thenReturn(Optional.of(record));
 
-        final Stream<Recipe> found = recipes.byName(record.getName());
+        final var found = recipes.byName(record.getName()).orElseThrow();
 
-        assertThat(found).containsOnly(new Recipe(record));
+        assertThat(found).isEqualTo(new Recipe(record));
 
         verifyNoMoreInteractions(store);
     }

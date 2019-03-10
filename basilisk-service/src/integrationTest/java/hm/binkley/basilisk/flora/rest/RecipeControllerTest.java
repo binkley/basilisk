@@ -10,6 +10,7 @@ import hm.binkley.basilisk.flora.domain.store.RecipeRecord;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -37,7 +38,9 @@ class RecipeControllerTest {
 
     private final MockMvc jsonMvc;
     private final ObjectMapper objectMapper;
-    private final Recipes recipes;
+
+    @MockBean
+    private Recipes recipes;
 
     private static String endpointWithId() {
         return "/recipe/" + ID;
@@ -50,7 +53,7 @@ class RecipeControllerTest {
     }
 
     @Test
-    void shouldFindAll()
+    void shouldGetAll()
             throws Exception {
         final String name = "POACHED EGGS";
 
@@ -65,7 +68,7 @@ class RecipeControllerTest {
     }
 
     @Test
-    void shouldFindExplicitly()
+    void shouldGetById()
             throws Exception {
         final String name = "FRIED EGGS";
 
@@ -80,25 +83,24 @@ class RecipeControllerTest {
     }
 
     @Test
-    void shouldNotFindExplicitly()
+    void shouldNotGetById()
             throws Exception {
         jsonMvc.perform(get(endpointWithId()))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    void shouldFindByName()
+    void shouldGetByName()
             throws Exception {
         final String name = "BOILED EGGS";
 
         when(recipes.byName(name))
-                .thenReturn(Stream.of(new Recipe(
+                .thenReturn(Optional.of(new Recipe(
                         new RecipeRecord(ID, EPOCH, name))));
 
         jsonMvc.perform(get("/recipe/find/" + name))
                 .andExpect(status().isOk())
-                .andExpect(content().json(asJson(Set.of(
-                        responseMapFor(name)))));
+                .andExpect(content().json(asJson(responseMapFor(name))));
     }
 
     @Test
