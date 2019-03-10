@@ -68,7 +68,8 @@ public class RecipeController {
     }
 
     private Function<Recipe, RecipeResponse> toResponse() {
-        return it -> it.as(RecipeResponse.using());
+        return it -> it.as(
+                RecipeResponse.using(), IngredientResponse.using());
     }
 
     /** @todo Think more deeply about global controller advice */

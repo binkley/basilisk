@@ -5,6 +5,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Set;
+import java.util.stream.Stream;
+
 import static java.time.Instant.EPOCH;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
@@ -15,6 +18,16 @@ import static org.mockito.Mockito.when;
 class RecipeRecordTest {
     @Mock
     private RecipeStore store;
+
+    @Test
+    void shouldAddSomeIngredients() {
+        final var ingredientRecord = IngredientRecord.raw("EGGS");
+        final var record = RecipeRecord.raw("SOUFFLE")
+                .addAll(Stream.of(ingredientRecord));
+
+        assertThat(record.ingredients).isEqualTo(Set.of(ingredientRecord));
+        // TODO: Auto-save when adding ingredients?
+    }
 
     @Test
     void shouldSaveWithoutIngredients() {

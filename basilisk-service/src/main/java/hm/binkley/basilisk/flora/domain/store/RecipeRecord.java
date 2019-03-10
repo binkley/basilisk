@@ -11,6 +11,7 @@ import org.springframework.data.relational.core.mapping.Table;
 import java.time.Instant;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.stream.Stream;
 
 @EqualsAndHashCode(exclude = {"id", "receivedAt", "store"})
 @Table("FLORA.RECIPE")
@@ -38,6 +39,16 @@ public final class RecipeRecord {
 
     public static RecipeRecord raw(final String name) {
         return new RecipeRecord(null, null, name);
+    }
+
+    public RecipeRecord add(final IngredientRecord ingredient) {
+        ingredients.add(ingredient);
+        return this;
+    }
+
+    public RecipeRecord addAll(final Stream<IngredientRecord> ingredients) {
+        ingredients.forEach(this::add);
+        return this;
     }
 
     public RecipeRecord save() {

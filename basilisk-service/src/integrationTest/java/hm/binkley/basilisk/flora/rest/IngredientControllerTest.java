@@ -34,7 +34,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 class IngredientControllerTest {
     private static final long ID = 1L;
-    private static final long RECIPE_ID = 2L;
 
     private final MockMvc jsonMvc;
     private final ObjectMapper objectMapper;
