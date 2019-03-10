@@ -69,6 +69,19 @@ class IngredientsTest {
     }
 
     @Test
+    void shouldFindUnused() {
+        final var record = new IngredientRecord(3L, EPOCH, "SALT");
+        when(store.unused())
+                .thenReturn(Stream.of(record));
+
+        final Stream<Ingredient> found = ingredients.unused();
+
+        assertThat(found).containsExactly(new Ingredient(record));
+
+        verifyNoMoreInteractions(store);
+    }
+
+    @Test
     void shouldCreate() {
         final var name = "QUX";
         final var record = new IngredientRecord(3L, EPOCH, name);

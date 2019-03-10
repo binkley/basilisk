@@ -51,8 +51,7 @@ class RecipeStoreTest {
         final var found = store.byName(saved.getName()).collect(toList());
 
         assertThat(found).containsExactly(saved);
-        assertThat(found.stream().map(it -> it.store).collect(toList()))
-                .containsExactly(store);
+        assertThat(found.stream().map(it -> it.store)).containsExactly(store);
 
         verifyNoMoreInteractions(springData);
     }
@@ -66,8 +65,7 @@ class RecipeStoreTest {
         final var found = store.all().collect(toList());
 
         assertThat(found).containsExactly(saved);
-        assertThat(found.stream().map(it -> it.store).collect(toList()))
-                .containsExactly(store);
+        assertThat(found.stream().map(it -> it.store)).containsExactly(store);
 
         verifyNoMoreInteractions(springData);
     }

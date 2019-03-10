@@ -63,7 +63,7 @@ class IngredientStoreTest {
         when(springData.findAllByRecipeIdIsNull()).
                 thenReturn(Stream.of(saved));
 
-        final var found = store.unallocated().collect(toList());
+        final var found = store.unused().collect(toList());
 
         assertThat(found).containsExactly(saved);
         assertThat(found.stream().map(it -> it.store).collect(toList()))
@@ -81,8 +81,21 @@ class IngredientStoreTest {
         final var found = store.all().collect(toList());
 
         assertThat(found).containsExactly(saved);
-        assertThat(found.stream().map(it -> it.store).collect(toList()))
-                .containsExactly(store);
+        assertThat(found.stream().map(it -> it.store)).containsExactly(store);
+
+        verifyNoMoreInteractions(springData);
+    }
+
+    @Test
+    void shouldFindUnused() {
+        final var saved = new IngredientRecord(3L, EPOCH, "MILK");
+        when(springData.findAllByRecipeIdIsNull())
+                .thenReturn(Stream.of(saved));
+
+        final var found = store.unused().collect(toList());
+
+        assertThat(found).containsExactly(saved);
+        assertThat(found.stream().map(it -> it.store)).containsExactly(store);
 
         verifyNoMoreInteractions(springData);
     }

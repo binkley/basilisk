@@ -30,6 +30,10 @@ public class Ingredients {
         return store.all().map(Ingredient::new);
     }
 
+    public Stream<Ingredient> unused() {
+        return store.unused().map(Ingredient::new);
+    }
+
     public Ingredient create(final IngredientRequest request) {
         return new Ingredient(store.save(request.as(asIngredientRecord)));
     }

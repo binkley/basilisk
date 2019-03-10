@@ -54,8 +54,7 @@ class BasiliskStoreTest {
         final var found = store.byWord(saved.getWord()).collect(toList());
 
         assertThat(found).containsExactly(saved);
-        assertThat(found.stream().map(it -> it.store).collect(toList()))
-                .containsExactly(store);
+        assertThat(found.stream().map(it -> it.store)).containsExactly(store);
 
         verifyNoMoreInteractions(springData);
     }
@@ -70,8 +69,7 @@ class BasiliskStoreTest {
         final var found = store.all().collect(toList());
 
         assertThat(found).containsExactly(saved);
-        assertThat(found.stream().map(it -> it.store).collect(toList()))
-                .containsExactly(store);
+        assertThat(found.stream().map(it -> it.store)).containsExactly(store);
 
         verifyNoMoreInteractions(springData);
     }

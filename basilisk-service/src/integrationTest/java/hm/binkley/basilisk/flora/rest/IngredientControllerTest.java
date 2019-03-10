@@ -66,6 +66,21 @@ class IngredientControllerTest {
     }
 
     @Test
+    void shouldFindUnused()
+            throws Exception {
+        final String name = "EGGS";
+
+        when(ingredients.unused())
+                .thenReturn(Stream.of(new Ingredient(
+                        new IngredientRecord(ID, EPOCH, name))));
+
+        jsonMvc.perform(get("/ingredient/unused"))
+                .andExpect(status().isOk())
+                .andExpect(content().json(asJson(List.of(
+                        responseMapFor(name)))));
+    }
+
+    @Test
     void shouldFindExplicitly()
             throws Exception {
         final String name = "MILK";

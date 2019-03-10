@@ -56,6 +56,13 @@ public class IngredientController {
                 .collect(toList());
     }
 
+    @GetMapping("unused")
+    public List<IngredientResponse> findUnused() {
+        return ingredients.unused()
+                .map(toResponse())
+                .collect(toList());
+    }
+
     @PostMapping
     @ResponseStatus(CREATED)
     public ResponseEntity<IngredientResponse> postIngredient(
