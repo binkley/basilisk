@@ -9,6 +9,7 @@ import hm.binkley.basilisk.flora.domain.Ingredients;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -27,7 +28,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class IngredientControllerValidationTest {
     private final MockMvc problemMvc;
     private final ObjectMapper objectMapper;
-    private final Ingredients ingredients;
+
+    @MockBean
+    private Ingredients ingredients;
 
     @SuppressFBWarnings("RV")
     @Test
