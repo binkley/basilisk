@@ -15,8 +15,8 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class Recipes {
     private static final RecipeRequest.As<RecipeRecord, IngredientRecord>
-            asRecipeRecord = (word, ingredients) ->
-            RecipeRecord.raw(word).addAll(ingredients);
+            asRecipeRecord = (name, ingredients) ->
+            RecipeRecord.raw(name).addAll(ingredients);
 
     private final RecipeStore store;
 
