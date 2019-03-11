@@ -9,9 +9,9 @@ import lombok.Value;
 public final class UsedIngredientResponse {
     Long id;
     String name;
+    Long recipeId;
 
     static UsedIngredient.As<UsedIngredientResponse> using() {
-        return (id, receivedAt, name, recipeId) ->
-                new UsedIngredientResponse(id, name);
+        return UsedIngredientResponse::new;
     }
 }

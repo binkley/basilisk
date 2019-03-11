@@ -16,13 +16,10 @@ class IngredientTest {
 
         @SuppressWarnings("PMD") final var that
                 = new UsedIngredient(record).asAny(
-                (id, receivedAt, name, recipeId) -> {
+                (id, name, recipeId) -> {
                     assertThat(id).isEqualTo(record.getId());
-                    assertThat(receivedAt)
-                            .isEqualTo(record.getReceivedAt());
                     assertThat(name).isEqualTo(record.getName());
-                    assertThat(recipeId)
-                            .isEqualTo(record.getRecipeId());
+                    assertThat(recipeId).isEqualTo(record.getRecipeId());
                     return targetIngredient;
                 });
 

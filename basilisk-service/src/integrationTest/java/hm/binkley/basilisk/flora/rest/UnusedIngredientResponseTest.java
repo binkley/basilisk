@@ -13,7 +13,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.io.IOException;
 
 import static hm.binkley.basilisk.flora.rest.UnusedIngredientResponse.using;
-import static java.time.Instant.EPOCH;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
@@ -38,7 +37,7 @@ class UnusedIngredientResponseTest {
         final var id = 31L;
         final var name = "EGGS";
 
-        assertThat(using().from(id, EPOCH, name))
+        assertThat(using().from(id, name))
                 .isEqualTo(new UnusedIngredientResponse(id, name));
     }
 }

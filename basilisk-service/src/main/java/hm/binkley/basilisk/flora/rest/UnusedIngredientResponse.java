@@ -11,7 +11,6 @@ public final class UnusedIngredientResponse {
     String name;
 
     static UnusedIngredient.As<UnusedIngredientResponse> using() {
-        return (id, receivedAt, name) ->
-                new UnusedIngredientResponse(id, name);
+        return UnusedIngredientResponse::new;
     }
 }

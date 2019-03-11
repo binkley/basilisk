@@ -5,7 +5,6 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.time.Instant;
 import java.util.stream.Stream;
 
 @EqualsAndHashCode
@@ -19,17 +18,15 @@ public class Recipe {
                 .map(UsedIngredient::new);
     }
 
-    public <T, U> T as(final Recipe.As<T, U> asRecipe,
-            final UsedIngredient.As<U> asUsedIngredient) {
+    public <R, I> R as(final Recipe.As<R, I> asRecipe,
+            final UsedIngredient.As<I> asUsedIngredient) {
         return asRecipe.from(
-                record.getId(), record.getReceivedAt(), record.getName(),
+                record.getId(), record.getName(),
                 ingredients().map(it -> asUsedIngredient.from(
-                        it.getId(), it.getReceivedAt(), it.getName(),
-                        it.getRecipeId())));
+                        it.getId(), it.getName(), it.getRecipeId())));
     }
 
-    public interface As<T, U> {
-        T from(final Long id, final Instant receivedAt, final String name,
-                final Stream<U> ingredients);
+    public interface As<R, I> {
+        R from(final Long id, final String name, final Stream<I> ingredients);
     }
 }

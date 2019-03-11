@@ -12,11 +12,11 @@ public final class ChefRequest {
     private final @Length(min = 3, max = 3) String code;
     private final @Length(min = 3, max = 32) String name;
 
-    public <T> T as(final ChefRequest.As<T> asChef) {
+    public <C> C as(final ChefRequest.As<C> asChef) {
         return asChef.from(code, name);
     }
 
-    public interface As<T> {
-        T from(final String code, final String name);
+    public interface As<C> {
+        C from(final String code, final String name);
     }
 }

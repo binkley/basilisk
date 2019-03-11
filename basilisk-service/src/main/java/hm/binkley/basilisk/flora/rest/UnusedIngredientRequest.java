@@ -11,11 +11,11 @@ import org.hibernate.validator.constraints.Length;
 public final class UnusedIngredientRequest {
     private final @Length(min = 3, max = 32) String name;
 
-    public <T> T as(final UnusedIngredientRequest.As<T> asOther) {
+    public <I> I as(final UnusedIngredientRequest.As<I> asOther) {
         return asOther.from(getName());
     }
 
-    public interface As<T> {
-        T from(final String name);
+    public interface As<I> {
+        I from(final String name);
     }
 }

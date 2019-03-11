@@ -16,9 +16,8 @@ class ChefTest {
 
         @SuppressWarnings("PMD") final var that
                 = new Chef(record).as(
-                (id, receivedAt, code, name) -> {
+                (id, code, name) -> {
                     assertThat(id).isEqualTo(record.getId());
-                    assertThat(receivedAt).isEqualTo(record.getReceivedAt());
                     assertThat(code).isEqualTo(record.getCode());
                     assertThat(name).isEqualTo(record.getName());
                     return targetChef;

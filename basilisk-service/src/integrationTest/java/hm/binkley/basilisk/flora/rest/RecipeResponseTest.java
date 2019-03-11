@@ -15,7 +15,6 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import static hm.binkley.basilisk.flora.rest.RecipeResponse.using;
-import static java.time.Instant.EPOCH;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
@@ -55,10 +54,10 @@ class RecipeResponseTest {
     void shouldUse() {
         final var id = 33L;
         final var name = "SOUFFLE";
-        final var ingredientResponse = new UsedIngredientResponse(31L, "EGGS");
+        final var ingredientResponse = new UsedIngredientResponse(31L,
+                "EGGS", 2L);
 
-        assertThat(using().from(id, EPOCH, name,
-                Stream.of(ingredientResponse)))
+        assertThat(using().from(id, name, Stream.of(ingredientResponse)))
                 .isEqualTo(new RecipeResponse(id, name,
                         Set.of(ingredientResponse)));
     }

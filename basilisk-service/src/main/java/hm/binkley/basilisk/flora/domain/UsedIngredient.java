@@ -4,8 +4,6 @@ import hm.binkley.basilisk.flora.domain.store.IngredientRecord;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import java.time.Instant;
-
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class UsedIngredient
@@ -15,12 +13,10 @@ public class UsedIngredient
     }
 
     public <T> T asUsed(final UsedIngredient.As<T> asOther) {
-        return asOther
-                .from(getId(), getReceivedAt(), getName(), getRecipeId());
+        return asOther.from(getId(), getName(), getRecipeId());
     }
 
-    public interface As<T> {
-        T from(final Long id, final Instant receivedAt, final String name,
-                final Long recipeId);
+    public interface As<I> {
+        I from(final Long id, final String name, final Long recipeId);
     }
 }

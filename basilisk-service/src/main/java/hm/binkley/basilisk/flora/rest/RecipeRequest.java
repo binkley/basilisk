@@ -18,13 +18,13 @@ public final class RecipeRequest {
     private final Set<UsedIngredientRequest> ingredients
             = new LinkedHashSet<>();
 
-    public <T, U> T as(final RecipeRequest.As<T, U> asRecipe,
-            final UsedIngredientRequest.As<U> asUsedIngredient) {
+    public <R, I> R as(final RecipeRequest.As<R, I> asRecipe,
+            final UsedIngredientRequest.As<I> asUsedIngredient) {
         return asRecipe.from(name, ingredients.stream()
                 .map(it -> asUsedIngredient.from(it.getName())));
     }
 
-    public interface As<T, U> {
-        T from(final String name, final Stream<U> ingredients);
+    public interface As<R, I> {
+        R from(final String name, final Stream<I> ingredients);
     }
 }
