@@ -22,6 +22,8 @@ public final class IngredientRecord {
     String name;
     @Getter
     Long recipeId;
+    @Getter
+    String chefCode;
     @Transient
     IngredientStore store;
 

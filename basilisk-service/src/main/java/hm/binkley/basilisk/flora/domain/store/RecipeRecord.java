@@ -24,6 +24,8 @@ public final class RecipeRecord {
     Instant receivedAt;
     @Getter
     String name;
+    @Getter
+    String chefCode;
     @Column("recipe_id")
     @Getter
     Set<IngredientRecord> ingredients = new LinkedHashSet<>();
