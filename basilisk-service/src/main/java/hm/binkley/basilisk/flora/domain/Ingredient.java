@@ -23,11 +23,14 @@ public abstract class Ingredient {
         return record.getRecipeId();
     }
 
+    public Long getChefId() { return record.getChefId(); }
+
     public <I> I asAny(final Ingredient.As<I> asOther) {
-        return asOther.from(getId(), getName(), getRecipeId());
+        return asOther.from(getId(), getName(), getRecipeId(), getChefId());
     }
 
     public interface As<I> {
-        I from(final Long id, final String name, final Long recipeId);
+        I from(final Long id, final String name, final Long recipeId,
+                final Long chefId);
     }
 }

@@ -32,7 +32,7 @@ class ChefsTest {
     @Test
     void shouldFindById() {
         final var record = new ChefRecord(
-                3L, EPOCH, "ABC", "Chef Paul");
+                3L, EPOCH, "Chef Paul");
         when(store.byId(record.getId()))
                 .thenReturn(Optional.of(record));
 
@@ -44,23 +44,9 @@ class ChefsTest {
     }
 
     @Test
-    void shouldFindByCode() {
-        final var record = new ChefRecord(
-                3L, EPOCH, "DEF", "Chef Mary");
-        when(store.byCode(record.getCode()))
-                .thenReturn(Optional.of(record));
-
-        final var found = recipes.byCode(record.getCode()).orElseThrow();
-
-        assertThat(found).isEqualTo(new Chef(record));
-
-        verifyNoMoreInteractions(store);
-    }
-
-    @Test
     void shouldFindByName() {
         final var record = new ChefRecord(
-                3L, EPOCH, "GHI", "Chef Robert");
+                3L, EPOCH, "Chef Robert");
         when(store.byName(record.getName()))
                 .thenReturn(Optional.of(record));
 
@@ -74,7 +60,7 @@ class ChefsTest {
     @Test
     void shouldFindAll() {
         final var record = new ChefRecord(
-                3L, EPOCH, "JKL", "Chef Josephine");
+                3L, EPOCH, "Chef Josephine");
         when(store.all())
                 .thenReturn(Stream.of(record));
 
@@ -88,13 +74,12 @@ class ChefsTest {
     @Test
     void shouldCreate() {
         final var record = new ChefRecord(
-                3L, EPOCH, "MNO", "Chef Howard");
+                3L, EPOCH, "Chef Howard");
 
-        when(store.save(ChefRecord.raw(record.getCode(), record.getName())))
+        when(store.save(ChefRecord.raw(record.getName())))
                 .thenReturn(record);
 
         assertThat(recipes.create(ChefRequest.builder()
-                .code(record.getCode())
                 .name(record.getName())
                 .build()))
                 .isEqualTo(new Chef(record));

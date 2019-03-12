@@ -57,12 +57,35 @@ class IngredientControllerValidationTest {
         problemMvc.perform(post("/ingredient")
                 .content(asJson(UnusedIngredientRequest.builder()
                         .name("F")
+                        .chefId(17L)
                         .build())))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.violations[0].field",
                         equalTo("name")))
                 .andExpect(jsonPath("$.violations[0].message",
                         equalTo("length must be between 3 and 32")))
+                .andExpect(jsonPath("$.status",
+                        equalTo(UNPROCESSABLE_ENTITY.name())))
+        // TODO: Turn off stack traces
+        //      .andExpect(jsonPath("$.stackTrace").doesNotExist())
+        ;
+
+        verifyNoMoreInteractions(ingredients);
+    }
+
+    @Test
+    void shouldRejectMissingChefId()
+            throws Exception {
+        problemMvc.perform(post("/ingredient")
+                .content(asJson(UnusedIngredientRequest.builder()
+                        .name("EGGS")
+                        .chefId(null)
+                        .build())))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.violations[0].field",
+                        equalTo("chefId")))
+                .andExpect(jsonPath("$.violations[0].message",
+                        equalTo("must not be null")))
                 .andExpect(jsonPath("$.status",
                         equalTo(UNPROCESSABLE_ENTITY.name())))
         // TODO: Turn off stack traces

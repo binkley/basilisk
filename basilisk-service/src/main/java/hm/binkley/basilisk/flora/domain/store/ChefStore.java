@@ -17,11 +17,6 @@ public class ChefStore {
                 .map(this::assign);
     }
 
-    public Optional<ChefRecord> byCode(final String code) {
-        return springData.findByCode(code)
-                .map(this::assign);
-    }
-
     public Optional<ChefRecord> byName(final String name) {
         return springData.findByName(name)
                 .map(this::assign);
@@ -32,8 +27,8 @@ public class ChefStore {
                 .map(this::assign);
     }
 
-    public ChefRecord create(final String code, final String name) {
-        final ChefRecord record = ChefRecord.raw(code, name);
+    public ChefRecord create(final String name) {
+        final ChefRecord record = ChefRecord.raw(name);
         assign(record);
         return record.save();
     }

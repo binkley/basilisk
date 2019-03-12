@@ -21,12 +21,14 @@ public class Recipe {
     public <R, I> R as(final Recipe.As<R, I> asRecipe,
             final UsedIngredient.As<I> asUsedIngredient) {
         return asRecipe.from(
-                record.getId(), record.getName(),
+                record.getId(), record.getName(), record.getChefId(),
                 ingredients().map(it -> asUsedIngredient.from(
-                        it.getId(), it.getName(), it.getRecipeId())));
+                        it.getId(), it.getName(), it.getRecipeId(),
+                        it.getChefId())));
     }
 
     public interface As<R, I> {
-        R from(final Long id, final String name, final Stream<I> ingredients);
+        R from(final Long id, final String name, final Long chefId,
+                final Stream<I> ingredients);
     }
 }

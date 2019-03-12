@@ -21,6 +21,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Transactional
 class RecipeRepositoryTest {
+    private static final Long CHEF_ID = 17L;
+
     private final RecipeRepository repository;
 
     private static <T> T first(final Iterable<T> children) {
@@ -33,7 +35,7 @@ class RecipeRepositoryTest {
 
     @Test
     void shouldSaveWithNoIngredients() {
-        final var unsaved = RecipeRecord.raw("SOUFFLE");
+        final var unsaved = RecipeRecord.raw("SOUFFLE", CHEF_ID);
         final var found = repository.findById(
                 repository.save(unsaved).getId());
 
@@ -42,36 +44,45 @@ class RecipeRepositoryTest {
 
     @Test
     void shouldSaveWithSomeIngredients() {
-        final var unsaved = RecipeRecord.raw("SOUFFLE");
-        unsaved.ingredients.add(IngredientRecord.raw("EGGS"));
+        final var unsaved = RecipeRecord.raw("SOUFFLE", CHEF_ID)
+                .add(IngredientRecord.raw("EGGS", CHEF_ID));
 
         final var saved = repository.save(unsaved);
-        final var found = repository.findById(saved.getId());
-        final var record = found.orElseThrow();
 
-        assertThat(record).isEqualTo(unsaved);
-        assertThat(record.getId()).isNotNull();
-        assertThat(first(record.getIngredients()).getId())
+        assertThat(first(saved.getIngredients()).getRecipeId())
+                .withFailMessage("Spring Data JDBC now"
+                        + " updates children after save; go simplify 'store'"
+                        + " in Recipes")
+                .isNull();
+
+        final var found = repository.findById(saved.getId());
+        final var readBack = found.orElseThrow();
+
+        assertThat(readBack).isEqualTo(unsaved);
+        assertThat(readBack.getId()).isNotNull();
+        assertThat(first(readBack.getIngredients()).getId())
                 .withFailMessage("No ID on children")
                 .isNotNull();
+        assertThat(first(readBack.getIngredients()).getRecipeId())
+                .isEqualTo(saved.getId());
     }
 
     @Test
     void shouldHaveUniqueName() {
         final var name = "SOUFFLE";
-        repository.save(RecipeRecord.raw(name));
+        repository.save(RecipeRecord.raw(name, CHEF_ID));
 
         final var ex = assertThrows(
                 DbActionExecutionException.class,
-                () -> repository.save(RecipeRecord.raw(name)));
+                () -> repository.save(RecipeRecord.raw(name, CHEF_ID)));
 
         assertThat(ex.getCause()).isInstanceOf(DuplicateKeyException.class);
     }
 
     @Test
     void shouldFindByName() {
-        final var unsavedLeft = RecipeRecord.raw("BOILED EGGS");
-        final var unsavedRight = RecipeRecord.raw("POACHED EGGS");
+        final var unsavedLeft = RecipeRecord.raw("BOILED EGGS", CHEF_ID);
+        final var unsavedRight = RecipeRecord.raw("POACHED EGGS", CHEF_ID);
         repository.saveAll(Set.of(unsavedLeft, unsavedRight));
 
         assertThat(repository.findByName(unsavedLeft.getName()).orElseThrow())
@@ -81,8 +92,8 @@ class RecipeRepositoryTest {
 
     @Test
     void shouldStream() {
-        final var unsavedA = RecipeRecord.raw("SCRAMBLED EGGS");
-        final var unsavedB = RecipeRecord.raw("BOILED EGGS");
+        final var unsavedA = RecipeRecord.raw("SCRAMBLED EGGS", CHEF_ID);
+        final var unsavedB = RecipeRecord.raw("BOILED EGGS", CHEF_ID);
         repository.saveAll(Set.of(unsavedA, unsavedB));
 
         try (final var found = repository.readAll()) {

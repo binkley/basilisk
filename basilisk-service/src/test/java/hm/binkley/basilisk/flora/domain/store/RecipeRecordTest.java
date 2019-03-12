@@ -16,13 +16,15 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class RecipeRecordTest {
+    private static final Long CHEF_ID = 17L;
+
     @Mock
     private RecipeStore store;
 
     @Test
     void shouldAddSomeIngredients() {
-        final var ingredientRecord = IngredientRecord.raw("EGGS");
-        final var record = RecipeRecord.raw("SOUFFLE")
+        final var ingredientRecord = IngredientRecord.raw("EGGS", CHEF_ID);
+        final var record = RecipeRecord.raw("SOUFFLE", CHEF_ID)
                 .addAll(Stream.of(ingredientRecord));
 
         assertThat(record.ingredients).isEqualTo(Set.of(ingredientRecord));
@@ -31,10 +33,10 @@ class RecipeRecordTest {
 
     @Test
     void shouldSaveWithoutIngredients() {
-        final var unsaved = RecipeRecord.raw("SOUFFLE");
+        final var unsaved = RecipeRecord.raw("SOUFFLE", CHEF_ID);
         unsaved.store = store;
         final var saved = new RecipeRecord(
-                3L, EPOCH, unsaved.getName());
+                3L, EPOCH, unsaved.getName(), CHEF_ID);
         saved.store = store;
         when(store.save(unsaved))
                 .thenReturn(saved);
@@ -47,11 +49,12 @@ class RecipeRecordTest {
 
     @Test
     void shouldSaveWithIngredients() {
-        final var unsaved = RecipeRecord.raw("SOUFFLE");
+        final var unsaved = RecipeRecord.raw("SOUFFLE", CHEF_ID);
         unsaved.store = store;
-        final var unsavedIngredient = IngredientRecord.raw("EGGS");
+        final var unsavedIngredient = IngredientRecord.raw("EGGS", CHEF_ID);
         unsaved.ingredients.add(unsavedIngredient);
-        final var saved = new RecipeRecord(3L, EPOCH, unsaved.getName());
+        final var saved = new RecipeRecord(
+                3L, EPOCH, unsaved.getName(), CHEF_ID);
         saved.store = store;
         saved.ingredients.add(unsavedIngredient);
         when(store.save(unsaved))

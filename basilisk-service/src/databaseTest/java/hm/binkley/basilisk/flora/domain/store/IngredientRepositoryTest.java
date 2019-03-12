@@ -21,11 +21,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Transactional
 class IngredientRepositoryTest {
+    private static final Long CHEF_ID = 17L;
+
     private final IngredientRepository repository;
 
     @Test
     void shouldRoundtrip() {
-        final var unsaved = IngredientRecord.raw("EGGS");
+        final var unsaved = IngredientRecord.raw("EGGS", CHEF_ID);
         final var found = repository.findById(
                 repository.save(unsaved).getId());
 
@@ -35,19 +37,19 @@ class IngredientRepositoryTest {
     @Test
     void shouldHaveUniqueName() {
         final var name = "BACON";
-        repository.save(IngredientRecord.raw(name));
+        repository.save(IngredientRecord.raw(name, CHEF_ID));
 
         final var ex = assertThrows(
                 DbActionExecutionException.class,
-                () -> repository.save(IngredientRecord.raw(name)));
+                () -> repository.save(IngredientRecord.raw(name, CHEF_ID)));
 
         assertThat(ex.getCause()).isInstanceOf(DuplicateKeyException.class);
     }
 
     @Test
     void shouldFindByName() {
-        final var unsavedLeft = IngredientRecord.raw("BUTTER");
-        final var unsavedRight = IngredientRecord.raw("SALT");
+        final var unsavedLeft = IngredientRecord.raw("BUTTER", CHEF_ID);
+        final var unsavedRight = IngredientRecord.raw("SALT", CHEF_ID);
         repository.saveAll(Set.of(unsavedLeft, unsavedRight));
 
         assertThat(repository.findByName(unsavedLeft.getName()).orElseThrow())
@@ -57,8 +59,8 @@ class IngredientRepositoryTest {
 
     @Test
     void shouldStream() {
-        final var unsavedA = IngredientRecord.raw("MILK");
-        final var unsavedB = IngredientRecord.raw("SALT");
+        final var unsavedA = IngredientRecord.raw("MILK", CHEF_ID);
+        final var unsavedB = IngredientRecord.raw("SALT", CHEF_ID);
         repository.saveAll(Set.of(unsavedA, unsavedB));
 
         try (final var found = repository.readAll()) {

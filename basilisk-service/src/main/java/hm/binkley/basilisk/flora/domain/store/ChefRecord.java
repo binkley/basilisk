@@ -19,22 +19,19 @@ public final class ChefRecord {
     @Getter
     Instant receivedAt;
     @Getter
-    String code;
-    @Getter
     String name;
     @Transient
     ChefStore store;
 
     public ChefRecord(final Long id, final Instant receivedAt,
-            final String code, final String name) {
+            final String name) {
         this.id = id;
         this.receivedAt = receivedAt;
-        this.code = code;
         this.name = name;
     }
 
-    public static ChefRecord raw(final String code, final String name) {
-        return new ChefRecord(null, null, code, name);
+    public static ChefRecord raw(final String name) {
+        return new ChefRecord(null, null, name);
     }
 
     public ChefRecord save() {

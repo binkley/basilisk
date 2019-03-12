@@ -18,7 +18,6 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ChefStoreTest {
-    private static final String CODE = "ABC";
     private static final String NAME = "The Dallas Yellow Rose";
 
     @Mock
@@ -34,7 +33,7 @@ class ChefStoreTest {
     @Test
     void shouldFindById() {
         final var id = 3L;
-        final var saved = new ChefRecord(id, EPOCH, CODE, NAME);
+        final var saved = new ChefRecord(id, EPOCH, NAME);
         when(springData.findById(id))
                 .thenReturn(Optional.of(saved));
 
@@ -47,22 +46,8 @@ class ChefStoreTest {
     }
 
     @Test
-    void shouldFindByCode() {
-        final var saved = new ChefRecord(3L, EPOCH, CODE, NAME);
-        when(springData.findByCode(CODE))
-                .thenReturn(Optional.of(saved));
-
-        final var found = store.byCode(CODE).orElseThrow();
-
-        assertThat(found).isEqualTo(saved);
-        assertThat(found.store).isSameAs(store);
-
-        verifyNoMoreInteractions(springData);
-    }
-
-    @Test
     void shouldFindByName() {
-        final var saved = new ChefRecord(3L, EPOCH, CODE, NAME);
+        final var saved = new ChefRecord(3L, EPOCH, NAME);
         when(springData.findByName(NAME))
                 .thenReturn(Optional.of(saved));
 
@@ -76,7 +61,7 @@ class ChefStoreTest {
 
     @Test
     void shouldFindAll() {
-        final var saved = new ChefRecord(3L, EPOCH, CODE, NAME);
+        final var saved = new ChefRecord(3L, EPOCH, NAME);
         when(springData.readAll())
                 .thenReturn(Stream.of(saved));
 
@@ -90,13 +75,12 @@ class ChefStoreTest {
 
     @Test
     void shouldCreate() {
-        final var unsaved = ChefRecord.raw(CODE, NAME);
-        final var saved = new ChefRecord(
-                3L, EPOCH, unsaved.getName(), null);
+        final var unsaved = ChefRecord.raw(NAME);
+        final var saved = new ChefRecord(3L, EPOCH, null);
         when(springData.save(unsaved))
                 .thenReturn(saved);
 
-        assertThat(store.create(unsaved.getCode(), unsaved.getName()))
+        assertThat(store.create(unsaved.getName()))
                 .isEqualTo(saved);
 
         verify(springData).save(unsaved);
@@ -105,9 +89,8 @@ class ChefStoreTest {
 
     @Test
     void shouldSave() {
-        final var unsaved = ChefRecord.raw(CODE, NAME);
-        final var saved = new ChefRecord(
-                3L, EPOCH, unsaved.getCode(), unsaved.getName());
+        final var unsaved = ChefRecord.raw(NAME);
+        final var saved = new ChefRecord(3L, EPOCH, unsaved.getName());
 
         when(springData.save(unsaved))
                 .thenReturn(saved);

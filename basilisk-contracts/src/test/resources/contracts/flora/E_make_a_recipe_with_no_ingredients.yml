@@ -1,4 +1,4 @@
-description: Make a recipe with some ingredients
+description: Make a recipe with no ingredients
 request:
   method: POST
   url: /recipe
@@ -6,16 +6,15 @@ request:
     Content-Type: application/json;charset=UTF-8
   body:
     name: "SOUFFLE"
-    ingredients:
-      - name: "EGGS"
+    chef-id: 1
+    ingredients: []
 response:
   status: 201
   headers:
     Content-Type: application/json;charset=UTF-8
-    Location: /recipe/2
+    Location: /recipe/1
   body:
-    id: 2
+    id: 1
     name: "SOUFFLE"
-    ingredients:
-      - id: 1
-        name: "EGGS"
+    chef-id: 1
+    ingredients: []

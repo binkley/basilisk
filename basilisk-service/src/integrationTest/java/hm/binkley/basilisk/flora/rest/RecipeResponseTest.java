@@ -22,6 +22,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @JsonTest
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 class RecipeResponseTest {
+    private final Long CHEF_ID = 17L;
+
     private final JacksonTester<RecipeResponse> json;
 
     @Test
@@ -30,6 +32,7 @@ class RecipeResponseTest {
         assertThat(json.write(RecipeResponse.builder()
                 .id(33L)
                 .name("SOUFFLE")
+                .chefId(CHEF_ID)
                 .build()))
                 .isEqualToJson(
                         "recipe-with-no-ingredients-response-test.json");
@@ -38,12 +41,17 @@ class RecipeResponseTest {
     @Test
     void shouldBecomeGoodJsonWithSomeIngredients()
             throws IOException {
+        final var recipeId = 33L;
+
         assertThat(json.write(RecipeResponse.builder()
-                .id(33L)
+                .id(recipeId)
                 .name("SOUFFLE")
+                .chefId(CHEF_ID)
                 .ingredients(Set.of(UsedIngredientResponse.builder()
                         .id(31L)
                         .name("EGGS")
+                        .recipeId(recipeId)
+                        .chefId(CHEF_ID)
                         .build()))
                 .build()))
                 .isEqualToJson(
@@ -52,13 +60,14 @@ class RecipeResponseTest {
 
     @Test
     void shouldUse() {
-        final var id = 33L;
+        final var recipeId = 33L;
         final var name = "SOUFFLE";
-        final var ingredientResponse = new UsedIngredientResponse(31L,
-                "EGGS", 2L);
+        final var ingredientResponse = new UsedIngredientResponse(
+                31L, "EGGS", recipeId, CHEF_ID);
 
-        assertThat(using().from(id, name, Stream.of(ingredientResponse)))
-                .isEqualTo(new RecipeResponse(id, name,
+        assertThat(using().from(
+                recipeId, name, CHEF_ID, Stream.of(ingredientResponse)))
+                .isEqualTo(new RecipeResponse(recipeId, name, CHEF_ID,
                         Set.of(ingredientResponse)));
     }
 }

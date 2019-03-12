@@ -10,15 +10,16 @@ class UnusedIngredientTest {
     @Test
     void shouldAs() {
         final var record = new IngredientRecord(
-                5L, EPOCH.plusSeconds(1L), "EGGS", null);
+                5L, EPOCH.plusSeconds(1L), "EGGS", null, 17L);
         // The types are immaterial, just that the transformation worked
         final var targetIngredient = 1;
 
         @SuppressWarnings("PMD") final var that
                 = new UnusedIngredient(record).asUnused(
-                (id, name) -> {
+                (id, name, chefId) -> {
                     assertThat(id).isEqualTo(record.getId());
                     assertThat(name).isEqualTo(record.getName());
+                    assertThat(chefId).isEqualTo(record.getChefId());
                     return targetIngredient;
                 });
 

@@ -1,0 +1,26 @@
+description: Make a recipe with some ingredients
+request:
+  method: POST
+  url: /recipe
+  headers:
+    Content-Type: application/json;charset=UTF-8
+  body:
+    name: "SCRAMBLED EGGS"
+    chef-id: 1
+    ingredients:
+      - name: "EGGS"
+        chef-id: 1
+response:
+  status: 201
+  headers:
+    Content-Type: application/json;charset=UTF-8
+    Location: /recipe/2
+  body:
+    id: 2
+    name: "SCRAMBLED EGGS"
+    chef-id: 1
+    ingredients:
+      - id: 1
+        name: "EGGS"
+        recipe-id: 2
+        chef-id: 1

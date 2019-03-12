@@ -18,6 +18,8 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class RecipeStoreTest {
+    private static final Long CHEF_ID = 17L;
+
     @Mock
     private RecipeRepository springData;
 
@@ -30,7 +32,8 @@ class RecipeStoreTest {
 
     @Test
     void shouldFindById() {
-        final var saved = new RecipeRecord(3L, EPOCH, "SOUFFLE");
+        final var saved = new RecipeRecord(
+                3L, EPOCH, "SOUFFLE", CHEF_ID);
         when(springData.findById(saved.getId()))
                 .thenReturn(Optional.of(saved));
 
@@ -44,7 +47,8 @@ class RecipeStoreTest {
 
     @Test
     void shouldFindByName() {
-        final var saved = new RecipeRecord(3L, EPOCH, "OMELET");
+        final var saved = new RecipeRecord(
+                3L, EPOCH, "OMELET", CHEF_ID);
         when(springData.findByName(saved.getName()))
                 .thenReturn(Optional.of(saved));
 
@@ -58,7 +62,8 @@ class RecipeStoreTest {
 
     @Test
     void shouldFindAll() {
-        final var saved = new RecipeRecord(3L, EPOCH, "FRIED EGGS");
+        final var saved = new RecipeRecord(
+                3L, EPOCH, "FRIED EGGS", CHEF_ID);
         when(springData.readAll())
                 .thenReturn(Stream.of(saved));
 
@@ -72,13 +77,17 @@ class RecipeStoreTest {
 
     @Test
     void shouldCreate() {
-        final var unsaved = RecipeRecord.raw("BOILED EGG");
-        final var saved = new RecipeRecord(3L, EPOCH, unsaved
-                .getName());
+        final var unsaved = RecipeRecord.raw("BOILED EGG", CHEF_ID);
+        final var id = 3L;
+        final var saved = new RecipeRecord(
+                id, EPOCH, unsaved.getName(), CHEF_ID);
         when(springData.save(unsaved))
                 .thenReturn(saved);
+        when(springData.findById(id)) // TODO: See RecipeRepositoryTest
+                .thenReturn(Optional.of(saved));
 
-        assertThat(store.create(unsaved.getName())).isEqualTo(saved);
+        assertThat(store.create(unsaved.getName(), unsaved.getChefId()))
+                .isEqualTo(saved);
 
         verify(springData).save(unsaved);
         verifyNoMoreInteractions(springData);
@@ -86,12 +95,15 @@ class RecipeStoreTest {
 
     @Test
     void shouldSave() {
-        final var unsaved = RecipeRecord.raw("POACHED EGG");
-        final var saved = new RecipeRecord(3L, EPOCH,
-                unsaved.getName());
+        final var unsaved = RecipeRecord.raw("POACHED EGG", CHEF_ID);
+        final var id = 3L;
+        final var saved = new RecipeRecord(
+                id, EPOCH, unsaved.getName(), CHEF_ID);
 
         when(springData.save(unsaved))
                 .thenReturn(saved);
+        when(springData.findById(id)) // TODO: See RecipeRepositoryTest
+                .thenReturn(Optional.of(saved));
 
         assertThat(store.save(unsaved)).isEqualTo(saved);
 

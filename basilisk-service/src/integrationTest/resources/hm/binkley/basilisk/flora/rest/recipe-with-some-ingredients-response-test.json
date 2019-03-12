@@ -1,10 +1,13 @@
 {
   "id": 33,
   "name": "SOUFFLE",
+  "chef-id": 17,
   "ingredients": [
     {
       "id": 31,
-      "name": "EGGS"
+      "name": "EGGS",
+      "recipe-id": 33,
+      "chef-id": 17
     }
   ]
 }

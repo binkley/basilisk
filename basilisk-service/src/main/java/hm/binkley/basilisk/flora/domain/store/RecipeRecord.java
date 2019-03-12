@@ -25,7 +25,7 @@ public final class RecipeRecord {
     @Getter
     String name;
     @Getter
-    String chefCode;
+    Long chefId;
     @Column("recipe_id")
     @Getter
     Set<IngredientRecord> ingredients = new LinkedHashSet<>();
@@ -33,14 +33,15 @@ public final class RecipeRecord {
     RecipeStore store;
 
     public RecipeRecord(final Long id, final Instant receivedAt,
-            final String name) {
+            final String name, final Long chefId) {
         this.id = id;
         this.receivedAt = receivedAt;
         this.name = name;
+        this.chefId = chefId;
     }
 
-    public static RecipeRecord raw(final String name) {
-        return new RecipeRecord(null, null, name);
+    public static RecipeRecord raw(final String name, final Long chefId) {
+        return new RecipeRecord(null, null, name, chefId);
     }
 
     public RecipeRecord add(final IngredientRecord ingredient) {

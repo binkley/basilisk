@@ -14,12 +14,13 @@ import static java.util.stream.Collectors.toCollection;
 public final class RecipeResponse {
     Long id;
     String name;
+    Long chefId;
     @Builder.Default
     Set<UsedIngredientResponse> ingredients = new LinkedHashSet<>();
 
     static Recipe.As<RecipeResponse, UsedIngredientResponse> using() {
-        return (id, name, ingredients) ->
-                new RecipeResponse(id, name, ingredients
+        return (id, name, chefId, ingredients) ->
+                new RecipeResponse(id, name, chefId, ingredients
                         .collect(toCollection(LinkedHashSet::new)));
     }
 }

@@ -13,10 +13,10 @@ public class UnusedIngredient
     }
 
     public <I> I asUnused(final UnusedIngredient.As<I> asOther) {
-        return asOther.from(getId(), getName());
+        return asOther.from(getId(), getName(), getChefId());
     }
 
     public interface As<I> {
-        I from(final Long id, final String name);
+        I from(final Long id, final String name, final Long chefId);
     }
 }

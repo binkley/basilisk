@@ -23,20 +23,21 @@ public final class IngredientRecord {
     @Getter
     Long recipeId;
     @Getter
-    String chefCode;
+    Long chefId;
     @Transient
     IngredientStore store;
 
     public IngredientRecord(final Long id, final Instant receivedAt,
-            final String name, final Long recipeId) {
+            final String name, final Long recipeId, final Long chefId) {
         this.id = id;
         this.receivedAt = receivedAt;
         this.name = name;
         this.recipeId = recipeId;
+        this.chefId = chefId;
     }
 
-    public static IngredientRecord raw(final String name) {
-        return new IngredientRecord(null, null, name, null);
+    public static IngredientRecord raw(final String name, final Long chefId) {
+        return new IngredientRecord(null, null, name, null, chefId);
     }
 
     public boolean isUsed() {

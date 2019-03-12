@@ -28,16 +28,18 @@ class UnusedIngredientResponseTest {
         assertThat(json.write(UsedIngredientResponse.builder()
                 .id(31L)
                 .name("EGGS")
+                .chefId(17L)
                 .build()))
-                .isEqualToJson("ingredient-response-test.json");
+                .isEqualToJson("unused-ingredient-response-test.json");
     }
 
     @Test
     void shouldUse() {
         final var id = 31L;
         final var name = "EGGS";
+        final var chefId = 17L;
 
-        assertThat(using().from(id, name))
-                .isEqualTo(new UnusedIngredientResponse(id, name));
+        assertThat(using().from(id, name, chefId))
+                .isEqualTo(new UnusedIngredientResponse(id, name, chefId));
     }
 }

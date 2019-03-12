@@ -7,24 +7,21 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class UnusedIngredientRequestTest {
+class ChefRequestTest {
     @Test
     void shouldConvert() {
-        final var request = UnusedIngredientRequest.builder()
-                .name("EGGS")
-                .chefId(17L)
+        final var request = ChefRequest.builder()
+                .name("Chef Bob")
                 .build();
 
-        assertThat(request.as(Ingredienty::new))
-                .isEqualTo(new Ingredienty(
-                        request.getName(), request.getChefId()));
+        assertThat(request.as(Chefey::new))
+                .isEqualTo(new Chefey(request.getName()));
     }
 
     @EqualsAndHashCode
     @RequiredArgsConstructor
     @ToString
-    private static final class Ingredienty {
+    private static final class Chefey {
         private final String name;
-        private final Long chefId;
     }
 }

@@ -15,10 +15,11 @@ Demonstrate Java 11, Spring Boot 2, JUnit 5, et al
 
 ## Model
 
-### Basil Lisp B&B Chain
+### Basil Lips B&Bs
 
-Picture that you own a chain of B&Bs (bed and breakfast) located around the
-globe:
+Picture that you own a chain of Quality B&Bs (bed and breakfast
+hotels)&mdash;_The Basil Lips_&mdash;following a flower theme, and located
+around the globe:
 
 - ["The Dallas Yellow Rose"](https://www.history.com/news/who-was-the-yellow-rose-of-texas)
 - ["Melbourne's Pink Heath"](https://www.anbg.gov.au/emblems/vic.emblem.html)
@@ -31,35 +32,36 @@ width="30%"/>
 <img src="https://cdn-images-1.medium.com/max/2000/1*C2nsRby3rpDCA5LFWfDZUw.jpeg"
 width="30%"/>
 
-### The Food
+Your business plan includes jet-setting world-class chefs and locally-sourced
+ingredients.
 
-Your business plan includes good food, not just breakfast, so you hire
-several top-shelf chefs, cultivate many impressive recipes, and source the
-best ingredients available subject to restrictions.
+### The Food
 
 ### The Rules
 
-1. Chefs rotate through your locations, delighting your guests with their
-   amazing cooking.
-2. Chefs rotate through ingredients, and you would like eventually all chefs
-   to try their hand at every ingredient.
-3. Ingredients for a recipe can vary somewhat, as substitutions are needed,
-   or to create variety.
-4. Not all ingredients are available at every location, or at every season.
-5. A location may have ingredients available, but not yet consigned to a
-   particular recipe.  You would like to use all ingredients on hand, when
-   feasible
+1. Chefs fly between your locations, delighting your guests with their amazing
+   cooking.
+2. Chefs use nearly all special ingredients in one of their signature recipes.
+3. Ingredients for recipes can vary, as chef's make them their own.
+4. Ingredients often location-specific, and are at their best only certain
+   times of the year.
+5. You are still a business; best is to use what ingredients are present in
+   each location: your buyers are some of the best in the world, like your
+   chefs.
 
 #### Example recipes
 
-- A perfect souffle needs eggs and some other dry goods, yet varies widely in
-  other extra ingredients
+- A perfect souffle needs eggs, and other wet and dry goods, and varies widely
+  in those other ingredients
 
 #### Example ingredient restrictions
 
-- Eggs are available in all locations at all times
-- The Tokyo fish market has the best fish in the world, year-round
-- Texas strawberries are best only in Dallas and only in Spring
+- [Eggs](https://en.wikipedia.org/wiki/Egg_as_food) are available in all
+  locations at all times
+- The [Tokyo fish market](https://en.wikipedia.org/wiki/Tsukiji_fish_market)
+  has the best fish in the world, year-round
+- [Texas strawberries](https://strawberryfestival.com) are best only in
+  Dallas, and only in Spring
 
 ### Thinking about it
 
@@ -93,16 +95,12 @@ guests and helping the "meal planners":
 - RECIPE <-- INGREDIENTs <-- RESTRICTIONs (consigned ingredients)
 - INGREDIENTs <-- RESTRICTIONs (available ingredients)
 
-These are "2nd-class objects", needed by "meal planners", but not as
-important:
+These are "2nd-class objects", needed by "meal planners", but not as central
+(but still important):
 
 - CHEF
-- RESTRICTION
 - LOCATION
-
-Sure, guests care about where they stay, but they are not staying at a
-location because of a particular recipe.  However, once there, they care about
-having a fabulous meal!
+- SEASON
 
 
 ## Features

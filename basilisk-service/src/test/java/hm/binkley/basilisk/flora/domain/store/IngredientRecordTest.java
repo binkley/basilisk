@@ -18,10 +18,11 @@ class IngredientRecordTest {
 
     @Test
     void shouldSave() {
-        final var unsaved = IngredientRecord.raw("EGGS");
+        final var chefId = 17L;
+        final var unsaved = IngredientRecord.raw("EGGS", chefId);
         unsaved.store = store;
         final var saved = new IngredientRecord(
-                3L, EPOCH, unsaved.getName(), 2L);
+                3L, EPOCH, unsaved.getName(), 2L, chefId);
         saved.store = store;
         when(store.save(unsaved))
                 .thenReturn(saved);

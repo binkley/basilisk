@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hm.binkley.basilisk.configuration.JsonConfiguration;
 import hm.binkley.basilisk.configuration.ProblemWebMvcTest;
-import hm.binkley.basilisk.flora.domain.Recipes;
+import hm.binkley.basilisk.flora.domain.Chefs;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,20 +23,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @Import({JsonConfiguration.class,
         WorkaroundComponentScanFindingAllConverters.class})
-@ProblemWebMvcTest(RecipeController.class)
+@ProblemWebMvcTest(ChefController.class)
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-class RecipeControllerValidationTest {
+class ChefControllerValidationTest {
     private final MockMvc problemMvc;
     private final ObjectMapper objectMapper;
 
     @MockBean
-    private Recipes recipes;
+    private Chefs chefs;
 
     @SuppressFBWarnings("RV")
     @Test
     void shouldRejectShortNames()
             throws Exception {
-        problemMvc.perform(get("/recipe/find/F"))
+        problemMvc.perform(get("/chef/find/F"))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.violations[0].field",
                         equalTo("getByName.name")))
@@ -48,16 +48,15 @@ class RecipeControllerValidationTest {
         //      .andExpect(jsonPath("$.stackTrace").doesNotExist())
         ;
 
-        verifyNoMoreInteractions(recipes);
+        verifyNoMoreInteractions(chefs);
     }
 
     @Test
     void shouldRejectShortRequestNames()
             throws Exception {
-        problemMvc.perform(post("/recipe")
-                .content(asJson(RecipeRequest.builder()
+        problemMvc.perform(post("/chef")
+                .content(asJson(ChefRequest.builder()
                         .name("F")
-                        .chefId(17L)
                         .build())))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.violations[0].field",
@@ -70,29 +69,7 @@ class RecipeControllerValidationTest {
         //      .andExpect(jsonPath("$.stackTrace").doesNotExist())
         ;
 
-        verifyNoMoreInteractions(recipes);
-    }
-
-    @Test
-    void shouldRejectMissingChefId()
-            throws Exception {
-        problemMvc.perform(post("/recipe")
-                .content(asJson(UnusedIngredientRequest.builder()
-                        .name("BOILED EGGS")
-                        .chefId(null)
-                        .build())))
-                .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.violations[0].field",
-                        equalTo("chefId")))
-                .andExpect(jsonPath("$.violations[0].message",
-                        equalTo("must not be null")))
-                .andExpect(jsonPath("$.status",
-                        equalTo(UNPROCESSABLE_ENTITY.name())))
-        // TODO: Turn off stack traces
-        //      .andExpect(jsonPath("$.stackTrace").doesNotExist())
-        ;
-
-        verifyNoMoreInteractions(recipes);
+        verifyNoMoreInteractions(chefs);
     }
 
     private String asJson(final Object o)

@@ -27,14 +27,17 @@ public class RecipeStore {
                 .peek(it -> it.store = this);
     }
 
-    public RecipeRecord create(final String name) {
-        final RecipeRecord record = RecipeRecord.raw(name);
+    public RecipeRecord create(final String name, final Long chefId) {
+        final RecipeRecord record = RecipeRecord.raw(name, chefId);
         assign(record);
         return record.save();
     }
 
     public RecipeRecord save(final RecipeRecord record) {
-        return springData.save(record);
+        // NB -- Saving does not update ref fields in children,
+        // but reading it back does
+        final var saved = springData.save(record);
+        return springData.findById(saved.getId()).orElseThrow();
     }
 
     private RecipeRecord assign(final RecipeRecord record) {

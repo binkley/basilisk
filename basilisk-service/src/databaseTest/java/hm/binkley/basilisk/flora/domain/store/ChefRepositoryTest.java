@@ -21,14 +21,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Transactional
 class ChefRepositoryTest {
-    private static final String CODE = "ABC";
     private static final String NAME = "The Dallas Yellow Rose";
 
     private final ChefRepository repository;
 
     @Test
     void shouldRoundtrip() {
-        final var unsaved = ChefRecord.raw(CODE, NAME);
+        final var unsaved = ChefRecord.raw(NAME);
         final var found = repository.findById(
                 repository.save(unsaved).getId());
 
@@ -36,40 +35,19 @@ class ChefRepositoryTest {
     }
 
     @Test
-    void shouldHaveUniqueCode() {
-        repository.save(ChefRecord.raw(CODE, NAME));
-
-        final var ex = assertThrows(
-                DbActionExecutionException.class,
-                () -> repository.save(ChefRecord.raw(CODE, NAME + "x")));
-
-        assertThat(ex.getCause()).isInstanceOf(DuplicateKeyException.class);
-    }
-
-    @Test
-    void shouldFindByCode() {
-        final var unsaved = ChefRecord.raw(CODE, CODE);
-        repository.save(unsaved);
-
-        assertThat(repository.findByCode(unsaved.getCode()).orElseThrow())
-                .isEqualTo(unsaved);
-        assertThat(repository.findByCode("DEF")).isEmpty();
-    }
-
-    @Test
     void shouldHaveUniqueName() {
-        repository.save(ChefRecord.raw(CODE, NAME));
+        repository.save(ChefRecord.raw(NAME));
 
         final var ex = assertThrows(
                 DbActionExecutionException.class,
-                () -> repository.save(ChefRecord.raw(CODE + "x", NAME)));
+                () -> repository.save(ChefRecord.raw(NAME)));
 
         assertThat(ex.getCause()).isInstanceOf(DuplicateKeyException.class);
     }
 
     @Test
     void shouldFindByName() {
-        final var unsaved = ChefRecord.raw(CODE, NAME);
+        final var unsaved = ChefRecord.raw(NAME);
         repository.save(unsaved);
 
         assertThat(repository.findByName(unsaved.getName()).orElseThrow())
@@ -79,9 +57,9 @@ class ChefRepositoryTest {
 
     @Test
     void shouldStream() {
-        final var unsavedA = ChefRecord.raw(CODE, NAME);
+        final var unsavedA = ChefRecord.raw(NAME);
         final var unsavedB = ChefRecord.raw(
-                "DEF", "Melbourne's Pink Heath");
+                "Melbourne's Pink Heath");
         repository.saveAll(Set.of(unsavedA, unsavedB));
 
         try (final var found = repository.readAll()) {

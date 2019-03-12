@@ -12,36 +12,32 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.IOException;
 
-import static hm.binkley.basilisk.flora.rest.UsedIngredientResponse.using;
+import static hm.binkley.basilisk.flora.rest.ChefResponse.using;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
 @Import(JsonConfiguration.class)
 @JsonTest
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-class UsedIngredientResponseTest {
-    private final JacksonTester<UsedIngredientResponse> json;
+class ChefResponseTest {
+    private final JacksonTester<ChefResponse> json;
 
     @Test
     void shouldBecomeGoodJson()
             throws IOException {
-        assertThat(json.write(UsedIngredientResponse.builder()
-                .id(31L)
-                .name("EGGS")
-                .chefId(17L)
+        assertThat(json.write(ChefResponse.builder()
+                .id(17L)
+                .name("Chef Boy-ar-dee")
                 .build()))
-                .isEqualToJson("used-ingredient-response-test.json");
+                .isEqualToJson("chef-response-test.json");
     }
 
     @Test
     void shouldUse() {
-        final var id = 31L;
-        final var name = "EGGS";
-        final var recipeId = 2L;
-        final var chefId = 17L;
+        final var id = 17L;
+        final var name = "Chef Boy-ar-dee";
 
-        assertThat(using().from(id, name, recipeId, chefId))
-                .isEqualTo(new UsedIngredientResponse(
-                        id, name, recipeId, chefId));
+        assertThat(using().from(id, name))
+                .isEqualTo(new ChefResponse(id, name));
     }
 }

@@ -9,6 +9,7 @@ import lombok.Value;
 public final class UnusedIngredientResponse {
     Long id;
     String name;
+    Long chefId;
 
     static UnusedIngredient.As<UnusedIngredientResponse> using() {
         return UnusedIngredientResponse::new;

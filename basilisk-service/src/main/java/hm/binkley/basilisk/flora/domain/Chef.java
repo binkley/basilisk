@@ -12,11 +12,10 @@ public class Chef {
     private final ChefRecord record;
 
     public <C> C as(final Chef.As<C> asChef) {
-        return asChef.from(
-                record.getId(), record.getCode(), record.getName());
+        return asChef.from(record.getId(), record.getName());
     }
 
     public interface As<C> {
-        C from(final Long id, final String code, final String name);
+        C from(final Long id, final String name);
     }
 }

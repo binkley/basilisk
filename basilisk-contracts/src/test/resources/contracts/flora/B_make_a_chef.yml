@@ -1,18 +1,16 @@
-description: Make a recipe with no ingredients
+description: Make a chef
 request:
   method: POST
-  url: /recipe
+  url: /chef
   headers:
     Content-Type: application/json;charset=UTF-8
   body:
-    name: "SOUFFLE"
-    ingredients: []
+    name: "Chef Boy-ar-dee"
 response:
   status: 201
   headers:
     Content-Type: application/json;charset=UTF-8
-    Location: /recipe/1
+    Location: /chef/1
   body:
     id: 1
-    name: "SOUFFLE"
-    ingredients: []
+    name: "Chef Boy-ar-dee"

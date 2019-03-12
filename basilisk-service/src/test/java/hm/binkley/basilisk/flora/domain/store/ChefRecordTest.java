@@ -18,10 +18,9 @@ class ChefRecordTest {
 
     @Test
     void shouldSave() {
-        final var unsaved = ChefRecord.raw("ABC", "The Dallas Yellow Rose");
+        final var unsaved = ChefRecord.raw("The Dallas Yellow Rose");
         unsaved.store = store;
-        final var saved = new ChefRecord(
-                3L, EPOCH, unsaved.getCode(), unsaved.getName());
+        final var saved = new ChefRecord(3L, EPOCH, unsaved.getName());
         saved.store = store;
         when(store.save(unsaved))
                 .thenReturn(saved);
@@ -30,5 +29,12 @@ class ChefRecordTest {
 
         verify(store).save(unsaved);
         verifyNoMoreInteractions(store);
+    }
+
+    @Test
+    void shouldMakeRef() {
+        final var saved = new ChefRecord(3L, EPOCH, "Melbourne's Pink Heath");
+
+        assertThat(saved.getId()).isEqualTo(saved.getId());
     }
 }

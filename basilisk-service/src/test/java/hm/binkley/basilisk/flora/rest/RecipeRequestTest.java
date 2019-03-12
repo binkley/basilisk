@@ -24,8 +24,10 @@ class RecipeRequestTest {
                 .build();
 
         assertThat(request.as(Recipey::from, Ingredientey::new))
-                .isEqualTo(new Recipey(request.getName(), Set.of(
-                        new Ingredientey(ingredientRequest.getName()))));
+                .isEqualTo(new Recipey(request.getName(), request.getChefId(),
+                        Set.of(new Ingredientey(
+                                ingredientRequest.getName(),
+                                ingredientRequest.getChefId()))));
     }
 
     @EqualsAndHashCode
@@ -33,11 +35,12 @@ class RecipeRequestTest {
     @ToString
     private static final class Recipey {
         private final String name;
+        private final Long chefId;
         private final Set<Ingredientey> ingredients;
 
-        private static Recipey from(final String name,
+        private static Recipey from(final String name, final Long chefId,
                 final Stream<Ingredientey> ingredients) {
-            return new Recipey(name,
+            return new Recipey(name, chefId,
                     ingredients.collect(toCollection(LinkedHashSet::new)));
         }
     }
@@ -47,5 +50,6 @@ class RecipeRequestTest {
     @ToString
     private static final class Ingredientey {
         private final String name;
+        private final Long chefId;
     }
 }

@@ -32,8 +32,8 @@ public class IngredientStore {
                 .peek(it -> it.store = this);
     }
 
-    public IngredientRecord create(final String name) {
-        final IngredientRecord record = IngredientRecord.raw(name);
+    public IngredientRecord create(final String name, final Long chefId) {
+        final IngredientRecord record = IngredientRecord.raw(name, chefId);
         assign(record);
         return record.save();
     }

@@ -29,6 +29,7 @@ class AnyIngredientResponseTest {
                 .id(31L)
                 .name("EGGS")
                 .recipeId(null)
+                .chefId(17L)
                 .build()))
                 .isEqualToJson("any-ingredient-unused-response-test.json");
     }
@@ -40,6 +41,7 @@ class AnyIngredientResponseTest {
                 .id(31L)
                 .name("EGGS")
                 .recipeId(2L)
+                .chefId(17L)
                 .build()))
                 .isEqualToJson("any-ingredient-used-response-test.json");
     }
@@ -49,8 +51,10 @@ class AnyIngredientResponseTest {
         final var id = 31L;
         final var name = "EGGS";
         final var recipeId = 2L;
+        final var chefId = 17L;
 
-        assertThat(using().from(id, name, recipeId))
-                .isEqualTo(new UsedIngredientResponse(id, name, recipeId));
+        assertThat(using().from(id, name, recipeId, chefId))
+                .isEqualTo(new UsedIngredientResponse(
+                        id, name, recipeId, chefId));
     }
 }

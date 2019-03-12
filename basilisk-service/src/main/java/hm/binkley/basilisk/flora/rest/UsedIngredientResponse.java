@@ -10,6 +10,7 @@ public final class UsedIngredientResponse {
     Long id;
     String name;
     Long recipeId;
+    Long chefId;
 
     static UsedIngredient.As<UsedIngredientResponse> using() {
         return UsedIngredientResponse::new;
