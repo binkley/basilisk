@@ -10,7 +10,7 @@ import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.Instant;
 
-@EqualsAndHashCode(exclude = {"id", "receivedAt", "recipeId", "store"})
+@EqualsAndHashCode(exclude = {"id", "receivedAt", "store"})
 @Table("FLORA.INGREDIENT")
 @ToString
 public final class IngredientRecord {

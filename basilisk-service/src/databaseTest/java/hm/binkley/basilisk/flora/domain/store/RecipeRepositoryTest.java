@@ -61,6 +61,7 @@ class RecipeRepositoryTest {
 
         final var saved = repository.save(unsaved);
 
+        assertThat(saved).isEqualTo(unsaved);
         assertThat(first(saved.getIngredients()).getRecipeId())
                 .withFailMessage("Spring Data JDBC now"
                         + " updates children after save; go simplify 'store'"
@@ -69,8 +70,10 @@ class RecipeRepositoryTest {
 
         final var found = repository.findById(saved.getId());
         final var readBack = found.orElseThrow();
+        // See notes in RecipeStore.save()
+        first(saved.ingredients).recipeId = readBack.getId();
 
-        assertThat(readBack).isEqualTo(unsaved);
+        assertThat(readBack).isEqualTo(saved);
         assertThat(readBack.getId()).isNotNull();
         assertThat(first(readBack.getIngredients()).getId())
                 .withFailMessage("No ID on children")

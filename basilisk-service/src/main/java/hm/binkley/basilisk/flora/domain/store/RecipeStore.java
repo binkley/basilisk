@@ -35,7 +35,7 @@ public class RecipeStore {
 
     public RecipeRecord save(final RecipeRecord record) {
         // NB -- Saving does not update ref fields in children,
-        // but reading it back does
+        // but reading it back does; this makes sense given aggregate roots
         final var saved = springData.save(record);
 
         // TODO: Alternative -- Manually copy in recipeId to ingredients
