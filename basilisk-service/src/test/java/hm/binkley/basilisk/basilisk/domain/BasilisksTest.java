@@ -57,7 +57,7 @@ class BasilisksTest {
 
         final Stream<Basilisk> found = basilisks.byWord(record.getWord());
 
-        assertThat(found).containsOnly(new Basilisk(record));
+        assertThat(found).containsExactly(new Basilisk(record));
 
         verifyNoMoreInteractions(store);
     }
@@ -71,7 +71,7 @@ class BasilisksTest {
 
         final Stream<Basilisk> found = basilisks.all();
 
-        assertThat(found).containsOnly(new Basilisk(record));
+        assertThat(found).containsExactly(new Basilisk(record));
 
         verifyNoMoreInteractions(store);
     }

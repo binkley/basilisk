@@ -26,9 +26,9 @@ class CockatriceRepositoryTest {
     void shouldRoundtrip() {
         final var unsaved = CockatriceRecord.raw(TEN);
         final var found = repository.findById(
-                repository.save(unsaved).getId());
+                repository.save(unsaved).getId()).orElseThrow();
 
-        assertThat(found).contains(unsaved);
+        assertThat(found).isEqualTo(unsaved);
     }
 
     @Test

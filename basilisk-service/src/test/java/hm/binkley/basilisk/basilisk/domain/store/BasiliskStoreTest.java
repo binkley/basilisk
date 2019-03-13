@@ -8,6 +8,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.Instant;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import static java.time.Instant.EPOCH;
@@ -36,10 +37,10 @@ class BasiliskStoreTest {
         when(springData.findById(saved.getId()))
                 .thenReturn(Optional.of(saved));
 
-        final var found = store.byId(saved.getId());
+        final var found = store.byId(saved.getId()).orElseThrow();
 
-        assertThat(found).contains(saved);
-        assertThat(found.orElseThrow().store).isSameAs(store);
+        assertThat(found).isEqualTo(saved);
+        assertThat(found.store).isSameAs(store);
 
         verifyNoMoreInteractions(springData);
     }
@@ -53,7 +54,7 @@ class BasiliskStoreTest {
 
         final var found = store.byWord(saved.getWord()).collect(toSet());
 
-        assertThat(found).containsOnly(saved);
+        assertThat(found).isEqualTo(Set.of(saved));
         assertThat(found.stream().map(it -> it.store)).containsOnly(store);
 
         verifyNoMoreInteractions(springData);
@@ -68,7 +69,7 @@ class BasiliskStoreTest {
 
         final var found = store.all().collect(toSet());
 
-        assertThat(found).containsOnly(saved);
+        assertThat(found).isEqualTo(Set.of(saved));
         assertThat(found.stream().map(it -> it.store)).containsOnly(store);
 
         verifyNoMoreInteractions(springData);

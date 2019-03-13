@@ -27,7 +27,7 @@ class RecipeTest {
                     assertThat(id).isEqualTo(record.getId());
                     assertThat(name).isEqualTo(record.getName());
                     assertThat(cid).isEqualTo(record.getChefId());
-                    assertThat(ingredients).containsOnly(targetIngredient);
+                    assertThat(ingredients).containsExactly(targetIngredient);
                     return targetRecipe;
                 }, (id, name, rid, cid) -> {
                     assertThat(id).isEqualTo(ingredientRecord.getId());

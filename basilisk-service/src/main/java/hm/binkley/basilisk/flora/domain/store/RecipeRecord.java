@@ -3,6 +3,7 @@ package hm.binkley.basilisk.flora.domain.store;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.relational.core.mapping.Column;
@@ -20,6 +21,7 @@ public final class RecipeRecord {
     @Id
     @Getter
     Long id;
+    @CreatedDate
     @Getter
     Instant receivedAt;
     @Getter

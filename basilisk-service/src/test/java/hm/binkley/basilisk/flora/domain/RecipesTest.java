@@ -71,7 +71,7 @@ class RecipesTest {
 
         final Stream<Recipe> found = recipes.all();
 
-        assertThat(found).containsOnly(new Recipe(record));
+        assertThat(found).containsExactly(new Recipe(record));
 
         verifyNoMoreInteractions(store);
     }

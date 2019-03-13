@@ -28,9 +28,9 @@ class BasiliskRepositoryTest {
         final var unsaved = BasiliskRecord.raw("BIRD",
                 Instant.ofEpochSecond(1_000_000));
         final var found = repository.findById(
-                repository.save(unsaved).getId());
+                repository.save(unsaved).getId()).orElseThrow();
 
-        assertThat(found).contains(unsaved);
+        assertThat(found).isEqualTo(unsaved);
     }
 
     @Test
@@ -39,9 +39,9 @@ class BasiliskRepositoryTest {
                 Instant.ofEpochSecond(1_000_000))
                 .add(CockatriceRecord.raw(TEN));
         final var found = repository.findById(
-                repository.save(unsaved).getId());
+                repository.save(unsaved).getId()).orElseThrow();
 
-        assertThat(found).contains(unsaved);
+        assertThat(found).isEqualTo(unsaved);
     }
 
     @Test

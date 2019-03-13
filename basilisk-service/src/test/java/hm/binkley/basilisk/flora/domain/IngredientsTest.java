@@ -98,7 +98,7 @@ class IngredientsTest {
 
         final Stream<Ingredient> found = ingredients.all();
 
-        assertThat(found).containsOnly(
+        assertThat(found).containsExactly(
                 new UnusedIngredient(unusedRecord),
                 new UsedIngredient(usedRecord));
 
@@ -114,7 +114,7 @@ class IngredientsTest {
 
         final Stream<UnusedIngredient> found = ingredients.unused();
 
-        assertThat(found).containsOnly(new UnusedIngredient(record));
+        assertThat(found).containsExactly(new UnusedIngredient(record));
 
         verifyNoMoreInteractions(store);
     }

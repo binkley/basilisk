@@ -30,11 +30,4 @@ class ChefRecordTest {
         verify(store).save(unsaved);
         verifyNoMoreInteractions(store);
     }
-
-    @Test
-    void shouldMakeRef() {
-        final var saved = new ChefRecord(3L, EPOCH, "Melbourne's Pink Heath");
-
-        assertThat(saved.getId()).isEqualTo(saved.getId());
-    }
 }

@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import static java.time.Instant.EPOCH;
@@ -67,7 +68,7 @@ class ChefStoreTest {
 
         final var found = store.all().collect(toSet());
 
-        assertThat(found).containsOnly(saved);
+        assertThat(found).isEqualTo(Set.of(saved));
         assertThat(found.stream().map(it -> it.store)).containsOnly(store);
 
         verifyNoMoreInteractions(springData);

@@ -109,6 +109,7 @@ These are "2nd-class objects", needed by "meal planners", but not as central
 * [Spring Boot Actuator](#actuator)
 * [Spring Boot Admin](#admin)
 * Spring Data JDBC
+* [Spring Data JDBC auditing](#auditing)
 * [Swagger](#swagger)
 * Incremental build
 * Domain-oriented design
@@ -560,3 +561,8 @@ and matching
 [`spring.factories`](basilisk-testing/src/main/resources/META-INF/spring.factories)
 for one approach to suppressing "started application" INFO logs during
 `@SpringBootTest` tests.
+
+### Spring Data JDBC auditing
+
+See
+[`DatabaseConfiguration`](basilisk-service/src/main/java/hm/binkley/basilisk/configuration/DatabaseConfiguration.java).
