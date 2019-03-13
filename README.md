@@ -79,12 +79,18 @@ You can reach some conclusions from all this information:
 
 ### Implementing
 
-* `Recipe` is an aggregate root
-* `Ingredient` is a kind of root as well, in that unused ingredients are
-  important, but ingredients can also belong to a recipe as well, as your
-  "meal planners" schedule stock for each location and season
-* `Chef` is important, but _not_ an aggregate root.  You move chefs around
-  your locations over time, but the recipes are tied more to ingredients, and
+* [`Recipe`](basilisk-service/src/main/java/hm/binkley/basilisk/flora/domain/Recipe.java)
+  is an aggregate root
+* [`Ingredient`](basilisk-service/src/main/java/hm/binkley/basilisk/flora/domain/Ingredient.java)
+  is a kind of root as well, in that unused ingredients are important, but
+  ingredients can also belong to a recipe as well, as your "meal planners"
+  schedule stock for each location and season
+* [`Source`](basilisk-service/src/main/java/hm/binkley/basilisk/flora/domain/Source.java)
+  defines ingredients, in a similar fashion to classes in Java define
+  instances; it is its own aggregate root
+* [`Chef`](basilisk-service/src/main/java/hm/binkley/basilisk/flora/domain/Chef.java)
+  is important, but _not_ an aggregate root.  You move chefs around your
+  locations over time, but the recipes are tied more to ingredients, and
   possibly restricted by location and season
 
 ### Sort of a picture (if you turn the page sideways and squint)
