@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 @EqualsAndHashCode
 @RequiredArgsConstructor
 @ToString
-public class Recipe {
+public final class Recipe {
     private final RecipeRecord record;
 
     public Stream<UsedIngredient> ingredients() {

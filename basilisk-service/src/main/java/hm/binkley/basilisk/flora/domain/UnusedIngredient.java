@@ -6,7 +6,7 @@ import lombok.ToString;
 
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public class UnusedIngredient
+public final class UnusedIngredient
         extends Ingredient {
     public UnusedIngredient(final IngredientRecord record) {
         super(record);

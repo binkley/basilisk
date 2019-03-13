@@ -8,7 +8,7 @@ import lombok.ToString;
 @EqualsAndHashCode
 @RequiredArgsConstructor
 @ToString
-public class Chef {
+public final class Chef {
     private final ChefRecord record;
 
     public <C> C as(final Chef.As<C> asChef) {
