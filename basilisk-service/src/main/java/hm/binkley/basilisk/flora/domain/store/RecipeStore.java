@@ -37,6 +37,9 @@ public class RecipeStore {
         // NB -- Saving does not update ref fields in children,
         // but reading it back does
         final var saved = springData.save(record);
+
+        // TODO: Alternative -- Manually copy in recipeId to ingredients
+        // This avoids the extra DB call, but hides if something went wrong
         return springData.findById(saved.getId()).orElseThrow();
     }
 
