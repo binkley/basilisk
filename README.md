@@ -12,6 +12,8 @@ Demonstrate Java 11, Spring Boot 2, JUnit 5, et al
 * [Testing](#testing)
 * [Advice and examples](#advice-and-examples)
 
+(Jump down [past "Model"](#features), to features, testing, etc.  Model is
+under construction.)
 
 ## Model
 
