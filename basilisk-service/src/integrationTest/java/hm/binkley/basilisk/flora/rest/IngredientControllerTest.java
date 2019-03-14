@@ -22,6 +22,12 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.CHEF_ID;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.INGREDIENT_ID;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.INGREDIENT_NAME;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.savedUnusedIngredientRecord;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.savedUsedIngredientRecord;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.unsavedIngredientRecord;
 import static java.math.BigDecimal.ONE;
 import static java.time.Instant.EPOCH;
 import static org.mockito.Mockito.when;
@@ -37,9 +43,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @JsonWebMvcTest(IngredientController.class)
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 class IngredientControllerTest {
-    private static final Long ID = 1L;
-    private static final Long CHEF_ID = 17L;
-
     private final MockMvc jsonMvc;
     private final ObjectMapper objectMapper;
 
@@ -47,13 +50,13 @@ class IngredientControllerTest {
     private Ingredients ingredients;
 
     private static String endpointWithId() {
-        return "/ingredient/" + ID;
+        return "/ingredient/" + INGREDIENT_ID;
     }
 
-    private static Map<String, Object> responseMapFor(final String name) {
+    private static Map<String, Object> responseMap() {
         return Map.of(
-                "id", ID,
-                "name", name,
+                "id", INGREDIENT_ID,
+                "name", INGREDIENT_NAME,
                 "chef-id", CHEF_ID);
     }
 
@@ -72,9 +75,9 @@ class IngredientControllerTest {
     void shouldGetAll()
             throws Exception {
         final var unusedIngredient = new UnusedIngredient(
-                new IngredientRecord(ID, EPOCH, "EGGS", ONE, null, CHEF_ID));
-        final var usedIngredient = new UsedIngredient(new IngredientRecord(
-                ID + 1, EPOCH.plusSeconds(1L), "BACON", ONE, 2L, CHEF_ID));
+                savedUnusedIngredientRecord());
+        final var usedIngredient = new UsedIngredient(
+                savedUsedIngredientRecord());
 
         when(ingredients.all())
                 .thenReturn(Stream.of(unusedIngredient, usedIngredient));
@@ -95,32 +98,29 @@ class IngredientControllerTest {
     @Test
     void shouldGetUnused()
             throws Exception {
-        final var name = "EGGS";
-
         when(ingredients.unused())
                 .thenReturn(Stream.of(new UnusedIngredient(
-                        new IngredientRecord(
-                                ID, EPOCH, name, ONE, null, CHEF_ID))));
+                        savedUnusedIngredientRecord())));
 
         jsonMvc.perform(get("/ingredient/unused"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(asJson(Set.of(
-                        responseMapFor(name)))));
+                        responseMap()))));
     }
 
     @Test
     void shouldGetById()
             throws Exception {
-        final var name = "MILK";
-
-        when(ingredients.byId(ID))
+        when(ingredients.byId(INGREDIENT_ID))
                 .thenReturn(Optional.of(new UnusedIngredient(
                         new IngredientRecord(
-                                ID, EPOCH, name, ONE, null, CHEF_ID))));
+                                INGREDIENT_ID, EPOCH, INGREDIENT_NAME, ONE,
+                                null, CHEF_ID))));
 
         jsonMvc.perform(get(endpointWithId()))
                 .andExpect(status().isOk())
-                .andExpect(content().json(asJson(responseMapFor(name))));
+                .andExpect(content().json(asJson(responseMap(
+                ))));
     }
 
     @Test
@@ -133,34 +133,30 @@ class IngredientControllerTest {
     @Test
     void shouldGetByName()
             throws Exception {
-        final var name = "BACON";
-
-        when(ingredients.byName(name))
+        when(ingredients.byName(INGREDIENT_NAME))
                 .thenReturn(Stream.of(new UsedIngredient(
-                        new IngredientRecord(
-                                ID, EPOCH, name, ONE, 2L, CHEF_ID))));
+                        savedUsedIngredientRecord())));
 
-        jsonMvc.perform(get("/ingredient/find/" + name))
+        jsonMvc.perform(get("/ingredient/find/" + INGREDIENT_NAME))
                 .andExpect(status().isOk())
                 .andExpect(content().json(asJson(
-                        Set.of(responseMapFor(name)))));
+                        Set.of(responseMap()))));
     }
 
     @Test
     void shouldPostNew()
             throws Exception {
-        final var name = "SALT";
-        final var record = IngredientRecord.raw(name, ONE, CHEF_ID);
+        final var record = unsavedIngredientRecord();
         final UnusedIngredientRequest request = UnusedIngredientRequest
                 .builder()
-                .name(name)
-                .quantity(ONE)
-                .chefId(CHEF_ID)
+                .name(record.getName())
+                .quantity(record.getQuantity())
+                .chefId(record.getChefId())
                 .build();
 
         when(ingredients.createUnused(request))
                 .thenReturn(new UnusedIngredient(new IngredientRecord(
-                        ID, Instant.ofEpochSecond(1_000_000),
+                        INGREDIENT_ID, Instant.ofEpochSecond(1_000_000),
                         record.getName(), record.getQuantity(), null,
                         record.getChefId())));
 
@@ -169,7 +165,7 @@ class IngredientControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(header().string(LOCATION, endpointWithId()))
                 .andExpect(content().json(asJson(
-                        responseMapFor(name))));
+                        responseMap())));
     }
 
     private String asJson(final Object o)

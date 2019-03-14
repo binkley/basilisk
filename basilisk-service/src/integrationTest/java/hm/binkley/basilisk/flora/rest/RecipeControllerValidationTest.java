@@ -14,6 +14,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.CHEF_ID;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
@@ -60,7 +61,7 @@ class RecipeControllerValidationTest {
         problemMvc.perform(post("/recipe")
                 .content(asJson(RecipeRequest.builder()
                         .name("F")
-                        .chefId(17L)
+                        .chefId(CHEF_ID)
                         .build())))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.violations[0].field",

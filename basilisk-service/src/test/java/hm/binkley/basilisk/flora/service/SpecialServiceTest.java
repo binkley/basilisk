@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.stream.Stream;
 
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.INGREDIENT_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -24,7 +25,7 @@ class SpecialServiceTest {
     void shouldNoteDailySpecial() {
         final var ingredient = mock(UsedIngredient.class);
         when(ingredient.getName())
-                .thenReturn("EGGS");
+                .thenReturn(INGREDIENT_NAME);
         final var recipe = mock(Recipe.class);
         when(recipe.ingredients())
                 .thenReturn(Stream.of(ingredient));

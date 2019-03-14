@@ -1,10 +1,10 @@
 package hm.binkley.basilisk.flora.domain;
 
-import hm.binkley.basilisk.flora.domain.store.IngredientRecord;
 import hm.binkley.basilisk.flora.domain.store.RecipeRecord;
 import org.junit.jupiter.api.Test;
 
-import static java.math.BigDecimal.ONE;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.CHEF_ID;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.savedUsedIngredientRecord;
 import static java.time.Instant.EPOCH;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -12,11 +12,9 @@ class RecipeTest {
     @Test
     void shouldAs() {
         final var recipeId = 3L;
-        final var chefId = 17L;
-        final var ingredientRecord = new IngredientRecord(
-                5L, EPOCH.plusSeconds(1L), "EGGS", ONE, recipeId, chefId);
+        final var ingredientRecord = savedUsedIngredientRecord();
         final var record = new RecipeRecord(
-                recipeId, EPOCH, "SOUFFLE", chefId)
+                recipeId, EPOCH, "SOUFFLE", CHEF_ID)
                 .add(ingredientRecord);
         // The types are immaterial, just that the transformation worked
         final var targetRecipe = 1;

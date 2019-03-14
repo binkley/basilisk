@@ -13,6 +13,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.CHEF_ID;
 import static java.math.BigDecimal.ONE;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -63,7 +64,7 @@ class IngredientControllerValidationTest {
                 .content(asJson(UnusedIngredientRequest.builder()
                         .name("F")
                         .quantity(ONE)
-                        .chefId(17L)
+                        .chefId(CHEF_ID)
                         .build())))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath(FIRST_FIELD,
@@ -86,7 +87,7 @@ class IngredientControllerValidationTest {
                 .content(asJson(UnusedIngredientRequest.builder()
                         .name("EGGS")
                         .quantity(null)
-                        .chefId(17L)
+                        .chefId(CHEF_ID)
                         .build())))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath(FIRST_FIELD,

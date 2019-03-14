@@ -8,7 +8,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import static java.math.BigDecimal.ONE;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.CHEF_ID;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.unsavedIngredientRecord;
 import static java.time.Instant.EPOCH;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
@@ -17,15 +18,12 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class RecipeRecordTest {
-    private static final Long CHEF_ID = 17L;
-
     @Mock
     private RecipeStore store;
 
     @Test
     void shouldAddSomeIngredients() {
-        final var ingredientRecord = IngredientRecord.raw(
-                "EGGS", ONE, CHEF_ID);
+        final var ingredientRecord = unsavedIngredientRecord();
         final var record = RecipeRecord.raw("SOUFFLE", CHEF_ID)
                 .addAll(Stream.of(ingredientRecord));
 
@@ -53,8 +51,7 @@ class RecipeRecordTest {
     void shouldSaveWithIngredients() {
         final var unsaved = RecipeRecord.raw("SOUFFLE", CHEF_ID);
         unsaved.store = store;
-        final var unsavedIngredient = IngredientRecord.raw(
-                "EGGS", ONE, CHEF_ID);
+        final var unsavedIngredient = unsavedIngredientRecord();
         unsaved.ingredients.add(unsavedIngredient);
         final var saved = new RecipeRecord(
                 3L, EPOCH, unsaved.getName(), CHEF_ID);

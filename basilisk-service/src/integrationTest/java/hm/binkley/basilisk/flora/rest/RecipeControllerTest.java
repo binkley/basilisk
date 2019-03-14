@@ -6,7 +6,6 @@ import hm.binkley.basilisk.configuration.JsonConfiguration;
 import hm.binkley.basilisk.configuration.JsonWebMvcTest;
 import hm.binkley.basilisk.flora.domain.Recipe;
 import hm.binkley.basilisk.flora.domain.Recipes;
-import hm.binkley.basilisk.flora.domain.store.IngredientRecord;
 import hm.binkley.basilisk.flora.domain.store.RecipeRecord;
 import hm.binkley.basilisk.flora.service.SpecialService;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +15,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +22,12 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import static java.math.BigDecimal.ONE;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.CHEF_ID;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.INGREDIENT_ID;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.INGREDIENT_NAME;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.INGREDIENT_QUANTITY;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.RECIPE_ID;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.savedUsedIngredientRecord;
 import static java.time.Instant.EPOCH;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.LOCATION;
@@ -48,9 +51,6 @@ class RecipeControllerTest {
     private static final String INGREDIENTS_WORD = "ingredients";
     private static final String RECIPE_ID_WORD = "recipe-id";
 
-    private static final Long ID = 1L;
-    private static final Long INGREDIENT_ID = 2L;
-    private static final Long CHEF_ID = 17L;
     private final MockMvc jsonMvc;
     private final ObjectMapper objectMapper;
 
@@ -60,37 +60,29 @@ class RecipeControllerTest {
     private SpecialService specialService;
 
     private static String endpointWithId() {
-        return "/recipe/" + ID;
-    }
-
-    private static Map<String, Object> responseMapFor(
-            final String name, final boolean dailySpecial) {
-        return Map.of(
-                ID_WORD, ID,
-                NAME_WORD, name,
-                DAILY_SPECIAL_WORD, dailySpecial,
-                CHEF_ID_WORD, CHEF_ID);
+        return "/recipe/" + RECIPE_ID;
     }
 
     private static Map<String, Object> responseMapFor(final String name,
-            final String ingredientName,
-            final BigDecimal ingredientQuantity) {
-        if (null == ingredientName) return Map.of(
-                ID_WORD, ID,
+            final boolean hasIngredients) {
+        return hasIngredients
+                ? Map.of(
+                ID_WORD, RECIPE_ID,
                 NAME_WORD, name,
-                DAILY_SPECIAL_WORD, false,
-                CHEF_ID_WORD, CHEF_ID,
-                INGREDIENTS_WORD, List.of());
-        return Map.of(
-                ID_WORD, ID,
-                NAME_WORD, name,
+                DAILY_SPECIAL_WORD, true,
                 CHEF_ID_WORD, CHEF_ID,
                 INGREDIENTS_WORD, List.of(Map.of(
                         ID_WORD, INGREDIENT_ID,
-                        NAME_WORD, ingredientName,
-                        QUANTITY_WORD, ingredientQuantity,
+                        NAME_WORD, INGREDIENT_NAME,
+                        QUANTITY_WORD, INGREDIENT_QUANTITY,
                         CHEF_ID_WORD, CHEF_ID,
-                        RECIPE_ID_WORD, ID)));
+                        RECIPE_ID_WORD, RECIPE_ID)))
+                : Map.of(
+                        ID_WORD, RECIPE_ID,
+                        NAME_WORD, name,
+                        DAILY_SPECIAL_WORD, false,
+                        CHEF_ID_WORD, CHEF_ID,
+                        INGREDIENTS_WORD, List.of());
     }
 
     @Test
@@ -99,16 +91,16 @@ class RecipeControllerTest {
         final String name = "POACHED EGGS";
 
         final var recipe = new Recipe(
-                new RecipeRecord(ID, EPOCH, name, CHEF_ID));
+                new RecipeRecord(RECIPE_ID, EPOCH, name, CHEF_ID));
         when(recipes.all())
                 .thenReturn(Stream.of(recipe));
         when(specialService.isDailySpecial(recipe))
-                .thenReturn(true);
+                .thenReturn(false);
 
         jsonMvc.perform(get("/recipe"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(asJson(Set.of(
-                        responseMapFor(name, true)))));
+                        responseMapFor(name, false)))));
     }
 
     @Test
@@ -117,8 +109,8 @@ class RecipeControllerTest {
         final String name = "FRIED EGGS";
 
         final var recipe = new Recipe(
-                new RecipeRecord(ID, EPOCH, name, CHEF_ID));
-        when(recipes.byId(ID))
+                new RecipeRecord(RECIPE_ID, EPOCH, name, CHEF_ID));
+        when(recipes.byId(RECIPE_ID))
                 .thenReturn(Optional.of(recipe));
         when(specialService.isDailySpecial(recipe))
                 .thenReturn(false);
@@ -143,7 +135,7 @@ class RecipeControllerTest {
 
         when(recipes.byName(name))
                 .thenReturn(Optional.of(new Recipe(
-                        new RecipeRecord(ID, EPOCH, name, CHEF_ID))));
+                        new RecipeRecord(RECIPE_ID, EPOCH, name, CHEF_ID))));
 
         jsonMvc.perform(get("/recipe/find/" + name))
                 .andExpect(status().isOk())
@@ -162,7 +154,7 @@ class RecipeControllerTest {
                 .build();
 
         when(recipes.create(request))
-                .thenReturn(new Recipe(new RecipeRecord(ID,
+                .thenReturn(new Recipe(new RecipeRecord(RECIPE_ID,
                         Instant.ofEpochSecond(1_000_000),
                         record.getName(), record.getChefId())));
 
@@ -178,38 +170,32 @@ class RecipeControllerTest {
     void shouldPostNewWithSomeIngredients()
             throws Exception {
         final var name = "SOUFFLE";
-        final var ingredientName = "EGGS";
-        final var ingredientQuantity = ONE;
         final var record = RecipeRecord.raw(name, CHEF_ID);
-        final var ingredientRecord = IngredientRecord.raw(
-                ingredientName, ingredientQuantity, CHEF_ID);
         final RecipeRequest request = RecipeRequest.builder()
                 .name(name)
                 .chefId(CHEF_ID)
                 .ingredients(Set.of(UsedIngredientRequest.builder()
-                        .name(ingredientName)
-                        .quantity(ingredientQuantity)
+                        .name(INGREDIENT_NAME)
+                        .quantity(INGREDIENT_QUANTITY)
                         .chefId(CHEF_ID)
                         .build()))
                 .build();
 
+        final var recipe = new Recipe(new RecipeRecord(RECIPE_ID,
+                EPOCH.plusSeconds(1_000_000), record.getName(),
+                record.getChefId())
+                .add(savedUsedIngredientRecord()));
+        when(specialService.isDailySpecial(recipe))
+                .thenReturn(true);
         when(recipes.create(request))
-                .thenReturn(new Recipe(new RecipeRecord(ID,
-                        EPOCH.plusSeconds(1_000_000),
-                        record.getName(), record.getChefId())
-                        .add(new IngredientRecord(2L,
-                                EPOCH.plusSeconds(1_000_001),
-                                ingredientRecord.getName(),
-                                ingredientRecord.getQuantity(),
-                                ID, CHEF_ID))));
+                .thenReturn(recipe);
 
         jsonMvc.perform(post("/recipe")
                 .content(asJson(request)))
                 .andExpect(status().isCreated())
                 .andExpect(header().string(LOCATION, endpointWithId()))
                 .andExpect(content().json(asJson(
-                        responseMapFor(name, ingredientName,
-                                ingredientQuantity))));
+                        responseMapFor(name, true))));
     }
 
     private String asJson(final Object o)

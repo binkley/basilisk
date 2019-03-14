@@ -12,8 +12,12 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.IOException;
 
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.CHEF_ID;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.INGREDIENT_ID;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.INGREDIENT_NAME;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.INGREDIENT_QUANTITY;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.RECIPE_ID;
 import static hm.binkley.basilisk.flora.rest.UsedIngredientResponse.with;
-import static java.math.BigDecimal.ONE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
@@ -28,10 +32,10 @@ class AnyIngredientResponseTest {
             throws IOException {
         assertThat(json.write(AnyIngredientResponse.builder()
                 .id(31L)
-                .name("EGGS")
-                .quantity(ONE)
+                .name(INGREDIENT_NAME)
+                .quantity(INGREDIENT_QUANTITY)
                 .recipeId(null)
-                .chefId(17L)
+                .chefId(CHEF_ID)
                 .build()))
                 .isEqualToJson("any-ingredient-unused-response-test.json");
     }
@@ -40,25 +44,21 @@ class AnyIngredientResponseTest {
     void shouldBecomeGoodJsonWhenUsed()
             throws IOException {
         assertThat(json.write(AnyIngredientResponse.builder()
-                .id(31L)
-                .name("EGGS")
-                .quantity(ONE)
-                .recipeId(2L)
-                .chefId(17L)
+                .id(INGREDIENT_ID)
+                .name(INGREDIENT_NAME)
+                .quantity(INGREDIENT_QUANTITY)
+                .recipeId(RECIPE_ID)
+                .chefId(CHEF_ID)
                 .build()))
                 .isEqualToJson("any-ingredient-used-response-test.json");
     }
 
     @Test
     void shouldUse() {
-        final var id = 31L;
-        final var name = "EGGS";
-        final var quantity = ONE;
-        final var recipeId = 2L;
-        final var chefId = 17L;
-
-        assertThat(with().from(id, name, quantity, recipeId, chefId))
+        assertThat(with().from(INGREDIENT_ID, INGREDIENT_NAME,
+                INGREDIENT_QUANTITY, RECIPE_ID, CHEF_ID))
                 .isEqualTo(new UsedIngredientResponse(
-                        id, name, quantity, recipeId, chefId));
+                        INGREDIENT_ID, INGREDIENT_NAME, INGREDIENT_QUANTITY,
+                        RECIPE_ID, CHEF_ID));
     }
 }

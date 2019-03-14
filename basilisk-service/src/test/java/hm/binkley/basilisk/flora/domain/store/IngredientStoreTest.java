@@ -10,8 +10,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import static java.math.BigDecimal.ONE;
-import static java.time.Instant.EPOCH;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.savedUsedIngredientRecord;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.unsavedIngredientRecord;
 import static java.util.stream.Collectors.toSet;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
@@ -20,8 +20,6 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class IngredientStoreTest {
-    private static final Long CHEF_ID = 17L;
-
     @Mock
     private IngredientRepository springData;
 
@@ -35,8 +33,7 @@ class IngredientStoreTest {
     @Test
     void shouldFindById() {
         final var id = 3L;
-        final var saved = new IngredientRecord(
-                id, EPOCH, "EGGS", ONE, null, CHEF_ID);
+        final var saved = unsavedIngredientRecord();
         when(springData.findById(id))
                 .thenReturn(Optional.of(saved));
 
@@ -50,13 +47,11 @@ class IngredientStoreTest {
 
     @Test
     void shouldFindByName() {
-        final var name = "BACON";
-        final var saved = new IngredientRecord(
-                3L, EPOCH, name, ONE, null, CHEF_ID);
-        when(springData.findAllByName(name))
+        final var saved = savedUsedIngredientRecord();
+        when(springData.findAllByName(saved.getName()))
                 .thenReturn(Stream.of(saved));
 
-        final var found = store.byName(name).collect(toSet());
+        final var found = store.byName(saved.getName()).collect(toSet());
 
         assertThat(found).isEqualTo(Set.of(saved));
         assertThat(found.stream().map(it -> it.store)).containsOnly(store);
@@ -66,8 +61,7 @@ class IngredientStoreTest {
 
     @Test
     void shouldFindUnused() {
-        final var saved = new IngredientRecord(
-                3L, EPOCH, "THYME", ONE, null, CHEF_ID);
+        final var saved = savedUsedIngredientRecord();
         when(springData.findAllByRecipeIdIsNull()).
                 thenReturn(Stream.of(saved));
 
@@ -81,8 +75,7 @@ class IngredientStoreTest {
 
     @Test
     void shouldFindAll() {
-        final var saved = new IngredientRecord(
-                3L, EPOCH, "MILK", ONE, null, CHEF_ID);
+        final var saved = savedUsedIngredientRecord();
         when(springData.readAll())
                 .thenReturn(Stream.of(saved));
 
@@ -96,9 +89,9 @@ class IngredientStoreTest {
 
     @Test
     void shouldCreate() {
-        final var unsaved = IngredientRecord.raw("SALT", ONE, CHEF_ID);
-        final var saved = new IngredientRecord(
-                3L, EPOCH, unsaved.getName(), ONE, null, CHEF_ID);
+        final var unsaved = FloraFixtures
+                .unsavedIngredientRecordNamed("SALT");
+        final var saved = savedUsedIngredientRecord();
         when(springData.save(unsaved))
                 .thenReturn(saved);
 
@@ -112,9 +105,8 @@ class IngredientStoreTest {
 
     @Test
     void shouldSave() {
-        final var unsaved = IngredientRecord.raw("PEPPER", ONE, CHEF_ID);
-        final var saved = new IngredientRecord(
-                3L, EPOCH, unsaved.getName(), ONE, 2L, CHEF_ID);
+        final var unsaved = unsavedIngredientRecord();
+        final var saved = savedUsedIngredientRecord();
 
         when(springData.save(unsaved))
                 .thenReturn(saved);

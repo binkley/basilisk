@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.CHEF_ID;
 import static hm.binkley.basilisk.flora.rest.RecipeResponse.with;
 import static java.math.BigDecimal.ONE;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -23,8 +24,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @JsonTest
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 class RecipeResponseTest {
-    private final Long CHEF_ID = 17L;
-
     private final JacksonTester<RecipeResponse> json;
 
     @Test

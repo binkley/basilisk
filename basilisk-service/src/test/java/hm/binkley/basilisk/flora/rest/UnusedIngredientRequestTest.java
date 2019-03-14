@@ -7,14 +7,16 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.CHEF_ID;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.INGREDIENT_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class UnusedIngredientRequestTest {
     @Test
     void shouldConvert() {
         final var request = UnusedIngredientRequest.builder()
-                .name("EGGS")
-                .chefId(17L)
+                .name(INGREDIENT_NAME)
+                .chefId(CHEF_ID)
                 .build();
 
         assertThat(request.as(Ingredienty::new))

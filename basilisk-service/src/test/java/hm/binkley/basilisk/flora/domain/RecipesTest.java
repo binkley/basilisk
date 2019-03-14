@@ -15,7 +15,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import static java.math.BigDecimal.ONE;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.CHEF_ID;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.unsavedIngredientRecord;
 import static java.time.Instant.EPOCH;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -23,8 +24,6 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class RecipesTest {
-    private static final Long CHEF_ID = 17L;
-
     @Mock
     private RecipeStore store;
 
@@ -80,8 +79,7 @@ class RecipesTest {
     @Test
     void shouldCreate() {
         final var recipeId = 3L;
-        final var ingredientRecord = new IngredientRecord(
-                31L, EPOCH.plusSeconds(1L), "EGGS", ONE, recipeId, CHEF_ID);
+        final var ingredientRecord = unsavedIngredientRecord();
         final var record = new RecipeRecord(
                 recipeId, EPOCH, "FRIED EGGS", CHEF_ID)
                 .add(ingredientRecord);

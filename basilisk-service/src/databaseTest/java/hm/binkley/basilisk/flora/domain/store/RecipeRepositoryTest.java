@@ -14,7 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
-import static java.math.BigDecimal.ONE;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.CHEF_ID;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.unsavedIngredientRecord;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -25,8 +26,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Transactional
 class RecipeRepositoryTest {
-    private static final Long CHEF_ID = 17L;
-
     private final RecipeRepository repository;
 
     private static <T> T first(final Iterable<T> children) {
@@ -58,7 +57,7 @@ class RecipeRepositoryTest {
     @Test
     void shouldSaveWithSomeIngredients() {
         final var unsaved = RecipeRecord.raw("SOUFFLE", CHEF_ID)
-                .add(IngredientRecord.raw("EGGS", ONE, CHEF_ID));
+                .add(unsavedIngredientRecord());
 
         final var saved = repository.save(unsaved);
 

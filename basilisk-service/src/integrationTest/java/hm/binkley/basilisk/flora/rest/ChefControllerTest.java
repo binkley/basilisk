@@ -20,6 +20,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.CHEF_ID;
 import static java.time.Instant.EPOCH;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.LOCATION;
@@ -34,8 +35,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @JsonWebMvcTest(ChefController.class)
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 class ChefControllerTest {
-    private static final Long ID = 17L;
-
     private final MockMvc jsonMvc;
     private final ObjectMapper objectMapper;
 
@@ -43,12 +42,12 @@ class ChefControllerTest {
     private Chefs recipes;
 
     private static String endpointWithId() {
-        return "/chef/" + ID;
+        return "/chef/" + CHEF_ID;
     }
 
     private static Map<String, Object> responseMapFor(final String name) {
         return Map.of(
-                "id", ID,
+                "id", CHEF_ID,
                 "name", name);
     }
 
@@ -59,7 +58,7 @@ class ChefControllerTest {
 
         when(recipes.all())
                 .thenReturn(Stream.of(new Chef(
-                        new ChefRecord(ID, EPOCH, name))));
+                        new ChefRecord(CHEF_ID, EPOCH, name))));
 
         jsonMvc.perform(get("/chef"))
                 .andExpect(status().isOk())
@@ -72,9 +71,9 @@ class ChefControllerTest {
             throws Exception {
         final String name = "Chef Bob";
 
-        when(recipes.byId(ID))
+        when(recipes.byId(CHEF_ID))
                 .thenReturn(Optional.of(new Chef(
-                        new ChefRecord(ID, EPOCH, name))));
+                        new ChefRecord(CHEF_ID, EPOCH, name))));
 
         jsonMvc.perform(get(endpointWithId()))
                 .andExpect(status().isOk())
@@ -96,7 +95,7 @@ class ChefControllerTest {
 
         when(recipes.byName(name))
                 .thenReturn(Optional.of(new Chef(
-                        new ChefRecord(ID, EPOCH, name))));
+                        new ChefRecord(CHEF_ID, EPOCH, name))));
 
         jsonMvc.perform(get("/chef/find/" + name))
                 .andExpect(status().isOk())
@@ -113,7 +112,7 @@ class ChefControllerTest {
                 .build();
 
         when(recipes.create(request))
-                .thenReturn(new Chef(new ChefRecord(ID,
+                .thenReturn(new Chef(new ChefRecord(CHEF_ID,
                         Instant.ofEpochSecond(1_000_000),
                         record.getName())));
 

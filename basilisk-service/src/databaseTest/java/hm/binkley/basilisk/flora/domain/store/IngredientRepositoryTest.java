@@ -12,7 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
-import static java.math.BigDecimal.ONE;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.unsavedIngredientRecord;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.unsavedIngredientRecordNamed;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ActiveProfiles("test")
@@ -22,13 +23,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Transactional
 class IngredientRepositoryTest {
-    private static final Long CHEF_ID = 17L;
-
     private final IngredientRepository repository;
 
     @Test
     void shouldAudit() {
-        final var unsaved = IngredientRecord.raw("PICKLES", ONE, CHEF_ID);
+        final var unsaved = unsavedIngredientRecordNamed("PICKLES");
         final var found = repository.findById(
                 repository.save(unsaved).getId()).orElseThrow();
 
@@ -37,7 +36,7 @@ class IngredientRepositoryTest {
 
     @Test
     void shouldRoundTrip() {
-        final var unsaved = IngredientRecord.raw("EGGS", ONE, CHEF_ID);
+        final var unsaved = unsavedIngredientRecord();
         final var found = repository.findById(
                 repository.save(unsaved).getId()).orElseThrow();
 
@@ -46,8 +45,8 @@ class IngredientRepositoryTest {
 
     @Test
     void shouldFindAllByName() {
-        final var unsavedLeft = IngredientRecord.raw("BUTTER", ONE, CHEF_ID);
-        final var unsavedRight = IngredientRecord.raw("SALT", ONE, CHEF_ID);
+        final var unsavedLeft = unsavedIngredientRecordNamed("BUTTER");
+        final var unsavedRight = unsavedIngredientRecordNamed("SALT");
         repository.saveAll(Set.of(unsavedLeft, unsavedRight));
 
         assertThat(repository.findAllByName(unsavedLeft.getName()))
@@ -57,8 +56,8 @@ class IngredientRepositoryTest {
 
     @Test
     void shouldStream() {
-        final var unsavedA = IngredientRecord.raw("MILK", ONE, CHEF_ID);
-        final var unsavedB = IngredientRecord.raw("SALT", ONE, CHEF_ID);
+        final var unsavedA = unsavedIngredientRecordNamed("MILK");
+        final var unsavedB = unsavedIngredientRecordNamed("CREAM");
         repository.saveAll(Set.of(unsavedA, unsavedB));
 
         try (final var found = repository.readAll()) {
