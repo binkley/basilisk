@@ -12,7 +12,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.IOException;
 
-import static hm.binkley.basilisk.flora.rest.UsedIngredientResponse.using;
+import static hm.binkley.basilisk.flora.rest.UsedIngredientResponse.with;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
@@ -40,7 +40,7 @@ class UsedIngredientResponseTest {
         final var recipeId = 2L;
         final var chefId = 17L;
 
-        assertThat(using().from(id, name, recipeId, chefId))
+        assertThat(with().from(id, name, recipeId, chefId))
                 .isEqualTo(new UsedIngredientResponse(
                         id, name, recipeId, chefId));
     }

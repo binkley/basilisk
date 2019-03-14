@@ -2,6 +2,7 @@ package hm.binkley.basilisk.flora.rest;
 
 import hm.binkley.basilisk.flora.domain.Recipe;
 import hm.binkley.basilisk.flora.domain.Recipes;
+import hm.binkley.basilisk.flora.service.SpecialService;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,7 @@ import static org.springframework.http.ResponseEntity.created;
 @Validated
 public class RecipeController {
     private final Recipes recipes;
+    private final SpecialService specialService;
 
     @GetMapping
     public Set<RecipeResponse> getAll() {
@@ -72,7 +74,8 @@ public class RecipeController {
 
     private Function<Recipe, RecipeResponse> toResponse() {
         return it -> it.as(
-                RecipeResponse.using(), UsedIngredientResponse.using());
+                RecipeResponse.with(specialService.isDailySpecial(it)),
+                UsedIngredientResponse.with());
     }
 
     /** @todo Think more deeply about global controller advice */

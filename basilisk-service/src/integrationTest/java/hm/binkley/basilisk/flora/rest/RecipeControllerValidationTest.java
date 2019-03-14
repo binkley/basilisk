@@ -6,6 +6,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hm.binkley.basilisk.configuration.JsonConfiguration;
 import hm.binkley.basilisk.configuration.ProblemWebMvcTest;
 import hm.binkley.basilisk.flora.domain.Recipes;
+import hm.binkley.basilisk.flora.service.SpecialService;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,8 @@ class RecipeControllerValidationTest {
 
     @MockBean
     private Recipes recipes;
+    @MockBean
+    private SpecialService specialService;
 
     @SuppressFBWarnings("RV")
     @Test

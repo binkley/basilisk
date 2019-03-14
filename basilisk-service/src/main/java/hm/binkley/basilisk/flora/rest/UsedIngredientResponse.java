@@ -12,7 +12,7 @@ public final class UsedIngredientResponse {
     Long recipeId;
     Long chefId;
 
-    static UsedIngredient.As<UsedIngredientResponse> using() {
+    static UsedIngredient.As<UsedIngredientResponse> with() {
         return UsedIngredientResponse::new;
     }
 }

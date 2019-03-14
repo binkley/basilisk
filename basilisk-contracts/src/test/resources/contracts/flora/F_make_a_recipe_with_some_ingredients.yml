@@ -18,6 +18,7 @@ response:
   body:
     id: 2
     name: "SCRAMBLED EGGS"
+    daily-special: true
     chef-id: 1
     ingredients:
       - id: 1

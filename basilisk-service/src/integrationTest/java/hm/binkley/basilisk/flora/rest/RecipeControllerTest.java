@@ -8,6 +8,7 @@ import hm.binkley.basilisk.flora.domain.Recipe;
 import hm.binkley.basilisk.flora.domain.Recipes;
 import hm.binkley.basilisk.flora.domain.store.IngredientRecord;
 import hm.binkley.basilisk.flora.domain.store.RecipeRecord;
+import hm.binkley.basilisk.flora.service.SpecialService;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,7 @@ class RecipeControllerTest {
     private static final String ID_WORD = "id";
     private static final String NAME_WORD = "name";
     private static final String CHEF_ID_WORD = "chef-id";
+    private static final String DAILY_SPECIAL_WORD = "daily-special";
     private static final String INGREDIENTS_WORD = "ingredients";
     private static final String RECIPE_ID_WORD = "recipe-id";
 
@@ -51,15 +53,19 @@ class RecipeControllerTest {
 
     @MockBean
     private Recipes recipes;
+    @MockBean
+    private SpecialService specialService;
 
     private static String endpointWithId() {
         return "/recipe/" + ID;
     }
 
-    private static Map<String, Object> responseMapFor(final String name) {
+    private static Map<String, Object> responseMapFor(
+            final String name, final boolean dailySpecial) {
         return Map.of(
                 ID_WORD, ID,
                 NAME_WORD, name,
+                DAILY_SPECIAL_WORD, dailySpecial,
                 CHEF_ID_WORD, CHEF_ID);
     }
 
@@ -68,6 +74,7 @@ class RecipeControllerTest {
         if (null == ingredientName) return Map.of(
                 ID_WORD, ID,
                 NAME_WORD, name,
+                DAILY_SPECIAL_WORD, false,
                 CHEF_ID_WORD, CHEF_ID,
                 INGREDIENTS_WORD, List.of());
         return Map.of(
@@ -86,14 +93,17 @@ class RecipeControllerTest {
             throws Exception {
         final String name = "POACHED EGGS";
 
+        final var recipe = new Recipe(
+                new RecipeRecord(ID, EPOCH, name, CHEF_ID));
         when(recipes.all())
-                .thenReturn(Stream.of(new Recipe(
-                        new RecipeRecord(ID, EPOCH, name, CHEF_ID))));
+                .thenReturn(Stream.of(recipe));
+        when(specialService.isDailySpecial(recipe))
+                .thenReturn(true);
 
         jsonMvc.perform(get("/recipe"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(asJson(Set.of(
-                        responseMapFor(name)))));
+                        responseMapFor(name, true)))));
     }
 
     @Test
@@ -101,14 +111,17 @@ class RecipeControllerTest {
             throws Exception {
         final String name = "FRIED EGGS";
 
+        final var recipe = new Recipe(
+                new RecipeRecord(ID, EPOCH, name, CHEF_ID));
         when(recipes.byId(ID))
-                .thenReturn(Optional.of(new Recipe(
-                        new RecipeRecord(ID, EPOCH, name, CHEF_ID))));
+                .thenReturn(Optional.of(recipe));
+        when(specialService.isDailySpecial(recipe))
+                .thenReturn(false);
 
         jsonMvc.perform(get(endpointWithId()))
                 .andExpect(status().isOk())
                 .andExpect(content().json(asJson(
-                        responseMapFor(name))));
+                        responseMapFor(name, false))));
     }
 
     @Test
@@ -129,7 +142,8 @@ class RecipeControllerTest {
 
         jsonMvc.perform(get("/recipe/find/" + name))
                 .andExpect(status().isOk())
-                .andExpect(content().json(asJson(responseMapFor(name))));
+                .andExpect(content().json(asJson(
+                        responseMapFor(name, false))));
     }
 
     @Test

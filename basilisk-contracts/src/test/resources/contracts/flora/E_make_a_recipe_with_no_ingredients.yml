@@ -16,5 +16,6 @@ response:
   body:
     id: 1
     name: "SOUFFLE"
+    daily-special: false
     chef-id: 1
     ingredients: []

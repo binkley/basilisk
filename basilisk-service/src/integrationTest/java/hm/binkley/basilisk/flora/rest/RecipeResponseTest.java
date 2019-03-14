@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import static hm.binkley.basilisk.flora.rest.RecipeResponse.using;
+import static hm.binkley.basilisk.flora.rest.RecipeResponse.with;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
@@ -65,9 +65,9 @@ class RecipeResponseTest {
         final var ingredientResponse = new UsedIngredientResponse(
                 31L, "EGGS", recipeId, CHEF_ID);
 
-        assertThat(using().from(
+        assertThat(with(true).from(
                 recipeId, name, CHEF_ID, Stream.of(ingredientResponse)))
-                .isEqualTo(new RecipeResponse(recipeId, name, CHEF_ID,
+                .isEqualTo(new RecipeResponse(recipeId, name, true, CHEF_ID,
                         Set.of(ingredientResponse)));
     }
 }
