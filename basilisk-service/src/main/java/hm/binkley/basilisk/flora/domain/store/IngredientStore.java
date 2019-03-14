@@ -17,8 +17,8 @@ public class IngredientStore {
                 .map(this::assign);
     }
 
-    public Optional<IngredientRecord> byName(final String name) {
-        return springData.findByName(name)
+    public Stream<IngredientRecord> byName(final String name) {
+        return springData.findAllByName(name)
                 .map(this::assign);
     }
 

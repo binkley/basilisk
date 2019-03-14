@@ -64,11 +64,11 @@ class IngredientsTest {
         final var record = new IngredientRecord(
                 3L, EPOCH, "MILK", null, CHEF_ID);
         when(store.byName(record.getName()))
-                .thenReturn(Optional.of(record));
+                .thenReturn(Stream.of(record));
 
-        final var found = ingredients.byName(record.getName()).orElseThrow();
+        final var found = ingredients.byName(record.getName());
 
-        assertThat(found).isEqualTo(new UnusedIngredient(record));
+        assertThat(found).containsExactly(new UnusedIngredient(record));
 
         verifyNoMoreInteractions(store);
     }
@@ -78,11 +78,11 @@ class IngredientsTest {
         final var record = new IngredientRecord(
                 3L, EPOCH, "MILK", 2L, CHEF_ID);
         when(store.byName(record.getName()))
-                .thenReturn(Optional.of(record));
+                .thenReturn(Stream.of(record));
 
-        final var found = ingredients.byName(record.getName()).orElseThrow();
+        final var found = ingredients.byName(record.getName());
 
-        assertThat(found).isEqualTo(new UsedIngredient(record));
+        assertThat(found).containsExactly(new UsedIngredient(record));
 
         verifyNoMoreInteractions(store);
     }
@@ -92,7 +92,7 @@ class IngredientsTest {
         final var unusedRecord = new IngredientRecord(
                 3L, EPOCH, "SALT", null, CHEF_ID);
         final var usedRecord = new IngredientRecord(
-                3L, EPOCH, "SALT", 2L, CHEF_ID);
+                4L, EPOCH, "PEPPER", 2L, CHEF_ID);
         when(store.all())
                 .thenReturn(Stream.of(unusedRecord, usedRecord));
 

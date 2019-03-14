@@ -135,12 +135,13 @@ class IngredientControllerTest {
         final var name = "BACON";
 
         when(ingredients.byName(name))
-                .thenReturn(Optional.of(new UsedIngredient(
+                .thenReturn(Stream.of(new UsedIngredient(
                         new IngredientRecord(ID, EPOCH, name, 2L, CHEF_ID))));
 
         jsonMvc.perform(get("/ingredient/find/" + name))
                 .andExpect(status().isOk())
-                .andExpect(content().json(asJson(responseMapFor(name))));
+                .andExpect(content().json(asJson(
+                        Set.of(responseMapFor(name)))));
     }
 
     @Test

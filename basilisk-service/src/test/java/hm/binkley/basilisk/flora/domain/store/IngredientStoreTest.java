@@ -52,13 +52,13 @@ class IngredientStoreTest {
         final var name = "BACON";
         final var saved = new IngredientRecord(
                 3L, EPOCH, name, null, CHEF_ID);
-        when(springData.findByName(name))
-                .thenReturn(Optional.of(saved));
+        when(springData.findAllByName(name))
+                .thenReturn(Stream.of(saved));
 
-        final var found = store.byName(name).orElseThrow();
+        final var found = store.byName(name).collect(toSet());
 
-        assertThat(found).isEqualTo(saved);
-        assertThat(found.store).isSameAs(store);
+        assertThat(found).isEqualTo(Set.of(saved));
+        assertThat(found.stream().map(it -> it.store)).containsOnly(store);
 
         verifyNoMoreInteractions(springData);
     }

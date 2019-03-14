@@ -52,12 +52,12 @@ public class IngredientController {
     }
 
     @GetMapping("find/{name}")
-    public AnyIngredientResponse getByName(
+    public Set<AnyIngredientResponse> getByName(
             @PathVariable("name") final @Length(min = 3, max = 32)
                     String name) {
         return ingredients.byName(name)
                 .map(toAnyResponse())
-                .orElseThrow();
+                .collect(toSet());
     }
 
     @GetMapping("unused")

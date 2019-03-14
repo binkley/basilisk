@@ -22,7 +22,7 @@ public class Ingredients {
         return store.byId(id).map(this::asUsedOrUnused);
     }
 
-    public Optional<Ingredient> byName(final String name) {
+    public Stream<Ingredient> byName(final String name) {
         return store.byName(name).map(this::asUsedOrUnused);
     }
 
