@@ -13,6 +13,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.io.IOException;
 
 import static hm.binkley.basilisk.flora.rest.UsedIngredientResponse.with;
+import static java.math.BigDecimal.ONE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
@@ -28,6 +29,7 @@ class AnyIngredientResponseTest {
         assertThat(json.write(AnyIngredientResponse.builder()
                 .id(31L)
                 .name("EGGS")
+                .quantity(ONE)
                 .recipeId(null)
                 .chefId(17L)
                 .build()))
@@ -40,6 +42,7 @@ class AnyIngredientResponseTest {
         assertThat(json.write(AnyIngredientResponse.builder()
                 .id(31L)
                 .name("EGGS")
+                .quantity(ONE)
                 .recipeId(2L)
                 .chefId(17L)
                 .build()))
@@ -50,11 +53,12 @@ class AnyIngredientResponseTest {
     void shouldUse() {
         final var id = 31L;
         final var name = "EGGS";
+        final var quantity = ONE;
         final var recipeId = 2L;
         final var chefId = 17L;
 
-        assertThat(with().from(id, name, recipeId, chefId))
+        assertThat(with().from(id, name, quantity, recipeId, chefId))
                 .isEqualTo(new UsedIngredientResponse(
-                        id, name, recipeId, chefId));
+                        id, name, quantity, recipeId, chefId));
     }
 }

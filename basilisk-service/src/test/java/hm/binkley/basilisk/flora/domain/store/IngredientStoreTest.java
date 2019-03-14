@@ -10,6 +10,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import static java.math.BigDecimal.ONE;
 import static java.time.Instant.EPOCH;
 import static java.util.stream.Collectors.toSet;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -35,7 +36,7 @@ class IngredientStoreTest {
     void shouldFindById() {
         final var id = 3L;
         final var saved = new IngredientRecord(
-                id, EPOCH, "EGGS", null, CHEF_ID);
+                id, EPOCH, "EGGS", ONE, null, CHEF_ID);
         when(springData.findById(id))
                 .thenReturn(Optional.of(saved));
 
@@ -51,7 +52,7 @@ class IngredientStoreTest {
     void shouldFindByName() {
         final var name = "BACON";
         final var saved = new IngredientRecord(
-                3L, EPOCH, name, null, CHEF_ID);
+                3L, EPOCH, name, ONE, null, CHEF_ID);
         when(springData.findAllByName(name))
                 .thenReturn(Stream.of(saved));
 
@@ -66,7 +67,7 @@ class IngredientStoreTest {
     @Test
     void shouldFindUnused() {
         final var saved = new IngredientRecord(
-                3L, EPOCH, "THYME", null, CHEF_ID);
+                3L, EPOCH, "THYME", ONE, null, CHEF_ID);
         when(springData.findAllByRecipeIdIsNull()).
                 thenReturn(Stream.of(saved));
 
@@ -81,7 +82,7 @@ class IngredientStoreTest {
     @Test
     void shouldFindAll() {
         final var saved = new IngredientRecord(
-                3L, EPOCH, "MILK", null, CHEF_ID);
+                3L, EPOCH, "MILK", ONE, null, CHEF_ID);
         when(springData.readAll())
                 .thenReturn(Stream.of(saved));
 
@@ -95,14 +96,14 @@ class IngredientStoreTest {
 
     @Test
     void shouldCreate() {
-        final var unsaved = IngredientRecord.raw("SALT", CHEF_ID);
+        final var unsaved = IngredientRecord.raw("SALT", ONE, CHEF_ID);
         final var saved = new IngredientRecord(
-                3L, EPOCH, unsaved.getName(), null, CHEF_ID);
+                3L, EPOCH, unsaved.getName(), ONE, null, CHEF_ID);
         when(springData.save(unsaved))
                 .thenReturn(saved);
 
-        assertThat(store.create(
-                unsaved.getName(), unsaved.getChefId()))
+        assertThat(store.create(unsaved.getName(), unsaved.getQuantity(),
+                unsaved.getChefId()))
                 .isEqualTo(saved);
 
         verify(springData).save(unsaved);
@@ -111,9 +112,9 @@ class IngredientStoreTest {
 
     @Test
     void shouldSave() {
-        final var unsaved = IngredientRecord.raw("PEPPER", CHEF_ID);
+        final var unsaved = IngredientRecord.raw("PEPPER", ONE, CHEF_ID);
         final var saved = new IngredientRecord(
-                3L, EPOCH, unsaved.getName(), 2L, CHEF_ID);
+                3L, EPOCH, unsaved.getName(), ONE, 2L, CHEF_ID);
 
         when(springData.save(unsaved))
                 .thenReturn(saved);

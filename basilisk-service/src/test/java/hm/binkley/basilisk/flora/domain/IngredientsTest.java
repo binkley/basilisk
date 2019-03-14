@@ -12,6 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import static java.math.BigDecimal.ONE;
 import static java.time.Instant.EPOCH;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -34,7 +35,7 @@ class IngredientsTest {
     @Test
     void shouldFindUnusedById() {
         final var record = new IngredientRecord(
-                3L, EPOCH, "EGGS", null, CHEF_ID);
+                3L, EPOCH, "EGGS", ONE, null, CHEF_ID);
         when(store.byId(record.getId()))
                 .thenReturn(Optional.of(record));
 
@@ -48,7 +49,7 @@ class IngredientsTest {
     @Test
     void shouldFindUsedById() {
         final var record = new IngredientRecord(
-                3L, EPOCH, "EGGS", 2L, CHEF_ID);
+                3L, EPOCH, "EGGS", ONE, 2L, CHEF_ID);
         when(store.byId(record.getId()))
                 .thenReturn(Optional.of(record));
 
@@ -62,7 +63,7 @@ class IngredientsTest {
     @Test
     void shouldUnusedFindByName() {
         final var record = new IngredientRecord(
-                3L, EPOCH, "MILK", null, CHEF_ID);
+                3L, EPOCH, "MILK", ONE, null, CHEF_ID);
         when(store.byName(record.getName()))
                 .thenReturn(Stream.of(record));
 
@@ -76,7 +77,7 @@ class IngredientsTest {
     @Test
     void shouldUsedFindByName() {
         final var record = new IngredientRecord(
-                3L, EPOCH, "MILK", 2L, CHEF_ID);
+                3L, EPOCH, "MILK", ONE, 2L, CHEF_ID);
         when(store.byName(record.getName()))
                 .thenReturn(Stream.of(record));
 
@@ -90,9 +91,9 @@ class IngredientsTest {
     @Test
     void shouldFindAll() {
         final var unusedRecord = new IngredientRecord(
-                3L, EPOCH, "SALT", null, CHEF_ID);
+                3L, EPOCH, "SALT", ONE, null, CHEF_ID);
         final var usedRecord = new IngredientRecord(
-                4L, EPOCH, "PEPPER", 2L, CHEF_ID);
+                4L, EPOCH, "PEPPER", ONE, 2L, CHEF_ID);
         when(store.all())
                 .thenReturn(Stream.of(unusedRecord, usedRecord));
 
@@ -108,7 +109,7 @@ class IngredientsTest {
     @Test
     void shouldFindUnused() {
         final var record = new IngredientRecord(
-                3L, EPOCH, "SALT", null, CHEF_ID);
+                3L, EPOCH, "SALT", ONE, null, CHEF_ID);
         when(store.unused())
                 .thenReturn(Stream.of(record));
 
@@ -123,14 +124,16 @@ class IngredientsTest {
     void shouldCreateUnused() {
         final var name = "QUX";
         final var record = new IngredientRecord(
-                3L, EPOCH, name, null, CHEF_ID);
+                3L, EPOCH, name, ONE, null, CHEF_ID);
 
         when(store.save(IngredientRecord
-                .raw(record.getName(), record.getChefId())))
+                .raw(record.getName(), record.getQuantity(),
+                        record.getChefId())))
                 .thenReturn(record);
 
         assertThat(ingredients.createUnused(UnusedIngredientRequest.builder()
                 .name(name)
+                .quantity(ONE)
                 .chefId(CHEF_ID)
                 .build()))
                 .isEqualTo(new UnusedIngredient(record));

@@ -1,6 +1,7 @@
 {
   "id": 31,
   "name": "EGGS",
+  "quantity": 1,
   "recipe-id": null,
   "chef-id": 17
 }

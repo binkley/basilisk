@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -32,8 +33,10 @@ public class IngredientStore {
                 .peek(it -> it.store = this);
     }
 
-    public IngredientRecord create(final String name, final Long chefId) {
-        final IngredientRecord record = IngredientRecord.raw(name, chefId);
+    public IngredientRecord create(
+            final String name, final BigDecimal quantity, final Long chefId) {
+        final IngredientRecord record = IngredientRecord.raw(
+                name, quantity, chefId);
         assign(record);
         return record.save();
     }

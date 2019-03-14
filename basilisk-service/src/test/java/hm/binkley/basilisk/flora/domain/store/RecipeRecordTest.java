@@ -8,6 +8,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import static java.math.BigDecimal.ONE;
 import static java.time.Instant.EPOCH;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
@@ -23,7 +24,8 @@ class RecipeRecordTest {
 
     @Test
     void shouldAddSomeIngredients() {
-        final var ingredientRecord = IngredientRecord.raw("EGGS", CHEF_ID);
+        final var ingredientRecord = IngredientRecord.raw(
+                "EGGS", ONE, CHEF_ID);
         final var record = RecipeRecord.raw("SOUFFLE", CHEF_ID)
                 .addAll(Stream.of(ingredientRecord));
 
@@ -51,7 +53,8 @@ class RecipeRecordTest {
     void shouldSaveWithIngredients() {
         final var unsaved = RecipeRecord.raw("SOUFFLE", CHEF_ID);
         unsaved.store = store;
-        final var unsavedIngredient = IngredientRecord.raw("EGGS", CHEF_ID);
+        final var unsavedIngredient = IngredientRecord.raw(
+                "EGGS", ONE, CHEF_ID);
         unsaved.ingredients.add(unsavedIngredient);
         final var saved = new RecipeRecord(
                 3L, EPOCH, unsaved.getName(), CHEF_ID);

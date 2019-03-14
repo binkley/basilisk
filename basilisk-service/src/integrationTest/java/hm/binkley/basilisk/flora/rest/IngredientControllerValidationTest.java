@@ -13,6 +13,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static java.math.BigDecimal.ONE;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
@@ -26,6 +27,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ProblemWebMvcTest(IngredientController.class)
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 class IngredientControllerValidationTest {
+    private static final String FIRST_FIELD = "$.violations[0].field";
+    private static final String FIRST_MESSAGE = "$.violations[0].message";
+    private static final String STATUS = "$.status";
+
     private final MockMvc problemMvc;
     private final ObjectMapper objectMapper;
 
@@ -38,11 +43,11 @@ class IngredientControllerValidationTest {
             throws Exception {
         problemMvc.perform(get("/ingredient/find/F"))
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.violations[0].field",
+                .andExpect(jsonPath(FIRST_FIELD,
                         equalTo("getByName.name")))
-                .andExpect(jsonPath("$.violations[0].message",
+                .andExpect(jsonPath(FIRST_MESSAGE,
                         equalTo("length must be between 3 and 32")))
-                .andExpect(jsonPath("$.status",
+                .andExpect(jsonPath(STATUS,
                         equalTo(UNPROCESSABLE_ENTITY.name())))
         // TODO: Turn off stack traces
         //      .andExpect(jsonPath("$.stackTrace").doesNotExist())
@@ -57,14 +62,38 @@ class IngredientControllerValidationTest {
         problemMvc.perform(post("/ingredient")
                 .content(asJson(UnusedIngredientRequest.builder()
                         .name("F")
+                        .quantity(ONE)
                         .chefId(17L)
                         .build())))
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.violations[0].field",
+                .andExpect(jsonPath(FIRST_FIELD,
                         equalTo("name")))
-                .andExpect(jsonPath("$.violations[0].message",
+                .andExpect(jsonPath(FIRST_MESSAGE,
                         equalTo("length must be between 3 and 32")))
-                .andExpect(jsonPath("$.status",
+                .andExpect(jsonPath(STATUS,
+                        equalTo(UNPROCESSABLE_ENTITY.name())))
+        // TODO: Turn off stack traces
+        //      .andExpect(jsonPath("$.stackTrace").doesNotExist())
+        ;
+
+        verifyNoMoreInteractions(ingredients);
+    }
+
+    @Test
+    void shouldRejectMissingQuantity()
+            throws Exception {
+        problemMvc.perform(post("/ingredient")
+                .content(asJson(UnusedIngredientRequest.builder()
+                        .name("EGGS")
+                        .quantity(null)
+                        .chefId(17L)
+                        .build())))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath(FIRST_FIELD,
+                        equalTo("quantity")))
+                .andExpect(jsonPath(FIRST_MESSAGE,
+                        equalTo("must not be null")))
+                .andExpect(jsonPath(STATUS,
                         equalTo(UNPROCESSABLE_ENTITY.name())))
         // TODO: Turn off stack traces
         //      .andExpect(jsonPath("$.stackTrace").doesNotExist())
@@ -79,14 +108,15 @@ class IngredientControllerValidationTest {
         problemMvc.perform(post("/ingredient")
                 .content(asJson(UnusedIngredientRequest.builder()
                         .name("EGGS")
+                        .quantity(ONE)
                         .chefId(null)
                         .build())))
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.violations[0].field",
+                .andExpect(jsonPath(FIRST_FIELD,
                         equalTo("chefId")))
-                .andExpect(jsonPath("$.violations[0].message",
+                .andExpect(jsonPath(FIRST_MESSAGE,
                         equalTo("must not be null")))
-                .andExpect(jsonPath("$.status",
+                .andExpect(jsonPath(STATUS,
                         equalTo(UNPROCESSABLE_ENTITY.name())))
         // TODO: Turn off stack traces
         //      .andExpect(jsonPath("$.stackTrace").doesNotExist())

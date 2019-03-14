@@ -5,10 +5,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import static java.math.BigDecimal.ONE;
 import static java.util.stream.Collectors.toCollection;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -17,6 +19,7 @@ class RecipeRequestTest {
     void shouldConvert() {
         final var ingredientRequest = UsedIngredientRequest.builder()
                 .name("EGGS")
+                .quantity(ONE)
                 .build();
         final var request = RecipeRequest.builder()
                 .name("SOUFFLE")
@@ -27,6 +30,7 @@ class RecipeRequestTest {
                 .isEqualTo(new Recipey(request.getName(), request.getChefId(),
                         Set.of(new Ingredientey(
                                 ingredientRequest.getName(),
+                                ingredientRequest.getQuantity(),
                                 ingredientRequest.getChefId()))));
     }
 
@@ -50,6 +54,7 @@ class RecipeRequestTest {
     @ToString
     private static final class Ingredientey {
         private final String name;
+        private final BigDecimal quantity;
         private final Long chefId;
     }
 }

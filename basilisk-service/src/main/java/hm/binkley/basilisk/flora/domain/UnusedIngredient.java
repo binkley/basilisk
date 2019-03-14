@@ -4,6 +4,8 @@ import hm.binkley.basilisk.flora.domain.store.IngredientRecord;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import java.math.BigDecimal;
+
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public final class UnusedIngredient
@@ -13,10 +15,11 @@ public final class UnusedIngredient
     }
 
     public <I> I asUnused(final UnusedIngredient.As<I> asOther) {
-        return asOther.from(getId(), getName(), getChefId());
+        return asOther.from(getId(), getName(), getQuantity(), getChefId());
     }
 
     public interface As<I> {
-        I from(final Long id, final String name, final Long chefId);
+        I from(final Long id, final String name, final BigDecimal quantity,
+                final Long chefId);
     }
 }

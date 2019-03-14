@@ -15,6 +15,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import static java.math.BigDecimal.ONE;
 import static java.time.Instant.EPOCH;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -80,15 +81,16 @@ class RecipesTest {
     void shouldCreate() {
         final var recipeId = 3L;
         final var ingredientRecord = new IngredientRecord(
-                31L, EPOCH.plusSeconds(1L), "EGGS", recipeId, CHEF_ID);
+                31L, EPOCH.plusSeconds(1L), "EGGS", ONE, recipeId, CHEF_ID);
         final var record = new RecipeRecord(
                 recipeId, EPOCH, "FRIED EGGS", CHEF_ID)
                 .add(ingredientRecord);
 
-        when(store.save(RecipeRecord
-                .raw(record.getName(), record.getChefId())
+        when(store.save(RecipeRecord.raw(
+                record.getName(), record.getChefId())
                 .add(IngredientRecord.raw(
                         ingredientRecord.getName(),
+                        ingredientRecord.getQuantity(),
                         ingredientRecord.getChefId()))))
                 .thenReturn(record);
 
@@ -97,6 +99,7 @@ class RecipesTest {
                 .chefId(record.getChefId())
                 .ingredients(Set.of(UsedIngredientRequest.builder()
                         .name(ingredientRecord.getName())
+                        .quantity(ingredientRecord.getQuantity())
                         .chefId(ingredientRecord.getChefId())
                         .build()))
                 .build()))

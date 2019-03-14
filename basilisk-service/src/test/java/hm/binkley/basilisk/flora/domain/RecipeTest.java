@@ -4,6 +4,7 @@ import hm.binkley.basilisk.flora.domain.store.IngredientRecord;
 import hm.binkley.basilisk.flora.domain.store.RecipeRecord;
 import org.junit.jupiter.api.Test;
 
+import static java.math.BigDecimal.ONE;
 import static java.time.Instant.EPOCH;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -13,7 +14,7 @@ class RecipeTest {
         final var recipeId = 3L;
         final var chefId = 17L;
         final var ingredientRecord = new IngredientRecord(
-                5L, EPOCH.plusSeconds(1L), "EGGS", recipeId, chefId);
+                5L, EPOCH.plusSeconds(1L), "EGGS", ONE, recipeId, chefId);
         final var record = new RecipeRecord(
                 recipeId, EPOCH, "SOUFFLE", chefId)
                 .add(ingredientRecord);
@@ -29,9 +30,11 @@ class RecipeTest {
                     assertThat(cid).isEqualTo(record.getChefId());
                     assertThat(ingredients).containsExactly(targetIngredient);
                     return targetRecipe;
-                }, (id, name, rid, cid) -> {
+                }, (id, name, quantity, rid, cid) -> {
                     assertThat(id).isEqualTo(ingredientRecord.getId());
                     assertThat(name).isEqualTo(ingredientRecord.getName());
+                    assertThat(quantity)
+                            .isEqualTo(ingredientRecord.getQuantity());
                     assertThat(rid).isEqualTo(ingredientRecord.getRecipeId());
                     assertThat(cid).isEqualTo(ingredientRecord.getChefId());
                     return targetIngredient;

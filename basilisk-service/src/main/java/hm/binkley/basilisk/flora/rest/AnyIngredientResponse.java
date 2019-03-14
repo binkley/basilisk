@@ -4,11 +4,14 @@ import hm.binkley.basilisk.flora.domain.Ingredient;
 import lombok.Builder;
 import lombok.Value;
 
+import java.math.BigDecimal;
+
 @Builder
 @Value
 public final class AnyIngredientResponse {
     Long id;
     String name;
+    BigDecimal quantity;
     Long recipeId;
     Long chefId;
 

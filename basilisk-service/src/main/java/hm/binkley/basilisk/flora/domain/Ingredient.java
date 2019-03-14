@@ -5,6 +5,8 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+import java.math.BigDecimal;
+
 @EqualsAndHashCode
 @RequiredArgsConstructor
 @ToString
@@ -19,6 +21,10 @@ public abstract class Ingredient {
         return record.getName();
     }
 
+    public BigDecimal getQuantity() {
+        return record.getQuantity();
+    }
+
     public Long getRecipeId() {
         return record.getRecipeId();
     }
@@ -26,11 +32,12 @@ public abstract class Ingredient {
     public Long getChefId() { return record.getChefId(); }
 
     public <I> I asAny(final Ingredient.As<I> asOther) {
-        return asOther.from(getId(), getName(), getRecipeId(), getChefId());
+        return asOther.from(getId(), getName(), getQuantity(),
+                getRecipeId(), getChefId());
     }
 
     public interface As<I> {
-        I from(final Long id, final String name, final Long recipeId,
-                final Long chefId);
+        I from(final Long id, final String name, final BigDecimal quantity,
+                final Long recipeId, final Long chefId);
     }
 }

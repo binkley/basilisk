@@ -16,6 +16,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import static java.math.BigDecimal.ONE;
 import static java.time.Instant.EPOCH;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.LOCATION;
@@ -40,6 +42,7 @@ class RecipeControllerTest {
     // Make PMD happy
     private static final String ID_WORD = "id";
     private static final String NAME_WORD = "name";
+    private static final String QUANTITY_WORD = "quantity";
     private static final String CHEF_ID_WORD = "chef-id";
     private static final String DAILY_SPECIAL_WORD = "daily-special";
     private static final String INGREDIENTS_WORD = "ingredients";
@@ -70,7 +73,8 @@ class RecipeControllerTest {
     }
 
     private static Map<String, Object> responseMapFor(final String name,
-            final String ingredientName) {
+            final String ingredientName,
+            final BigDecimal ingredientQuantity) {
         if (null == ingredientName) return Map.of(
                 ID_WORD, ID,
                 NAME_WORD, name,
@@ -84,6 +88,7 @@ class RecipeControllerTest {
                 INGREDIENTS_WORD, List.of(Map.of(
                         ID_WORD, INGREDIENT_ID,
                         NAME_WORD, ingredientName,
+                        QUANTITY_WORD, ingredientQuantity,
                         CHEF_ID_WORD, CHEF_ID,
                         RECIPE_ID_WORD, ID)));
     }
@@ -166,7 +171,7 @@ class RecipeControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(header().string(LOCATION, endpointWithId()))
                 .andExpect(content().json(asJson(
-                        responseMapFor(name, null))));
+                        responseMapFor(name, false))));
     }
 
     @Test
@@ -174,14 +179,16 @@ class RecipeControllerTest {
             throws Exception {
         final var name = "SOUFFLE";
         final var ingredientName = "EGGS";
+        final var ingredientQuantity = ONE;
         final var record = RecipeRecord.raw(name, CHEF_ID);
         final var ingredientRecord = IngredientRecord.raw(
-                ingredientName, CHEF_ID);
+                ingredientName, ingredientQuantity, CHEF_ID);
         final RecipeRequest request = RecipeRequest.builder()
                 .name(name)
                 .chefId(CHEF_ID)
                 .ingredients(Set.of(UsedIngredientRequest.builder()
                         .name(ingredientName)
+                        .quantity(ingredientQuantity)
                         .chefId(CHEF_ID)
                         .build()))
                 .build();
@@ -192,14 +199,17 @@ class RecipeControllerTest {
                         record.getName(), record.getChefId())
                         .add(new IngredientRecord(2L,
                                 EPOCH.plusSeconds(1_000_001),
-                                ingredientRecord.getName(), ID, CHEF_ID))));
+                                ingredientRecord.getName(),
+                                ingredientRecord.getQuantity(),
+                                ID, CHEF_ID))));
 
         jsonMvc.perform(post("/recipe")
                 .content(asJson(request)))
                 .andExpect(status().isCreated())
                 .andExpect(header().string(LOCATION, endpointWithId()))
                 .andExpect(content().json(asJson(
-                        responseMapFor(name, ingredientName))));
+                        responseMapFor(name, ingredientName,
+                                ingredientQuantity))));
     }
 
     private String asJson(final Object o)

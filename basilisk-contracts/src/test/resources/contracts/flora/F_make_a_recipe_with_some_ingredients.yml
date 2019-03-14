@@ -9,6 +9,7 @@ request:
     chef-id: 1
     ingredients:
       - name: "EGGS"
+        quantity: 1
         chef-id: 1
 response:
   status: 201
@@ -23,5 +24,6 @@ response:
     ingredients:
       - id: 1
         name: "EGGS"
+        quantity: 1
         recipe-id: 2
         chef-id: 1
