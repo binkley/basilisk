@@ -1,21 +1,19 @@
 package hm.binkley.basilisk.flora.domain.store;
 
-import lombok.RequiredArgsConstructor;
+import hm.binkley.basilisk.store.StandardStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 @Component
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class IngredientStore {
-    private final IngredientRepository springData;
-
-    public Optional<IngredientRecord> byId(final Long id) {
-        return springData.findById(id)
-                .map(this::assign);
+public class IngredientStore
+        extends StandardStore<IngredientRecord, IngredientRepository,
+        IngredientStore> {
+    @Autowired
+    public IngredientStore(final IngredientRepository springData) {
+        super(springData);
     }
 
     public Stream<IngredientRecord> byName(final String name) {
@@ -28,25 +26,11 @@ public class IngredientStore {
                 .peek(it -> it.store = this);
     }
 
-    public Stream<IngredientRecord> all() {
-        return springData.readAll()
-                .peek(it -> it.store = this);
-    }
-
     public IngredientRecord create(
             final String name, final BigDecimal quantity, final Long chefId) {
         final IngredientRecord record = IngredientRecord.raw(
                 name, quantity, chefId);
         assign(record);
         return record.save();
-    }
-
-    public IngredientRecord save(final IngredientRecord record) {
-        return springData.save(record);
-    }
-
-    private IngredientRecord assign(final IngredientRecord record) {
-        record.store = this;
-        return record;
     }
 }

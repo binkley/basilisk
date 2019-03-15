@@ -1,20 +1,17 @@
 package hm.binkley.basilisk.flora.domain.store;
 
-import lombok.RequiredArgsConstructor;
+import hm.binkley.basilisk.store.StandardStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
-import java.util.stream.Stream;
 
 @Component
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class ChefStore {
-    private final ChefRepository springData;
-
-    public Optional<ChefRecord> byId(final Long id) {
-        return springData.findById(id)
-                .map(this::assign);
+public class ChefStore
+        extends StandardStore<ChefRecord, ChefRepository, ChefStore> {
+    @Autowired
+    public ChefStore(final ChefRepository springData) {
+        super(springData);
     }
 
     public Optional<ChefRecord> byName(final String name) {
@@ -22,23 +19,9 @@ public class ChefStore {
                 .map(this::assign);
     }
 
-    public Stream<ChefRecord> all() {
-        return springData.readAll()
-                .map(this::assign);
-    }
-
     public ChefRecord create(final String name) {
         final ChefRecord record = ChefRecord.raw(name);
         assign(record);
         return record.save();
-    }
-
-    public ChefRecord save(final ChefRecord record) {
-        return springData.save(record);
-    }
-
-    private ChefRecord assign(final ChefRecord record) {
-        record.store = this;
-        return record;
     }
 }

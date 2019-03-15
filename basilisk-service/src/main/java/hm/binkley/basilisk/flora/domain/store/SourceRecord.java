@@ -1,42 +1,28 @@
 package hm.binkley.basilisk.flora.domain.store;
 
+import hm.binkley.basilisk.store.StandardRecord;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.Instant;
 
-@EqualsAndHashCode(exclude = {"id", "receivedAt", "store"})
+@EqualsAndHashCode(callSuper = false)
 @Table("FLORA.SOURCE")
-@ToString
-public final class SourceRecord {
-    @Id
-    @Getter
-    Long id;
-    @CreatedDate
-    @Getter
-    Instant receivedAt;
+@ToString(callSuper = true)
+public final class SourceRecord
+        extends StandardRecord<SourceRecord, SourceRepository, SourceStore> {
     @Getter
     String name;
-    @Transient
-    SourceStore store;
 
     public SourceRecord(final Long id, final Instant receivedAt,
             final String name) {
-        this.id = id;
-        this.receivedAt = receivedAt;
+        super(() -> new SourceRecord(id, receivedAt, name), id, receivedAt);
         this.name = name;
     }
 
     public static SourceRecord raw(final String name) {
         return new SourceRecord(null, null, name);
-    }
-
-    public SourceRecord save() {
-        return store.save(this);
     }
 }

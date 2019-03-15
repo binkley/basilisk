@@ -1,42 +1,28 @@
 package hm.binkley.basilisk.flora.domain.store;
 
+import hm.binkley.basilisk.store.StandardRecord;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.Instant;
 
-@EqualsAndHashCode(exclude = {"id", "receivedAt", "store"})
+@EqualsAndHashCode(callSuper = false)
 @Table("FLORA.CHEF")
-@ToString
-public final class ChefRecord {
-    @Id
+@ToString(callSuper = true)
+public final class ChefRecord
+        extends StandardRecord<ChefRecord, ChefRepository, ChefStore> {
     @Getter
-    Long id;
-    @CreatedDate
-    @Getter
-    Instant receivedAt;
-    @Getter
-    String name;
-    @Transient
-    ChefStore store;
+    public String name;
 
     public ChefRecord(final Long id, final Instant receivedAt,
             final String name) {
-        this.id = id;
-        this.receivedAt = receivedAt;
+        super(() -> new ChefRecord(id, receivedAt, name), id, receivedAt);
         this.name = name;
     }
 
     public static ChefRecord raw(final String name) {
         return new ChefRecord(null, null, name);
-    }
-
-    public ChefRecord save() {
-        return store.save(this);
     }
 }

@@ -65,4 +65,11 @@ class RecipeRecordTest {
         verify(store).save(unsaved);
         verifyNoMoreInteractions(store);
     }
+
+    @Test
+    void shouldClone() {
+        final var unsaved = RecipeRecord.raw("BOILED EGGS", CHEF_ID);
+
+        assertThat(unsaved.clone()).isEqualTo(unsaved);
+    }
 }

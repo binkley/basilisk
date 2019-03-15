@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Transactional
 class ChefRepositoryTest {
-    private static final String NAME = "The Dallas Yellow Rose";
+    private static final String NAME = "Chef Boy-ar-dee";
 
     private final ChefRepository repository;
 

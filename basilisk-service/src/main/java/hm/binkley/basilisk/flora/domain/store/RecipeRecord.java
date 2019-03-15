@@ -1,11 +1,9 @@
 package hm.binkley.basilisk.flora.domain.store;
 
+import hm.binkley.basilisk.store.StandardRecord;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -14,16 +12,11 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Stream;
 
-@EqualsAndHashCode(exclude = {"id", "receivedAt", "store"})
+@EqualsAndHashCode(callSuper = false)
 @Table("FLORA.RECIPE")
-@ToString
-public final class RecipeRecord {
-    @Id
-    @Getter
-    Long id;
-    @CreatedDate
-    @Getter
-    Instant receivedAt;
+@ToString(callSuper = true)
+public final class RecipeRecord
+        extends StandardRecord<RecipeRecord, RecipeRepository, RecipeStore> {
     @Getter
     String name;
     @Getter
@@ -31,13 +24,11 @@ public final class RecipeRecord {
     @Column("recipe_id")
     @Getter
     Set<IngredientRecord> ingredients = new LinkedHashSet<>();
-    @Transient
-    RecipeStore store;
 
     public RecipeRecord(final Long id, final Instant receivedAt,
             final String name, final Long chefId) {
-        this.id = id;
-        this.receivedAt = receivedAt;
+        super(() -> new RecipeRecord(id, receivedAt, name, chefId), id,
+                receivedAt);
         this.name = name;
         this.chefId = chefId;
     }
@@ -54,9 +45,5 @@ public final class RecipeRecord {
     public RecipeRecord addAll(final Stream<IngredientRecord> ingredients) {
         ingredients.forEach(this::add);
         return this;
-    }
-
-    public RecipeRecord save() {
-        return store.save(this);
     }
 }
