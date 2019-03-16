@@ -9,6 +9,9 @@ services:
         JAVA_VERSION: 11.0.2
     depends_on:
       - "db"
+    environment:
+      SPRING_BOOT_ADMIN_CLIENT: http://app:8080/admin
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db/basilisk?user=basilisk
     ports:
       - "8080:8080"
 

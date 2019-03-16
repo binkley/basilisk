@@ -39,7 +39,7 @@ spring:
       detection-strategy: annotated
   datasource:
     platform: postgresql
-    url: 'jdbc:postgresql://db/basilisk?user=basilisk'
+    url: 'jdbc:postgresql:basilisk?user=basilisk'
   jackson:
     date-format: "yyyy-MM-dd'T'HH:mm:ssX"
     property-naming-strategy: 'KEBAB_CASE'
