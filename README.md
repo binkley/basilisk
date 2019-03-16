@@ -113,6 +113,7 @@ These are "2nd-class objects", needed by "meal planners", but not as central
 
 ## Features
 
+* [Docker](#docker)
 * Modern Spring Boot
 * [Spring Boot Actuator](#actuator)
 * [Spring Boot Admin](#admin)
@@ -166,9 +167,27 @@ Some reading:
 * [Anemic Domain Model](https://martinfowler.com/bliki/AnemicDomainModel.html)
 * [How accurate is “Business logic should be in a service, not in a model”?](https://softwareengineering.stackexchange.com/questions/218011/how-accurate-is-business-logic-should-be-in-a-service-not-in-a-model)
 
+
+## Docker
+
+### Plain docker
+
+Use the [`Dockerfile`](Dockerfile) to both _build_ and _run_ the program.  The
+[`run-it.sh`](run-it.sh) script makes this easy:
+
+```bash
+run-it.sh
+```
+
+### Docker compose
+
+Use the [`docker-compose.yml`](docker-compose.yml) to _build_ and _run the
+program, including a Postgres.
+
 ## Production
 
-Start the program, then try the [Home Page](http://localhost:8080).
+[Start the program](#running), then try
+[the Home Page](http://localhost:8080).
 
 ### Admin
 
@@ -221,6 +240,8 @@ nice web interface.
 ### Building
 
 Build the project with `./gradlew`.  The default task is "build".
+
+Alternatively, develop in [Docker](#docker). 
 
 Note the common build configuration for [Spring Boot](spring-boot.gradle),
 used in [Basilisk service](basilisk-service/build.gradle).  For example, when
