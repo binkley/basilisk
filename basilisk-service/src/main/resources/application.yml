@@ -41,7 +41,7 @@ spring:
     platform: postgresql
     url: 'jdbc:postgresql:basilisk?user=postgres'
   jackson:
-    date-format: "yyyy-MM-dd'T'HH:mm:ssXXX"
+    date-format: "yyyy-MM-dd'T'HH:mm:ssX"
     property-naming-strategy: 'KEBAB_CASE'
   main:
     banner-mode: 'off'
