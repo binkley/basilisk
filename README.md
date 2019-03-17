@@ -474,10 +474,10 @@ original, unrefactored code.)
 
 Any bean can be validated by adding `@Validated` to the class.  See examples
 of
-[`BasiliskController`](basilisk-service/src/main/java/hm/binkley/basilisk/basilisk/rest/BasiliskController.java),
-[`BasiliskProperties`](basilisk-service/src/main/java/hm/binkley/basilisk/configuration/BasiliskProperties.java),
+[`RecipeController`](basilisk-service/src/main/java/hm/binkley/basilisk/flora/rest/RecipeController.java),
+[`FloraProperties`](basilisk-service/src/main/java/hm/binkley/basilisk/flora/configuration/FloraProperties.java),
 and
-[`BasiliskService`](basilisk-service/src/main/java/hm/binkley/basilisk/basilisk/service/BasiliskService.java).
+[`SpecialService`](basilisk-service/src/main/java/hm/binkley/basilisk/flora/service/SpecialService.java).
 
 Note: Spring Data JDBC does not support validating entities/records in this
 way.  However, a well-written schema will catch issues, and controller and 
@@ -541,10 +541,10 @@ your test.  Among the choices include:
   example in
   [`PropertiesConfigurationTest`](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/configuration/PropertiesConfigurationTest.java)
 - `@DataJdbcTest`; example in
-  [`BasiliskRepositoryTest`](basilisk-service/src/databaseTest/java/hm/binkley/basilisk/basilisk/domain/store/BasiliskRepositoryTest.java)
+  [`RecipeRepositoryTest`](basilisk-service/src/databaseTest/java/hm/binkley/basilisk/recipe/domain/store/RecipeRepositoryTest.java)
 - `@WebMvcTest` (use the `value` property to limit test to one controller);
   example in
-  [`BasiliskControllerTest`](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/basilisk/rest/BasiliskControllerTest.java)
+  [`RecipeControllerTest`](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/flora/rest/RecipeControllerTest.java)
 
 ### Configuration through annotations
 
