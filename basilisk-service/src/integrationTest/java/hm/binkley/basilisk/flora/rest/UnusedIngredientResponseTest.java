@@ -13,8 +13,10 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.io.IOException;
 
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.CHEF_ID;
-import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.INGREDIENT_NAME;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.INGREDIENT_ID;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.SOURCE_NAME;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.INGREDIENT_QUANTITY;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.SOURCE_ID;
 import static hm.binkley.basilisk.flora.rest.UnusedIngredientResponse.using;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -29,8 +31,9 @@ class UnusedIngredientResponseTest {
     void shouldBecomeGoodJson()
             throws IOException {
         assertThat(json.write(UsedIngredientResponse.builder()
-                .id(31L)
-                .name(INGREDIENT_NAME)
+                .id(INGREDIENT_ID)
+                .sourceId(SOURCE_ID)
+                .name(SOURCE_NAME)
                 .quantity(INGREDIENT_QUANTITY)
                 .chefId(CHEF_ID)
                 .build()))
@@ -39,12 +42,10 @@ class UnusedIngredientResponseTest {
 
     @Test
     void shouldUse() {
-        final var id = 31L;
-        final var name = INGREDIENT_NAME;
-        final var quantity = INGREDIENT_QUANTITY;
-
-        assertThat(using().from(id, name, quantity, CHEF_ID))
+        assertThat(using().from(INGREDIENT_ID, SOURCE_ID, SOURCE_NAME,
+                INGREDIENT_QUANTITY, CHEF_ID))
                 .isEqualTo(new UnusedIngredientResponse(
-                        id, name, quantity, CHEF_ID));
+                        INGREDIENT_ID, SOURCE_ID, SOURCE_NAME,
+                        INGREDIENT_QUANTITY, CHEF_ID));
     }
 }

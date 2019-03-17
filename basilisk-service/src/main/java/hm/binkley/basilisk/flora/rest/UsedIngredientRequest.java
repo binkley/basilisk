@@ -12,16 +12,18 @@ import java.math.BigDecimal;
 @Data
 @RequiredArgsConstructor
 public final class UsedIngredientRequest {
+    private final @NotNull Long sourceId;
     private final @Length(min = 3, max = 32) String name;
     private final @NotNull BigDecimal quantity;
     private final @NotNull Long chefId;
 
     public <I> I as(final UsedIngredientRequest.As<I> asOther) {
-        return asOther.from(getName(), getQuantity(), getChefId());
+        return asOther
+                .from(getSourceId(), getName(), getQuantity(), getChefId());
     }
 
     public interface As<I> {
-        I from(final String name, final BigDecimal quantity,
-                final Long chefId);
+        I from(final Long sourceId, final String name,
+                final BigDecimal quantity, final Long chefId);
     }
 }

@@ -9,7 +9,7 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.CHEF_ID;
-import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.unsavedIngredientRecord;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.unsavedUnusedIngredientRecord;
 import static java.time.Instant.EPOCH;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
@@ -23,7 +23,7 @@ class RecipeRecordTest {
 
     @Test
     void shouldAddSomeIngredients() {
-        final var ingredientRecord = unsavedIngredientRecord();
+        final var ingredientRecord = unsavedUnusedIngredientRecord();
         final var record = RecipeRecord.raw("SOUFFLE", CHEF_ID)
                 .addAll(Stream.of(ingredientRecord));
 
@@ -51,7 +51,7 @@ class RecipeRecordTest {
     void shouldSaveWithIngredients() {
         final var unsaved = RecipeRecord.raw("SOUFFLE", CHEF_ID);
         unsaved.store = store;
-        final var unsavedIngredient = unsavedIngredientRecord();
+        final var unsavedIngredient = unsavedUnusedIngredientRecord();
         unsaved.ingredients.add(unsavedIngredient);
         final var saved = new RecipeRecord(
                 3L, EPOCH, unsaved.getName(), CHEF_ID);

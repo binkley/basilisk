@@ -14,7 +14,8 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.CHEF_ID;
-import static java.math.BigDecimal.ONE;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.INGREDIENT_QUANTITY;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.SOURCE_NAME;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
@@ -63,7 +64,7 @@ class IngredientControllerValidationTest {
         problemMvc.perform(post("/ingredient")
                 .content(asJson(UnusedIngredientRequest.builder()
                         .name("F")
-                        .quantity(ONE)
+                        .quantity(INGREDIENT_QUANTITY)
                         .chefId(CHEF_ID)
                         .build())))
                 .andExpect(status().isUnprocessableEntity())
@@ -85,7 +86,7 @@ class IngredientControllerValidationTest {
             throws Exception {
         problemMvc.perform(post("/ingredient")
                 .content(asJson(UnusedIngredientRequest.builder()
-                        .name("EGGS")
+                        .name(SOURCE_NAME)
                         .quantity(null)
                         .chefId(CHEF_ID)
                         .build())))
@@ -108,8 +109,8 @@ class IngredientControllerValidationTest {
             throws Exception {
         problemMvc.perform(post("/ingredient")
                 .content(asJson(UnusedIngredientRequest.builder()
-                        .name("EGGS")
-                        .quantity(ONE)
+                        .name(SOURCE_NAME)
+                        .quantity(INGREDIENT_QUANTITY)
                         .chefId(null)
                         .build())))
                 .andExpect(status().isUnprocessableEntity())

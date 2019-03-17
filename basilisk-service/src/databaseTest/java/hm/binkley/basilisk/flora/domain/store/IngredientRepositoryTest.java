@@ -12,8 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
-import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.unsavedIngredientRecord;
-import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.unsavedIngredientRecordNamed;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.SOURCE_ID;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.unsavedUnusedIngredientRecord;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.unsavedUnusedIngredientRecordNamed;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ActiveProfiles("test")
@@ -27,7 +28,7 @@ class IngredientRepositoryTest {
 
     @Test
     void shouldAudit() {
-        final var unsaved = unsavedIngredientRecordNamed("PICKLES");
+        final var unsaved = unsavedUnusedIngredientRecord();
         final var found = repository.findById(
                 repository.save(unsaved).getId()).orElseThrow();
 
@@ -36,7 +37,7 @@ class IngredientRepositoryTest {
 
     @Test
     void shouldRoundTrip() {
-        final var unsaved = unsavedIngredientRecord();
+        final var unsaved = unsavedUnusedIngredientRecord();
         final var found = repository.findById(
                 repository.save(unsaved).getId()).orElseThrow();
 
@@ -45,19 +46,21 @@ class IngredientRepositoryTest {
 
     @Test
     void shouldFindAllByName() {
-        final var unsavedLeft = unsavedIngredientRecordNamed("BUTTER");
-        final var unsavedRight = unsavedIngredientRecordNamed("SALT");
-        repository.saveAll(Set.of(unsavedLeft, unsavedRight));
+        final var unsavedA = unsavedUnusedIngredientRecord();
+        final var unsavedB = unsavedUnusedIngredientRecordNamed(
+                SOURCE_ID + 1, "PICKLES");
+        repository.saveAll(Set.of(unsavedA, unsavedB));
 
-        assertThat(repository.findAllByName(unsavedLeft.getName()))
-                .containsExactly(unsavedLeft);
+        assertThat(repository.findAllByName(unsavedA.getName()))
+                .containsExactly(unsavedA);
         assertThat(repository.findAllByName("OLIVE OIL")).isEmpty();
     }
 
     @Test
     void shouldStream() {
-        final var unsavedA = unsavedIngredientRecordNamed("MILK");
-        final var unsavedB = unsavedIngredientRecordNamed("CREAM");
+        final var unsavedA = unsavedUnusedIngredientRecord();
+        final var unsavedB = unsavedUnusedIngredientRecordNamed(
+                SOURCE_ID + 1, "PICKLES");
         repository.saveAll(Set.of(unsavedA, unsavedB));
 
         try (final var found = repository.readAll()) {

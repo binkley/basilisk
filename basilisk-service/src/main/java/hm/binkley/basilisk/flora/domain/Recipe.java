@@ -23,8 +23,8 @@ public final class Recipe {
         return asRecipe.from(
                 record.getId(), record.getName(), record.getChefId(),
                 ingredients().map(it -> asUsedIngredient.from(
-                        it.getId(), it.getName(), it.getQuantity(),
-                        it.getRecipeId(), it.getChefId())));
+                        it.getId(), it.getSourceId(), it.getName(),
+                        it.getQuantity(), it.getRecipeId(), it.getChefId())));
     }
 
     public interface As<R, I> {

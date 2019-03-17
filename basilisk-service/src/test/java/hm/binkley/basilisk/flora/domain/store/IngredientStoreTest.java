@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.savedUsedIngredientRecord;
-import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.unsavedIngredientRecord;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.unsavedUnusedIngredientRecord;
 import static java.util.stream.Collectors.toSet;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
@@ -33,7 +33,7 @@ class IngredientStoreTest {
     @Test
     void shouldFindById() {
         final var id = 3L;
-        final var saved = unsavedIngredientRecord();
+        final var saved = unsavedUnusedIngredientRecord();
         when(springData.findById(id))
                 .thenReturn(Optional.of(saved));
 
@@ -89,14 +89,13 @@ class IngredientStoreTest {
 
     @Test
     void shouldCreate() {
-        final var unsaved = FloraFixtures
-                .unsavedIngredientRecordNamed("SALT");
+        final var unsaved = unsavedUnusedIngredientRecord();
         final var saved = savedUsedIngredientRecord();
         when(springData.save(unsaved))
                 .thenReturn(saved);
 
-        assertThat(store.create(unsaved.getName(), unsaved.getQuantity(),
-                unsaved.getChefId()))
+        assertThat(store.create(unsaved.getSourceId(), unsaved.getName(),
+                unsaved.getQuantity(), unsaved.getChefId()))
                 .isEqualTo(saved);
 
         verify(springData).save(unsaved);
@@ -105,7 +104,7 @@ class IngredientStoreTest {
 
     @Test
     void shouldSave() {
-        final var unsaved = unsavedIngredientRecord();
+        final var unsaved = unsavedUnusedIngredientRecord();
         final var saved = savedUsedIngredientRecord();
 
         when(springData.save(unsaved))

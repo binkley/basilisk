@@ -28,8 +28,10 @@ class RecipeTest {
                     assertThat(cid).isEqualTo(record.getChefId());
                     assertThat(ingredients).containsExactly(targetIngredient);
                     return targetRecipe;
-                }, (id, name, quantity, rid, cid) -> {
+                }, (id, sourceId, name, quantity, rid, cid) -> {
                     assertThat(id).isEqualTo(ingredientRecord.getId());
+                    assertThat(sourceId)
+                            .isEqualTo(ingredientRecord.getSourceId());
                     assertThat(name).isEqualTo(ingredientRecord.getName());
                     assertThat(quantity)
                             .isEqualTo(ingredientRecord.getQuantity());

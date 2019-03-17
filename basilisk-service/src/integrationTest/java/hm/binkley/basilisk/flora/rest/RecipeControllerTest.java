@@ -24,7 +24,7 @@ import java.util.stream.Stream;
 
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.CHEF_ID;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.INGREDIENT_ID;
-import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.INGREDIENT_NAME;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.SOURCE_NAME;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.INGREDIENT_QUANTITY;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.RECIPE_ID;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.savedUsedIngredientRecord;
@@ -73,7 +73,7 @@ class RecipeControllerTest {
                 CHEF_ID_WORD, CHEF_ID,
                 INGREDIENTS_WORD, List.of(Map.of(
                         ID_WORD, INGREDIENT_ID,
-                        NAME_WORD, INGREDIENT_NAME,
+                        NAME_WORD, SOURCE_NAME,
                         QUANTITY_WORD, INGREDIENT_QUANTITY,
                         CHEF_ID_WORD, CHEF_ID,
                         RECIPE_ID_WORD, RECIPE_ID)))
@@ -175,7 +175,7 @@ class RecipeControllerTest {
                 .name(name)
                 .chefId(CHEF_ID)
                 .ingredients(Set.of(UsedIngredientRequest.builder()
-                        .name(INGREDIENT_NAME)
+                        .name(SOURCE_NAME)
                         .quantity(INGREDIENT_QUANTITY)
                         .chefId(CHEF_ID)
                         .build()))

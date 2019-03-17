@@ -14,9 +14,10 @@ import java.io.IOException;
 
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.CHEF_ID;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.INGREDIENT_ID;
-import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.INGREDIENT_NAME;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.SOURCE_NAME;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.INGREDIENT_QUANTITY;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.RECIPE_ID;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.SOURCE_ID;
 import static hm.binkley.basilisk.flora.rest.UsedIngredientResponse.with;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -31,8 +32,9 @@ class UsedIngredientResponseTest {
     void shouldBecomeGoodJson()
             throws IOException {
         assertThat(json.write(UsedIngredientResponse.builder()
-                .id(31L)
-                .name(INGREDIENT_NAME)
+                .id(INGREDIENT_ID)
+                .sourceId(SOURCE_ID)
+                .name(SOURCE_NAME)
                 .quantity(INGREDIENT_QUANTITY)
                 .chefId(CHEF_ID)
                 .build()))
@@ -41,10 +43,10 @@ class UsedIngredientResponseTest {
 
     @Test
     void shouldUse() {
-        assertThat(with().from(INGREDIENT_ID, INGREDIENT_NAME,
+        assertThat(with().from(INGREDIENT_ID, SOURCE_ID, SOURCE_NAME,
                 INGREDIENT_QUANTITY, RECIPE_ID, CHEF_ID))
                 .isEqualTo(new UsedIngredientResponse(
-                        INGREDIENT_ID, INGREDIENT_NAME, INGREDIENT_QUANTITY,
-                        RECIPE_ID, CHEF_ID));
+                        INGREDIENT_ID, SOURCE_ID, SOURCE_NAME,
+                        INGREDIENT_QUANTITY, RECIPE_ID, CHEF_ID));
     }
 }

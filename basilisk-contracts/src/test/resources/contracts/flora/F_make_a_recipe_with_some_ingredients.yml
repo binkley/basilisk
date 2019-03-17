@@ -9,6 +9,7 @@ request:
     chef-id: 1
     ingredients:
       - name: "EGGS"
+        source-id: 12
         quantity: 1
         chef-id: 1
 response:
@@ -23,6 +24,7 @@ response:
     chef-id: 1
     ingredients:
       - id: 1
+        source-id: 12
         name: "EGGS"
         quantity: 1
         recipe-id: 2

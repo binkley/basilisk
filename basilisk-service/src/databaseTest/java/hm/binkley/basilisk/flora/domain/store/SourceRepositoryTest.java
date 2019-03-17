@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.SOURCE_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -28,7 +29,7 @@ class SourceRepositoryTest {
 
     @Test
     void shouldAudit() {
-        final var unsaved = SourceRecord.raw("PICKLES");
+        final var unsaved = SourceRecord.raw(SOURCE_NAME);
         final var found = repository.findById(
                 repository.save(unsaved).getId()).orElseThrow();
 
@@ -37,7 +38,7 @@ class SourceRepositoryTest {
 
     @Test
     void shouldRoundtrip() {
-        final var unsaved = SourceRecord.raw("EGGS");
+        final var unsaved = SourceRecord.raw(SOURCE_NAME);
         final var found = repository.findById(
                 repository.save(unsaved).getId()).orElseThrow();
 
@@ -46,31 +47,30 @@ class SourceRepositoryTest {
 
     @Test
     void shouldHaveUniqueName() {
-        final var name = "BACON";
-        repository.save(SourceRecord.raw(name));
+        repository.save(SourceRecord.raw(SOURCE_NAME));
 
         final var ex = assertThrows(
                 DbActionExecutionException.class,
-                () -> repository.save(SourceRecord.raw(name)));
+                () -> repository.save(SourceRecord.raw(SOURCE_NAME)));
 
         assertThat(ex.getCause()).isInstanceOf(DuplicateKeyException.class);
     }
 
     @Test
     void shouldFindByName() {
-        final var unsavedLeft = SourceRecord.raw("BUTTER");
-        final var unsavedRight = SourceRecord.raw("SALT");
-        repository.saveAll(Set.of(unsavedLeft, unsavedRight));
+        final var unsavedA = SourceRecord.raw(SOURCE_NAME);
+        final var unsavedB = SourceRecord.raw(SOURCE_NAME + "x");
+        repository.saveAll(Set.of(unsavedA, unsavedB));
 
-        assertThat(repository.findByName(unsavedLeft.getName()).orElseThrow())
-                .isEqualTo(unsavedLeft);
+        assertThat(repository.findByName(unsavedA.getName()).orElseThrow())
+                .isEqualTo(unsavedA);
         assertThat(repository.findByName("OLIVE OIL")).isEmpty();
     }
 
     @Test
     void shouldStream() {
-        final var unsavedA = SourceRecord.raw("MILK");
-        final var unsavedB = SourceRecord.raw("SALT");
+        final var unsavedA = SourceRecord.raw(SOURCE_NAME);
+        final var unsavedB = SourceRecord.raw(SOURCE_NAME + "x");
         repository.saveAll(Set.of(unsavedA, unsavedB));
 
         try (final var found = repository.readAll()) {

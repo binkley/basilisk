@@ -15,8 +15,11 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.CHEF_ID;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.INGREDIENT_ID;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.SOURCE_NAME;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.INGREDIENT_QUANTITY;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.SOURCE_ID;
 import static hm.binkley.basilisk.flora.rest.RecipeResponse.with;
-import static java.math.BigDecimal.ONE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
@@ -48,9 +51,10 @@ class RecipeResponseTest {
                 .name("SOUFFLE")
                 .chefId(CHEF_ID)
                 .ingredients(Set.of(UsedIngredientResponse.builder()
-                        .id(31L)
-                        .name("EGGS")
-                        .quantity(ONE)
+                        .id(INGREDIENT_ID)
+                        .sourceId(SOURCE_ID)
+                        .name(SOURCE_NAME)
+                        .quantity(INGREDIENT_QUANTITY)
                         .recipeId(recipeId)
                         .chefId(CHEF_ID)
                         .build()))
@@ -64,7 +68,8 @@ class RecipeResponseTest {
         final var recipeId = 33L;
         final var name = "SOUFFLE";
         final var ingredientResponse = new UsedIngredientResponse(
-                31L, "EGGS", ONE, recipeId, CHEF_ID);
+                INGREDIENT_ID, SOURCE_ID, SOURCE_NAME,
+                INGREDIENT_QUANTITY, recipeId, CHEF_ID);
 
         assertThat(with(true).from(
                 recipeId, name, CHEF_ID, Stream.of(ingredientResponse)))

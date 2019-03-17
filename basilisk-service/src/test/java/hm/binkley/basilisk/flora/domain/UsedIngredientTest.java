@@ -14,8 +14,9 @@ class UsedIngredientTest {
 
         @SuppressWarnings("PMD") final var that
                 = new UsedIngredient(record).asUsed(
-                (id, name, quantity, recipeId, chefId) -> {
+                (id, sourceId, name, quantity, recipeId, chefId) -> {
                     assertThat(id).isEqualTo(record.getId());
+                    assertThat(sourceId).isEqualTo(record.getSourceId());
                     assertThat(name).isEqualTo(record.getName());
                     assertThat(quantity).isEqualTo(record.getQuantity());
                     assertThat(recipeId).isEqualTo(record.getRecipeId());

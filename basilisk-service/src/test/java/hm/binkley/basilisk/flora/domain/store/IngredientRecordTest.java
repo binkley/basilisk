@@ -5,7 +5,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.unsavedIngredientRecord;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.unsavedUnusedIngredientRecord;
 import static java.time.Instant.EPOCH;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
@@ -19,11 +19,11 @@ class IngredientRecordTest {
 
     @Test
     void shouldSave() {
-        final var unsaved = unsavedIngredientRecord();
+        final var unsaved = unsavedUnusedIngredientRecord();
         unsaved.store = store;
         final var saved = new IngredientRecord(
-                3L, EPOCH, unsaved.getName(), unsaved.getQuantity(), 2L,
-                unsaved.getChefId());
+                1L, EPOCH, unsaved.getSourceId(), unsaved.getName(),
+                unsaved.getQuantity(), 2L, unsaved.getChefId());
         saved.store = store;
         when(store.save(unsaved))
                 .thenReturn(saved);
@@ -36,7 +36,7 @@ class IngredientRecordTest {
 
     @Test
     void shouldClone() {
-        final var unsaved = unsavedIngredientRecord();
+        final var unsaved = unsavedUnusedIngredientRecord();
 
         assertThat(unsaved.clone()).isEqualTo(unsaved);
     }

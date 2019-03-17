@@ -15,12 +15,13 @@ public final class UsedIngredient
     }
 
     public <T> T asUsed(final UsedIngredient.As<T> asOther) {
-        return asOther.from(getId(), getName(), getQuantity(), getRecipeId(),
-                getChefId());
+        return asOther.from(getId(), getSourceId(), getName(), getQuantity(),
+                getRecipeId(), getChefId());
     }
 
     public interface As<I> {
-        I from(final Long id, final String name, final BigDecimal quantity,
-                final Long recipeId, final Long chefId);
+        I from(final Long id, final Long sourceId, final String name,
+                final BigDecimal quantity, final Long recipeId,
+                final Long chefId);
     }
 }

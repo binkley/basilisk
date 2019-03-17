@@ -17,6 +17,8 @@ public abstract class Ingredient {
         return record.getId();
     }
 
+    public Long getSourceId() { return record.getSourceId(); }
+
     public String getName() {
         return record.getName();
     }
@@ -32,12 +34,13 @@ public abstract class Ingredient {
     public Long getChefId() { return record.getChefId(); }
 
     public <I> I asAny(final Ingredient.As<I> asOther) {
-        return asOther.from(getId(), getName(), getQuantity(),
+        return asOther.from(getId(), getSourceId(), getName(), getQuantity(),
                 getRecipeId(), getChefId());
     }
 
     public interface As<I> {
-        I from(final Long id, final String name, final BigDecimal quantity,
-                final Long recipeId, final Long chefId);
+        I from(final Long id, final Long sourceId, final String name,
+                final BigDecimal quantity, final Long recipeId,
+                final Long chefId);
     }
 }

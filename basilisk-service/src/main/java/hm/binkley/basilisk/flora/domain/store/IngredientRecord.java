@@ -16,6 +16,8 @@ public final class IngredientRecord
         extends StandardRecord<IngredientRecord, IngredientRepository,
         IngredientStore> {
     @Getter
+    Long sourceId;
+    @Getter
     String name;
     @Getter
     BigDecimal quantity;
@@ -25,20 +27,22 @@ public final class IngredientRecord
     Long chefId;
 
     public IngredientRecord(final Long id, final Instant receivedAt,
-            final String name, final BigDecimal quantity, final Long recipeId,
-            final Long chefId) {
-        super(() -> new IngredientRecord(id, receivedAt, name, quantity,
-                        recipeId, chefId),
+            final Long sourceId, final String name, final BigDecimal quantity,
+            final Long recipeId, final Long chefId) {
+        super(() -> new IngredientRecord(id, receivedAt, sourceId, name,
+                        quantity, recipeId, chefId),
                 id, receivedAt);
+        this.sourceId = sourceId;
         this.name = name;
         this.quantity = quantity;
         this.recipeId = recipeId;
         this.chefId = chefId;
     }
 
-    public static IngredientRecord raw(final String name,
+    public static IngredientRecord raw(final Long sourceId, final String name,
             final BigDecimal quantity, final Long chefId) {
-        return new IngredientRecord(null, null, name, quantity, null, chefId);
+        return new IngredientRecord(null, null, sourceId, name, quantity,
+                null, chefId);
     }
 
     public boolean isUsed() {

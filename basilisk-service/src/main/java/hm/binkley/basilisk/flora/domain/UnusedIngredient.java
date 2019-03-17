@@ -15,11 +15,12 @@ public final class UnusedIngredient
     }
 
     public <I> I asUnused(final UnusedIngredient.As<I> asOther) {
-        return asOther.from(getId(), getName(), getQuantity(), getChefId());
+        return asOther.from(getId(), getSourceId(), getName(), getQuantity(),
+                getChefId());
     }
 
     public interface As<I> {
-        I from(final Long id, final String name, final BigDecimal quantity,
-                final Long chefId);
+        I from(final Long id, final Long sourceId, final String name,
+                final BigDecimal quantity, final Long chefId);
     }
 }

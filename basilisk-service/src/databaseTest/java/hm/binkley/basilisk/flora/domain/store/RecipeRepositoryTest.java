@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Set;
 
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.CHEF_ID;
-import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.unsavedIngredientRecord;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.unsavedUnusedIngredientRecord;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -57,7 +57,7 @@ class RecipeRepositoryTest {
     @Test
     void shouldSaveWithSomeIngredients() {
         final var unsaved = RecipeRecord.raw("SOUFFLE", CHEF_ID)
-                .add(unsavedIngredientRecord());
+                .add(unsavedUnusedIngredientRecord());
 
         final var saved = repository.save(unsaved);
 

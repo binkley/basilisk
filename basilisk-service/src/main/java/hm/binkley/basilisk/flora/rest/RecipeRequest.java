@@ -24,7 +24,8 @@ public final class RecipeRequest {
             final UsedIngredientRequest.As<I> asUsedIngredient) {
         return asRecipe.from(getName(), getChefId(), getIngredients().stream()
                 .map(it -> asUsedIngredient.from(
-                        it.getName(), it.getQuantity(), it.getChefId())));
+                        it.getSourceId(), it.getName(), it.getQuantity(),
+                        it.getChefId())));
     }
 
     public interface As<R, I> {
