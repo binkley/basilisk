@@ -1,0 +1,22 @@
+description: Make a recipe with no ingredients
+request:
+  method: POST
+  url: /ingredient
+  headers:
+    Content-Type: application/json;charset=UTF-8
+  body:
+    source-id: 1
+    name: "EGGS"
+    quantity: 1
+    chef-id: 1
+response:
+  status: 201
+  headers:
+    Content-Type: application/json;charset=UTF-8
+    Location: /ingredient/1
+  body:
+    id: 1
+    source-id: 1
+    name: "EGGS"
+    quantity: 1
+    chef-id: 1

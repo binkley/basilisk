@@ -1,0 +1,16 @@
+description: Make a source
+request:
+  method: POST
+  url: /source
+  headers:
+    Content-Type: application/json;charset=UTF-8
+  body:
+    name: "EGGS"
+response:
+  status: 201
+  headers:
+    Content-Type: application/json;charset=UTF-8
+    Location: /source/1
+  body:
+    id: 1
+    name: "EGGS"
