@@ -37,8 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Import({JsonConfiguration.class,
-        WorkaroundComponentScanFindingAllConverters.class})
+@Import(JsonConfiguration.class)
 @JsonWebMvcTest(RecipeController.class)
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 class RecipeControllerTest {

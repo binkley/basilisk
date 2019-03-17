@@ -118,7 +118,7 @@ These are "2nd-class objects", needed by "meal planners", but not as central
 * [Spring Boot Actuator](#actuator)
 * [Spring Boot Admin](#admin)
 * Spring Data JDBC
-* [Spring Data JDBC auditing](#auditing)
+* [Spring Data JDBC auditing](#spring-data-jdbc-auditing)
 * [Swagger](#swagger)
 * Incremental build
 * Domain-oriented design
@@ -396,14 +396,14 @@ Recall that package names are stylistically singular, not plural, _eg_,
 ### Test types
 
 - [application (live)](basilisk-service/src/liveTest/java/hm/binkley/basilisk/BasiliskLiveTest.java)
-- [application (contract)](basilisk-contracts/src/test/resources/contracts/basilisk/A_see_no_basilisks.yml)
+- [application (contract)](basilisk-contracts/src/test/resources/contracts/flora/A_see_no_chefs.yml)
 - [configuration (unit)](basilisk-service/src/test/java/hm/binkley/basilisk/configuration/JsonConfigurationTest.java)
 - [configuration (integration)](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/configuration/PropertiesConfigurationTest.java)
 - [controller (integration)](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/flora/rest/RecipeControllerTest.java)
 - [controller validation (integration)](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/flora/rest/RecipeControllerValidationTest.java)
 - [json request (unit)](basilisk-service/src/test/java/hm/binkley/basilisk/flora/rest/RecipeRequestTest.java)
 - [json response (integration)](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/flora/rest/RecipeResponseTest.java)
-- [record validation (unit)](basilisk-service/src/test/java/hm/binkley/basilisk/basilisk/domain/store/BasiliskRecordValidationTest.java)
+- [record validation (unit)](basilisk-service/src/test/java/hm/binkley/basilisk/flora/domain/store/RecipeRecordValidationTest.java) (TODO)
 - [repository (database)](basilisk-service/src/databaseTest/java/hm/binkley/basilisk/flora/domain/store/RecipeRepositoryTest.java)
 - [service (unit)](basilisk-service/src/test/java/hm/binkley/basilisk/flora/service/SpecialServiceTest.java)
 - [service validation (integration)](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/flora/service/SpecialServiceValidationTest.java)
@@ -541,7 +541,7 @@ your test.  Among the choices include:
   example in
   [`PropertiesConfigurationTest`](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/configuration/PropertiesConfigurationTest.java)
 - `@DataJdbcTest`; example in
-  [`RecipeRepositoryTest`](basilisk-service/src/databaseTest/java/hm/binkley/basilisk/recipe/domain/store/RecipeRepositoryTest.java)
+  [`RecipeRepositoryTest`](basilisk-service/src/databaseTest/java/hm/binkley/basilisk/flora/domain/store/RecipeRepositoryTest.java)
 - `@WebMvcTest` (use the `value` property to limit test to one controller);
   example in
   [`RecipeControllerTest`](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/flora/rest/RecipeControllerTest.java)
@@ -563,14 +563,6 @@ based on `spring.jackson.date-format` and `spring.jackson.time-zone`
 application properties.  Comare to
 `@org.springframework.format.annotation.DateTimeFormat`
 (which does not handle `Instant`).
-
-### Automatic object lookup in controllers
-
-See
-[`BasiliskFromStringIdConverter`](basilisk-service/src/main/java/hm/binkley/basilisk/basilisk/rest/BasiliskFromStringIdConverter.java)
-and the `/basilisk/{id}` controller endpoint for an example of Spring
-automatically converting types, in this case, from a "string" (a path
-component of a URL) to a `BasiliskRecord`. 
 
 ### Custom health check
 

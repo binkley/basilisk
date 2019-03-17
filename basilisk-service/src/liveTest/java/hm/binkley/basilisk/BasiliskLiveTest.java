@@ -55,7 +55,7 @@ class BasiliskLiveTest {
 
     @Test
     void shouldFindRestApi() {
-        client.get().uri("/basilisk")
+        client.get().uri("/chef")
                 .exchange()
                 .expectStatus().isOk();
     }
