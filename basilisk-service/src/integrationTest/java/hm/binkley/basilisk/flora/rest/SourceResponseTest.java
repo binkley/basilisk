@@ -12,40 +12,32 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.IOException;
 
-import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.CHEF_ID;
-import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.INGREDIENT_ID;
-import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.INGREDIENT_QUANTITY;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.SOURCE_ID;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.SOURCE_NAME;
-import static hm.binkley.basilisk.flora.rest.UnusedIngredientResponse.with;
+import static hm.binkley.basilisk.flora.rest.SourceResponse.with;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
 @Import(JsonConfiguration.class)
 @JsonTest
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-class UnusedIngredientResponseTest {
-    private final JacksonTester<UsedIngredientResponse> json;
+class SourceResponseTest {
+    private final JacksonTester<SourceResponse> json;
 
     @Test
     void shouldBecomeGoodJson()
             throws IOException {
-        assertThat(json.write(UsedIngredientResponse.builder()
-                .id(INGREDIENT_ID)
-                .sourceId(SOURCE_ID)
+        assertThat(json.write(SourceResponse.builder()
+                .id(SOURCE_ID)
                 .name(SOURCE_NAME)
-                .quantity(INGREDIENT_QUANTITY)
-                .chefId(CHEF_ID)
                 .build()))
-                .isEqualToJson("unused-ingredient-response-test.json");
+                .isEqualToJson("source-response-test.json");
     }
 
     @Test
     void shouldUse() {
-        assertThat(with().from(INGREDIENT_ID, SOURCE_ID, SOURCE_NAME,
-                INGREDIENT_QUANTITY, CHEF_ID))
-                .isEqualTo(new UnusedIngredientResponse(
-                        INGREDIENT_ID, SOURCE_ID, SOURCE_NAME,
-                        INGREDIENT_QUANTITY, CHEF_ID));
+        assertThat(with().from(SOURCE_ID, SOURCE_NAME))
+                .isEqualTo(new SourceResponse(
+                        SOURCE_ID, SOURCE_NAME));
     }
 }

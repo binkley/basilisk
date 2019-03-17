@@ -14,7 +14,7 @@ public final class UsedIngredient
         super(record);
     }
 
-    public <T> T asUsed(final UsedIngredient.As<T> asOther) {
+    public <T> T asUsed(final As<T> asOther) {
         return asOther.from(getId(), getSourceId(), getName(), getQuantity(),
                 getRecipeId(), getChefId());
     }

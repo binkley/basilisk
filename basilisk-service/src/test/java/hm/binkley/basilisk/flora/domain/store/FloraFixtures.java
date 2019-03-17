@@ -11,14 +11,30 @@ import static lombok.AccessLevel.PRIVATE;
 
 @NoArgsConstructor(access = PRIVATE)
 public final class FloraFixtures {
+    public static final Long CHEF_ID = 17L;
+    public static final Instant CHEF_RECIEVED_AT
+            = EPOCH.plusSeconds(800_000L);
+    public static final String CHEF_NAME = "Chef Boyardee";
     public static final Long SOURCE_ID = 12L;
+    public static final Instant SOURCE_RECEIVED_AT
+            = EPOCH.plusSeconds(900_000L);
     public static final String SOURCE_NAME = "EGGS";
     public static final Long INGREDIENT_ID = 31L;
     public static final Instant INGREDIENT_RECEIVED_AT
-            = EPOCH.plusSeconds(1_000_000);
+            = EPOCH.plusSeconds(1_000_000L);
     public static final BigDecimal INGREDIENT_QUANTITY = ONE;
     public static final Long RECIPE_ID = 4L;
-    public static final Long CHEF_ID = 17L;
+
+    public static ChefRecord unsavedChefRecord() {
+        return new ChefRecord(null, null, CHEF_NAME);
+    }
+
+    public static ChefRecord savedChefRecord() {
+        final var saved = unsavedChefRecord();
+        saved.id = CHEF_ID;
+        saved.receivedAt = CHEF_RECIEVED_AT;
+        return saved;
+    }
 
     public static IngredientRecord unsavedUnusedIngredientRecord() {
         return new IngredientRecord(null, null,
@@ -39,16 +55,27 @@ public final class FloraFixtures {
     }
 
     public static IngredientRecord savedUnusedIngredientRecord() {
-        final var record = unsavedUnusedIngredientRecord();
-        record.id = INGREDIENT_ID;
-        record.receivedAt = INGREDIENT_RECEIVED_AT;
-        return record;
+        final var saved = unsavedUnusedIngredientRecord();
+        saved.id = INGREDIENT_ID;
+        saved.receivedAt = INGREDIENT_RECEIVED_AT;
+        return saved;
     }
 
     public static IngredientRecord savedUsedIngredientRecord() {
-        final var record = unsavedUsedIngredientRecord();
-        record.id = INGREDIENT_ID;
-        record.receivedAt = INGREDIENT_RECEIVED_AT;
-        return record;
+        final var saved = unsavedUsedIngredientRecord();
+        saved.id = INGREDIENT_ID;
+        saved.receivedAt = INGREDIENT_RECEIVED_AT;
+        return saved;
+    }
+
+    public static SourceRecord unsavedSourceRecord() {
+        return new SourceRecord(null, null, SOURCE_NAME);
+    }
+
+    public static SourceRecord savedSourceRecord() {
+        final var saved = unsavedSourceRecord();
+        saved.id = SOURCE_ID;
+        saved.receivedAt = SOURCE_RECEIVED_AT;
+        return saved;
     }
 }

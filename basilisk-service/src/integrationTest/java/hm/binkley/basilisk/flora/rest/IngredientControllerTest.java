@@ -91,7 +91,7 @@ class IngredientControllerTest {
     @Test
     void shouldGetUnused()
             throws Exception {
-        when(ingredients.unused())
+        when(ingredients.allUnused())
                 .thenReturn(Stream.of(new UnusedIngredient(
                         savedUnusedIngredientRecord())));
 
@@ -123,7 +123,7 @@ class IngredientControllerTest {
     @Test
     void shouldGetByName()
             throws Exception {
-        when(ingredients.byName(SOURCE_NAME))
+        when(ingredients.allByName(SOURCE_NAME))
                 .thenReturn(Stream.of(new UsedIngredient(
                         savedUsedIngredientRecord())));
 

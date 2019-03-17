@@ -11,7 +11,7 @@ import lombok.ToString;
 public final class Source {
     private final SourceRecord record;
 
-    public <C> C as(final Source.As<C> asSource) {
+    public <C> C as(final As<C> asSource) {
         return asSource.from(record.getId(), record.getName());
     }
 

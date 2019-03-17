@@ -28,14 +28,14 @@ class ChefResponseTest {
             throws IOException {
         assertThat(json.write(ChefResponse.builder()
                 .id(CHEF_ID)
-                .name("Chef Boy-ar-dee")
+                .name("Chef Boyardee")
                 .build()))
                 .isEqualToJson("chef-response-test.json");
     }
 
     @Test
     void shouldUse() {
-        final var name = "Chef Boy-ar-dee";
+        final var name = "Chef Boyardee";
 
         assertThat(using().from(CHEF_ID, name))
                 .isEqualTo(new ChefResponse(CHEF_ID, name));

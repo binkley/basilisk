@@ -16,7 +16,7 @@ public final class AnyIngredientResponse {
     Long recipeId;
     Long chefId;
 
-    static Ingredient.As<AnyIngredientResponse> using() {
+    static Ingredient.As<AnyIngredientResponse> with() {
         return AnyIngredientResponse::new;
     }
 }

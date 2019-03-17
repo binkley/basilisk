@@ -4,8 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hm.binkley.basilisk.configuration.JsonConfiguration;
 import hm.binkley.basilisk.configuration.JsonWebMvcTest;
-import hm.binkley.basilisk.flora.domain.Chef;
-import hm.binkley.basilisk.flora.domain.Chefs;
+import hm.binkley.basilisk.flora.domain.Source;
+import hm.binkley.basilisk.flora.domain.Sources;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +18,10 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.CHEF_ID;
-import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.CHEF_NAME;
-import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.savedChefRecord;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.SOURCE_ID;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.SOURCE_NAME;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.savedSourceRecord;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.unsavedSourceRecord;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.LOCATION;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -31,47 +32,45 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @Import({JsonConfiguration.class,
         WorkaroundComponentScanFindingAllConverters.class})
-@JsonWebMvcTest(ChefController.class)
+@JsonWebMvcTest(SourceController.class)
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-class ChefControllerTest {
+class SourceControllerTest {
     private final MockMvc jsonMvc;
     private final ObjectMapper objectMapper;
 
     @MockBean
-    private Chefs recipes;
+    private Sources sources;
 
     private static String endpointWithId() {
-        return "/chef/" + CHEF_ID;
+        return "/source/" + SOURCE_ID;
     }
 
     private static Map<String, Object> responseMap() {
         return Map.of(
-                "id", CHEF_ID,
-                "name", CHEF_NAME);
+                "id", SOURCE_ID,
+                "name", SOURCE_NAME);
     }
 
     @Test
     void shouldGetAll()
             throws Exception {
-        when(recipes.all())
-                .thenReturn(Stream.of(new Chef(savedChefRecord())));
+        when(sources.all())
+                .thenReturn(Stream.of(new Source(savedSourceRecord())));
 
-        jsonMvc.perform(get("/chef"))
+        jsonMvc.perform(get("/source"))
                 .andExpect(status().isOk())
-                .andExpect(content().json(asJson(Set.of(
-                        responseMap()))));
+                .andExpect(content().json(asJson(Set.of(responseMap()))));
     }
 
     @Test
     void shouldGetById()
             throws Exception {
-        when(recipes.byId(CHEF_ID))
-                .thenReturn(Optional.of(new Chef(savedChefRecord())));
+        when(sources.byId(SOURCE_ID))
+                .thenReturn(Optional.of(new Source(savedSourceRecord())));
 
         jsonMvc.perform(get(endpointWithId()))
                 .andExpect(status().isOk())
-                .andExpect(content().json(asJson(
-                        responseMap())));
+                .andExpect(content().json(asJson(responseMap())));
     }
 
     @Test
@@ -84,10 +83,10 @@ class ChefControllerTest {
     @Test
     void shouldGetByName()
             throws Exception {
-        when(recipes.byName(CHEF_NAME))
-                .thenReturn(Optional.of(new Chef(savedChefRecord())));
+        when(sources.byName(SOURCE_NAME))
+                .thenReturn(Optional.of(new Source(savedSourceRecord())));
 
-        jsonMvc.perform(get("/chef/find/" + CHEF_NAME))
+        jsonMvc.perform(get("/source/find/" + SOURCE_NAME))
                 .andExpect(status().isOk())
                 .andExpect(content().json(asJson(responseMap())));
     }
@@ -95,21 +94,23 @@ class ChefControllerTest {
     @Test
     void shouldNotGetByName()
             throws Exception {
-        jsonMvc.perform(get("/chef/find/" + CHEF_NAME))
+        jsonMvc.perform(get("/source/find/" + SOURCE_NAME))
                 .andExpect(status().isNotFound());
     }
 
     @Test
     void shouldPostNew()
             throws Exception {
-        final ChefRequest request = ChefRequest.builder()
-                .name(CHEF_NAME)
+        final var unsaved = unsavedSourceRecord();
+        final SourceRequest request = SourceRequest
+                .builder()
+                .name(unsaved.getName())
                 .build();
 
-        when(recipes.create(request))
-                .thenReturn(new Chef(savedChefRecord()));
+        when(sources.create(request))
+                .thenReturn(new Source(savedSourceRecord()));
 
-        jsonMvc.perform(post("/chef")
+        jsonMvc.perform(post("/source")
                 .content(asJson(request)))
                 .andExpect(status().isCreated())
                 .andExpect(header().string(LOCATION, endpointWithId()))

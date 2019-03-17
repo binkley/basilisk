@@ -19,7 +19,7 @@ public class Ingredients {
         return store.byId(id).map(this::asUsedOrUnused);
     }
 
-    public Stream<Ingredient> byName(final String name) {
+    public Stream<Ingredient> allByName(final String name) {
         return store.byName(name).map(this::asUsedOrUnused);
     }
 
@@ -27,7 +27,7 @@ public class Ingredients {
         return store.all().map(this::asUsedOrUnused);
     }
 
-    public Stream<UnusedIngredient> unused() {
+    public Stream<UnusedIngredient> allUnused() {
         return store.unused().map(UnusedIngredient::new);
     }
 

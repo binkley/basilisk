@@ -62,7 +62,7 @@ class IngredientsTest {
         when(store.byName(record.getName()))
                 .thenReturn(Stream.of(record));
 
-        final var found = ingredients.byName(record.getName());
+        final var found = ingredients.allByName(record.getName());
 
         assertThat(found).containsExactly(new UnusedIngredient(record));
 
@@ -75,7 +75,7 @@ class IngredientsTest {
         when(store.byName(record.getName()))
                 .thenReturn(Stream.of(record));
 
-        final var found = ingredients.byName(record.getName());
+        final var found = ingredients.allByName(record.getName());
 
         assertThat(found).containsExactly(new UsedIngredient(record));
 
@@ -104,7 +104,7 @@ class IngredientsTest {
         when(store.unused())
                 .thenReturn(Stream.of(record));
 
-        final Stream<UnusedIngredient> found = ingredients.unused();
+        final Stream<UnusedIngredient> found = ingredients.allUnused();
 
         assertThat(found).containsExactly(new UnusedIngredient(record));
 

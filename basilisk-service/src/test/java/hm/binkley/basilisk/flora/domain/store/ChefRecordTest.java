@@ -18,7 +18,7 @@ class ChefRecordTest {
 
     @Test
     void shouldSave() {
-        final var unsaved = ChefRecord.raw("Chef Boy-ar-dee");
+        final var unsaved = ChefRecord.raw("Chef Boyardee");
         unsaved.store = store;
         final var saved = new ChefRecord(3L, EPOCH, unsaved.getName());
         saved.store = store;
@@ -33,7 +33,7 @@ class ChefRecordTest {
 
     @Test
     void shouldClone() {
-        final var unsaved = new ChefRecord(null, EPOCH, "Chef Boy-ar-dee");
+        final var unsaved = new ChefRecord(null, EPOCH, "Chef Boyardee");
 
         assertThat(unsaved.clone()).isEqualTo(unsaved);
     }

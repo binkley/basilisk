@@ -15,7 +15,7 @@ public final class UnusedIngredientResponse {
     BigDecimal quantity;
     Long chefId;
 
-    static UnusedIngredient.As<UnusedIngredientResponse> using() {
+    static UnusedIngredient.As<UnusedIngredientResponse> with() {
         return UnusedIngredientResponse::new;
     }
 }

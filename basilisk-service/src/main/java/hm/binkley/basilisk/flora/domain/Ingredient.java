@@ -33,7 +33,7 @@ public abstract class Ingredient {
 
     public Long getChefId() { return record.getChefId(); }
 
-    public <I> I asAny(final Ingredient.As<I> asOther) {
+    public <I> I asAny(final As<I> asOther) {
         return asOther.from(getId(), getSourceId(), getName(), getQuantity(),
                 getRecipeId(), getChefId());
     }

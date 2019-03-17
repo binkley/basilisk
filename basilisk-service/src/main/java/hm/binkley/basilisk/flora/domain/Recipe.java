@@ -18,7 +18,7 @@ public final class Recipe {
                 .map(UsedIngredient::new);
     }
 
-    public <R, I> R as(final Recipe.As<R, I> asRecipe,
+    public <R, I> R as(final As<R, I> asRecipe,
             final UsedIngredient.As<I> asUsedIngredient) {
         return asRecipe.from(
                 record.getId(), record.getName(), record.getChefId(),

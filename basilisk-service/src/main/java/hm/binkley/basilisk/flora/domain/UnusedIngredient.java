@@ -14,7 +14,7 @@ public final class UnusedIngredient
         super(record);
     }
 
-    public <I> I asUnused(final UnusedIngredient.As<I> asOther) {
+    public <I> I asUnused(final As<I> asOther) {
         return asOther.from(getId(), getSourceId(), getName(), getQuantity(),
                 getChefId());
     }

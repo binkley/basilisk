@@ -5,7 +5,7 @@ request:
   headers:
     Content-Type: application/json;charset=UTF-8
   body:
-    name: "Chef Boy-ar-dee"
+    name: "Chef Boyardee"
 response:
   status: 201
   headers:
@@ -13,4 +13,4 @@ response:
     Location: /chef/1
   body:
     id: 1
-    name: "Chef Boy-ar-dee"
+    name: "Chef Boyardee"
