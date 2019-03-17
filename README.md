@@ -334,8 +334,8 @@ These replace Spring `@WebMvcTest` annotation to ensure JSON sent and received.
 Spring blogs on Spring Data JDBC domain relationships in
 [_Spring Data JDBC, References, and Aggregates_](https://spring.io/blog/2018/09/24/spring-data-jdbc-references-and-aggregates).
 
-- [`BasiliskRepositoryTest`](basilisk-service/src/databaseTest/java/hm/binkley/basilisk/basilisk/domain/store/BasiliskRepositoryTest.java)
-  tests a simple model with no references to other domain objects
+- [`RecipeRepositoryTest`](basilisk-service/src/databaseTest/java/hm/binkley/basilisk/flora/domain/store/RecipeRepositoryTest.java)
+  tests [the sample domain model](#model)
 - [`OneToOneRepositoryTest`](basilisk-service/src/databaseTest/java/hm/binkley/basilisk/store/OneToOneRepositoryTest.java)
   tests a one-to-one domain model
 - [`ManyToOneRepositoryTest`](basilisk-service/src/databaseTest/java/hm/binkley/basilisk/store/ManyToOneRepositoryTest.java)
@@ -349,7 +349,7 @@ To improve the red-green-refactor cycle in IntelliJ for Spring Cloud Contract:
 
 - Defer building and testing to Gradle
 - Observe
-  [the contract test](basilisk-contracts/build/generated-test-sources/contracts/hm/binkley/basilisk/contracts/BasiliskTest.java)
+  [the contract test](basilisk-contracts/build/generated-test-sources/contracts/hm/binkley/basilisk/contracts/FloraTest.java)
   and run this directly; Spring Cloud Contract automatically adds this as a
   source root in IntelliJ
 
@@ -386,9 +386,9 @@ Break up the rest of your classes into categories of related function.  In
 this project, there are only four:
 
 - [configuration](basilisk-service/src/main/java/hm/binkley/basilisk/configuration)
-- [endpoints](basilisk-service/src/main/java/hm/binkley/basilisk/basilisk/rest)
-- [persistence](basilisk-service/src/main/java/hm/binkley/basilisk/basilisk/domain/store)
-- [services](basilisk-service/src/main/java/hm/binkley/basilisk/basilisk/service)
+- [endpoints](basilisk-service/src/main/java/hm/binkley/basilisk/flora/rest)
+- [persistence](basilisk-service/src/main/java/hm/binkley/basilisk/flora/domain/store)
+- [services](basilisk-service/src/main/java/hm/binkley/basilisk/flora/service)
 
 Recall that package names are stylistically singular, not plural, _eg_,
 `service` rather than `services`.
@@ -399,14 +399,14 @@ Recall that package names are stylistically singular, not plural, _eg_,
 - [application (contract)](basilisk-contracts/src/test/resources/contracts/basilisk/A_see_no_basilisks.yml)
 - [configuration (unit)](basilisk-service/src/test/java/hm/binkley/basilisk/configuration/JsonConfigurationTest.java)
 - [configuration (integration)](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/configuration/PropertiesConfigurationTest.java)
-- [controller (integration)](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/basilisk/rest/BasiliskControllerTest.java)
-- [controller validation (integration)](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/basilisk/rest/BasiliskControllerValidationTest.java)
-- [json request (unit)](basilisk-service/src/test/java/hm/binkley/basilisk/basilisk/rest/BasiliskRequestTest.java)
-- [json response (integration)](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/basilisk/rest/BasiliskResponseTest.java)
+- [controller (integration)](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/flora/rest/RecipeControllerTest.java)
+- [controller validation (integration)](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/flora/rest/RecipeControllerValidationTest.java)
+- [json request (unit)](basilisk-service/src/test/java/hm/binkley/basilisk/flora/rest/RecipeRequestTest.java)
+- [json response (integration)](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/flora/rest/RecipeResponseTest.java)
 - [record validation (unit)](basilisk-service/src/test/java/hm/binkley/basilisk/basilisk/domain/store/BasiliskRecordValidationTest.java)
-- [repository (database)](basilisk-service/src/databaseTest/java/hm/binkley/basilisk/basilisk/domain/store/BasiliskRepositoryTest.java)
-- [service (unit)](basilisk-service/src/test/java/hm/binkley/basilisk/basilisk/service/BasiliskServiceTest.java)
-- [service validation (integration)](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/basilisk/service/BasiliskServiceValidationTest.java)
+- [repository (database)](basilisk-service/src/databaseTest/java/hm/binkley/basilisk/flora/domain/store/RecipeRepositoryTest.java)
+- [service (unit)](basilisk-service/src/test/java/hm/binkley/basilisk/flora/service/SpecialServiceTest.java)
+- [service validation (integration)](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/flora/service/SpecialServiceValidationTest.java)
 
 Note the source root of each test depends on the resources it uses.  See
 [Testing - Layout](#layout).  Also note the prevalence of integration
