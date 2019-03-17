@@ -110,7 +110,7 @@ case $(uname) in
 esac
 readonly run
 
-for f in f/*.sh
+for f in run-it/*.sh
 do
     source $f
 done
