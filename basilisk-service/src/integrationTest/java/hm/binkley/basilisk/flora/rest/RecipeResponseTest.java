@@ -16,9 +16,9 @@ import java.util.stream.Stream;
 
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.CHEF_ID;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.INGREDIENT_ID;
-import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.SOURCE_NAME;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.INGREDIENT_QUANTITY;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.SOURCE_ID;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.SOURCE_NAME;
 import static hm.binkley.basilisk.flora.rest.RecipeResponse.with;
 import static org.assertj.core.api.Assertions.assertThat;
 

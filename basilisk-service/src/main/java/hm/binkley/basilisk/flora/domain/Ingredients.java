@@ -13,9 +13,6 @@ import java.util.stream.Stream;
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class Ingredients {
-    private static final UnusedIngredientRequest.As<IngredientRecord>
-            asIngredientRecord = IngredientRecord::raw;
-
     private final IngredientStore store;
 
     public Optional<Ingredient> byId(final Long id) {
@@ -37,7 +34,7 @@ public class Ingredients {
     public UnusedIngredient createUnused(
             final UnusedIngredientRequest request) {
         return new UnusedIngredient(store.save(
-                request.as(asIngredientRecord)));
+                request.as(IngredientRecord::raw)));
     }
 
     private Ingredient asUsedOrUnused(final IngredientRecord record) {

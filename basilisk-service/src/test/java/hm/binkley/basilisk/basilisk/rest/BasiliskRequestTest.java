@@ -54,6 +54,5 @@ class BasiliskRequestTest {
     @ToString
     private static final class Cockatricy {
         private final BigDecimal beakSize;
-
     }
 }

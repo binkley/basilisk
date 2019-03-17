@@ -26,6 +26,5 @@ class CockatriceRequestTest {
     @ToString
     private static final class Cockatricy {
         private final BigDecimal beakSize;
-
     }
 }
