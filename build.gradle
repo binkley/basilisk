@@ -61,6 +61,20 @@ allprojects {
         toolVersion = "0.8.2"
     }
 
+    task checkstyle {
+        group = "Verification"
+        description = "Checks Java coding style."
+
+        dependsOn tasks.withType(Checkstyle)
+    }
+
+    task spotbugs {
+        group = "Verification"
+        description = "Checks for Java potential coding errors."
+
+        dependsOn tasks.withType(SpotBugsTask)
+    }
+
     defaultTasks "build"
 }
 
