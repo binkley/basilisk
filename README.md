@@ -299,9 +299,9 @@ individual types of tests:
 To run all test types, use `./gradlew check`.  To refresh the build, and force
 all tests to re-run, use `./gradlew clean check --no-build-cache`.
 
-[`BasiliskServiceTest`](basilisk-service/src/test/java/hm/binkley/basilisk/basilisk/service/BasiliskServiceTest.java)
+[`SpecialServiceTest`](basilisk-service/src/test/java/hm/binkley/basilisk/flora/service/SpecialServiceTest.java)
 (unit) and
-[`BasiliskServiceValidationTest`](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/basilisk/service/BasiliskServiceValidationTest.java)
+[`SpecialServiceValidationTest`](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/flora/service/SpecialServiceValidationTest.java)
 (integration) are an example of splitting testing of a class to limit
 resources, and speed up the tests.
 

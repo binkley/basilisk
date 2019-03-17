@@ -5,6 +5,13 @@ basilisk:
   overlapped:
     endpoint-base: http://some-where/else
 
+flora:
+  daily-special: 'EGGS'
+  nested:
+    number: 3
+  overlapped:
+    endpoint-base: http://some-where/else
+
 logging:
   level:
     hm.binkley.basilisk: INFO
