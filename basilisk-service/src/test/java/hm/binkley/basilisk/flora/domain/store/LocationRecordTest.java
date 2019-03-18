@@ -5,7 +5,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.savedChefRecord;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.savedLocationRecord;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.unsavedLocationRecord;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -35,7 +34,7 @@ class LocationRecordTest {
 
     @Test
     void shouldClone() {
-        final var saved = savedChefRecord();
+        final var saved = savedLocationRecord();
 
         assertThat(saved.clone()).isEqualTo(saved);
     }

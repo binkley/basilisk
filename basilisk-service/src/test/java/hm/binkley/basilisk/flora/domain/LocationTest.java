@@ -2,24 +2,24 @@ package hm.binkley.basilisk.flora.domain;
 
 import org.junit.jupiter.api.Test;
 
-import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.savedChefRecord;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.savedLocationRecord;
 import static org.assertj.core.api.Assertions.assertThat;
 
-class ChefTest {
+class LocationTest {
     @Test
     void shouldAs() {
-        final var record = savedChefRecord();
+        final var record = savedLocationRecord();
         // The types are immaterial, just that the transformation worked
-        final var targetChef = 1;
+        final var targetLocation = 1;
 
         @SuppressWarnings("PMD") final var that
-                = new Chef(record).as(
+                = new Location(record).as(
                 (id, name) -> {
                     assertThat(id).isEqualTo(record.getId());
                     assertThat(name).isEqualTo(record.getName());
-                    return targetChef;
+                    return targetLocation;
                 });
 
-        assertThat(that).isSameAs(targetChef);
+        assertThat(that).isSameAs(targetLocation);
     }
 }
