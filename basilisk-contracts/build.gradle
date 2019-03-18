@@ -5,6 +5,7 @@ apply plugin: "spring-cloud-contract"
 
 configurations {
     all*.exclude module: 'junit'
+    all*.exclude module: 'slf4j-simple'
 }
 
 dependencies {

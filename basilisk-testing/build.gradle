@@ -1,3 +1,4 @@
 configurations {
     all*.exclude module: 'junit'
+    all*.exclude module: 'slf4j-simple'
 }
