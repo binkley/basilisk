@@ -34,7 +34,7 @@ public class Ingredients {
     public UnusedIngredient createUnused(
             final UnusedIngredientRequest request) {
         return new UnusedIngredient(store.save(
-                request.as(IngredientRecord::raw)));
+                request.as(IngredientRecord::unsaved)));
     }
 
     private Ingredient asUsedOrUnused(final IngredientRecord record) {

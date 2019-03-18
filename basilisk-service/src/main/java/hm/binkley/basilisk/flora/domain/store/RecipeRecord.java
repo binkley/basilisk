@@ -33,7 +33,7 @@ public final class RecipeRecord
         this.chefId = chefId;
     }
 
-    public static RecipeRecord raw(final String name, final Long chefId) {
+    public static RecipeRecord unsaved(final String name, final Long chefId) {
         return new RecipeRecord(null, null, name, chefId);
     }
 

@@ -29,7 +29,7 @@ public class IngredientStore
     public IngredientRecord create(
             final Long sourceId, final String name, final BigDecimal quantity,
             final Long chefId) {
-        final IngredientRecord record = IngredientRecord.raw(
+        final IngredientRecord record = IngredientRecord.unsaved(
                 sourceId, name, quantity, chefId);
         assign(record);
         return record.save();

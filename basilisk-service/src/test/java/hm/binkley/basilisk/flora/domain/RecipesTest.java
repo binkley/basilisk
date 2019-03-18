@@ -84,9 +84,9 @@ class RecipesTest {
                 RECIPE_ID, EPOCH, "FRIED EGGS", CHEF_ID)
                 .add(ingredientRecord);
 
-        when(store.save(RecipeRecord.raw(
+        when(store.save(RecipeRecord.unsaved(
                 record.getName(), record.getChefId())
-                .add(IngredientRecord.raw(
+                .add(IngredientRecord.unsaved(
                         ingredientRecord.getSourceId(),
                         ingredientRecord.getName(),
                         ingredientRecord.getQuantity(),

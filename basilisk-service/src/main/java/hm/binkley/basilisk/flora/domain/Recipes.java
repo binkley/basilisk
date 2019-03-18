@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 public class Recipes {
     private static final RecipeRequest.As<RecipeRecord, IngredientRecord>
             asRecipeRecord = (name, chefId, ingredients) ->
-            RecipeRecord.raw(name, chefId).addAll(ingredients);
+            RecipeRecord.unsaved(name, chefId).addAll(ingredients);
 
     private final RecipeStore store;
 
@@ -34,6 +34,6 @@ public class Recipes {
 
     public Recipe create(final RecipeRequest request) {
         return new Recipe(store.save(request.as(
-                asRecipeRecord, IngredientRecord::raw)));
+                asRecipeRecord, IngredientRecord::unsaved)));
     }
 }

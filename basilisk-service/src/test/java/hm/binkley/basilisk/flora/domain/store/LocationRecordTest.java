@@ -5,23 +5,24 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.savedUnusedIngredientRecord;
-import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.unsavedUnusedIngredientRecord;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.savedChefRecord;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.savedLocationRecord;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.unsavedLocationRecord;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class IngredientRecordTest {
+class LocationRecordTest {
     @Mock
-    private IngredientStore store;
+    private LocationStore store;
 
     @Test
     void shouldSave() {
-        final var unsaved = unsavedUnusedIngredientRecord();
+        final var unsaved = unsavedLocationRecord();
         unsaved.store = store;
-        final var saved = savedUnusedIngredientRecord();
+        final var saved = savedLocationRecord();
         saved.store = store;
         when(store.save(unsaved))
                 .thenReturn(saved);
@@ -34,8 +35,8 @@ class IngredientRecordTest {
 
     @Test
     void shouldClone() {
-        final var unsaved = unsavedUnusedIngredientRecord();
+        final var saved = savedChefRecord();
 
-        assertThat(unsaved.clone()).isEqualTo(unsaved);
+        assertThat(saved.clone()).isEqualTo(saved);
     }
 }

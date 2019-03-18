@@ -78,7 +78,7 @@ class SourcesTest {
         final var record = new SourceRecord(
                 SOURCE_ID, EPOCH, SOURCE_NAME);
 
-        when(store.save(SourceRecord.raw(record.getName())))
+        when(store.save(SourceRecord.unsaved(record.getName())))
                 .thenReturn(record);
 
         assertThat(sources.create(SourceRequest.builder()

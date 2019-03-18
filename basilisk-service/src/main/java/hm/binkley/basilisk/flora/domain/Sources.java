@@ -28,6 +28,6 @@ public class Sources {
     }
 
     public Source create(final SourceRequest request) {
-        return new Source(store.save(request.as(SourceRecord::raw)));
+        return new Source(store.save(request.as(SourceRecord::unsaved)));
     }
 }

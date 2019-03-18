@@ -28,6 +28,6 @@ public class Chefs {
     }
 
     public Chef create(final ChefRequest request) {
-        return new Chef(store.save(request.as(ChefRecord::raw)));
+        return new Chef(store.save(request.as(ChefRecord::unsaved)));
     }
 }

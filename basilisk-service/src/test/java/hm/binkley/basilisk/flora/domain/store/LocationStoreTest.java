@@ -10,8 +10,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.CHEF_ID;
-import static java.time.Instant.EPOCH;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.savedLocationRecord;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.unsavedLocationRecord;
 import static java.util.stream.Collectors.toSet;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
@@ -19,21 +19,20 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class RecipeStoreTest {
+class LocationStoreTest {
     @Mock
-    private RecipeRepository springData;
+    private LocationRepository springData;
 
-    private RecipeStore store;
+    private LocationStore store;
 
     @BeforeEach
     void setUp() {
-        store = new RecipeStore(springData);
+        store = new LocationStore(springData);
     }
 
     @Test
     void shouldFindById() {
-        final var saved = new RecipeRecord(
-                3L, EPOCH, "SOUFFLE", CHEF_ID);
+        final var saved = savedLocationRecord();
         when(springData.findById(saved.getId()))
                 .thenReturn(Optional.of(saved));
 
@@ -47,8 +46,7 @@ class RecipeStoreTest {
 
     @Test
     void shouldFindByName() {
-        final var saved = new RecipeRecord(
-                3L, EPOCH, "OMELET", CHEF_ID);
+        final var saved = savedLocationRecord();
         when(springData.findByName(saved.getName()))
                 .thenReturn(Optional.of(saved));
 
@@ -62,8 +60,7 @@ class RecipeStoreTest {
 
     @Test
     void shouldFindAll() {
-        final var saved = new RecipeRecord(
-                3L, EPOCH, "FRIED EGGS", CHEF_ID);
+        final var saved = savedLocationRecord();
         when(springData.readAll())
                 .thenReturn(Stream.of(saved));
 
@@ -77,16 +74,12 @@ class RecipeStoreTest {
 
     @Test
     void shouldCreate() {
-        final var unsaved = RecipeRecord.unsaved("BOILED EGG", CHEF_ID);
-        final var id = 3L;
-        final var saved = new RecipeRecord(
-                id, EPOCH, unsaved.getName(), CHEF_ID);
+        final var unsaved = unsavedLocationRecord();
+        final var saved = savedLocationRecord();
         when(springData.save(unsaved))
                 .thenReturn(saved);
-        when(springData.findById(id)) // TODO: See RecipeRepositoryTest
-                .thenReturn(Optional.of(saved));
 
-        assertThat(store.create(unsaved.getName(), unsaved.getChefId()))
+        assertThat(store.create(unsaved.getName()))
                 .isEqualTo(saved);
 
         verify(springData).save(unsaved);
@@ -95,15 +88,11 @@ class RecipeStoreTest {
 
     @Test
     void shouldSave() {
-        final var unsaved = RecipeRecord.unsaved("POACHED EGG", CHEF_ID);
-        final var id = 3L;
-        final var saved = new RecipeRecord(
-                id, EPOCH, unsaved.getName(), CHEF_ID);
+        final var unsaved = unsavedLocationRecord();
+        final var saved = savedLocationRecord();
 
         when(springData.save(unsaved))
                 .thenReturn(saved);
-        when(springData.findById(id)) // TODO: See RecipeRepositoryTest
-                .thenReturn(Optional.of(saved));
 
         assertThat(store.save(unsaved)).isEqualTo(saved);
 

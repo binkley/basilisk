@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
-import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.SOURCE_NAME;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.unsavedSourceRecord;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -29,7 +29,7 @@ class SourceRepositoryTest {
 
     @Test
     void shouldAudit() {
-        final var unsaved = SourceRecord.raw(SOURCE_NAME);
+        final var unsaved = unsavedSourceRecord();
         final var found = repository.findById(
                 repository.save(unsaved).getId()).orElseThrow();
 
@@ -37,8 +37,8 @@ class SourceRepositoryTest {
     }
 
     @Test
-    void shouldRoundtrip() {
-        final var unsaved = SourceRecord.raw(SOURCE_NAME);
+    void shouldRoundTrip() {
+        final var unsaved = unsavedSourceRecord();
         final var found = repository.findById(
                 repository.save(unsaved).getId()).orElseThrow();
 
@@ -47,19 +47,19 @@ class SourceRepositoryTest {
 
     @Test
     void shouldHaveUniqueName() {
-        repository.save(SourceRecord.raw(SOURCE_NAME));
+        repository.save(unsavedSourceRecord());
 
         final var ex = assertThrows(
                 DbActionExecutionException.class,
-                () -> repository.save(SourceRecord.raw(SOURCE_NAME)));
+                () -> repository.save(unsavedSourceRecord()));
 
         assertThat(ex.getCause()).isInstanceOf(DuplicateKeyException.class);
     }
 
     @Test
     void shouldFindByName() {
-        final var unsavedA = SourceRecord.raw(SOURCE_NAME);
-        final var unsavedB = SourceRecord.raw(SOURCE_NAME + "x");
+        final var unsavedA = unsavedSourceRecord();
+        final var unsavedB = SourceRecord.unsaved(unsavedA.getName() + "x");
         repository.saveAll(Set.of(unsavedA, unsavedB));
 
         assertThat(repository.findByName(unsavedA.getName()).orElseThrow())
@@ -69,8 +69,8 @@ class SourceRepositoryTest {
 
     @Test
     void shouldStream() {
-        final var unsavedA = SourceRecord.raw(SOURCE_NAME);
-        final var unsavedB = SourceRecord.raw(SOURCE_NAME + "x");
+        final var unsavedA = unsavedSourceRecord();
+        final var unsavedB = SourceRecord.unsaved(unsavedA.getName() + "x");
         repository.saveAll(Set.of(unsavedA, unsavedB));
 
         try (final var found = repository.readAll()) {

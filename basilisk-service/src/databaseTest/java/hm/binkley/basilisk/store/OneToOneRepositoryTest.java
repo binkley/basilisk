@@ -19,7 +19,7 @@ class OneToOneRepositoryTest {
 
     @SuppressFBWarnings("NP")
     @Test
-    void shouldRoundtrip() {
+    void shouldRoundTrip() {
         final var singapore = new City();
         singapore.name = "Singapore";
         final var merlion = new Symbol();

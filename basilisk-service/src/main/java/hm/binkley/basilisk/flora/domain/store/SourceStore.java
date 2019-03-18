@@ -20,7 +20,7 @@ public final class SourceStore
     }
 
     public SourceRecord create(final String name) {
-        final SourceRecord record = SourceRecord.raw(name);
+        final SourceRecord record = SourceRecord.unsaved(name);
         assign(record);
         return record.save();
     }

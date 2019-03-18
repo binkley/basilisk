@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
-import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.unsavedChefRecord;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.unsavedLocationRecord;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -24,12 +24,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @Import(DatabaseConfiguration.class)
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Transactional
-class ChefRepositoryTest {
-    private final ChefRepository repository;
+class LocationRepositoryTest {
+    private final LocationRepository repository;
 
     @Test
     void shouldAudit() {
-        final var unsaved = unsavedChefRecord();
+        final var unsaved = unsavedLocationRecord();
         final var found = repository.findById(
                 repository.save(unsaved).getId()).orElseThrow();
 
@@ -38,7 +38,7 @@ class ChefRepositoryTest {
 
     @Test
     void shouldRoundTrip() {
-        final var unsaved = unsavedChefRecord();
+        final var unsaved = unsavedLocationRecord();
         final var found = repository.findById(
                 repository.save(unsaved).getId()).orElseThrow();
 
@@ -47,29 +47,31 @@ class ChefRepositoryTest {
 
     @Test
     void shouldHaveUniqueName() {
-        repository.save(unsavedChefRecord());
+        repository.save(unsavedLocationRecord());
 
         final var ex = assertThrows(
                 DbActionExecutionException.class,
-                () -> repository.save(unsavedChefRecord()));
+                () -> repository.save(unsavedLocationRecord()));
 
         assertThat(ex.getCause()).isInstanceOf(DuplicateKeyException.class);
     }
 
     @Test
     void shouldFindByName() {
-        final var unsaved = unsavedChefRecord();
+        final var unsaved = unsavedLocationRecord();
         repository.save(unsaved);
 
         assertThat(repository.findByName(unsaved.getName()).orElseThrow())
                 .isEqualTo(unsaved);
-        assertThat(repository.findByName(unsaved.getName() + "x")).isEmpty();
+        assertThat(repository.findByName(unsaved.getName() + "x"))
+                .isEmpty();
     }
 
     @Test
     void shouldStream() {
-        final var unsavedA = unsavedChefRecord();
-        final var unsavedB = ChefRecord.unsaved(unsavedA.getName() + "x");
+        final var unsavedA = unsavedLocationRecord();
+        final var unsavedB = new LocationRecord(
+                null, null, unsavedA.getName() + "x");
         repository.saveAll(Set.of(unsavedA, unsavedB));
 
         try (final var found = repository.readAll()) {

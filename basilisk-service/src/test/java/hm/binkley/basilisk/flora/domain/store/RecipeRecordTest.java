@@ -24,7 +24,7 @@ class RecipeRecordTest {
     @Test
     void shouldAddSomeIngredients() {
         final var ingredientRecord = unsavedUnusedIngredientRecord();
-        final var record = RecipeRecord.raw("SOUFFLE", CHEF_ID)
+        final var record = RecipeRecord.unsaved("SOUFFLE", CHEF_ID)
                 .addAll(Stream.of(ingredientRecord));
 
         assertThat(record.ingredients).isEqualTo(Set.of(ingredientRecord));
@@ -33,7 +33,7 @@ class RecipeRecordTest {
 
     @Test
     void shouldSaveWithoutIngredients() {
-        final var unsaved = RecipeRecord.raw("SOUFFLE", CHEF_ID);
+        final var unsaved = RecipeRecord.unsaved("SOUFFLE", CHEF_ID);
         unsaved.store = store;
         final var saved = new RecipeRecord(
                 3L, EPOCH, unsaved.getName(), CHEF_ID);
@@ -49,7 +49,7 @@ class RecipeRecordTest {
 
     @Test
     void shouldSaveWithIngredients() {
-        final var unsaved = RecipeRecord.raw("SOUFFLE", CHEF_ID);
+        final var unsaved = RecipeRecord.unsaved("SOUFFLE", CHEF_ID);
         unsaved.store = store;
         final var unsavedIngredient = unsavedUnusedIngredientRecord();
         unsaved.ingredients.add(unsavedIngredient);
@@ -68,7 +68,7 @@ class RecipeRecordTest {
 
     @Test
     void shouldClone() {
-        final var unsaved = RecipeRecord.raw("BOILED EGGS", CHEF_ID);
+        final var unsaved = RecipeRecord.unsaved("BOILED EGGS", CHEF_ID);
 
         assertThat(unsaved.clone()).isEqualTo(unsaved);
     }

@@ -75,7 +75,7 @@ class SourceStoreTest {
 
     @Test
     void shouldCreate() {
-        final var unsaved = SourceRecord.raw("SALT");
+        final var unsaved = SourceRecord.unsaved("SALT");
         final var saved = new SourceRecord(
                 SOURCE_ID, EPOCH, unsaved.getName());
         when(springData.save(unsaved))
@@ -90,7 +90,7 @@ class SourceStoreTest {
 
     @Test
     void shouldSave() {
-        final var unsaved = SourceRecord.raw("PEPPER");
+        final var unsaved = SourceRecord.unsaved("PEPPER");
         final var saved = new SourceRecord(
                 SOURCE_ID, EPOCH, unsaved.getName());
 

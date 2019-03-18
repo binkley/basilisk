@@ -76,7 +76,7 @@ class ChefsTest {
         final var record = new ChefRecord(
                 3L, EPOCH, "Chef Howard");
 
-        when(store.save(ChefRecord.raw(record.getName())))
+        when(store.save(ChefRecord.unsaved(record.getName())))
                 .thenReturn(record);
 
         assertThat(recipes.create(ChefRequest.builder()

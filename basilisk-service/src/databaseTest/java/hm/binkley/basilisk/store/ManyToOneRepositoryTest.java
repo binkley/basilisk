@@ -19,7 +19,7 @@ class ManyToOneRepositoryTest {
 
     @SuppressFBWarnings("NP")
     @Test
-    void shouldRoundtrip() {
+    void shouldRoundTrip() {
         final var houston = new Zoo();
         houston.name = "Hermann Park";
         final var lion = new Animal();

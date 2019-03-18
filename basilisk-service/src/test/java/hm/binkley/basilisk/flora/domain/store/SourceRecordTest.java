@@ -5,8 +5,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.SOURCE_NAME;
-import static java.time.Instant.EPOCH;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.savedSourceRecord;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.unsavedSourceRecord;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -19,9 +19,9 @@ class SourceRecordTest {
 
     @Test
     void shouldSave() {
-        final var unsaved = SourceRecord.raw(SOURCE_NAME);
+        final var unsaved = unsavedSourceRecord();
         unsaved.store = store;
-        final var saved = new SourceRecord(3L, EPOCH, unsaved.getName());
+        final var saved = savedSourceRecord();
         saved.store = store;
         when(store.save(unsaved))
                 .thenReturn(saved);
@@ -34,8 +34,8 @@ class SourceRecordTest {
 
     @Test
     void shouldClone() {
-        final var unsaved = new SourceRecord(null, null, SOURCE_NAME);
+        final var saved = savedSourceRecord();
 
-        assertThat(unsaved.clone()).isEqualTo(unsaved);
+        assertThat(saved.clone()).isEqualTo(saved);
     }
 }

@@ -22,7 +22,7 @@ public final class SourceRecord
         this.name = name;
     }
 
-    public static SourceRecord raw(final String name) {
+    public static SourceRecord unsaved(final String name) {
         return new SourceRecord(null, null, name);
     }
 }

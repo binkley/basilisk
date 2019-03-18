@@ -38,7 +38,7 @@ class RecipeRepositoryTest {
 
     @Test
     void shouldAudit() {
-        final var unsaved = RecipeRecord.raw("MERINGUE", CHEF_ID);
+        final var unsaved = RecipeRecord.unsaved("MERINGUE", CHEF_ID);
         final var found = repository.findById(
                 repository.save(unsaved).getId()).orElseThrow();
 
@@ -47,7 +47,7 @@ class RecipeRepositoryTest {
 
     @Test
     void shouldSaveWithNoIngredients() {
-        final var unsaved = RecipeRecord.raw("SOUFFLE", CHEF_ID);
+        final var unsaved = RecipeRecord.unsaved("SOUFFLE", CHEF_ID);
         final var found = repository.findById(
                 repository.save(unsaved).getId()).orElseThrow();
 
@@ -56,7 +56,7 @@ class RecipeRepositoryTest {
 
     @Test
     void shouldSaveWithSomeIngredients() {
-        final var unsaved = RecipeRecord.raw("SOUFFLE", CHEF_ID)
+        final var unsaved = RecipeRecord.unsaved("SOUFFLE", CHEF_ID)
                 .add(unsavedUnusedIngredientRecord());
 
         final var saved = repository.save(unsaved);
@@ -85,19 +85,19 @@ class RecipeRepositoryTest {
     @Test
     void shouldHaveUniqueName() {
         final var name = "SOUFFLE";
-        repository.save(RecipeRecord.raw(name, CHEF_ID));
+        repository.save(RecipeRecord.unsaved(name, CHEF_ID));
 
         final var ex = assertThrows(
                 DbActionExecutionException.class,
-                () -> repository.save(RecipeRecord.raw(name, CHEF_ID)));
+                () -> repository.save(RecipeRecord.unsaved(name, CHEF_ID)));
 
         assertThat(ex.getCause()).isInstanceOf(DuplicateKeyException.class);
     }
 
     @Test
     void shouldFindByName() {
-        final var unsavedLeft = RecipeRecord.raw("BOILED EGGS", CHEF_ID);
-        final var unsavedRight = RecipeRecord.raw("POACHED EGGS", CHEF_ID);
+        final var unsavedLeft = RecipeRecord.unsaved("BOILED EGGS", CHEF_ID);
+        final var unsavedRight = RecipeRecord.unsaved("POACHED EGGS", CHEF_ID);
         repository.saveAll(Set.of(unsavedLeft, unsavedRight));
 
         assertThat(repository.findByName(unsavedLeft.getName()).orElseThrow())
@@ -107,8 +107,8 @@ class RecipeRepositoryTest {
 
     @Test
     void shouldStream() {
-        final var unsavedA = RecipeRecord.raw("SCRAMBLED EGGS", CHEF_ID);
-        final var unsavedB = RecipeRecord.raw("BOILED EGGS", CHEF_ID);
+        final var unsavedA = RecipeRecord.unsaved("SCRAMBLED EGGS", CHEF_ID);
+        final var unsavedB = RecipeRecord.unsaved("BOILED EGGS", CHEF_ID);
         repository.saveAll(Set.of(unsavedA, unsavedB));
 
         try (final var found = repository.readAll()) {

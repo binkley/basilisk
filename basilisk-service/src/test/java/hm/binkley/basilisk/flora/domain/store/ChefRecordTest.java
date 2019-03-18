@@ -5,7 +5,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static java.time.Instant.EPOCH;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.savedChefRecord;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.unsavedChefRecord;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -18,9 +19,9 @@ class ChefRecordTest {
 
     @Test
     void shouldSave() {
-        final var unsaved = ChefRecord.raw("Chef Boyardee");
+        final var unsaved = unsavedChefRecord();
         unsaved.store = store;
-        final var saved = new ChefRecord(3L, EPOCH, unsaved.getName());
+        final var saved = savedChefRecord();
         saved.store = store;
         when(store.save(unsaved))
                 .thenReturn(saved);
@@ -33,7 +34,7 @@ class ChefRecordTest {
 
     @Test
     void shouldClone() {
-        final var unsaved = new ChefRecord(null, EPOCH, "Chef Boyardee");
+        final var unsaved = savedChefRecord();
 
         assertThat(unsaved.clone()).isEqualTo(unsaved);
     }

@@ -39,8 +39,8 @@ public final class IngredientRecord
         this.chefId = chefId;
     }
 
-    public static IngredientRecord raw(final Long sourceId, final String name,
-            final BigDecimal quantity, final Long chefId) {
+    public static IngredientRecord unsaved(final Long sourceId,
+            final String name, final BigDecimal quantity, final Long chefId) {
         return new IngredientRecord(null, null, sourceId, name, quantity,
                 null, chefId);
     }

@@ -10,7 +10,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import static java.time.Instant.EPOCH;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.savedChefRecord;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.unsavedChefRecord;
 import static java.util.stream.Collectors.toSet;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
@@ -19,8 +20,6 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ChefStoreTest {
-    private static final String NAME = "The Dallas Yellow Rose";
-
     @Mock
     private ChefRepository springData;
 
@@ -33,12 +32,11 @@ class ChefStoreTest {
 
     @Test
     void shouldFindById() {
-        final var id = 3L;
-        final var saved = new ChefRecord(id, EPOCH, NAME);
-        when(springData.findById(id))
+        final var saved = savedChefRecord();
+        when(springData.findById(saved.getId()))
                 .thenReturn(Optional.of(saved));
 
-        final var found = store.byId(id).orElseThrow();
+        final var found = store.byId(saved.getId()).orElseThrow();
 
         assertThat(found).isEqualTo(saved);
         assertThat(found.store).isSameAs(store);
@@ -48,11 +46,11 @@ class ChefStoreTest {
 
     @Test
     void shouldFindByName() {
-        final var saved = new ChefRecord(3L, EPOCH, NAME);
-        when(springData.findByName(NAME))
+        final var saved = savedChefRecord();
+        when(springData.findByName(saved.getName()))
                 .thenReturn(Optional.of(saved));
 
-        final var found = store.byName(NAME).orElseThrow();
+        final var found = store.byName(saved.getName()).orElseThrow();
 
         assertThat(found).isEqualTo(saved);
         assertThat(found.store).isSameAs(store);
@@ -62,7 +60,7 @@ class ChefStoreTest {
 
     @Test
     void shouldFindAll() {
-        final var saved = new ChefRecord(3L, EPOCH, NAME);
+        final var saved = savedChefRecord();
         when(springData.readAll())
                 .thenReturn(Stream.of(saved));
 
@@ -76,8 +74,8 @@ class ChefStoreTest {
 
     @Test
     void shouldCreate() {
-        final var unsaved = ChefRecord.raw(NAME);
-        final var saved = new ChefRecord(3L, EPOCH, null);
+        final var unsaved = unsavedChefRecord();
+        final var saved = savedChefRecord();
         when(springData.save(unsaved))
                 .thenReturn(saved);
 
@@ -90,8 +88,8 @@ class ChefStoreTest {
 
     @Test
     void shouldSave() {
-        final var unsaved = ChefRecord.raw(NAME);
-        final var saved = new ChefRecord(3L, EPOCH, unsaved.getName());
+        final var unsaved = unsavedChefRecord();
+        final var saved = savedChefRecord();
 
         when(springData.save(unsaved))
                 .thenReturn(saved);

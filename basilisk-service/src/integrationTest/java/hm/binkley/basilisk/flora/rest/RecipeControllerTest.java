@@ -146,7 +146,7 @@ class RecipeControllerTest {
     void shouldPostNewWithNoIngredients()
             throws Exception {
         final var name = "SOUFFLE";
-        final var record = RecipeRecord.raw(name, CHEF_ID);
+        final var record = RecipeRecord.unsaved(name, CHEF_ID);
         final RecipeRequest request = RecipeRequest.builder()
                 .name(name)
                 .chefId(CHEF_ID)
@@ -169,7 +169,7 @@ class RecipeControllerTest {
     void shouldPostNewWithSomeIngredients()
             throws Exception {
         final var name = "SOUFFLE";
-        final var record = RecipeRecord.raw(name, CHEF_ID);
+        final var record = RecipeRecord.unsaved(name, CHEF_ID);
         final RecipeRequest request = RecipeRequest.builder()
                 .name(name)
                 .chefId(CHEF_ID)

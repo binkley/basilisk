@@ -9,20 +9,20 @@ import org.springframework.data.relational.core.mapping.Table;
 import java.time.Instant;
 
 @EqualsAndHashCode(callSuper = false)
-@Table("FLORA.CHEF")
+@Table("FLORA.LOCATION")
 @ToString(callSuper = true)
-public final class ChefRecord
-        extends StandardRecord<ChefRecord, ChefRepository, ChefStore> {
+public final class LocationRecord
+        extends StandardRecord<LocationRecord, LocationRepository, LocationStore> {
     @Getter
     public String name;
 
-    public ChefRecord(final Long id, final Instant receivedAt,
+    public LocationRecord(final Long id, final Instant receivedAt,
             final String name) {
-        super(() -> new ChefRecord(id, receivedAt, name), id, receivedAt);
+        super(() -> new LocationRecord(id, receivedAt, name), id, receivedAt);
         this.name = name;
     }
 
-    public static ChefRecord unsaved(final String name) {
-        return new ChefRecord(null, null, name);
+    public static LocationRecord unsaved(final String name) {
+        return new LocationRecord(null, null, name);
     }
 }

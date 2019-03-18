@@ -24,6 +24,10 @@ public final class FloraFixtures {
             = EPOCH.plusSeconds(1_000_000L);
     public static final BigDecimal INGREDIENT_QUANTITY = ONE;
     public static final Long RECIPE_ID = 4L;
+    public static final Long LOCATION_ID = 42L;
+    public static final Instant LOCATON_RECEIVED_AT
+            = EPOCH.plusSeconds(1_200_000L);
+    public static final String LOCATION_NAME = "The Dallas Yellow Rose";
 
     public static ChefRecord unsavedChefRecord() {
         return new ChefRecord(null, null, CHEF_NAME);
@@ -76,6 +80,17 @@ public final class FloraFixtures {
         final var saved = unsavedSourceRecord();
         saved.id = SOURCE_ID;
         saved.receivedAt = SOURCE_RECEIVED_AT;
+        return saved;
+    }
+
+    public static LocationRecord unsavedLocationRecord() {
+        return new LocationRecord(null, null, LOCATION_NAME);
+    }
+
+    public static LocationRecord savedLocationRecord() {
+        final var saved = unsavedLocationRecord();
+        saved.id = LOCATION_ID;
+        saved.receivedAt = LOCATON_RECEIVED_AT;
         return saved;
     }
 }

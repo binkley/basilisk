@@ -7,20 +7,21 @@ import org.springframework.stereotype.Component;
 import java.util.Optional;
 
 @Component
-public class ChefStore
-        extends StandardStore<ChefRecord, ChefRepository, ChefStore> {
+public class LocationStore
+        extends
+        StandardStore<LocationRecord, LocationRepository, LocationStore> {
     @Autowired
-    public ChefStore(final ChefRepository springData) {
+    public LocationStore(final LocationRepository springData) {
         super(springData);
     }
 
-    public Optional<ChefRecord> byName(final String name) {
+    public Optional<LocationRecord> byName(final String name) {
         return springData.findByName(name)
                 .map(this::assign);
     }
 
-    public ChefRecord create(final String name) {
-        final ChefRecord record = ChefRecord.unsaved(name);
+    public LocationRecord create(final String name) {
+        final LocationRecord record = LocationRecord.unsaved(name);
         assign(record);
         return record.save();
     }

@@ -20,7 +20,7 @@ public class RecipeStore
     }
 
     public RecipeRecord create(final String name, final Long chefId) {
-        final RecipeRecord record = RecipeRecord.raw(name, chefId);
+        final RecipeRecord record = RecipeRecord.unsaved(name, chefId);
         assign(record);
         return record.save();
     }

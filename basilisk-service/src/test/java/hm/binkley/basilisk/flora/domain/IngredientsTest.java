@@ -115,7 +115,7 @@ class IngredientsTest {
     void shouldCreateUnused() {
         final var record = savedUsedIngredientRecord();
 
-        when(store.save(IngredientRecord.raw(
+        when(store.save(IngredientRecord.unsaved(
                 record.getSourceId(), record.getName(), record.getQuantity(),
                 record.getChefId())))
                 .thenReturn(record);
