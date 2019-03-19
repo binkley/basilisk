@@ -2,6 +2,7 @@ package hm.binkley.basilisk.store;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
@@ -9,7 +10,8 @@ import org.springframework.data.annotation.Transient;
 import java.time.Instant;
 import java.util.function.Supplier;
 
-@EqualsAndHashCode(exclude = {"id", "receivedAt", "store"})
+@EqualsAndHashCode(exclude = {"copy", "store"})
+@ToString
 public abstract class StandardRecord<T extends StandardRecord<T, R, S>,
         R extends StandardRepository<T, R, S>,
         S extends StandardStore<T, R, S>>
