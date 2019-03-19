@@ -18,9 +18,12 @@ public interface StandardRepository<T extends StandardRecord<T, R, S>,
             final Function<T, Optional<T>> findBy,
             final BiConsumer<T, @NotNull T> prepareUpsert) {
         final var maybeFound = findBy.apply(maybeNew);
-        if (maybeFound.isPresent())
-            prepareUpsert.accept(maybeFound.get(), maybeNew);
-        else
+        if (maybeFound.isPresent()) {
+            final var found = maybeFound.get();
+            maybeNew.id = found.getId();
+            maybeNew.receivedAt = found.getReceivedAt();
+            prepareUpsert.accept(found, maybeNew);
+        } else
             prepareUpsert.accept(null, maybeNew);
         return save(maybeNew);
     }
