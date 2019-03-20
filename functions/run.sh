@@ -1,5 +1,5 @@
 function run {
-    trap 'docker-compose rm -f db 2>/dev/null' EXIT
+    trap 'docker-compose rm -f basilisk-db 2>/dev/null' EXIT
     $print $run docker-compose up
 }
 

@@ -1,13 +1,13 @@
 version: '3'
 services:
-  db:
+  basilisk-db:
     environment:
       - POSTGRES_USER=basilisk
     image: postgres
     ports:
       - 5432:5432
 
-  app:
+  basilisk-service:
     build:
       context: .
       args:
@@ -15,9 +15,9 @@ services:
         GRADLE_VERSION: 5.2.1
         JAVA_VERSION: 11.0.2
     depends_on:
-      - db
+      - basilisk-db
     environment:
       - SPRING_BOOT_ADMIN_CLIENT=http://app:8080/admin
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db/basilisk?user=basilisk
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://basilisk-db/basilisk?user=basilisk
     ports:
       - 8080:8080
