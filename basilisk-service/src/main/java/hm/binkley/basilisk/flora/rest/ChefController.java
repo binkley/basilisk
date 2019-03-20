@@ -50,7 +50,7 @@ public class ChefController {
                 .orElseThrow();
     }
 
-    @GetMapping("find/{name}")
+    @GetMapping("with-name/{name}")
     public ChefResponse getByName(
             @PathVariable("name") final @Length(min = 3, max = 32)
                     String name) {

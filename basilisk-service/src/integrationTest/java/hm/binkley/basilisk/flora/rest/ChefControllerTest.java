@@ -86,7 +86,7 @@ class ChefControllerTest {
         when(recipes.byName(CHEF_NAME))
                 .thenReturn(Optional.of(new Chef(savedChefRecord())));
 
-        jsonMvc.perform(get("/chef/find/" + CHEF_NAME))
+        jsonMvc.perform(get("/chef/with-name/" + CHEF_NAME))
                 .andExpect(status().isOk())
                 .andExpect(content().json(asJson(responseMap())));
     }
@@ -94,7 +94,7 @@ class ChefControllerTest {
     @Test
     void shouldNotGetByName()
             throws Exception {
-        jsonMvc.perform(get("/chef/find/" + CHEF_NAME))
+        jsonMvc.perform(get("/chef/with-name/" + CHEF_NAME))
                 .andExpect(status().isNotFound());
     }
 

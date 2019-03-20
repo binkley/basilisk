@@ -35,7 +35,7 @@ class ChefControllerValidationTest {
     @Test
     void shouldRejectShortNames()
             throws Exception {
-        problemMvc.perform(get("/chef/find/F"))
+        problemMvc.perform(get("/chef/with-name/F"))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.violations[0].field",
                         equalTo("getByName.name")))
