@@ -2,7 +2,7 @@
 
 # Basilisk
 
-Demonstrate Java 11, Spring Boot 2, JUnit 5, et al
+Demonstrate Java 11, Spring Boot 2, Spring Data JDBC, JUnit 5, et al
 
 * [Model](#model)
 * [Features](#features)
@@ -115,9 +115,9 @@ These are "2nd-class objects", needed by "meal planners", but not as central
 (but still important):
 
 - CHEF
-- LOCATION
-- SEASON
+- SOURCE
 
+[[TOC]](#basilisk)
 
 ## Features
 
@@ -148,11 +148,15 @@ These are "2nd-class objects", needed by "meal planners", but not as central
 * [Spring Data JDBC upsert](#spring-data-jdbc-upsert)
 * Example [natural key](#natural-keys) (ongoing to add these to more types)
 
+[[TOC]](#basilisk)
+
 
 ## Feedback
 
 _Please_ file [GitHub issues](https://github.com/binkley/basilisk/issues) for
 questions, suggestions, additions, bugs, or improvements!
+
+[[TOC]](#basilisk)
 
 ## Design
 
@@ -178,6 +182,8 @@ Some reading:
 * [Anemic Domain Model](https://martinfowler.com/bliki/AnemicDomainModel.html)
 * [How accurate is “Business logic should be in a service, not in a model”?](https://softwareengineering.stackexchange.com/questions/218011/how-accurate-is-business-logic-should-be-in-a-service-not-in-a-model)
 
+[[TOC]](#basilisk)
+
 
 ## Docker
 
@@ -194,6 +200,9 @@ run-it.sh
 
 Use the [`docker-compose.yml`](docker-compose.yml) to _build_ and _run the
 program, including a Postgres.
+
+[[TOC]](#basilisk)
+
 
 ## Production
 
@@ -245,6 +254,8 @@ to browse your REST endpoints.  The Swagger REST API endpoint is at the
 You can browse [the Spring repository](http://localhost:8080/data) with a
 nice web interface.
 
+[[TOC]](#basilisk)
+
 
 ## Development
 
@@ -283,6 +294,8 @@ To see all build reports, open
 
 Browse and edit the database with
 [Spring Data REST](http://localhost:8080/data).
+
+[[TOC]](#basilisk)
 
 
 ## Testing
@@ -387,6 +400,8 @@ Among them:
 - There is little configuration over JSON parsing
 - It believes JUnit 5 test-ordering annotations are not yet implemented by
   JUnit
+
+[[TOC]](#basilisk)
 
 
 ## Advice and examples
@@ -621,3 +636,5 @@ See
 [`ChefRecord`](basilisk-service/src/main/java/hm/binkley/basilisk/flora/domain/store/ChefRecord.java)
 and the `code` field.  In the database this is expressed as `code VARCHAR NOT
 NULL UNIQUE`, while retaining the surrogate key, `id`.
+
+[[TOC]](#basilisk)
