@@ -27,13 +27,19 @@ around the globe:
 - ["Melbourne's Pink Heath"](https://www.anbg.gov.au/emblems/vic.emblem.html)
 - ["Cherry Blossom of Tokyo"](https://www.jrailpass.com/blog/cherry-blossoms-tokyo)
 
-<div style="max-width:90%;height:auto">
+<div style="width:90%;text-align:center">
+<div style="width:33%;height:auto">
 <img src="https://www.featurepics.com/StockImage/20070125/yellow-rose-of-texas-stock-image-200039.jpg"
-style="width:30vw;height:auto" alt="Texas Yellow Roses"/>
+alt="Texas Yellow Roses"/>
+</div>
+<div style="width:33%;height:auto">
 <img src="https://jpmbooks.files.wordpress.com/2012/06/img_0185.jpg"
-style="width:30vw;height:auto" alt="Melbourne Pink Heath"/>
+alt="Melbourne Pink Heath"/>
+</div>
+<div style="width:33%;height:auto">
 <img src="https://cdn-images-1.medium.com/max/2000/1*C2nsRby3rpDCA5LFWfDZUw.jpeg"
-style="width:30vw;height:auto" alt="Tokyo Cherry Blossoms"/>
+alt="Tokyo Cherry Blossoms"/>
+</div>
 </div>
 
 Your business plan includes jet-setting world-class chefs and locally-sourced
