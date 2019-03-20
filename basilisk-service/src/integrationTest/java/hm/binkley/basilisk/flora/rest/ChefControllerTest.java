@@ -18,6 +18,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.CHEF_CODE;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.CHEF_ID;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.CHEF_NAME;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.savedChefRecord;
@@ -77,6 +78,24 @@ class ChefControllerTest {
     void shouldNotGetById()
             throws Exception {
         jsonMvc.perform(get(endpointWithId()))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void shouldGetByCode()
+            throws Exception {
+        when(recipes.byCode(CHEF_CODE))
+                .thenReturn(Optional.of(new Chef(savedChefRecord())));
+
+        jsonMvc.perform(get("/chef/with-code/" + CHEF_CODE))
+                .andExpect(status().isOk())
+                .andExpect(content().json(asJson(responseMap())));
+    }
+
+    @Test
+    void shouldNotGetByCode()
+            throws Exception {
+        jsonMvc.perform(get("/chef/with-code/" + CHEF_CODE))
                 .andExpect(status().isNotFound());
     }
 

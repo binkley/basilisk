@@ -13,6 +13,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.CHEF_CODE;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.CHEF_NAME;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
@@ -25,6 +27,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ProblemWebMvcTest(ChefController.class)
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 class ChefControllerValidationTest {
+    private static final String violationField = "$.violations[0].field";
+    private static final String violationMessage = "$.violations[0].message";
+    private static final String violationStatus = "$.status";
+
     private final MockMvc problemMvc;
     private final ObjectMapper objectMapper;
 
@@ -33,15 +39,56 @@ class ChefControllerValidationTest {
 
     @SuppressFBWarnings("RV")
     @Test
+    void shouldRejectShortCodes()
+            throws Exception {
+        problemMvc.perform(get("/chef/with-code/F"))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath(violationField,
+                        equalTo("getByCode.code")))
+                .andExpect(jsonPath(violationMessage,
+                        equalTo("length must be between 3 and 32")))
+                .andExpect(jsonPath(violationStatus,
+                        equalTo(UNPROCESSABLE_ENTITY.name())))
+        // TODO: Turn off stack traces
+        //      .andExpect(jsonPath("$.stackTrace").doesNotExist())
+        ;
+
+        verifyNoMoreInteractions(chefs);
+    }
+
+    @SuppressFBWarnings("RV")
+    @Test
     void shouldRejectShortNames()
             throws Exception {
         problemMvc.perform(get("/chef/with-name/F"))
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.violations[0].field",
+                .andExpect(jsonPath(violationField,
                         equalTo("getByName.name")))
-                .andExpect(jsonPath("$.violations[0].message",
+                .andExpect(jsonPath(violationMessage,
                         equalTo("length must be between 3 and 32")))
-                .andExpect(jsonPath("$.status",
+                .andExpect(jsonPath(violationStatus,
+                        equalTo(UNPROCESSABLE_ENTITY.name())))
+        // TODO: Turn off stack traces
+        //      .andExpect(jsonPath("$.stackTrace").doesNotExist())
+        ;
+
+        verifyNoMoreInteractions(chefs);
+    }
+
+    @Test
+    void shouldRejectShortRequestCodes()
+            throws Exception {
+        problemMvc.perform(post("/chef")
+                .content(asJson(ChefRequest.builder()
+                        .code("F")
+                        .name(CHEF_NAME)
+                        .build())))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath(violationField,
+                        equalTo("code")))
+                .andExpect(jsonPath(violationMessage,
+                        equalTo("length must be between 3 and 6")))
+                .andExpect(jsonPath(violationStatus,
                         equalTo(UNPROCESSABLE_ENTITY.name())))
         // TODO: Turn off stack traces
         //      .andExpect(jsonPath("$.stackTrace").doesNotExist())
@@ -55,14 +102,15 @@ class ChefControllerValidationTest {
             throws Exception {
         problemMvc.perform(post("/chef")
                 .content(asJson(ChefRequest.builder()
+                        .code(CHEF_CODE)
                         .name("F")
                         .build())))
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.violations[0].field",
+                .andExpect(jsonPath(violationField,
                         equalTo("name")))
-                .andExpect(jsonPath("$.violations[0].message",
+                .andExpect(jsonPath(violationMessage,
                         equalTo("length must be between 3 and 32")))
-                .andExpect(jsonPath("$.status",
+                .andExpect(jsonPath(violationStatus,
                         equalTo(UNPROCESSABLE_ENTITY.name())))
         // TODO: Turn off stack traces
         //      .andExpect(jsonPath("$.stackTrace").doesNotExist())

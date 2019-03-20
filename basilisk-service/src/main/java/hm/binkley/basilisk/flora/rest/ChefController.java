@@ -50,6 +50,15 @@ public class ChefController {
                 .orElseThrow();
     }
 
+    @GetMapping("with-code/{code}")
+    public ChefResponse getByCode(
+            @PathVariable("code") final @Length(min = 3, max = 32)
+                    String code) {
+        return chefs.byCode(code)
+                .map(toResponse())
+                .orElseThrow();
+    }
+
     @GetMapping("with-name/{name}")
     public ChefResponse getByName(
             @PathVariable("name") final @Length(min = 3, max = 32)
