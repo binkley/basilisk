@@ -20,8 +20,7 @@ public interface StandardRepository<T extends StandardRecord<T, R, S>,
         final var maybeFound = findBy.apply(maybeNew);
         if (maybeFound.isPresent()) {
             final var found = maybeFound.get();
-            maybeNew.id = found.getId();
-            maybeNew.receivedAt = found.getReceivedAt();
+            maybeNew.become(found);
             prepareUpsert.accept(found, maybeNew);
         } else
             prepareUpsert.accept(null, maybeNew);

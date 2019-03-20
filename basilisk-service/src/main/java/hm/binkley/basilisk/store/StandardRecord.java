@@ -35,6 +35,11 @@ public abstract class StandardRecord<T extends StandardRecord<T, R, S>,
         this.receivedAt = receivedAt;
     }
 
+    void become(final T other) {
+        id = other.getId();
+        receivedAt = other.getReceivedAt();
+    }
+
     @SuppressWarnings("unchecked")
     public final T save() {
         return store.save((T) this);
