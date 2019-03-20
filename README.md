@@ -136,6 +136,8 @@ These are "2nd-class objects", needed by "meal planners", but not as central
 * Semantic UI CSS-only for home page
 * [Custom health check](#custom-health-check)
 * [Quieter Spring Boot tests](#quieter-spring-boot-tests)
+* [Spring Data JDBC auditing](#spring-data-jdbc-auditing)
+* [Spring Data JDBC upsert](#spring-data-jdbc-upsert)
 
 
 ## Feedback
@@ -587,3 +589,8 @@ for one approach to suppressing "started application" INFO logs during
 
 See
 [`DatabaseConfiguration`](basilisk-service/src/main/java/hm/binkley/basilisk/configuration/DatabaseConfiguration.java).
+
+### Spring Data JDBC upsert
+
+See
+[`StandardRepository`](basilisk-service/src/main/java/hm/binkley/basilisk/store/SeasonRepository.java).
