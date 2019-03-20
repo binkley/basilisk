@@ -129,6 +129,7 @@ These are "2nd-class objects", needed by "meal planners", but not as central
 * RFC 7807 (problem+json)
 * Strict, fail-fast compilation
 * Full test coverage
+* [No embedded JSON in tests](#json-test-files)
 * Static code analysis
 * Build analysis
 * YAML Spring Cloud Contract tests
@@ -136,7 +137,6 @@ These are "2nd-class objects", needed by "meal planners", but not as central
 * Semantic UI CSS-only for home page
 * [Custom health check](#custom-health-check)
 * [Quieter Spring Boot tests](#quieter-spring-boot-tests)
-* [Spring Data JDBC auditing](#spring-data-jdbc-auditing)
 * [Spring Data JDBC upsert](#spring-data-jdbc-upsert)
 
 
@@ -310,6 +310,17 @@ resources, and speed up the tests.
 In this project, the database is an in-memory PostgreSQL instance, so is
 self-contained and speedy; however, in production projects, it would be an
 external database process.
+
+### JSON test files
+
+Rather than use embedded JSON strings in Java tests, throughout is used JSON
+test files, for example, 
+[`chef-response-test.json`](basilisk-service/src/integrationTest/resources/hm/binkley/basilisk/flora/rest/chef-response-test.json).
+The rules of thumb for these:
+
+1. Place the JSON test file in the same package as the test class, but under
+   `resources` rather than `java` directory
+2. Name the JSON test file after the Java test class
 
 ### Spring injection
 
