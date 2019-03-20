@@ -28,11 +28,11 @@ around the globe:
 - ["Cherry Blossom of Tokyo"](https://www.jrailpass.com/blog/cherry-blossoms-tokyo)
 
 <img src="https://www.featurepics.com/StockImage/20070125/yellow-rose-of-texas-stock-image-200039.jpg"
-width="30%"/>
+style="max-width:30%;height:auto"/>
 <img src="https://jpmbooks.files.wordpress.com/2012/06/img_0185.jpg?w=1000&h=1332"/>
-width="30%"/>
+style="max-width:30%;height:auto"/>
 <img src="https://cdn-images-1.medium.com/max/2000/1*C2nsRby3rpDCA5LFWfDZUw.jpeg"
-width="30%"/>
+style="max-width:30%;height:auto"/>
 
 Your business plan includes jet-setting world-class chefs and locally-sourced
 ingredients.
@@ -138,6 +138,7 @@ These are "2nd-class objects", needed by "meal planners", but not as central
 * [Custom health check](#custom-health-check)
 * [Quieter Spring Boot tests](#quieter-spring-boot-tests)
 * [Spring Data JDBC upsert](#spring-data-jdbc-upsert)
+* Example [natural key](#natural-keys) (ongoing to add these to more types)
 
 
 ## Feedback
@@ -605,3 +606,10 @@ See
 
 See
 [`StandardRepository`](basilisk-service/src/main/java/hm/binkley/basilisk/store/SeasonRepository.java).
+
+### Natural keys
+
+See
+[`ChefRecord`](basilisk-service/src/main/java/hm/binkley/basilisk/flora/domain/store/ChefRecord.java)
+and the `code` field.  In the database this is expressed as `code VARCHAR NOT
+NULL UNIQUE`, while retaining the surrogate key, `id`.

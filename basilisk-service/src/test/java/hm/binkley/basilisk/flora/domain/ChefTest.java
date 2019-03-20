@@ -12,10 +12,10 @@ class ChefTest {
         // The types are immaterial, just that the transformation worked
         final var targetChef = 1;
 
-        @SuppressWarnings("PMD") final var that
-                = new Chef(record).as(
-                (id, name) -> {
+        @SuppressWarnings("PMD") final var that = new Chef(record).as(
+                (id, code, name) -> {
                     assertThat(id).isEqualTo(record.getId());
+                    assertThat(code).isEqualTo(record.getCode());
                     assertThat(name).isEqualTo(record.getName());
                     return targetChef;
                 });

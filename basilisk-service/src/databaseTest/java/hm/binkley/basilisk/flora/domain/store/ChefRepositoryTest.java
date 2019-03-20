@@ -46,6 +46,27 @@ class ChefRepositoryTest {
     }
 
     @Test
+    void shouldHaveUniqueCode() {
+        repository.save(unsavedChefRecord());
+
+        final var ex = assertThrows(
+                DbActionExecutionException.class,
+                () -> repository.save(unsavedChefRecord()));
+
+        assertThat(ex.getCause()).isInstanceOf(DuplicateKeyException.class);
+    }
+
+    @Test
+    void shouldFindByCode() {
+        final var unsaved = unsavedChefRecord();
+        repository.save(unsaved);
+
+        assertThat(repository.findByCode(unsaved.getCode()).orElseThrow())
+                .isEqualTo(unsaved);
+        assertThat(repository.findByCode(unsaved.getCode() + "x")).isEmpty();
+    }
+
+    @Test
     void shouldHaveUniqueName() {
         repository.save(unsavedChefRecord());
 
@@ -69,7 +90,8 @@ class ChefRepositoryTest {
     @Test
     void shouldStream() {
         final var unsavedA = unsavedChefRecord();
-        final var unsavedB = ChefRecord.unsaved(unsavedA.getName() + "x");
+        final var unsavedB = ChefRecord.unsaved(
+                unsavedA.getCode() + "x", unsavedA.getName() + "x");
         repository.saveAll(Set.of(unsavedA, unsavedB));
 
         try (final var found = repository.readAll()) {

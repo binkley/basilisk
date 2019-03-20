@@ -12,7 +12,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.IOException;
 
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.CHEF_CODE;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.CHEF_ID;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.CHEF_NAME;
 import static hm.binkley.basilisk.flora.rest.ChefResponse.using;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -28,16 +30,15 @@ class ChefResponseTest {
             throws IOException {
         assertThat(json.write(ChefResponse.builder()
                 .id(CHEF_ID)
-                .name("Chef Boyardee")
+                .code(CHEF_CODE)
+                .name(CHEF_NAME)
                 .build()))
                 .isEqualToJson("chef-response-test.json");
     }
 
     @Test
     void shouldUse() {
-        final var name = "Chef Boyardee";
-
-        assertThat(using().from(CHEF_ID, name))
-                .isEqualTo(new ChefResponse(CHEF_ID, name));
+        assertThat(using().from(CHEF_ID, CHEF_CODE, CHEF_NAME))
+                .isEqualTo(new ChefResponse(CHEF_ID, CHEF_CODE, CHEF_NAME));
     }
 }

@@ -43,6 +43,19 @@ class ChefsTest {
     }
 
     @Test
+    void shouldFindByCode() {
+        final var record = savedChefRecord();
+        when(store.byCode(record.getCode()))
+                .thenReturn(Optional.of(record));
+
+        final var found = chefs.byCode(record.getCode()).orElseThrow();
+
+        assertThat(found).isEqualTo(new Chef(record));
+
+        verifyNoMoreInteractions(store);
+    }
+
+    @Test
     void shouldFindByName() {
         final var record = savedChefRecord();
         when(store.byName(record.getName()))
@@ -71,10 +84,12 @@ class ChefsTest {
     @Test
     void shouldCreate() {
         final var record = savedChefRecord();
-        when(store.save(ChefRecord.unsaved(record.getName())))
+        when(store.save(ChefRecord.unsaved(
+                record.getCode(), record.getName())))
                 .thenReturn(record);
 
         assertThat(chefs.create(ChefRequest.builder()
+                .code(record.getCode())
                 .name(record.getName())
                 .build()))
                 .isEqualTo(new Chef(record));

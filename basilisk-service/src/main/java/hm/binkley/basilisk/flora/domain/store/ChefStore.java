@@ -14,13 +14,18 @@ public class ChefStore
         super(springData);
     }
 
+    public Optional<ChefRecord> byCode(final String code) {
+        return springData.findByCode(code)
+                .map(this::assign);
+    }
+
     public Optional<ChefRecord> byName(final String name) {
         return springData.findByName(name)
                 .map(this::assign);
     }
 
-    public ChefRecord create(final String name) {
-        final ChefRecord record = ChefRecord.unsaved(name);
+    public ChefRecord create(final String code, final String name) {
+        final ChefRecord record = ChefRecord.unsaved(code, name);
         assign(record);
         return record.save();
     }

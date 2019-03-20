@@ -8,6 +8,7 @@ import lombok.Value;
 @Value
 public final class ChefResponse {
     Long id;
+    String code;
     String name;
 
     static Chef.As<ChefResponse> using() {

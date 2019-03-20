@@ -19,6 +19,10 @@ public class Chefs {
         return store.byId(id).map(Chef::new);
     }
 
+    public Optional<Chef> byCode(final String code) {
+        return store.byCode(code).map(Chef::new);
+    }
+
     public Optional<Chef> byName(final String name) {
         return store.byName(name).map(Chef::new);
     }

@@ -15,6 +15,7 @@ public final class FloraFixtures {
     public static final Instant CHEF_RECIEVED_AT
             = EPOCH.plusSeconds(800_000L);
     public static final String CHEF_NAME = "Chef Boyardee";
+    public static final String CHEF_CODE = "CAN";
     public static final Long SOURCE_ID = 12L;
     public static final Instant SOURCE_RECEIVED_AT
             = EPOCH.plusSeconds(900_000L);
@@ -30,7 +31,7 @@ public final class FloraFixtures {
     public static final String LOCATION_NAME = "The Dallas Yellow Rose";
 
     public static ChefRecord unsavedChefRecord() {
-        return new ChefRecord(null, null, CHEF_NAME);
+        return new ChefRecord(null, null, CHEF_CODE, CHEF_NAME);
     }
 
     public static ChefRecord savedChefRecord() {
