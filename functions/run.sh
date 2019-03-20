@@ -1,5 +1,5 @@
 function run {
-    $print $run docker run --publish 8080:8080/tcp -it $name
+    $print $run docker-compose up
 }
 
 function -run-help {
