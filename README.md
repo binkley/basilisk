@@ -194,13 +194,17 @@ Use the [`Dockerfile`](Dockerfile) to both _build_ and _run_ the program.  The
 [`run-it.sh`](run-it.sh) script makes this easy:
 
 ```bash
-run-it.sh
+run-it.sh build
 ```
 
 ### Docker compose
 
 Use the [`docker-compose.yml`](docker-compose.yml) to _build_ and _run the
 program, including a Postgres.
+
+```bash
+run-it.sh run
+```
 
 [[TOC]](#basilisk)
 
@@ -282,7 +286,8 @@ tie into the build dashboard.)
 
 Bring up the program with:
 
-* Command line &mdash; `./run-it.sh` (full-cycle Docker)
+* Command line &mdash; `./run-it.sh` (full-cycle: clean, build, run)
+* Command line &mdash; `./run-it.sh run` (Docker compose)
 * Command line &mdash; `./gradlew bootRun` (DB already running)
 * IntelliJ &mdash; run/debug/profile
 [the application](basilisk-service/src/main/java/hm/binkley/basilisk/BasiliskApplication.java)
