@@ -29,11 +29,11 @@ around the globe:
 
 <div style="max-width:90%;height:auto">
 <img src="https://www.featurepics.com/StockImage/20070125/yellow-rose-of-texas-stock-image-200039.jpg"
-style="width:30vw;height:auto"/>
-<img src="https://jpmbooks.files.wordpress.com/2012/06/img_0185.jpg?w=1000&h=1332"
-style="width:30vw;height:auto"/>
+style="width:30vw;height:auto" alt="Texas Yellow Roses"/>
+<img src="https://jpmbooks.files.wordpress.com/2012/06/img_0185.jpg"
+style="width:30vw;height:auto" alt="Melbourne Pink Heath"/>
 <img src="https://cdn-images-1.medium.com/max/2000/1*C2nsRby3rpDCA5LFWfDZUw.jpeg"
-style="width:30vw;height:auto"/>
+style="width:30vw;height:auto" alt="Tokyo Cherry Blossoms"/>
 </div>
 
 Your business plan includes jet-setting world-class chefs and locally-sourced
