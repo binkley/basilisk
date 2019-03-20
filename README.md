@@ -30,7 +30,7 @@ around the globe:
 <div style="width:90%;text-align:center">
 <div style="width:33%;height:auto">
 <img src="https://www.featurepics.com/StockImage/20070125/yellow-rose-of-texas-stock-image-200039.jpg"
-alt="Texas Yellow Roses"/>
+alt="Texas Yellow Rose"/>
 </div>
 <div style="width:33%;height:auto">
 <img src="https://jpmbooks.files.wordpress.com/2012/06/img_0185.jpg"
