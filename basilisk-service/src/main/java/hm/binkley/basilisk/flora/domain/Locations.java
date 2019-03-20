@@ -1,6 +1,7 @@
 package hm.binkley.basilisk.flora.domain;
 
 import hm.binkley.basilisk.flora.domain.store.LocationRecord;
+import hm.binkley.basilisk.flora.domain.store.LocationRecord.LocationRef;
 import hm.binkley.basilisk.flora.domain.store.LocationStore;
 import hm.binkley.basilisk.flora.rest.LocationRequest;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,10 @@ public class Locations {
 
     public Optional<Location> byId(final Long id) {
         return store.byId(id).map(Location::new);
+    }
+
+    public Optional<Location> byRef(final LocationRef ref) {
+        return byId(ref.getLocationId());
     }
 
     public Optional<Location> byName(final String name) {

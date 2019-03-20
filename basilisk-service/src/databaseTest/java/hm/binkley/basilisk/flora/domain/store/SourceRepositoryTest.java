@@ -49,7 +49,7 @@ class SourceRepositoryTest {
     @Test
     void shouldRoundTripWithConstraints() {
         final var unsaved = unsavedSourceRecord()
-                .addConstraint(savedLocationRecord());
+                .availableAt(savedLocationRecord());
         final var found = repository.findById(
                 repository.save(unsaved).getId()).orElseThrow();
 

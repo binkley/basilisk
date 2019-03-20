@@ -43,6 +43,19 @@ class LocationsTest {
     }
 
     @Test
+    void shouldFindByRef() {
+        final var record = savedLocationRecord();
+        when(store.byId(record.getId()))
+                .thenReturn(Optional.of(record));
+
+        final Optional<Location> found = locations.byRef(record.ref());
+
+        assertThat(found).contains(new Location(record));
+
+        verifyNoMoreInteractions(store);
+    }
+
+    @Test
     void shouldFindByName() {
         final var record = savedLocationRecord();
         when(store.byName(record.getName()))

@@ -3,6 +3,8 @@ package hm.binkley.basilisk.flora.domain;
 import hm.binkley.basilisk.flora.domain.store.SourceRecord;
 import org.junit.jupiter.api.Test;
 
+import java.util.Set;
+
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.SOURCE_ID;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.SOURCE_NAME;
 import static java.time.Instant.EPOCH;
@@ -17,7 +19,7 @@ class SourceTest {
         final var targetSource = 1;
 
         @SuppressWarnings("PMD") final var that
-                = new Source(record).as(
+                = new Source(record, Set.of()).as(
                 (id, name) -> {
                     assertThat(id).isEqualTo(record.getId());
                     assertThat(name).isEqualTo(record.getName());

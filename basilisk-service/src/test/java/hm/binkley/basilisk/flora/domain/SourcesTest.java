@@ -1,6 +1,5 @@
 package hm.binkley.basilisk.flora.domain;
 
-import hm.binkley.basilisk.flora.domain.store.SourceRecord;
 import hm.binkley.basilisk.flora.domain.store.SourceStore;
 import hm.binkley.basilisk.flora.rest.SourceRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,11 +9,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Stream;
 
-import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.SOURCE_ID;
-import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.SOURCE_NAME;
-import static java.time.Instant.EPOCH;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.savedLocationRecord;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.savedSourceRecord;
+import static hm.binkley.basilisk.flora.domain.store.SourceRecord.unsaved;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -23,69 +23,84 @@ import static org.mockito.Mockito.when;
 class SourcesTest {
     @Mock
     private SourceStore store;
+    @Mock
+    private Locations locations;
 
     private Sources sources;
 
     @BeforeEach
     void setUp() {
-        sources = new Sources(store);
+        sources = new Sources(store, locations);
     }
 
     @Test
     void shouldFindById() {
-        final var record = new SourceRecord(
-                SOURCE_ID, EPOCH, SOURCE_NAME);
-        when(store.byId(record.getId()))
-                .thenReturn(Optional.of(record));
+        final var saved = savedSourceRecord();
+        when(store.byId(saved.getId()))
+                .thenReturn(Optional.of(saved));
 
-        final Optional<Source> found = sources.byId(record.getId());
+        final Optional<Source> found = sources.byId(saved.getId());
 
-        assertThat(found).contains(new Source(record));
+        assertThat(found).contains(new Source(saved, Set.of()));
 
-        verifyNoMoreInteractions(store);
+        verifyNoMoreInteractions(store, locations);
+    }
+
+    @Test
+    void shouldFindByIdWithAvailableAt() {
+        final var locationRecord = savedLocationRecord();
+        final var saved = savedSourceRecord()
+                .availableAt(locationRecord);
+        when(store.byId(saved.getId()))
+                .thenReturn(Optional.of(saved));
+        final var location = new Location(locationRecord);
+        when(locations.byRef(locationRecord.ref()))
+                .thenReturn(Optional.of(location));
+
+        final Optional<Source> found = sources.byId(saved.getId());
+
+        assertThat(found).contains(new Source(saved, Set.of(location)));
+
+        verifyNoMoreInteractions(store, locations);
     }
 
     @Test
     void shouldFindByName() {
-        final var record = new SourceRecord(
-                SOURCE_ID, EPOCH, SOURCE_NAME);
-        when(store.byName(record.getName()))
-                .thenReturn(Optional.of(record));
+        final var saved = savedSourceRecord();
+        when(store.byName(saved.getName()))
+                .thenReturn(Optional.of(saved));
 
-        final var found = sources.byName(record.getName()).orElseThrow();
+        final var found = sources.byName(saved.getName()).orElseThrow();
 
-        assertThat(found).isEqualTo(new Source(record));
+        assertThat(found).isEqualTo(new Source(saved, Set.of()));
 
-        verifyNoMoreInteractions(store);
+        verifyNoMoreInteractions(store, locations);
     }
 
     @Test
     void shouldFindAll() {
-        final var record = new SourceRecord(
-                SOURCE_ID, EPOCH, SOURCE_NAME);
+        final var saved = savedSourceRecord();
         when(store.all())
-                .thenReturn(Stream.of(record));
+                .thenReturn(Stream.of(saved));
 
         final Stream<Source> found = sources.all();
 
-        assertThat(found).containsExactly(new Source(record));
+        assertThat(found).containsExactly(new Source(saved, Set.of()));
 
-        verifyNoMoreInteractions(store);
+        verifyNoMoreInteractions(store, locations);
     }
 
     @Test
     void shouldCreateNew() {
-        final var record = new SourceRecord(
-                SOURCE_ID, EPOCH, SOURCE_NAME);
-
-        when(store.save(SourceRecord.unsaved(record.getName())))
-                .thenReturn(record);
+        final var saved = savedSourceRecord();
+        when(store.save(unsaved(saved.getName())))
+                .thenReturn(saved);
 
         assertThat(sources.create(SourceRequest.builder()
-                .name(record.getName())
+                .name(saved.getName())
                 .build()))
-                .isEqualTo(new Source(record));
+                .isEqualTo(new Source(saved, Set.of()));
 
-        verifyNoMoreInteractions(store);
+        verifyNoMoreInteractions(store, locations);
     }
 }

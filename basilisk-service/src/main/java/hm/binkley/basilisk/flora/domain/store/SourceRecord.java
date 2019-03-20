@@ -21,7 +21,9 @@ public final class SourceRecord
     @Getter
     String name;
     @Column("source_id")
-    Set<LocationRef> constraints = new LinkedHashSet<>();
+    @Getter
+    @SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
+    Set<LocationRef> availableAt = new LinkedHashSet<>();
 
     public SourceRecord(final Long id, final Instant receivedAt,
             final String name) {
@@ -33,13 +35,12 @@ public final class SourceRecord
         return new SourceRecord(null, null, name);
     }
 
-    public SourceRecord addConstraint(final LocationRecord location) {
-        return addConstraints(Stream.of(location));
+    public SourceRecord availableAt(final LocationRecord location) {
+        return availableAt(Stream.of(location));
     }
 
-    public SourceRecord addConstraints(
-            final Stream<LocationRecord> locations) {
-        locations.map(LocationRecord::ref).forEach(constraints::add);
+    public SourceRecord availableAt(final Stream<LocationRecord> locations) {
+        locations.map(LocationRecord::ref).forEach(availableAt::add);
         return this;
     }
 }

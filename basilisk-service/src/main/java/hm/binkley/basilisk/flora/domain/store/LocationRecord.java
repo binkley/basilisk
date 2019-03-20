@@ -37,6 +37,7 @@ public final class LocationRecord
     @Table("FLORA.SOURCE_LOCATION")
     @ToString
     public static class LocationRef {
+        @Getter
         public Long locationId;
     }
 }

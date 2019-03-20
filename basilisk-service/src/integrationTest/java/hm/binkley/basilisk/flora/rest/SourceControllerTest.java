@@ -53,8 +53,8 @@ class SourceControllerTest {
     @Test
     void shouldGetAll()
             throws Exception {
-        when(sources.all())
-                .thenReturn(Stream.of(new Source(savedSourceRecord())));
+        when(sources.all()).thenReturn(
+                Stream.of(new Source(savedSourceRecord(), Set.of())));
 
         jsonMvc.perform(get("/source"))
                 .andExpect(status().isOk())
@@ -64,8 +64,8 @@ class SourceControllerTest {
     @Test
     void shouldGetById()
             throws Exception {
-        when(sources.byId(SOURCE_ID))
-                .thenReturn(Optional.of(new Source(savedSourceRecord())));
+        when(sources.byId(SOURCE_ID)).thenReturn(
+                Optional.of(new Source(savedSourceRecord(), Set.of())));
 
         jsonMvc.perform(get(endpointWithId()))
                 .andExpect(status().isOk())
@@ -82,8 +82,8 @@ class SourceControllerTest {
     @Test
     void shouldGetByName()
             throws Exception {
-        when(sources.byName(SOURCE_NAME))
-                .thenReturn(Optional.of(new Source(savedSourceRecord())));
+        when(sources.byName(SOURCE_NAME)).thenReturn(
+                Optional.of(new Source(savedSourceRecord(), Set.of())));
 
         jsonMvc.perform(get("/source/find/" + SOURCE_NAME))
                 .andExpect(status().isOk())
@@ -101,13 +101,12 @@ class SourceControllerTest {
     void shouldPostNew()
             throws Exception {
         final var unsaved = unsavedSourceRecord();
-        final SourceRequest request = SourceRequest
-                .builder()
+        final SourceRequest request = SourceRequest.builder()
                 .name(unsaved.getName())
                 .build();
 
-        when(sources.create(request))
-                .thenReturn(new Source(savedSourceRecord()));
+        when(sources.create(request)).thenReturn(
+                new Source(savedSourceRecord(), Set.of()));
 
         jsonMvc.perform(post("/source")
                 .content(asJson(request)))
