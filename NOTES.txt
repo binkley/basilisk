@@ -1,0 +1,2 @@
+docker run -e POSTGRES_USER=basilisk -p 5432:5432 postgres
+psql -U basilisk -h localhost -p 5432
