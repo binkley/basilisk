@@ -116,6 +116,7 @@ These are "2nd-class objects", needed by "meal planners", but not as central
 
 - CHEF
 - SOURCE
+- LOCATION
 
 [[TOC]](#basilisk)
 

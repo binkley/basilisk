@@ -40,3 +40,9 @@ CREATE TABLE FLORA.INGREDIENT
   chef_id     BIGINT  NOT NULL,
   recipe_id   BIGINT
 );
+
+CREATE TABLE FLORA.SOURCE_LOCATION
+(
+  source_id   BIGINT NOT NULL,
+  location_id BIGINT NOT NULL
+);

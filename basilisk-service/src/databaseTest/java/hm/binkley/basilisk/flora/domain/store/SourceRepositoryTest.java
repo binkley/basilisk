@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.savedLocationRecord;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.unsavedSourceRecord;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -37,8 +38,18 @@ class SourceRepositoryTest {
     }
 
     @Test
-    void shouldRoundTrip() {
+    void shouldRoundTripWithoutConstraints() {
         final var unsaved = unsavedSourceRecord();
+        final var found = repository.findById(
+                repository.save(unsaved).getId()).orElseThrow();
+
+        assertThat(found).isEqualTo(unsaved);
+    }
+
+    @Test
+    void shouldRoundTripWithConstraints() {
+        final var unsaved = unsavedSourceRecord()
+                .addConstraint(savedLocationRecord());
         final var found = repository.findById(
                 repository.save(unsaved).getId()).orElseThrow();
 

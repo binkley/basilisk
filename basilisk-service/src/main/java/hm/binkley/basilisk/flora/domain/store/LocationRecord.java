@@ -12,7 +12,8 @@ import java.time.Instant;
 @Table("FLORA.LOCATION")
 @ToString(callSuper = true)
 public final class LocationRecord
-        extends StandardRecord<LocationRecord, LocationRepository, LocationStore> {
+        extends
+        StandardRecord<LocationRecord, LocationRepository, LocationStore> {
     @Getter
     public String name;
 
@@ -24,5 +25,18 @@ public final class LocationRecord
 
     public static LocationRecord unsaved(final String name) {
         return new LocationRecord(null, null, name);
+    }
+
+    public LocationRef ref() {
+        final var ref = new LocationRef();
+        ref.locationId = id;
+        return ref;
+    }
+
+    @EqualsAndHashCode
+    @Table("FLORA.SOURCE_LOCATION")
+    @ToString
+    public static class LocationRef {
+        public Long locationId;
     }
 }
