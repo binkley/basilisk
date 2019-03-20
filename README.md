@@ -128,6 +128,7 @@ These are "2nd-class objects", needed by "meal planners", but not as central
 * Spring Data JDBC
 * [Spring Data JDBC auditing](#spring-data-jdbc-auditing)
 * [Swagger](#swagger)
+* [Run script](#running)
 * Incremental build
 * Domain-oriented design
 * Pure service layer
@@ -281,7 +282,8 @@ tie into the build dashboard.)
 
 Bring up the program with:
 
-* Command line &mdash; `./gradlew bootRun`
+* Command line &mdash; `./run-it.sh` (full-cycle Docker)
+* Command line &mdash; `./gradlew bootRun` (DB already running)
 * IntelliJ &mdash; run/debug/profile
 [the application](basilisk-service/src/main/java/hm/binkley/basilisk/BasiliskApplication.java)
 
