@@ -5,6 +5,7 @@ import hm.binkley.basilisk.flora.domain.Recipes;
 import hm.binkley.basilisk.flora.service.SpecialService;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.Length;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -34,8 +35,11 @@ import static org.springframework.http.ResponseEntity.created;
 @RestController
 @Validated
 public class RecipeController {
+    static final String CREATED_RECIPE = "Created a new recipe: {}";
+
     private final Recipes recipes;
     private final SpecialService specialService;
+    private final Logger logger;
 
     @GetMapping
     public Set<RecipeResponse> getAll() {
@@ -67,12 +71,13 @@ public class RecipeController {
             @RequestBody final @Valid RecipeRequest request) {
         final var domain = recipes.create(request);
         final var response = toResponse().apply(domain);
+        logger.info(CREATED_RECIPE, response);
 
         return created(URI.create("/recipe/" + response.getId()))
                 .body(response);
     }
 
-    private Function<Recipe, RecipeResponse> toResponse() {
+    Function<Recipe, RecipeResponse> toResponse() {
         return it -> it.as(
                 RecipeResponse.using(specialService.isDailySpecial(it)),
                 UsedIngredientResponse.with());

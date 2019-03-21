@@ -10,12 +10,12 @@ import hm.binkley.basilisk.flora.domain.store.RecipeRecord;
 import hm.binkley.basilisk.flora.service.SpecialService;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -26,9 +26,12 @@ import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.CHEF_ID;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.INGREDIENT_ID;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.INGREDIENT_QUANTITY;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.RECIPE_ID;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.RECIPE_NAME;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.RECIPE_RECEIVED_AT;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.SOURCE_NAME;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.savedUsedIngredientRecord;
 import static java.time.Instant.EPOCH;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.LOCATION;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -52,11 +55,14 @@ class RecipeControllerTest {
 
     private final MockMvc jsonMvc;
     private final ObjectMapper objectMapper;
+    private final RecipeController controller;
 
     @MockBean
     private Recipes recipes;
     @MockBean
     private SpecialService specialService;
+    @MockBean
+    private Logger logger;
 
     private static String endpointWithId() {
         return "/recipe/" + RECIPE_ID;
@@ -145,17 +151,18 @@ class RecipeControllerTest {
     @Test
     void shouldPostNewWithNoIngredients()
             throws Exception {
-        final var name = "SOUFFLE";
+        final var name = RECIPE_NAME;
         final var record = RecipeRecord.unsaved(name, CHEF_ID);
         final RecipeRequest request = RecipeRequest.builder()
                 .name(name)
                 .chefId(CHEF_ID)
                 .build();
 
+        final var recipe = new Recipe(new RecipeRecord(RECIPE_ID,
+                RECIPE_RECEIVED_AT,
+                record.getName(), record.getChefId()));
         when(recipes.create(request))
-                .thenReturn(new Recipe(new RecipeRecord(RECIPE_ID,
-                        Instant.ofEpochSecond(1_000_000),
-                        record.getName(), record.getChefId())));
+                .thenReturn(recipe);
 
         jsonMvc.perform(post("/recipe")
                 .content(asJson(request)))
@@ -163,12 +170,16 @@ class RecipeControllerTest {
                 .andExpect(header().string(LOCATION, endpointWithId()))
                 .andExpect(content().json(asJson(
                         responseMapFor(name, false))));
+
+        final var response = controller.toResponse().apply(recipe);
+        verify(logger).info(RecipeController.CREATED_RECIPE,
+                response);
     }
 
     @Test
     void shouldPostNewWithSomeIngredients()
             throws Exception {
-        final var name = "SOUFFLE";
+        final var name = RECIPE_NAME;
         final var record = RecipeRecord.unsaved(name, CHEF_ID);
         final RecipeRequest request = RecipeRequest.builder()
                 .name(name)

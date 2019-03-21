@@ -149,6 +149,7 @@ These are "2nd-class objects", needed by "meal planners", but not as central
 * [Quieter Spring Boot tests](#quieter-spring-boot-tests)
 * [Spring Data JDBC upsert](#spring-data-jdbc-upsert)
 * Example [natural key](#natural-keys) (ongoing to add these to more types)
+* Example [injected logger](#injected-logger)
 
 [[TOC]](#basilisk)
 
@@ -372,6 +373,14 @@ Two kinds of help in this project for JSON-based REST endpoints:
 
 These replace Spring `@WebMvcTest` annotation to ensure JSON sent and received.
 
+### Logging tests
+
+The [logging tests](#logging-tests) support production, and validate key
+logging events; they are not for development/QA-only logging:
+
+- Business/auditing events
+- Production issues 
+
 ### Database tests
 
 Spring blogs on Spring Data JDBC domain relationships in
@@ -448,6 +457,7 @@ Recall that package names are stylistically singular, not plural, _eg_,
 - [controller validation (integration)](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/flora/rest/RecipeControllerValidationTest.java)
 - [json request (unit)](basilisk-service/src/test/java/hm/binkley/basilisk/flora/rest/RecipeRequestTest.java)
 - [json response (integration)](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/flora/rest/RecipeResponseTest.java)
+- [logging (integration)](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/flora/rest/RecipeControllerTest.java)
 - [record validation (unit)](basilisk-service/src/test/java/hm/binkley/basilisk/flora/domain/store/RecipeRecordValidationTest.java) (TODO)
 - [repository (database)](basilisk-service/src/databaseTest/java/hm/binkley/basilisk/flora/domain/store/RecipeRepositoryTest.java)
 - [service (unit)](basilisk-service/src/test/java/hm/binkley/basilisk/flora/service/SpecialServiceTest.java)
@@ -644,5 +654,15 @@ See
 [`ChefRecord`](basilisk-service/src/main/java/hm/binkley/basilisk/flora/domain/store/ChefRecord.java)
 and the `code` field.  In the database this is expressed as `code VARCHAR NOT
 NULL UNIQUE`, while retaining the surrogate key, `id`.
+
+### Injected logger
+
+Rather than using a statically-defined logger instance, see
+[`RecipeController`](basilisk-service/src/main/java/hm/binkley/basilisk/flora/rest/RecipeController.java)
+for a Spring-injected logger on demand, suitable for
+[testing](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/flora/rest/RecipeControllerTest.java).
+
+Note the edit to [PMD configuration](config/pmd/ruleset.xml) to recognize the
+pattern for testable logging.
 
 [[TOC]](#basilisk)
