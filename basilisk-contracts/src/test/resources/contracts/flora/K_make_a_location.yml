@@ -1,0 +1,16 @@
+description: Make a location
+request:
+  method: POST
+  url: /location
+  headers:
+    Content-Type: application/json;charset=UTF-8
+  body:
+    name: "The Dallas Yellow Rose"
+response:
+  status: 201
+  headers:
+    Content-Type: application/json;charset=UTF-8
+    Location: /location/1
+  body:
+    id: 1
+    name: "The Dallas Yellow Rose"

@@ -1,0 +1,16 @@
+description: Find no locations
+request:
+  method: GET
+  url: /location
+  headers:
+    Content-Type: application/json;charset=UTF-8
+response:
+  status: 200
+  headers:
+    Content-Type: application/json;charset=UTF-8
+  body: '{}'  # Ignored, but required for matchers to generate code
+  matchers:
+    body:
+      - path: $
+        type: by_command
+        value: assertEmptyArray($it)
