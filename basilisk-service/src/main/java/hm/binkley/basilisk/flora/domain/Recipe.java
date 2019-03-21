@@ -1,5 +1,7 @@
 package hm.binkley.basilisk.flora.domain;
 
+import hm.binkley.basilisk.flora.domain.Recipes.As;
+import hm.binkley.basilisk.flora.domain.Ingredients.AsUsed;
 import hm.binkley.basilisk.flora.domain.store.RecipeRecord;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -13,22 +15,27 @@ import java.util.stream.Stream;
 public final class Recipe {
     private final RecipeRecord record;
 
-    public Stream<UsedIngredient> ingredients() {
+    public Long getId() {
+        return record.getId();
+    }
+
+    public String getName() {
+        return record.getName();
+    }
+
+    /** @todo Domain object, not record id */
+    public Long getChefId() {
+        return record.getChefId();
+    }
+
+    public Stream<UsedIngredient> getIngredients() {
         return record.getIngredients().stream()
                 .map(UsedIngredient::new);
     }
 
-    public <R, I> R as(final As<R, I> asRecipe,
-            final UsedIngredient.As<I> asUsedIngredient) {
-        return asRecipe.from(
-                record.getId(), record.getName(), record.getChefId(),
-                ingredients().map(it -> asUsedIngredient.from(
-                        it.getId(), it.getSourceId(), it.getName(),
-                        it.getQuantity(), it.getRecipeId(), it.getChefId())));
-    }
-
-    public interface As<R, I> {
-        R from(final Long id, final String name, final Long chefId,
-                final Stream<I> ingredients);
+    public <R, I> R as(final As<R, I> toOther,
+            final AsUsed<I> toOtherIngredient) {
+        return toOther.from(getId(), getName(), getChefId(),
+                getIngredients().map(it -> it.asUsed(toOtherIngredient)));
     }
 }

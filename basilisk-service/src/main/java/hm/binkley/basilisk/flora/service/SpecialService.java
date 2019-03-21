@@ -21,7 +21,7 @@ public class SpecialService {
     }
 
     public boolean isDailySpecial(final @NotNull Recipe recipe) {
-        return recipe.ingredients().anyMatch(ingredient ->
+        return recipe.getIngredients().anyMatch(ingredient ->
                 dailySpecial.equals(ingredient.getName()));
     }
 }

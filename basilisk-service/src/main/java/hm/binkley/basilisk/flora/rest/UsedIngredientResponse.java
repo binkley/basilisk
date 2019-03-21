@@ -1,6 +1,6 @@
 package hm.binkley.basilisk.flora.rest;
 
-import hm.binkley.basilisk.flora.domain.UsedIngredient;
+import hm.binkley.basilisk.flora.domain.Ingredients.AsUsed;
 import lombok.Builder;
 import lombok.Value;
 
@@ -16,7 +16,7 @@ public final class UsedIngredientResponse {
     Long recipeId;
     Long chefId;
 
-    static UsedIngredient.As<UsedIngredientResponse> with() {
+    static AsUsed<UsedIngredientResponse> with() {
         return UsedIngredientResponse::new;
     }
 }

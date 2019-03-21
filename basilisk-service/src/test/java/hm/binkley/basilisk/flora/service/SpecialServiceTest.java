@@ -31,7 +31,7 @@ class SpecialServiceTest {
                 .dailySpecial(DAILY_SPECIAL)
                 .build());
 
-        when(recipe.ingredients())
+        when(recipe.getIngredients())
                 .thenReturn(Stream.of(ingredient));
     }
 

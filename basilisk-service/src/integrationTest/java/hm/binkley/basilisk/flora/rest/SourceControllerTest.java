@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hm.binkley.basilisk.configuration.JsonConfiguration;
 import hm.binkley.basilisk.configuration.JsonWebMvcTest;
+import hm.binkley.basilisk.flora.domain.Locations;
 import hm.binkley.basilisk.flora.domain.Source;
 import hm.binkley.basilisk.flora.domain.Sources;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +40,8 @@ class SourceControllerTest {
 
     @MockBean
     private Sources sources;
+    @MockBean
+    private Locations locations;
 
     private static String endpointWithId() {
         return "/source/" + SOURCE_ID;
@@ -54,7 +57,7 @@ class SourceControllerTest {
     void shouldGetAll()
             throws Exception {
         when(sources.all()).thenReturn(
-                Stream.of(new Source(savedSourceRecord(), Set.of())));
+                Stream.of(new Source(savedSourceRecord(), locations)));
 
         jsonMvc.perform(get("/source"))
                 .andExpect(status().isOk())
@@ -64,8 +67,9 @@ class SourceControllerTest {
     @Test
     void shouldGetById()
             throws Exception {
-        when(sources.byId(SOURCE_ID)).thenReturn(
-                Optional.of(new Source(savedSourceRecord(), Set.of())));
+        final var record = savedSourceRecord();
+        when(sources.byId(record.getId())).thenReturn(
+                Optional.of(new Source(record, locations)));
 
         jsonMvc.perform(get(endpointWithId()))
                 .andExpect(status().isOk())
@@ -82,10 +86,11 @@ class SourceControllerTest {
     @Test
     void shouldGetByName()
             throws Exception {
-        when(sources.byName(SOURCE_NAME)).thenReturn(
-                Optional.of(new Source(savedSourceRecord(), Set.of())));
+        final var record = savedSourceRecord();
+        when(sources.byName(record.getName())).thenReturn(
+                Optional.of(new Source(record, locations)));
 
-        jsonMvc.perform(get("/source/find/" + SOURCE_NAME))
+        jsonMvc.perform(get("/source/find/" + record.getName()))
                 .andExpect(status().isOk())
                 .andExpect(content().json(asJson(responseMap())));
     }
@@ -93,7 +98,8 @@ class SourceControllerTest {
     @Test
     void shouldNotGetByName()
             throws Exception {
-        jsonMvc.perform(get("/source/find/" + SOURCE_NAME))
+        final var record = savedSourceRecord();
+        jsonMvc.perform(get("/source/find/" + record.getName()))
                 .andExpect(status().isNotFound());
     }
 
@@ -106,7 +112,7 @@ class SourceControllerTest {
                 .build();
 
         when(sources.create(request)).thenReturn(
-                new Source(savedSourceRecord(), Set.of()));
+                new Source(savedSourceRecord(), locations));
 
         jsonMvc.perform(post("/source")
                 .content(asJson(request)))

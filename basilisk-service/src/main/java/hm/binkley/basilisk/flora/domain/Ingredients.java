@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -41,5 +42,22 @@ public class Ingredients {
         return record.isUsed()
                 ? new UsedIngredient(record)
                 : new UnusedIngredient(record);
+    }
+
+    public interface AsAny<I> {
+        I from(final Long id, final Long sourceId, final String name,
+                final BigDecimal quantity, final Long recipeId,
+                final Long chefId);
+    }
+
+    public interface AsUnused<I> {
+        I from(final Long id, final Long sourceId, final String name,
+                final BigDecimal quantity, final Long chefId);
+    }
+
+    public interface AsUsed<I> {
+        I from(final Long id, final Long sourceId, final String name,
+                final BigDecimal quantity, final Long recipeId,
+                final Long chefId);
     }
 }

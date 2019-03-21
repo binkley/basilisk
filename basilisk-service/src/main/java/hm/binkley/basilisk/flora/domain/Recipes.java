@@ -36,4 +36,9 @@ public class Recipes {
         return new Recipe(store.save(request.as(
                 asRecipeRecord, IngredientRecord::unsaved)));
     }
+
+    public interface As<R, I> {
+        R from(final Long id, final String name, final Long chefId,
+                final Stream<I> ingredients);
+    }
 }

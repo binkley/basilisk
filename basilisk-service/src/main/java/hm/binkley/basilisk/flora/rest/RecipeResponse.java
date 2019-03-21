@@ -1,6 +1,6 @@
 package hm.binkley.basilisk.flora.rest;
 
-import hm.binkley.basilisk.flora.domain.Recipe;
+import hm.binkley.basilisk.flora.domain.Recipes.As;
 import lombok.Builder;
 import lombok.Value;
 
@@ -19,7 +19,7 @@ public final class RecipeResponse {
     @Builder.Default
     Set<UsedIngredientResponse> ingredients = new LinkedHashSet<>();
 
-    static Recipe.As<RecipeResponse, UsedIngredientResponse> with(
+    static As<RecipeResponse, UsedIngredientResponse> with(
             final boolean dailySpecial) {
         return (id, name, chefId, ingredients) ->
                 new RecipeResponse(

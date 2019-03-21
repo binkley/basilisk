@@ -1,5 +1,6 @@
 package hm.binkley.basilisk.flora.domain;
 
+import hm.binkley.basilisk.flora.domain.Ingredients.AsAny;
 import hm.binkley.basilisk.flora.domain.store.IngredientRecord;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -9,38 +10,34 @@ import java.math.BigDecimal;
 
 @EqualsAndHashCode
 @RequiredArgsConstructor
+@SuppressWarnings("PMD.AbstractClassWithoutAbstractMethod")
 @ToString
 public abstract class Ingredient {
     private final IngredientRecord record;
 
-    public Long getId() {
+    public final Long getId() {
         return record.getId();
     }
 
-    public Long getSourceId() { return record.getSourceId(); }
+    public final Long getSourceId() { return record.getSourceId(); }
 
-    public String getName() {
+    public final String getName() {
         return record.getName();
     }
 
-    public BigDecimal getQuantity() {
+    public final BigDecimal getQuantity() {
         return record.getQuantity();
     }
 
-    public Long getRecipeId() {
+    public final Long getRecipeId() {
         return record.getRecipeId();
     }
 
-    public Long getChefId() { return record.getChefId(); }
+    public final Long getChefId() { return record.getChefId(); }
 
-    public <I> I asAny(final As<I> asOther) {
-        return asOther.from(getId(), getSourceId(), getName(), getQuantity(),
+    public final <I> I asAny(final AsAny<I> toIngredient) {
+        return toIngredient.from(
+                getId(), getSourceId(), getName(), getQuantity(),
                 getRecipeId(), getChefId());
-    }
-
-    public interface As<I> {
-        I from(final Long id, final Long sourceId, final String name,
-                final BigDecimal quantity, final Long recipeId,
-                final Long chefId);
     }
 }

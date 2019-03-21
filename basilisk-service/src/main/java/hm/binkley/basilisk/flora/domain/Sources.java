@@ -7,11 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.LinkedHashSet;
 import java.util.Optional;
 import java.util.stream.Stream;
-
-import static java.util.stream.Collectors.toCollection;
 
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -36,9 +33,10 @@ public class Sources {
     }
 
     private Source from(final SourceRecord record) {
-        return new Source(record, record.getAvailableAt().stream()
-                .map(locationRef -> locations.byRef(locationRef)
-                        .orElseThrow())
-                .collect(toCollection(LinkedHashSet::new)));
+        return new Source(record, locations);
+    }
+
+    public interface As<S> {
+        S from(final Long id, final String name);
     }
 }

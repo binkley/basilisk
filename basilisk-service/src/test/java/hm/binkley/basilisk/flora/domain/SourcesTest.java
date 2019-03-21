@@ -9,10 +9,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Stream;
 
-import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.savedLocationRecord;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.savedSourceRecord;
 import static hm.binkley.basilisk.flora.domain.store.SourceRecord.unsaved;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -41,25 +39,7 @@ class SourcesTest {
 
         final Optional<Source> found = sources.byId(saved.getId());
 
-        assertThat(found).contains(new Source(saved, Set.of()));
-
-        verifyNoMoreInteractions(store, locations);
-    }
-
-    @Test
-    void shouldFindByIdWithAvailableAt() {
-        final var locationRecord = savedLocationRecord();
-        final var saved = savedSourceRecord()
-                .availableAt(locationRecord);
-        when(store.byId(saved.getId()))
-                .thenReturn(Optional.of(saved));
-        final var location = new Location(locationRecord);
-        when(locations.byRef(locationRecord.ref()))
-                .thenReturn(Optional.of(location));
-
-        final Optional<Source> found = sources.byId(saved.getId());
-
-        assertThat(found).contains(new Source(saved, Set.of(location)));
+        assertThat(found).contains(new Source(saved, locations));
 
         verifyNoMoreInteractions(store, locations);
     }
@@ -72,7 +52,7 @@ class SourcesTest {
 
         final var found = sources.byName(saved.getName()).orElseThrow();
 
-        assertThat(found).isEqualTo(new Source(saved, Set.of()));
+        assertThat(found).isEqualTo(new Source(saved, locations));
 
         verifyNoMoreInteractions(store, locations);
     }
@@ -85,7 +65,7 @@ class SourcesTest {
 
         final Stream<Source> found = sources.all();
 
-        assertThat(found).containsExactly(new Source(saved, Set.of()));
+        assertThat(found).containsExactly(new Source(saved, locations));
 
         verifyNoMoreInteractions(store, locations);
     }
@@ -99,7 +79,7 @@ class SourcesTest {
         assertThat(sources.create(SourceRequest.builder()
                 .name(saved.getName())
                 .build()))
-                .isEqualTo(new Source(saved, Set.of()));
+                .isEqualTo(new Source(saved, locations));
 
         verifyNoMoreInteractions(store, locations);
     }

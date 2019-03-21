@@ -35,4 +35,8 @@ public class Locations {
     public Location create(final LocationRequest request) {
         return new Location(store.save(request.as(LocationRecord::unsaved)));
     }
+
+    public interface As<L> {
+        L from(final Long id, final String name);
+    }
 }

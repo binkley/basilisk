@@ -1,6 +1,6 @@
 package hm.binkley.basilisk.flora.rest;
 
-import hm.binkley.basilisk.flora.domain.Ingredient;
+import hm.binkley.basilisk.flora.domain.Ingredients.AsAny;
 import lombok.Builder;
 import lombok.Value;
 
@@ -16,7 +16,7 @@ public final class AnyIngredientResponse {
     Long recipeId;
     Long chefId;
 
-    static Ingredient.As<AnyIngredientResponse> with() {
+    static AsAny<AnyIngredientResponse> with() {
         return AnyIngredientResponse::new;
     }
 }
