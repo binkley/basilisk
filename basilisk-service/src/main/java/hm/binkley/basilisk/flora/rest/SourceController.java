@@ -71,7 +71,7 @@ public class SourceController {
     }
 
     private Function<Source, SourceResponse> toResponse() {
-        return it -> it.as(SourceResponse.with());
+        return it -> it.as(SourceResponse.using(), LocationResponse.using());
     }
 
     /** @todo Think more deeply about global controller advice */

@@ -12,6 +12,7 @@ import java.util.stream.Stream;
 
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.CHEF_ID;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.INGREDIENT_QUANTITY;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.RECIPE_NAME;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.SOURCE_ID;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.SOURCE_NAME;
 import static java.util.stream.Collectors.toCollection;
@@ -27,7 +28,7 @@ class RecipeRequestTest {
                 .chefId(CHEF_ID)
                 .build();
         final var request = RecipeRequest.builder()
-                .name("SOUFFLE")
+                .name(RECIPE_NAME)
                 .ingredients(Set.of(ingredientRequest))
                 .build();
 

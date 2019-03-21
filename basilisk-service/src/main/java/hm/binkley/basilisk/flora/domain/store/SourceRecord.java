@@ -22,7 +22,6 @@ public final class SourceRecord
     String name;
     @Column("source_id")
     @Getter
-    @SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
     Set<LocationRef> availableAt = new LinkedHashSet<>();
 
     public SourceRecord(final Long id, final Instant receivedAt,
@@ -35,11 +34,12 @@ public final class SourceRecord
         return new SourceRecord(null, null, name);
     }
 
-    public SourceRecord availableAt(final LocationRecord location) {
-        return availableAt(Stream.of(location));
+    public SourceRecord addAvailableAt(final LocationRecord location) {
+        return addAvailableAt(Stream.of(location));
     }
 
-    public SourceRecord availableAt(final Stream<LocationRecord> locations) {
+    public SourceRecord addAvailableAt(
+            final Stream<LocationRecord> locations) {
         locations.map(LocationRecord::ref).forEach(availableAt::add);
         return this;
     }

@@ -11,10 +11,14 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.IOException;
+import java.util.Set;
+import java.util.stream.Stream;
 
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.LOCATION_ID;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.LOCATION_NAME;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.SOURCE_ID;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.SOURCE_NAME;
-import static hm.binkley.basilisk.flora.rest.SourceResponse.with;
+import static hm.binkley.basilisk.flora.rest.SourceResponse.using;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
@@ -25,19 +29,38 @@ class SourceResponseTest {
     private final JacksonTester<SourceResponse> json;
 
     @Test
-    void shouldBecomeGoodJson()
+    void shouldBecomeGoodJsonWithNoAvailableAt()
             throws IOException {
         assertThat(json.write(SourceResponse.builder()
                 .id(SOURCE_ID)
                 .name(SOURCE_NAME)
                 .build()))
-                .isEqualToJson("source-response-test.json");
+                .isEqualToJson(
+                        "source-with-no-available-at-response-test.json");
+    }
+
+    @Test
+    void shouldBecomeGoodJsonWithSomeAvailableAt()
+            throws IOException {
+        assertThat(json.write(SourceResponse.builder()
+                .id(SOURCE_ID)
+                .name(SOURCE_NAME)
+                .availableAt(Set.of(LocationResponse.builder()
+                        .id(LOCATION_ID)
+                        .name(LOCATION_NAME)
+                        .build()))
+                .build()))
+                .isEqualToJson(
+                        "source-with-some-available-at-response-test.json");
     }
 
     @Test
     void shouldUse() {
-        assertThat(with().from(SOURCE_ID, SOURCE_NAME))
+        final var locationResponse = new LocationResponse(
+                LOCATION_ID, LOCATION_NAME);
+        assertThat(using().from(SOURCE_ID, SOURCE_NAME,
+                Stream.of(locationResponse)))
                 .isEqualTo(new SourceResponse(
-                        SOURCE_ID, SOURCE_NAME));
+                        SOURCE_ID, SOURCE_NAME, Set.of(locationResponse)));
     }
 }

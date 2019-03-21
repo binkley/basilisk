@@ -17,9 +17,11 @@ import java.util.stream.Stream;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.CHEF_ID;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.INGREDIENT_ID;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.INGREDIENT_QUANTITY;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.RECIPE_ID;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.RECIPE_NAME;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.SOURCE_ID;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.SOURCE_NAME;
-import static hm.binkley.basilisk.flora.rest.RecipeResponse.with;
+import static hm.binkley.basilisk.flora.rest.RecipeResponse.using;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
@@ -33,8 +35,8 @@ class RecipeResponseTest {
     void shouldBecomeGoodJsonWithNoIngredients()
             throws IOException {
         assertThat(json.write(RecipeResponse.builder()
-                .id(33L)
-                .name("SOUFFLE")
+                .id(RECIPE_ID)
+                .name(RECIPE_NAME)
                 .chefId(CHEF_ID)
                 .build()))
                 .isEqualToJson(
@@ -44,18 +46,16 @@ class RecipeResponseTest {
     @Test
     void shouldBecomeGoodJsonWithSomeIngredients()
             throws IOException {
-        final var recipeId = 33L;
-
         assertThat(json.write(RecipeResponse.builder()
-                .id(recipeId)
-                .name("SOUFFLE")
+                .id(RECIPE_ID)
+                .name(RECIPE_NAME)
                 .chefId(CHEF_ID)
                 .ingredients(Set.of(UsedIngredientResponse.builder()
                         .id(INGREDIENT_ID)
                         .sourceId(SOURCE_ID)
                         .name(SOURCE_NAME)
                         .quantity(INGREDIENT_QUANTITY)
-                        .recipeId(recipeId)
+                        .recipeId(RECIPE_ID)
                         .chefId(CHEF_ID)
                         .build()))
                 .build()))
@@ -65,15 +65,14 @@ class RecipeResponseTest {
 
     @Test
     void shouldUse() {
-        final var recipeId = 33L;
-        final var name = "SOUFFLE";
         final var ingredientResponse = new UsedIngredientResponse(
                 INGREDIENT_ID, SOURCE_ID, SOURCE_NAME,
-                INGREDIENT_QUANTITY, recipeId, CHEF_ID);
+                INGREDIENT_QUANTITY, RECIPE_ID, CHEF_ID);
 
-        assertThat(with(true).from(
-                recipeId, name, CHEF_ID, Stream.of(ingredientResponse)))
-                .isEqualTo(new RecipeResponse(recipeId, name, true, CHEF_ID,
-                        Set.of(ingredientResponse)));
+        assertThat(using(true).from(
+                RECIPE_ID, RECIPE_NAME, CHEF_ID,
+                Stream.of(ingredientResponse)))
+                .isEqualTo(new RecipeResponse(RECIPE_ID, RECIPE_NAME, true,
+                        CHEF_ID, Set.of(ingredientResponse)));
     }
 }

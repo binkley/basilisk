@@ -8,9 +8,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.CHEF_ID;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.savedRecipeRecord;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.unsavedRecipeRecord;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.unsavedUnusedIngredientRecord;
-import static java.time.Instant.EPOCH;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -24,19 +24,17 @@ class RecipeRecordTest {
     @Test
     void shouldAddSomeIngredients() {
         final var ingredientRecord = unsavedUnusedIngredientRecord();
-        final var record = RecipeRecord.unsaved("SOUFFLE", CHEF_ID)
+        final var record = unsavedRecipeRecord()
                 .addAll(Stream.of(ingredientRecord));
 
         assertThat(record.ingredients).isEqualTo(Set.of(ingredientRecord));
-        // TODO: Auto-save when adding ingredients?
     }
 
     @Test
     void shouldSaveWithoutIngredients() {
-        final var unsaved = RecipeRecord.unsaved("SOUFFLE", CHEF_ID);
+        final var unsaved = unsavedRecipeRecord();
         unsaved.store = store;
-        final var saved = new RecipeRecord(
-                3L, EPOCH, unsaved.getName(), CHEF_ID);
+        final var saved = savedRecipeRecord();
         saved.store = store;
         when(store.save(unsaved))
                 .thenReturn(saved);
@@ -49,12 +47,11 @@ class RecipeRecordTest {
 
     @Test
     void shouldSaveWithIngredients() {
-        final var unsaved = RecipeRecord.unsaved("SOUFFLE", CHEF_ID);
+        final var unsaved = unsavedRecipeRecord();
         unsaved.store = store;
         final var unsavedIngredient = unsavedUnusedIngredientRecord();
         unsaved.ingredients.add(unsavedIngredient);
-        final var saved = new RecipeRecord(
-                3L, EPOCH, unsaved.getName(), CHEF_ID);
+        final var saved = savedRecipeRecord();
         saved.store = store;
         saved.ingredients.add(unsavedIngredient);
         when(store.save(unsaved))
@@ -68,7 +65,7 @@ class RecipeRecordTest {
 
     @Test
     void shouldClone() {
-        final var unsaved = RecipeRecord.unsaved("BOILED EGGS", CHEF_ID);
+        final var unsaved = unsavedRecipeRecord();
 
         assertThat(unsaved.clone()).isEqualTo(unsaved);
     }

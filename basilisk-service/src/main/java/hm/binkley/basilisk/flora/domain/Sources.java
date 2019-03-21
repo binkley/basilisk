@@ -36,7 +36,7 @@ public class Sources {
         return new Source(record, locations);
     }
 
-    public interface As<S> {
-        S from(final Long id, final String name);
+    public interface As<S, L> {
+        S from(final Long id, final String name, final Stream<L> availableAt);
     }
 }

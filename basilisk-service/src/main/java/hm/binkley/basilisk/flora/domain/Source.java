@@ -1,6 +1,5 @@
 package hm.binkley.basilisk.flora.domain;
 
-import hm.binkley.basilisk.flora.domain.Sources.As;
 import hm.binkley.basilisk.flora.domain.store.SourceRecord;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +29,9 @@ public final class Source {
                 .map(Optional::orElseThrow);
     }
 
-    public <S> S as(final As<S> toSource) {
-        return toSource.from(getId(), getName());
+    public <S, L> S as(final Sources.As<S, L> toSource,
+            final Locations.As<L> toLocation) {
+        return toSource.from(getId(), getName(),
+                getAvailableAt().map(it -> it.as(toLocation)));
     }
 }

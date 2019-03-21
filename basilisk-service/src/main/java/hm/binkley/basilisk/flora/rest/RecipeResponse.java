@@ -19,11 +19,10 @@ public final class RecipeResponse {
     @Builder.Default
     Set<UsedIngredientResponse> ingredients = new LinkedHashSet<>();
 
-    static As<RecipeResponse, UsedIngredientResponse> with(
+    static As<RecipeResponse, UsedIngredientResponse> using(
             final boolean dailySpecial) {
-        return (id, name, chefId, ingredients) ->
-                new RecipeResponse(
-                        id, name, dailySpecial, chefId, ingredients
-                        .collect(toCollection(LinkedHashSet::new)));
+        return (id, name, chefId, ingredients) -> new RecipeResponse(
+                id, name, dailySpecial, chefId, ingredients
+                .collect(toCollection(LinkedHashSet::new)));
     }
 }

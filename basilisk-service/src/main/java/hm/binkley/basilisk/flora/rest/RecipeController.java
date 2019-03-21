@@ -74,7 +74,7 @@ public class RecipeController {
 
     private Function<Recipe, RecipeResponse> toResponse() {
         return it -> it.as(
-                RecipeResponse.with(specialService.isDailySpecial(it)),
+                RecipeResponse.using(specialService.isDailySpecial(it)),
                 UsedIngredientResponse.with());
     }
 

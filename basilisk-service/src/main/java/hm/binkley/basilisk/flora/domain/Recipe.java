@@ -1,7 +1,7 @@
 package hm.binkley.basilisk.flora.domain;
 
-import hm.binkley.basilisk.flora.domain.Recipes.As;
 import hm.binkley.basilisk.flora.domain.Ingredients.AsUsed;
+import hm.binkley.basilisk.flora.domain.Recipes.As;
 import hm.binkley.basilisk.flora.domain.store.RecipeRecord;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -33,9 +33,9 @@ public final class Recipe {
                 .map(UsedIngredient::new);
     }
 
-    public <R, I> R as(final As<R, I> toOther,
-            final AsUsed<I> toOtherIngredient) {
-        return toOther.from(getId(), getName(), getChefId(),
-                getIngredients().map(it -> it.asUsed(toOtherIngredient)));
+    public <R, I> R as(final As<R, I> toRecipe,
+            final AsUsed<I> toIngredient) {
+        return toRecipe.from(getId(), getName(), getChefId(),
+                getIngredients().map(it -> it.asUsed(toIngredient)));
     }
 }

@@ -25,6 +25,9 @@ public final class FloraFixtures {
             = EPOCH.plusSeconds(1_000_000L);
     public static final BigDecimal INGREDIENT_QUANTITY = ONE;
     public static final Long RECIPE_ID = 4L;
+    public static final Instant RECIPE_RECEIVED_AT
+            = EPOCH.plusSeconds(1_100_000L);
+    public static final String RECIPE_NAME = "SOUFFLE";
     public static final Long LOCATION_ID = 42L;
     public static final Instant LOCATON_RECEIVED_AT
             = EPOCH.plusSeconds(1_200_000L);
@@ -92,6 +95,17 @@ public final class FloraFixtures {
         final var saved = unsavedLocationRecord();
         saved.id = LOCATION_ID;
         saved.receivedAt = LOCATON_RECEIVED_AT;
+        return saved;
+    }
+
+    public static RecipeRecord unsavedRecipeRecord() {
+        return new RecipeRecord(null, null, RECIPE_NAME, CHEF_ID);
+    }
+
+    public static RecipeRecord savedRecipeRecord() {
+        final var saved = unsavedRecipeRecord();
+        saved.id = RECIPE_ID;
+        saved.receivedAt = RECIPE_RECEIVED_AT;
         return saved;
     }
 }
