@@ -146,7 +146,7 @@ readonly verbose
 readonly debug
 
 case $# in
-0 ) set -- clean build run ;;
+0 ) set -- run ;;
 esac
 
 # Assume no sub-command takes arguments

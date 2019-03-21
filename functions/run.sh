@@ -5,6 +5,6 @@ function run {
 
 function -run-help {
     cat <<EOH
-Runs Docker image.
+Runs program with Docker images.
 EOH
 }
