@@ -1,5 +1,6 @@
 package hm.binkley.basilisk.flora.domain.store;
 
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,9 +20,10 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
+@RequiredArgsConstructor
 class RecipeStoreTest {
     @Mock
-    private RecipeRepository springData;
+    private final RecipeRepository springData;
 
     private RecipeStore store;
 

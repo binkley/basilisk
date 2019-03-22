@@ -1,5 +1,6 @@
 package hm.binkley.basilisk;
 
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,12 +14,13 @@ import static org.mockito.Mockito.verify;
 import static org.springframework.boot.Banner.Mode.OFF;
 
 @ExtendWith(MockitoExtension.class)
+@RequiredArgsConstructor
 class SuppressSpringBootTestsLoggingApplicationListenerTest {
     private final SuppressSpringBootTestsLoggingApplicationListener listener
             = new SuppressSpringBootTestsLoggingApplicationListener();
 
     @Mock
-    private SpringApplication application;
+    private final SpringApplication application;
 
     private ApplicationStartingEvent event;
 

@@ -3,6 +3,7 @@ package hm.binkley.basilisk.flora.domain;
 import hm.binkley.basilisk.flora.domain.store.LocationRecord;
 import hm.binkley.basilisk.flora.domain.store.LocationStore;
 import hm.binkley.basilisk.flora.rest.LocationRequest;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,9 +19,10 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
+@RequiredArgsConstructor
 class LocationsTest {
     @Mock
-    private LocationStore store;
+    private final LocationStore store;
 
     private Locations locations;
 

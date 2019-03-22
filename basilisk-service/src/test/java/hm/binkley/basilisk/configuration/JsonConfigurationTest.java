@@ -2,6 +2,7 @@ package hm.binkley.basilisk.configuration;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -25,13 +26,15 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 @ExtendWith(MockitoExtension.class)
+@RequiredArgsConstructor
 class JsonConfigurationTest {
     @Mock
-    private Jackson2ObjectMapperBuilder builder;
+    private final Jackson2ObjectMapperBuilder builder;
+    @Mock
+    private final JsonGenerator gen;
+
     @Captor
     private ArgumentCaptor<JsonSerializer<Instant>> serializer;
-    @Mock
-    private JsonGenerator gen;
 
     @Test
     void shouldFormatDefault()

@@ -3,6 +3,7 @@ package hm.binkley.basilisk.flora.domain;
 import hm.binkley.basilisk.flora.domain.store.ChefRecord;
 import hm.binkley.basilisk.flora.domain.store.ChefStore;
 import hm.binkley.basilisk.flora.rest.ChefRequest;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,9 +19,10 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
+@RequiredArgsConstructor
 class ChefsTest {
     @Mock
-    private ChefStore store;
+    private final ChefStore store;
 
     private Chefs chefs;
 

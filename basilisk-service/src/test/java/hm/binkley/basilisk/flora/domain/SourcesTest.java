@@ -2,6 +2,7 @@ package hm.binkley.basilisk.flora.domain;
 
 import hm.binkley.basilisk.flora.domain.store.SourceStore;
 import hm.binkley.basilisk.flora.rest.SourceRequest;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,11 +19,12 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
+@RequiredArgsConstructor
 class SourcesTest {
     @Mock
-    private SourceStore store;
+    private final SourceStore store;
     @Mock
-    private Locations locations;
+    private final Locations locations;
 
     private Sources sources;
 

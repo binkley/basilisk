@@ -3,6 +3,7 @@ package hm.binkley.basilisk.flora.service;
 import hm.binkley.basilisk.flora.configuration.FloraProperties;
 import hm.binkley.basilisk.flora.domain.Recipe;
 import hm.binkley.basilisk.flora.domain.UsedIngredient;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,13 +16,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
+@RequiredArgsConstructor
 class SpecialServiceTest {
     private static final String DAILY_SPECIAL = "MINT";
 
     @Mock
-    private UsedIngredient ingredient;
+    private final UsedIngredient ingredient;
     @Mock
-    private Recipe recipe;
+    private final Recipe recipe;
 
     private SpecialService service;
 

@@ -3,6 +3,7 @@ package hm.binkley.basilisk.flora.domain;
 import hm.binkley.basilisk.flora.domain.store.IngredientRecord;
 import hm.binkley.basilisk.flora.domain.store.IngredientStore;
 import hm.binkley.basilisk.flora.rest.UnusedIngredientRequest;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,9 +20,10 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
+@RequiredArgsConstructor
 class IngredientsTest {
     @Mock
-    private IngredientStore store;
+    private final IngredientStore store;
 
     private Ingredients ingredients;
 
