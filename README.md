@@ -124,9 +124,9 @@ These are "2nd-class objects", needed by "meal planners", but not as central
 
 * [Docker](#docker)
 * Modern Spring Boot
+* [Spring Data JDBC](#spring-data-jdbc)
 * [Spring Boot Actuator](#actuator)
 * [Spring Boot Admin](#admin)
-* Spring Data JDBC
 * [Spring Data JDBC auditing](#spring-data-jdbc-auditing)
 * [Swagger](#swagger)
 * [Run script](#running)
@@ -184,6 +184,15 @@ Some reading:
 
 * [Anemic Domain Model](https://martinfowler.com/bliki/AnemicDomainModel.html)
 * [How accurate is “Business logic should be in a service, not in a model”?](https://softwareengineering.stackexchange.com/questions/218011/how-accurate-is-business-logic-should-be-in-a-service-not-in-a-model)
+
+### Spring Data JDBC
+
+- [Simple ownership](basilisk-service/src/main/java/hm/binkley/basilisk/store)
+- [Complex ownership](basilisk-service/src/main/java/hm/binkley/basilisk/store/x)
+
+See
+[_Spring Data JDBC, References, and Aggregates_](https://spring.io/blog/2018/09/24/spring-data-jdbc-references-and-aggregates)
+for more details.
 
 [[TOC]](#basilisk)
 
