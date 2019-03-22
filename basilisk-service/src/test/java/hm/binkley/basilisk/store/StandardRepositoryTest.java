@@ -1,14 +1,11 @@
 package hm.binkley.basilisk.store;
 
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.validation.constraints.NotNull;
-import java.time.Instant;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -71,34 +68,5 @@ class StandardRepositoryTest {
         if (null == found) return;
         update.id = found.id;
         update.receivedAt = found.receivedAt;
-    }
-
-    interface MyTestRepository
-            extends StandardRepository<MyTestRecord, MyTestRepository,
-            MyTestStore> {
-        Optional<MyTestRecord> findByCode(String code);
-    }
-
-    @EqualsAndHashCode(callSuper = true)
-    @ToString(callSuper = true)
-    static final class MyTestRecord
-            extends StandardRecord<MyTestRecord, MyTestRepository,
-            MyTestStore> {
-        String code;
-        int number;
-
-        MyTestRecord(final Long id, final Instant receivedAt,
-                final String code, final int number) {
-            super(() -> new MyTestRecord(id, receivedAt, code, number),
-                    id, receivedAt);
-        }
-    }
-
-    class MyTestStore
-            extends StandardStore<MyTestRecord, MyTestRepository,
-            MyTestStore> {
-        public MyTestStore() {
-            super(repository);
-        }
     }
 }
