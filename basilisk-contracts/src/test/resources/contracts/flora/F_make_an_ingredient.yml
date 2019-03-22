@@ -6,6 +6,7 @@ request:
     Content-Type: application/json;charset=UTF-8
   body:
     source-id: 1
+    code: "EGG#123"
     name: "EGGS"
     quantity: 1
     chef-id: 1
@@ -16,6 +17,7 @@ response:
     Location: /ingredient/1
   body:
     id: 1
+    code: "EGG#123"
     source-id: 1
     name: "EGGS"
     quantity: 1

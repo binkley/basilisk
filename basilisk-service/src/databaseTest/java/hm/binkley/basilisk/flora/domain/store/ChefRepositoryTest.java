@@ -27,6 +27,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class ChefRepositoryTest {
     private final ChefRepository repository;
 
+    private static ChefRecord distinctChefRecord() {
+        final var record = unsavedChefRecord();
+        return ChefRecord.unsaved(
+                record.getCode() + "x", record.getName() + "x");
+    }
+
     @Test
     void shouldAudit() {
         final var unsaved = unsavedChefRecord();
@@ -52,7 +58,8 @@ class ChefRepositoryTest {
 
         assertThat(repository.findByCode(unsaved.getCode()).orElseThrow())
                 .isEqualTo(unsaved);
-        assertThat(repository.findByCode(unsaved.getCode() + "x")).isEmpty();
+        assertThat(repository.findByCode(distinctChefRecord().getCode()))
+                .isEmpty();
     }
 
     @Test
@@ -73,7 +80,8 @@ class ChefRepositoryTest {
 
         assertThat(repository.findByName(unsaved.getName()).orElseThrow())
                 .isEqualTo(unsaved);
-        assertThat(repository.findByName(unsaved.getName() + "x")).isEmpty();
+        assertThat(repository.findByName(distinctChefRecord().getName()))
+                .isEmpty();
     }
 
     @Test
@@ -90,8 +98,7 @@ class ChefRepositoryTest {
     @Test
     void shouldStream() {
         final var unsavedA = unsavedChefRecord();
-        final var unsavedB = ChefRecord.unsaved(
-                unsavedA.getCode() + "x", unsavedA.getName() + "x");
+        final var unsavedB = distinctChefRecord();
         repository.saveAll(Set.of(unsavedA, unsavedB));
 
         try (final var found = repository.readAll()) {

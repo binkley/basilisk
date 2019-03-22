@@ -27,6 +27,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class LocationRepositoryTest {
     private final LocationRepository repository;
 
+    private static LocationRecord distinctLocationRecord() {
+        final var record = unsavedLocationRecord();
+        return LocationRecord.unsaved(
+                record.getCode() + "x", record.getName() + "x");
+    }
+
     @Test
     void shouldAudit() {
         final var unsaved = unsavedLocationRecord();
@@ -52,7 +58,8 @@ class LocationRepositoryTest {
 
         assertThat(repository.findByCode(unsaved.getCode()).orElseThrow())
                 .isEqualTo(unsaved);
-        assertThat(repository.findByCode(unsaved.getCode() + "x")).isEmpty();
+        assertThat(repository.findByCode(distinctLocationRecord().getCode()))
+                .isEmpty();
     }
 
     @Test
@@ -73,7 +80,7 @@ class LocationRepositoryTest {
 
         assertThat(repository.findByName(unsaved.getName()).orElseThrow())
                 .isEqualTo(unsaved);
-        assertThat(repository.findByName(unsaved.getName() + "x"))
+        assertThat(repository.findByName(distinctLocationRecord().getName()))
                 .isEmpty();
     }
 
@@ -91,8 +98,7 @@ class LocationRepositoryTest {
     @Test
     void shouldStream() {
         final var unsavedA = unsavedLocationRecord();
-        final var unsavedB = LocationRecord.unsaved(
-                unsavedA.getCode() + "x", unsavedA.getName() + "x");
+        final var unsavedB = distinctLocationRecord();
         repository.saveAll(Set.of(unsavedA, unsavedB));
 
         try (final var found = repository.readAll()) {

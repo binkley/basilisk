@@ -12,9 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
-import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.SOURCE_ID;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.unsavedUnusedIngredientRecord;
-import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.unsavedUnusedIngredientRecordNamed;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ActiveProfiles("test")
@@ -25,6 +23,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Transactional
 class IngredientRepositoryTest {
     private final IngredientRepository repository;
+
+    private static IngredientRecord distinctIngredientRecord() {
+        final var record = unsavedUnusedIngredientRecord();
+        return IngredientRecord.unsaved(
+                record.getCode() + "x", record.getSourceId(),
+                record.getName() + "x", record.getQuantity(),
+                record.getChefId());
+    }
 
     @Test
     void shouldAudit() {
@@ -47,8 +53,7 @@ class IngredientRepositoryTest {
     @Test
     void shouldFindAllByName() {
         final var unsavedA = unsavedUnusedIngredientRecord();
-        final var unsavedB = unsavedUnusedIngredientRecordNamed(
-                SOURCE_ID + 1, "PICKLES");
+        final var unsavedB = distinctIngredientRecord();
         repository.saveAll(Set.of(unsavedA, unsavedB));
 
         assertThat(repository.findAllByName(unsavedA.getName()))
@@ -59,8 +64,7 @@ class IngredientRepositoryTest {
     @Test
     void shouldStream() {
         final var unsavedA = unsavedUnusedIngredientRecord();
-        final var unsavedB = unsavedUnusedIngredientRecordNamed(
-                SOURCE_ID + 1, "PICKLES");
+        final var unsavedB = distinctIngredientRecord();
         repository.saveAll(Set.of(unsavedA, unsavedB));
 
         try (final var found = repository.readAll()) {

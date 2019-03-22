@@ -6,7 +6,6 @@ import hm.binkley.basilisk.configuration.JsonConfiguration;
 import hm.binkley.basilisk.configuration.JsonWebMvcTest;
 import hm.binkley.basilisk.flora.domain.Recipe;
 import hm.binkley.basilisk.flora.domain.Recipes;
-import hm.binkley.basilisk.flora.domain.store.RecipeRecord;
 import hm.binkley.basilisk.flora.service.SpecialService;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
@@ -26,11 +25,11 @@ import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.CHEF_ID;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.INGREDIENT_ID;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.INGREDIENT_QUANTITY;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.RECIPE_ID;
-import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.RECIPE_NAME;
-import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.RECIPE_RECEIVED_AT;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.SOURCE_NAME;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.savedRecipeRecord;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.savedUsedIngredientRecord;
-import static java.time.Instant.EPOCH;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.unsavedRecipeRecord;
+import static hm.binkley.basilisk.flora.rest.RecipeController.CREATED_RECIPE;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.LOCATION;
@@ -93,10 +92,8 @@ class RecipeControllerTest {
     @Test
     void shouldGetAll()
             throws Exception {
-        final String name = "POACHED EGGS";
-
-        final var recipe = new Recipe(
-                new RecipeRecord(RECIPE_ID, EPOCH, name, CHEF_ID));
+        final var record = savedRecipeRecord();
+        final var recipe = new Recipe(record);
         when(recipes.all())
                 .thenReturn(Stream.of(recipe));
         when(specialService.isDailySpecial(recipe))
@@ -105,17 +102,15 @@ class RecipeControllerTest {
         jsonMvc.perform(get("/recipe"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(asJson(Set.of(
-                        responseMapFor(name, false)))));
+                        responseMapFor(recipe.getName(), false)))));
     }
 
     @Test
     void shouldGetById()
             throws Exception {
-        final String name = "FRIED EGGS";
-
-        final var recipe = new Recipe(
-                new RecipeRecord(RECIPE_ID, EPOCH, name, CHEF_ID));
-        when(recipes.byId(RECIPE_ID))
+        final var record = savedRecipeRecord();
+        final var recipe = new Recipe(record);
+        when(recipes.byId(record.getId()))
                 .thenReturn(Optional.of(recipe));
         when(specialService.isDailySpecial(recipe))
                 .thenReturn(false);
@@ -123,7 +118,7 @@ class RecipeControllerTest {
         jsonMvc.perform(get(endpointWithId()))
                 .andExpect(status().isOk())
                 .andExpect(content().json(asJson(
-                        responseMapFor(name, false))));
+                        responseMapFor(recipe.getName(), false))));
     }
 
     @Test
@@ -136,31 +131,26 @@ class RecipeControllerTest {
     @Test
     void shouldGetByName()
             throws Exception {
-        final String name = "BOILED EGGS";
+        final var record = savedRecipeRecord();
+        when(recipes.byName(record.getName()))
+                .thenReturn(Optional.of(new Recipe(record)));
 
-        when(recipes.byName(name))
-                .thenReturn(Optional.of(new Recipe(
-                        new RecipeRecord(RECIPE_ID, EPOCH, name, CHEF_ID))));
-
-        jsonMvc.perform(get("/recipe/find/" + name))
+        jsonMvc.perform(get("/recipe/find/" + record.getName()))
                 .andExpect(status().isOk())
                 .andExpect(content().json(asJson(
-                        responseMapFor(name, false))));
+                        responseMapFor(record.getName(), false))));
     }
 
     @Test
     void shouldPostNewWithNoIngredients()
             throws Exception {
-        final var name = RECIPE_NAME;
-        final var record = RecipeRecord.unsaved(name, CHEF_ID);
+        final var record = unsavedRecipeRecord();
         final RecipeRequest request = RecipeRequest.builder()
-                .name(name)
-                .chefId(CHEF_ID)
+                .name(record.getName())
+                .chefId(record.getChefId())
                 .build();
 
-        final var recipe = new Recipe(new RecipeRecord(RECIPE_ID,
-                RECIPE_RECEIVED_AT,
-                record.getName(), record.getChefId()));
+        final var recipe = new Recipe(savedRecipeRecord());
         when(recipes.create(request))
                 .thenReturn(recipe);
 
@@ -169,21 +159,19 @@ class RecipeControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(header().string(LOCATION, endpointWithId()))
                 .andExpect(content().json(asJson(
-                        responseMapFor(name, false))));
+                        responseMapFor(record.getName(), false))));
 
         final var response = controller.toResponse().apply(recipe);
-        verify(logger).info(RecipeController.CREATED_RECIPE,
-                response);
+        verify(logger).info(CREATED_RECIPE, response);
     }
 
     @Test
     void shouldPostNewWithSomeIngredients()
             throws Exception {
-        final var name = RECIPE_NAME;
-        final var record = RecipeRecord.unsaved(name, CHEF_ID);
+        final var record = unsavedRecipeRecord();
         final RecipeRequest request = RecipeRequest.builder()
-                .name(name)
-                .chefId(CHEF_ID)
+                .name(record.getName())
+                .chefId(record.getChefId())
                 .ingredients(Set.of(UsedIngredientRequest.builder()
                         .name(SOURCE_NAME)
                         .quantity(INGREDIENT_QUANTITY)
@@ -191,9 +179,7 @@ class RecipeControllerTest {
                         .build()))
                 .build();
 
-        final var recipe = new Recipe(new RecipeRecord(RECIPE_ID,
-                EPOCH.plusSeconds(1_000_000), record.getName(),
-                record.getChefId())
+        final var recipe = new Recipe(savedRecipeRecord()
                 .add(savedUsedIngredientRecord()));
         when(specialService.isDailySpecial(recipe))
                 .thenReturn(true);
@@ -205,7 +191,7 @@ class RecipeControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(header().string(LOCATION, endpointWithId()))
                 .andExpect(content().json(asJson(
-                        responseMapFor(name, true))));
+                        responseMapFor(record.getName(), true))));
     }
 
     private String asJson(final Object o)

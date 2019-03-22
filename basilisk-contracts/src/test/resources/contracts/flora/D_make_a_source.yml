@@ -5,6 +5,7 @@ request:
   headers:
     Content-Type: application/json;charset=UTF-8
   body:
+    code: "FARM#123"
     name: "EGGS"
 response:
   status: 201
@@ -13,4 +14,5 @@ response:
     Location: /source/1
   body:
     id: 1
+    code: "FARM#123"
     name: "EGGS"

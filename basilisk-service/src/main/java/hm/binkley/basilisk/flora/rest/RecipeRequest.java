@@ -14,7 +14,7 @@ import java.util.stream.Stream;
 @Data
 @RequiredArgsConstructor
 public final class RecipeRequest {
-    private final @Length(min = 3, max = 7) String code;
+    private final @Length(min = 3, max = 8) String code;
     private final @Length(min = 3, max = 32) String name;
     private final @NotNull Long chefId;
     @Builder.Default

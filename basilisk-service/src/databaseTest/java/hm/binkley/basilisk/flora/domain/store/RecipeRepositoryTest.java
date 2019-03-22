@@ -14,9 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
-import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.CHEF_ID;
-import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.RECIPE_CODE;
-import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.RECIPE_NAME;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.unsavedRecipeRecord;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.unsavedUnusedIngredientRecord;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -40,8 +37,10 @@ class RecipeRepositoryTest {
     }
 
     private static RecipeRecord distinctRecipeRecord() {
+        final var record = unsavedRecipeRecord();
         return RecipeRecord.unsaved(
-                RECIPE_CODE + "x", RECIPE_NAME + "x", CHEF_ID);
+                record.getCode() + "x", record.getName() + "x",
+                record.getChefId());
     }
 
     @Test
@@ -97,7 +96,8 @@ class RecipeRepositoryTest {
 
         assertThat(repository.findByCode(unsaved.getCode()).orElseThrow())
                 .isEqualTo(unsaved);
-        assertThat(repository.findByCode(unsaved.getCode() + "x")).isEmpty();
+        assertThat(repository.findByCode(distinctRecipeRecord().getCode()))
+                .isEmpty();
     }
 
     @Test

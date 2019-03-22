@@ -28,6 +28,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class SourceRepositoryTest {
     private final SourceRepository repository;
 
+    private static SourceRecord distinctSourceRecord() {
+        final var record = unsavedSourceRecord();
+        return SourceRecord.unsaved(
+                record.getCode() + "x", record.getName() + "x");
+    }
+
     @Test
     void shouldAudit() {
         final var unsaved = unsavedSourceRecord();
@@ -70,7 +76,7 @@ class SourceRepositoryTest {
     @Test
     void shouldFindByName() {
         final var unsavedA = unsavedSourceRecord();
-        final var unsavedB = SourceRecord.unsaved(unsavedA.getName() + "x");
+        final var unsavedB = distinctSourceRecord();
         repository.saveAll(Set.of(unsavedA, unsavedB));
 
         assertThat(repository.findByName(unsavedA.getName()).orElseThrow())
@@ -81,7 +87,7 @@ class SourceRepositoryTest {
     @Test
     void shouldStream() {
         final var unsavedA = unsavedSourceRecord();
-        final var unsavedB = SourceRecord.unsaved(unsavedA.getName() + "x");
+        final var unsavedB = distinctSourceRecord();
         repository.saveAll(Set.of(unsavedA, unsavedB));
 
         try (final var found = repository.readAll()) {

@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.LOCATION_CODE;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.LOCATION_ID;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.LOCATION_NAME;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.SOURCE_CODE;
@@ -58,7 +59,7 @@ class SourceResponseTest {
     @Test
     void shouldUse() {
         final var locationResponse = new LocationResponse(
-                LOCATION_ID, LOCATION_NAME);
+                LOCATION_ID, LOCATION_CODE, LOCATION_NAME);
         assertThat(using().from(SOURCE_ID, SOURCE_CODE, SOURCE_NAME,
                 Stream.of(locationResponse)))
                 .isEqualTo(new SourceResponse(SOURCE_ID, SOURCE_CODE,

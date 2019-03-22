@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 @RequiredArgsConstructor
 public final class UsedIngredientRequest {
     private final @NotNull Long sourceId;
-    private final @Length(min = 3, max = 7) String code;
+    private final @Length(min = 3, max = 8) String code;
     private final @Length(min = 3, max = 32) String name;
     private final @NotNull BigDecimal quantity;
     private final @NotNull Long chefId;
