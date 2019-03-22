@@ -16,11 +16,15 @@ public final class Location {
         return record.getId();
     }
 
+    public String getCode() {
+        return record.getCode();
+    }
+
     public String getName() {
         return record.getName();
     }
 
     public <L> L as(final As<L> toLocation) {
-        return toLocation.from(getId(), getName());
+        return toLocation.from(getId(), getCode(), getName());
     }
 }

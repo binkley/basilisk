@@ -75,10 +75,11 @@ class SourcesTest {
     @Test
     void shouldCreateNew() {
         final var saved = savedSourceRecord();
-        when(store.save(unsaved(saved.getName())))
+        when(store.save(unsaved(saved.getCode(), saved.getName())))
                 .thenReturn(saved);
 
         assertThat(sources.create(SourceRequest.builder()
+                .code(saved.getCode())
                 .name(saved.getName())
                 .build()))
                 .isEqualTo(new Source(saved, locations));

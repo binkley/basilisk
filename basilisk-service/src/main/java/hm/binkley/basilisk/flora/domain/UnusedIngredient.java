@@ -15,7 +15,7 @@ public final class UnusedIngredient
 
     public <I> I asUnused(final AsUnused<I> toIngredient) {
         return toIngredient.from(
-                getId(), getSourceId(), getName(), getQuantity(),
+                getId(), getCode(), getSourceId(), getName(), getQuantity(),
                 getChefId());
     }
 }

@@ -15,13 +15,17 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class Recipes {
     private static final RecipeRequest.As<RecipeRecord, IngredientRecord>
-            asRecipeRecord = (name, chefId, ingredients) ->
-            RecipeRecord.unsaved(name, chefId).addAll(ingredients);
+            asRecipeRecord = (code, name, chefId, ingredients) ->
+            RecipeRecord.unsaved(code, name, chefId).addAll(ingredients);
 
     private final RecipeStore store;
 
     public Optional<Recipe> byId(final Long id) {
         return store.byId(id).map(Recipe::new);
+    }
+
+    public Optional<Recipe> byCode(final String code) {
+        return store.byCode(code).map(Recipe::new);
     }
 
     public Optional<Recipe> byName(final String name) {
@@ -38,7 +42,7 @@ public class Recipes {
     }
 
     public interface As<R, I> {
-        R from(final Long id, final String name, final Long chefId,
-                final Stream<I> ingredients);
+        R from(final Long id, final String code, final String name,
+                final Long chefId, final Stream<I> ingredients);
     }
 }

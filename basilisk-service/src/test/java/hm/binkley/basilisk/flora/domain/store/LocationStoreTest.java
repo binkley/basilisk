@@ -81,7 +81,7 @@ class LocationStoreTest {
         when(springData.save(unsaved))
                 .thenReturn(saved);
 
-        assertThat(store.create(unsaved.getName()))
+        assertThat(store.create(unsaved.getCode(), unsaved.getName()))
                 .isEqualTo(saved);
 
         verify(springData).save(unsaved);

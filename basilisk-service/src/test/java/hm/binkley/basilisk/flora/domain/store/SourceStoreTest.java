@@ -13,7 +13,8 @@ import java.util.stream.Stream;
 
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.SOURCE_ID;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.SOURCE_NAME;
-import static java.time.Instant.EPOCH;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.savedSourceRecord;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.unsavedSourceRecord;
 import static java.util.stream.Collectors.toSet;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
@@ -35,7 +36,7 @@ class SourceStoreTest {
 
     @Test
     void shouldFindById() {
-        final var saved = new SourceRecord(SOURCE_ID, EPOCH, SOURCE_NAME);
+        final var saved = savedSourceRecord();
         when(springData.findById(SOURCE_ID))
                 .thenReturn(Optional.of(saved));
 
@@ -49,7 +50,7 @@ class SourceStoreTest {
 
     @Test
     void shouldFindByName() {
-        final var saved = new SourceRecord(SOURCE_ID, EPOCH, SOURCE_NAME);
+        final var saved = savedSourceRecord();
         when(springData.findByName(SOURCE_NAME))
                 .thenReturn(Optional.of(saved));
 
@@ -63,7 +64,7 @@ class SourceStoreTest {
 
     @Test
     void shouldFindAll() {
-        final var saved = new SourceRecord(3L, EPOCH, "MILK");
+        final var saved = savedSourceRecord();
         when(springData.readAll())
                 .thenReturn(Stream.of(saved));
 
@@ -77,13 +78,12 @@ class SourceStoreTest {
 
     @Test
     void shouldCreate() {
-        final var unsaved = SourceRecord.unsaved("SALT");
-        final var saved = new SourceRecord(
-                SOURCE_ID, EPOCH, unsaved.getName());
+        final var unsaved = unsavedSourceRecord();
+        final var saved = savedSourceRecord();
         when(springData.save(unsaved))
                 .thenReturn(saved);
 
-        assertThat(store.create(unsaved.getName()))
+        assertThat(store.create(unsaved.getCode(), unsaved.getName()))
                 .isEqualTo(saved);
 
         verify(springData).save(unsaved);
@@ -92,9 +92,8 @@ class SourceStoreTest {
 
     @Test
     void shouldSave() {
-        final var unsaved = SourceRecord.unsaved("PEPPER");
-        final var saved = new SourceRecord(
-                SOURCE_ID, EPOCH, unsaved.getName());
+        final var unsaved = unsavedSourceRecord();
+        final var saved = savedSourceRecord();
 
         when(springData.save(unsaved))
                 .thenReturn(saved);

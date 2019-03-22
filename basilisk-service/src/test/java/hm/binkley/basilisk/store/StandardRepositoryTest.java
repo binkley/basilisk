@@ -1,5 +1,6 @@
 package hm.binkley.basilisk.store;
 
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -15,46 +16,50 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
+@RequiredArgsConstructor
 class StandardRepositoryTest {
+    private static final String CODE = "ABC";
+    private static final int NUMBER = 2;
+
     @Mock
-    private MyTestRepository repository;
+    private final MyTestRepository repository;
 
     @Test
     void shouldInsertWhenNew() {
-        final var update = new MyTestRecord(null, null, "ABC", 2);
+        final var update = MyTestRecord.unsaved(CODE, NUMBER);
         final Function<MyTestRecord, Optional<MyTestRecord>> findBy
                 = this::matching;
         final BiConsumer<MyTestRecord, @NotNull MyTestRecord> prepareUpsert
                 = this::replaceWith;
-        when(repository.upsert(update, findBy, prepareUpsert))
+        when(repository.upsert(update, prepareUpsert))
                 .thenCallRealMethod();
         when(repository.findByCode(update.code))
                 .thenReturn(Optional.empty());
-        final var saved = new MyTestRecord(1L, EPOCH, update.code, 2);
+        final var saved = new MyTestRecord(1L, EPOCH, update.code, NUMBER);
         when(repository.save(update))
                 .thenReturn(saved);
 
-        final var upserted = repository.upsert(update, findBy, prepareUpsert);
+        final var upserted = repository.upsert(update, prepareUpsert);
 
         assertThat(upserted).isEqualTo(saved);
     }
 
     @Test
     void shouldUpdateWhenExisting() {
-        final var update = new MyTestRecord(null, null, "ABC", 2);
+        final var update = MyTestRecord.unsaved(CODE, NUMBER);
         final Function<MyTestRecord, Optional<MyTestRecord>> findBy
                 = this::matching;
         final BiConsumer<MyTestRecord, @NotNull MyTestRecord> prepareUpsert
                 = this::replaceWith;
         final var found = new MyTestRecord(1L, EPOCH, update.code, 1);
-        when(repository.upsert(update, findBy, prepareUpsert))
+        when(repository.upsert(update, prepareUpsert))
                 .thenCallRealMethod();
         when(repository.findByCode(update.code))
                 .thenReturn(Optional.of(found));
         when(repository.save(update))
                 .thenReturn(update);
 
-        final var upserted = repository.upsert(update, findBy, prepareUpsert);
+        final var upserted = repository.upsert(update, prepareUpsert);
 
         assertThat(upserted).isEqualTo(found);
     }
@@ -65,6 +70,7 @@ class StandardRepositoryTest {
 
     private void replaceWith(final MyTestRecord found,
             final @NotNull MyTestRecord update) {
+        // TODO: Reconcile with upsert
         if (null == found) return;
         update.id = found.id;
         update.receivedAt = found.receivedAt;

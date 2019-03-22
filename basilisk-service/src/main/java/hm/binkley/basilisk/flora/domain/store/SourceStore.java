@@ -19,8 +19,8 @@ public final class SourceStore
                 .map(this::assign);
     }
 
-    public SourceRecord create(final String name) {
-        final SourceRecord record = SourceRecord.unsaved(name);
+    public SourceRecord create(final String code, final String name) {
+        final SourceRecord record = SourceRecord.unsaved(code, name);
         assign(record);
         return record.save();
     }

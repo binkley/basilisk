@@ -22,7 +22,7 @@ public final class ChefRecord
     public ChefRecord(final Long id, final Instant receivedAt,
             final String code, final String name) {
         super(() -> new ChefRecord(id, receivedAt, code, name),
-                id, receivedAt);
+                id, receivedAt, code);
         this.code = code;
         this.name = name;
     }

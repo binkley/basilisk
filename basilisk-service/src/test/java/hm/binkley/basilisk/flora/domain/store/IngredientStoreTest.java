@@ -96,8 +96,9 @@ class IngredientStoreTest {
         when(springData.save(unsaved))
                 .thenReturn(saved);
 
-        assertThat(store.create(unsaved.getSourceId(), unsaved.getName(),
-                unsaved.getQuantity(), unsaved.getChefId()))
+        assertThat(store.create(unsaved.getCode(), unsaved.getSourceId(),
+                unsaved.getName(), unsaved.getQuantity(),
+                unsaved.getChefId()))
                 .isEqualTo(saved);
 
         verify(springData).save(unsaved);

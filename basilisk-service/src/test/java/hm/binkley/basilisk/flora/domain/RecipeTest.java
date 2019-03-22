@@ -18,14 +18,16 @@ class RecipeTest {
 
         @SuppressWarnings("PMD") final var that
                 = new Recipe(record).as(
-                (id, name, cid, ingredients) -> {
+                (id, code, name, cid, ingredients) -> {
                     assertThat(id).isEqualTo(record.getId());
+                    assertThat(code).isEqualTo(record.getCode());
                     assertThat(name).isEqualTo(record.getName());
                     assertThat(cid).isEqualTo(record.getChefId());
                     assertThat(ingredients).containsExactly(targetIngredient);
                     return targetRecipe;
-                }, (id, sourceId, name, quantity, rid, cid) -> {
+                }, (id, code, sourceId, name, quantity, rid, cid) -> {
                     assertThat(id).isEqualTo(ingredientRecord.getId());
+                    assertThat(code).isEqualTo(ingredientRecord.getCode());
                     assertThat(sourceId)
                             .isEqualTo(ingredientRecord.getSourceId());
                     assertThat(name).isEqualTo(ingredientRecord.getName());

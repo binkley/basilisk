@@ -19,6 +19,10 @@ public final class Source {
         return record.getId();
     }
 
+    public String getCode() {
+        return record.getCode();
+    }
+
     public String getName() {
         return record.getName();
     }
@@ -31,7 +35,7 @@ public final class Source {
 
     public <S, L> S as(final Sources.As<S, L> toSource,
             final Locations.As<L> toLocation) {
-        return toSource.from(getId(), getName(),
+        return toSource.from(getId(), getCode(), getName(),
                 getAvailableAt().map(it -> it.as(toLocation)));
     }
 }

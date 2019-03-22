@@ -13,6 +13,7 @@ import static java.util.stream.Collectors.toCollection;
 @Value
 public final class RecipeResponse {
     Long id;
+    String code;
     String name;
     boolean dailySpecial;
     Long chefId;
@@ -21,8 +22,8 @@ public final class RecipeResponse {
 
     static As<RecipeResponse, UsedIngredientResponse> using(
             final boolean dailySpecial) {
-        return (id, name, chefId, ingredients) -> new RecipeResponse(
-                id, name, dailySpecial, chefId, ingredients
-                .collect(toCollection(LinkedHashSet::new)));
+        return (id, code, name, chefId, ingredients) -> new RecipeResponse(
+                id, code, name, dailySpecial, chefId,
+                ingredients.collect(toCollection(LinkedHashSet::new)));
     }
 }

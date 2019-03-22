@@ -15,6 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Set;
 
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.CHEF_ID;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.RECIPE_CODE;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.RECIPE_NAME;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.unsavedRecipeRecord;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.unsavedUnusedIngredientRecord;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -36,9 +39,14 @@ class RecipeRepositoryTest {
         return it.next();
     }
 
+    private static RecipeRecord distinctRecipeRecord() {
+        return RecipeRecord.unsaved(
+                RECIPE_CODE + "x", RECIPE_NAME + "x", CHEF_ID);
+    }
+
     @Test
     void shouldAudit() {
-        final var unsaved = RecipeRecord.unsaved("MERINGUE", CHEF_ID);
+        final var unsaved = unsavedRecipeRecord();
         final var found = repository.findById(
                 repository.save(unsaved).getId()).orElseThrow();
 
@@ -47,7 +55,7 @@ class RecipeRepositoryTest {
 
     @Test
     void shouldSaveWithNoIngredients() {
-        final var unsaved = RecipeRecord.unsaved("SOUFFLE", CHEF_ID);
+        final var unsaved = unsavedRecipeRecord();
         final var found = repository.findById(
                 repository.save(unsaved).getId()).orElseThrow();
 
@@ -56,7 +64,7 @@ class RecipeRepositoryTest {
 
     @Test
     void shouldSaveWithSomeIngredients() {
-        final var unsaved = RecipeRecord.unsaved("SOUFFLE", CHEF_ID)
+        final var unsaved = unsavedRecipeRecord()
                 .add(unsavedUnusedIngredientRecord());
 
         final var saved = repository.save(unsaved);
@@ -83,32 +91,52 @@ class RecipeRepositoryTest {
     }
 
     @Test
-    void shouldHaveUniqueName() {
-        final var name = "SOUFFLE";
-        repository.save(RecipeRecord.unsaved(name, CHEF_ID));
+    void shouldFindByCode() {
+        final var unsaved = unsavedRecipeRecord();
+        repository.save(unsaved);
+
+        assertThat(repository.findByCode(unsaved.getCode()).orElseThrow())
+                .isEqualTo(unsaved);
+        assertThat(repository.findByCode(unsaved.getCode() + "x")).isEmpty();
+    }
+
+    @Test
+    void shouldHaveUniqueCode() {
+        repository.save(unsavedRecipeRecord());
 
         final var ex = assertThrows(
                 DbActionExecutionException.class,
-                () -> repository.save(RecipeRecord.unsaved(name, CHEF_ID)));
+                () -> repository.save(unsavedRecipeRecord()));
 
         assertThat(ex.getCause()).isInstanceOf(DuplicateKeyException.class);
     }
 
     @Test
     void shouldFindByName() {
-        final var unsavedLeft = RecipeRecord.unsaved("BOILED EGGS", CHEF_ID);
-        final var unsavedRight = RecipeRecord.unsaved("POACHED EGGS", CHEF_ID);
-        repository.saveAll(Set.of(unsavedLeft, unsavedRight));
+        final var unsavedA = unsavedRecipeRecord();
+        final var unsavedB = distinctRecipeRecord();
+        repository.saveAll(Set.of(unsavedA, unsavedB));
 
-        assertThat(repository.findByName(unsavedLeft.getName()).orElseThrow())
-                .isEqualTo(unsavedLeft);
+        assertThat(repository.findByName(unsavedA.getName()).orElseThrow())
+                .isEqualTo(unsavedA);
         assertThat(repository.findByName("FRIED EGGS")).isEmpty();
     }
 
     @Test
+    void shouldHaveUniqueName() {
+        repository.save(unsavedRecipeRecord());
+
+        final var ex = assertThrows(
+                DbActionExecutionException.class,
+                () -> repository.save(unsavedRecipeRecord()));
+
+        assertThat(ex.getCause()).isInstanceOf(DuplicateKeyException.class);
+    }
+
+    @Test
     void shouldStream() {
-        final var unsavedA = RecipeRecord.unsaved("SCRAMBLED EGGS", CHEF_ID);
-        final var unsavedB = RecipeRecord.unsaved("BOILED EGGS", CHEF_ID);
+        final var unsavedA = unsavedRecipeRecord();
+        final var unsavedB = distinctRecipeRecord();
         repository.saveAll(Set.of(unsavedA, unsavedB));
 
         try (final var found = repository.readAll()) {

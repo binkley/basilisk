@@ -9,13 +9,14 @@ import org.hibernate.validator.constraints.Length;
 @Data
 @RequiredArgsConstructor
 public final class SourceRequest {
+    private final @Length(min = 3, max = 7) String code;
     private final @Length(min = 3, max = 32) String name;
 
     public <I> I as(final SourceRequest.As<I> asOther) {
-        return asOther.from(getName());
+        return asOther.from(getCode(), getName());
     }
 
     public interface As<I> {
-        I from(final String name);
+        I from(final String code, final String name);
     }
 }

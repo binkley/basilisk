@@ -27,13 +27,14 @@ class SourceTest {
 
         @SuppressWarnings("PMD") final var that
                 = new Source(record, locations).as(
-                (id, name, availableAt) -> {
-                    assertThat(id).isEqualTo(record.getId());
+                (id, code, name, availableAt) -> {
+                    assertThat(code).isEqualTo(record.getCode());
                     assertThat(name).isEqualTo(record.getName());
                     assertThat(availableAt).containsExactly(targetLocation);
                     return targetSource;
-                }, (lid, lname) -> {
+                }, (lid, lcode, lname) -> {
                     assertThat(lid).isEqualTo(locationRecord.getId());
+                    assertThat(lcode).isEqualTo(locationRecord.getCode());
                     assertThat(lname).isEqualTo(locationRecord.getName());
                     return targetLocation;
                 });

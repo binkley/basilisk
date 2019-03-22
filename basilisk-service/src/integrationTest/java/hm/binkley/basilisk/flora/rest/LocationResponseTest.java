@@ -12,6 +12,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.IOException;
 
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.LOCATION_CODE;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.LOCATION_ID;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.LOCATION_NAME;
 import static hm.binkley.basilisk.flora.rest.LocationResponse.using;
@@ -29,6 +30,7 @@ class LocationResponseTest {
             throws IOException {
         assertThat(json.write(LocationResponse.builder()
                 .id(LOCATION_ID)
+                .code(LOCATION_CODE)
                 .name(LOCATION_NAME)
                 .build()))
                 .isEqualToJson("location-response-test.json");
@@ -36,7 +38,8 @@ class LocationResponseTest {
 
     @Test
     void shouldUse() {
-        assertThat(using().from(LOCATION_ID, LOCATION_NAME))
-                .isEqualTo(new LocationResponse(LOCATION_ID, LOCATION_NAME));
+        assertThat(using().from(LOCATION_ID, LOCATION_CODE, LOCATION_NAME))
+                .isEqualTo(new LocationResponse(
+                        LOCATION_ID, LOCATION_CODE, LOCATION_NAME));
     }
 }

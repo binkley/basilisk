@@ -46,17 +46,6 @@ class ChefRepositoryTest {
     }
 
     @Test
-    void shouldHaveUniqueCode() {
-        repository.save(unsavedChefRecord());
-
-        final var ex = assertThrows(
-                DbActionExecutionException.class,
-                () -> repository.save(unsavedChefRecord()));
-
-        assertThat(ex.getCause()).isInstanceOf(DuplicateKeyException.class);
-    }
-
-    @Test
     void shouldFindByCode() {
         final var unsaved = unsavedChefRecord();
         repository.save(unsaved);
@@ -67,7 +56,7 @@ class ChefRepositoryTest {
     }
 
     @Test
-    void shouldHaveUniqueName() {
+    void shouldHaveUniqueCode() {
         repository.save(unsavedChefRecord());
 
         final var ex = assertThrows(
@@ -85,6 +74,17 @@ class ChefRepositoryTest {
         assertThat(repository.findByName(unsaved.getName()).orElseThrow())
                 .isEqualTo(unsaved);
         assertThat(repository.findByName(unsaved.getName() + "x")).isEmpty();
+    }
+
+    @Test
+    void shouldHaveUniqueName() {
+        repository.save(unsavedChefRecord());
+
+        final var ex = assertThrows(
+                DbActionExecutionException.class,
+                () -> repository.save(unsavedChefRecord()));
+
+        assertThat(ex.getCause()).isInstanceOf(DuplicateKeyException.class);
     }
 
     @Test

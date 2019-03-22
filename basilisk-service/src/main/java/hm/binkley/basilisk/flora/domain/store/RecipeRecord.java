@@ -26,15 +26,16 @@ public final class RecipeRecord
     Set<IngredientRecord> ingredients = new LinkedHashSet<>();
 
     public RecipeRecord(final Long id, final Instant receivedAt,
-            final String name, final Long chefId) {
-        super(() -> new RecipeRecord(id, receivedAt, name, chefId), id,
-                receivedAt);
+            final String code, final String name, final Long chefId) {
+        super(() -> new RecipeRecord(id, receivedAt, code, name, chefId),
+                id, receivedAt, code);
         this.name = name;
         this.chefId = chefId;
     }
 
-    public static RecipeRecord unsaved(final String name, final Long chefId) {
-        return new RecipeRecord(null, null, name, chefId);
+    public static RecipeRecord unsaved(
+            final String code, final String name, final Long chefId) {
+        return new RecipeRecord(null, null, code, name, chefId);
     }
 
     public RecipeRecord add(final IngredientRecord ingredient) {

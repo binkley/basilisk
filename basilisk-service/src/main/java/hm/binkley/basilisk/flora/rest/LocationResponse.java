@@ -8,6 +8,7 @@ import lombok.Value;
 @Value
 public final class LocationResponse {
     Long id;
+    String code;
     String name;
 
     static Locations.As<LocationResponse> using() {

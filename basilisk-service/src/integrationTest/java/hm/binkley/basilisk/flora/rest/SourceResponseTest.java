@@ -16,6 +16,7 @@ import java.util.stream.Stream;
 
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.LOCATION_ID;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.LOCATION_NAME;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.SOURCE_CODE;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.SOURCE_ID;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.SOURCE_NAME;
 import static hm.binkley.basilisk.flora.rest.SourceResponse.using;
@@ -58,9 +59,9 @@ class SourceResponseTest {
     void shouldUse() {
         final var locationResponse = new LocationResponse(
                 LOCATION_ID, LOCATION_NAME);
-        assertThat(using().from(SOURCE_ID, SOURCE_NAME,
+        assertThat(using().from(SOURCE_ID, SOURCE_CODE, SOURCE_NAME,
                 Stream.of(locationResponse)))
-                .isEqualTo(new SourceResponse(
-                        SOURCE_ID, SOURCE_NAME, Set.of(locationResponse)));
+                .isEqualTo(new SourceResponse(SOURCE_ID, SOURCE_CODE,
+                        SOURCE_NAME, Set.of(locationResponse)));
     }
 }

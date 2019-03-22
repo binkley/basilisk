@@ -19,8 +19,9 @@ public class RecipeStore
                 .map(this::assign);
     }
 
-    public RecipeRecord create(final String name, final Long chefId) {
-        final RecipeRecord record = RecipeRecord.unsaved(name, chefId);
+    public RecipeRecord create(
+            final String code, final String name, final Long chefId) {
+        final RecipeRecord record = RecipeRecord.unsaved(code, name, chefId);
         assign(record);
         return record.save();
     }

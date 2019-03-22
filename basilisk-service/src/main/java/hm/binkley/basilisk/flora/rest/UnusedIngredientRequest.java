@@ -13,17 +13,19 @@ import java.math.BigDecimal;
 @RequiredArgsConstructor
 public final class UnusedIngredientRequest {
     private final @NotNull Long sourceId;
+    private final @Length(min = 3, max = 6) String code;
     private final @Length(min = 3, max = 32) String name;
     private final @NotNull BigDecimal quantity;
     private final @NotNull Long chefId;
 
     public <I> I as(final UnusedIngredientRequest.As<I> asOther) {
-        return asOther
-                .from(getSourceId(), getName(), getQuantity(), getChefId());
+        return asOther.from(
+                getCode(), getSourceId(), getName(), getQuantity(),
+                getChefId());
     }
 
     public interface As<I> {
-        I from(final Long sourceId, final String name,
+        I from(final String code, final Long sourceId, final String name,
                 final BigDecimal quantity, final Long chefId);
     }
 }

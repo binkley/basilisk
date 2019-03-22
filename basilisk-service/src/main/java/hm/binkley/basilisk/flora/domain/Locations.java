@@ -24,6 +24,10 @@ public class Locations {
         return byId(ref.getLocationId());
     }
 
+    public Optional<Location> byCode(final String code) {
+        return store.byCode(code).map(Location::new);
+    }
+
     public Optional<Location> byName(final String name) {
         return store.byName(name).map(Location::new);
     }
@@ -37,6 +41,6 @@ public class Locations {
     }
 
     public interface As<L> {
-        L from(final Long id, final String name);
+        L from(final Long id, final String code, final String name);
     }
 }

@@ -13,13 +13,14 @@ import static java.util.stream.Collectors.toCollection;
 @Value
 public final class SourceResponse {
     Long id;
+    String code;
     String name;
     @Builder.Default
     Set<LocationResponse> availableAt = new LinkedHashSet<>();
 
     static Sources.As<SourceResponse, LocationResponse> using() {
-        return (id, name, availableAt) -> new SourceResponse(
-                id, name, availableAt
-                .collect(toCollection(LinkedHashSet::new)));
+        return (id, code, name, availableAt) -> new SourceResponse(
+                id, code, name,
+                availableAt.collect(toCollection(LinkedHashSet::new)));
     }
 }

@@ -12,19 +12,21 @@ import java.time.Instant;
 @Table("FLORA.LOCATION")
 @ToString(callSuper = true)
 public final class LocationRecord
-        extends
-        StandardRecord<LocationRecord, LocationRepository, LocationStore> {
+        extends StandardRecord<LocationRecord, LocationRepository,
+        LocationStore> {
     @Getter
     public String name;
 
     public LocationRecord(final Long id, final Instant receivedAt,
-            final String name) {
-        super(() -> new LocationRecord(id, receivedAt, name), id, receivedAt);
+            final String code, final String name) {
+        super(() -> new LocationRecord(id, receivedAt, code, name),
+                id, receivedAt, code);
         this.name = name;
     }
 
-    public static LocationRecord unsaved(final String name) {
-        return new LocationRecord(null, null, name);
+    public static LocationRecord unsaved(
+            final String code, final String name) {
+        return new LocationRecord(null, null, code, name);
     }
 
     public LocationRef ref() {

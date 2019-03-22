@@ -11,6 +11,10 @@ import java.util.stream.Stream;
 public interface RecipeRepository
         extends StandardRepository<RecipeRecord, RecipeRepository,
         RecipeStore> {
+    @Override
+    @Query("SELECT * FROM FLORA.RECIPE WHERE code = :code")
+    Optional<RecipeRecord> findByCode(String code);
+
     @Query("SELECT * FROM FLORA.RECIPE WHERE name = :name")
     Optional<RecipeRecord> findByName(String name);
 

@@ -13,6 +13,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.io.IOException;
 
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.CHEF_ID;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.INGREDIENT_CODE;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.INGREDIENT_ID;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.INGREDIENT_QUANTITY;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.RECIPE_ID;
@@ -33,6 +34,7 @@ class AnyIngredientResponseTest {
             throws IOException {
         assertThat(json.write(AnyIngredientResponse.builder()
                 .id(INGREDIENT_ID)
+                .name(INGREDIENT_CODE)
                 .sourceId(SOURCE_ID)
                 .name(SOURCE_NAME)
                 .quantity(INGREDIENT_QUANTITY)
@@ -47,6 +49,7 @@ class AnyIngredientResponseTest {
             throws IOException {
         assertThat(json.write(AnyIngredientResponse.builder()
                 .id(INGREDIENT_ID)
+                .code(INGREDIENT_CODE)
                 .sourceId(SOURCE_ID)
                 .name(SOURCE_NAME)
                 .quantity(INGREDIENT_QUANTITY)
@@ -58,10 +61,11 @@ class AnyIngredientResponseTest {
 
     @Test
     void shouldUse() {
-        assertThat(with().from(INGREDIENT_ID, SOURCE_ID, SOURCE_NAME,
-                INGREDIENT_QUANTITY, RECIPE_ID, CHEF_ID))
+        assertThat(with().from(INGREDIENT_ID, INGREDIENT_CODE, SOURCE_ID,
+                SOURCE_NAME, INGREDIENT_QUANTITY, RECIPE_ID, CHEF_ID))
                 .isEqualTo(new UsedIngredientResponse(
-                        INGREDIENT_ID, SOURCE_ID, SOURCE_NAME,
-                        INGREDIENT_QUANTITY, RECIPE_ID, CHEF_ID));
+                        INGREDIENT_ID, INGREDIENT_CODE, SOURCE_ID,
+                        SOURCE_NAME, INGREDIENT_QUANTITY, RECIPE_ID,
+                        CHEF_ID));
     }
 }

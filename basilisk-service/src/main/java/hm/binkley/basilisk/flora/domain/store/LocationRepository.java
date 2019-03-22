@@ -11,6 +11,10 @@ import java.util.stream.Stream;
 public interface LocationRepository
         extends StandardRepository<LocationRecord, LocationRepository,
         LocationStore> {
+    @Override
+    @Query("SELECT * FROM FLORA.LOCATION WHERE code = :code")
+    Optional<LocationRecord> findByCode(String code);
+
     @Query("SELECT * FROM FLORA.LOCATION WHERE name = :name")
     Optional<LocationRecord> findByName(String name);
 

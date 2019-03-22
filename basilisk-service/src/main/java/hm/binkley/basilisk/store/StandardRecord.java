@@ -25,14 +25,17 @@ public abstract class StandardRecord<T extends StandardRecord<T, R, S>,
     @CreatedDate
     @Getter
     public Instant receivedAt;
+    @Getter
+    public String code;
     @Transient
     public S store;
 
     public StandardRecord(final Supplier<T> copy,
-            final Long id, final Instant receivedAt) {
+            final Long id, final Instant receivedAt, final String code) {
         this.copy = copy;
         this.id = id;
         this.receivedAt = receivedAt;
+        this.code = code;
     }
 
     void become(final T other) {

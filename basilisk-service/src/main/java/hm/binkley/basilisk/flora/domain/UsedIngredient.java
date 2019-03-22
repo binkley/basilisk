@@ -15,7 +15,7 @@ public final class UsedIngredient
 
     public <T> T asUsed(final AsUsed<T> toIngredient) {
         return toIngredient.from(
-                getId(), getSourceId(), getName(), getQuantity(),
+                getId(), getCode(), getSourceId(), getName(), getQuantity(),
                 getRecipeId(), getChefId());
     }
 }

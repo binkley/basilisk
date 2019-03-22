@@ -10,12 +10,15 @@ import java.time.Instant;
 final class MyTestRecord
         extends StandardRecord<MyTestRecord, MyTestRepository,
         MyTestStore> {
-    String code;
     int number;
 
-    MyTestRecord(final Long id, final Instant receivedAt,
-            final String code, final int number) {
+    MyTestRecord(final Long id, final Instant receivedAt, final String code,
+            final int number) {
         super(() -> new MyTestRecord(id, receivedAt, code, number),
-                id, receivedAt);
+                id, receivedAt, code);
+    }
+
+    static MyTestRecord unsaved(final String code, final int number) {
+        return new MyTestRecord(null, null, code, number);
     }
 }

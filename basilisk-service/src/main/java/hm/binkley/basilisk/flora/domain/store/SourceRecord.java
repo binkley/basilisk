@@ -25,13 +25,14 @@ public final class SourceRecord
     Set<LocationRef> availableAt = new LinkedHashSet<>();
 
     public SourceRecord(final Long id, final Instant receivedAt,
-            final String name) {
-        super(() -> new SourceRecord(id, receivedAt, name), id, receivedAt);
+            final String code, final String name) {
+        super(() -> new SourceRecord(id, receivedAt, code, name),
+                id, receivedAt, code);
         this.name = name;
     }
 
-    public static SourceRecord unsaved(final String name) {
-        return new SourceRecord(null, null, name);
+    public static SourceRecord unsaved(final String code, final String name) {
+        return new SourceRecord(null, null, code, name);
     }
 
     public SourceRecord addAvailableAt(final LocationRecord location) {

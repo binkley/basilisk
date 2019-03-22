@@ -9,13 +9,14 @@ import org.hibernate.validator.constraints.Length;
 @Data
 @RequiredArgsConstructor
 public final class LocationRequest {
+    private final @Length(min = 3, max = 3) String code;
     private final @Length(min = 3, max = 32) String name;
 
     public <L> L as(final LocationRequest.As<L> asLocation) {
-        return asLocation.from(name);
+        return asLocation.from(code, name);
     }
 
     public interface As<L> {
-        L from(final String name);
+        L from(final String code, final String name);
     }
 }

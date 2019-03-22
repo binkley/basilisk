@@ -16,10 +16,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.CHEF_ID;
-import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.RECIPE_ID;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.savedRecipeRecord;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.unsavedUnusedIngredientRecord;
-import static java.time.Instant.EPOCH;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -39,8 +37,7 @@ class RecipesTest {
 
     @Test
     void shouldFindById() {
-        final var record = new RecipeRecord(
-                RECIPE_ID, EPOCH, "SOUFFLE", CHEF_ID);
+        final var record = savedRecipeRecord();
         when(store.byId(record.getId()))
                 .thenReturn(Optional.of(record));
 
@@ -53,8 +50,7 @@ class RecipesTest {
 
     @Test
     void shouldFindByName() {
-        final var record = new RecipeRecord(
-                RECIPE_ID, EPOCH, "BOILED EGGS", CHEF_ID);
+        final var record = savedRecipeRecord();
         when(store.byName(record.getName()))
                 .thenReturn(Optional.of(record));
 
@@ -67,8 +63,7 @@ class RecipesTest {
 
     @Test
     void shouldFindAll() {
-        final var record = new RecipeRecord(
-                RECIPE_ID, EPOCH, "POACHED EGGS", CHEF_ID);
+        final var record = savedRecipeRecord();
         when(store.all())
                 .thenReturn(Stream.of(record));
 
@@ -82,13 +77,13 @@ class RecipesTest {
     @Test
     void shouldCreateNew() {
         final var ingredientRecord = unsavedUnusedIngredientRecord();
-        final var record = new RecipeRecord(
-                RECIPE_ID, EPOCH, "FRIED EGGS", CHEF_ID)
+        final var record = savedRecipeRecord()
                 .add(ingredientRecord);
 
         when(store.save(RecipeRecord.unsaved(
-                record.getName(), record.getChefId())
+                record.getCode(), record.getName(), record.getChefId())
                 .add(IngredientRecord.unsaved(
+                        ingredientRecord.getCode(),
                         ingredientRecord.getSourceId(),
                         ingredientRecord.getName(),
                         ingredientRecord.getQuantity(),
@@ -96,9 +91,11 @@ class RecipesTest {
                 .thenReturn(record);
 
         assertThat(recipes.create(RecipeRequest.builder()
+                .code(record.getCode())
                 .name(record.getName())
                 .chefId(record.getChefId())
                 .ingredients(Set.of(UsedIngredientRequest.builder()
+                        .code(ingredientRecord.getCode())
                         .sourceId(ingredientRecord.getSourceId())
                         .name(ingredientRecord.getName())
                         .quantity(ingredientRecord.getQuantity())

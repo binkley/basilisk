@@ -46,7 +46,17 @@ class LocationRepositoryTest {
     }
 
     @Test
-    void shouldHaveUniqueName() {
+    void shouldFindByCode() {
+        final var unsaved = unsavedLocationRecord();
+        repository.save(unsaved);
+
+        assertThat(repository.findByCode(unsaved.getCode()).orElseThrow())
+                .isEqualTo(unsaved);
+        assertThat(repository.findByCode(unsaved.getCode() + "x")).isEmpty();
+    }
+
+    @Test
+    void shouldHaveUniqueCode() {
         repository.save(unsavedLocationRecord());
 
         final var ex = assertThrows(
@@ -68,10 +78,21 @@ class LocationRepositoryTest {
     }
 
     @Test
+    void shouldHaveUniqueName() {
+        repository.save(unsavedLocationRecord());
+
+        final var ex = assertThrows(
+                DbActionExecutionException.class,
+                () -> repository.save(unsavedLocationRecord()));
+
+        assertThat(ex.getCause()).isInstanceOf(DuplicateKeyException.class);
+    }
+
+    @Test
     void shouldStream() {
         final var unsavedA = unsavedLocationRecord();
-        final var unsavedB = new LocationRecord(
-                null, null, unsavedA.getName() + "x");
+        final var unsavedB = LocationRecord.unsaved(
+                unsavedA.getCode() + "x", unsavedA.getName() + "x");
         repository.saveAll(Set.of(unsavedA, unsavedB));
 
         try (final var found = repository.readAll()) {

@@ -11,6 +11,10 @@ import java.util.stream.Stream;
 public interface SourceRepository
         extends StandardRepository<SourceRecord, SourceRepository,
         SourceStore> {
+    @Override
+    @Query("SELECT * FROM FLORA.SOURCE WHERE code = :code")
+    Optional<SourceRecord> findByCode(String code);
+
     @Query("SELECT * FROM FLORA.SOURCE WHERE name = :name")
     Optional<SourceRecord> findByName(String name);
 

@@ -15,8 +15,10 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.CHEF_ID;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.INGREDIENT_CODE;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.INGREDIENT_ID;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.INGREDIENT_QUANTITY;
+import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.RECIPE_CODE;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.RECIPE_ID;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.RECIPE_NAME;
 import static hm.binkley.basilisk.flora.domain.store.FloraFixtures.SOURCE_ID;
@@ -52,6 +54,7 @@ class RecipeResponseTest {
                 .chefId(CHEF_ID)
                 .ingredients(Set.of(UsedIngredientResponse.builder()
                         .id(INGREDIENT_ID)
+                        .code(INGREDIENT_CODE)
                         .sourceId(SOURCE_ID)
                         .name(SOURCE_NAME)
                         .quantity(INGREDIENT_QUANTITY)
@@ -66,13 +69,14 @@ class RecipeResponseTest {
     @Test
     void shouldUse() {
         final var ingredientResponse = new UsedIngredientResponse(
-                INGREDIENT_ID, SOURCE_ID, SOURCE_NAME,
+                INGREDIENT_ID, INGREDIENT_CODE, SOURCE_ID, SOURCE_NAME,
                 INGREDIENT_QUANTITY, RECIPE_ID, CHEF_ID);
 
         assertThat(using(true).from(
-                RECIPE_ID, RECIPE_NAME, CHEF_ID,
+                RECIPE_ID, RECIPE_CODE, RECIPE_NAME, CHEF_ID,
                 Stream.of(ingredientResponse)))
-                .isEqualTo(new RecipeResponse(RECIPE_ID, RECIPE_NAME, true,
-                        CHEF_ID, Set.of(ingredientResponse)));
+                .isEqualTo(new RecipeResponse(RECIPE_ID, RECIPE_CODE,
+                        RECIPE_NAME, true, CHEF_ID,
+                        Set.of(ingredientResponse)));
     }
 }

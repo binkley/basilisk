@@ -27,11 +27,13 @@ public final class IngredientRecord
     Long chefId;
 
     public IngredientRecord(final Long id, final Instant receivedAt,
-            final Long sourceId, final String name, final BigDecimal quantity,
-            final Long recipeId, final Long chefId) {
-        super(() -> new IngredientRecord(id, receivedAt, sourceId, name,
+            final String code, final Long sourceId, final String name,
+            final BigDecimal quantity, final Long recipeId,
+            final Long chefId) {
+        super(() -> new IngredientRecord(id, receivedAt, code, sourceId, name,
                         quantity, recipeId, chefId),
-                id, receivedAt);
+                id, receivedAt, code);
+        this.code = code;
         this.sourceId = sourceId;
         this.name = name;
         this.quantity = quantity;
@@ -39,10 +41,11 @@ public final class IngredientRecord
         this.chefId = chefId;
     }
 
-    public static IngredientRecord unsaved(final Long sourceId,
-            final String name, final BigDecimal quantity, final Long chefId) {
-        return new IngredientRecord(null, null, sourceId, name, quantity,
-                null, chefId);
+    public static IngredientRecord unsaved(final String code,
+            final Long sourceId, final String name, final BigDecimal quantity,
+            final Long chefId) {
+        return new IngredientRecord(null, null, code, sourceId, name,
+                quantity, null, chefId);
     }
 
     public boolean isUsed() {

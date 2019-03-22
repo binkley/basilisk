@@ -86,10 +86,12 @@ class LocationsTest {
     @Test
     void shouldCreate() {
         final var record = savedLocationRecord();
-        when(store.save(LocationRecord.unsaved(record.getName())))
+        when(store.save(LocationRecord.unsaved(
+                record.getCode(), record.getName())))
                 .thenReturn(record);
 
         assertThat(locations.create(LocationRequest.builder()
+                .code(record.getCode())
                 .name(record.getName())
                 .build()))
                 .isEqualTo(new Location(record));

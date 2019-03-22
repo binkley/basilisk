@@ -14,11 +14,6 @@ public class ChefStore
         super(springData);
     }
 
-    public Optional<ChefRecord> byCode(final String code) {
-        return springData.findByCode(code)
-                .map(this::assign);
-    }
-
     public Optional<ChefRecord> byName(final String name) {
         return springData.findByName(name)
                 .map(this::assign);

@@ -14,23 +14,27 @@ public final class FloraFixtures {
     public static final Long CHEF_ID = 17L;
     public static final Instant CHEF_RECIEVED_AT
             = EPOCH.plusSeconds(800_000L);
+    public static final String CHEF_CODE = "CAN#123";
     public static final String CHEF_NAME = "Chef Boyardee";
-    public static final String CHEF_CODE = "CAN";
     public static final Long SOURCE_ID = 12L;
     public static final Instant SOURCE_RECEIVED_AT
             = EPOCH.plusSeconds(900_000L);
-    public static final String SOURCE_NAME = "EGGS";
+    public static final String SOURCE_CODE = "FARM#123";
+    public static final String SOURCE_NAME = "MEDIUM EGGS";
     public static final Long INGREDIENT_ID = 31L;
     public static final Instant INGREDIENT_RECEIVED_AT
             = EPOCH.plusSeconds(1_000_000L);
+    public static final String INGREDIENT_CODE = "EGG#123";
     public static final BigDecimal INGREDIENT_QUANTITY = ONE;
     public static final Long RECIPE_ID = 4L;
     public static final Instant RECIPE_RECEIVED_AT
             = EPOCH.plusSeconds(1_100_000L);
+    public static final String RECIPE_CODE = "SFL#123";
     public static final String RECIPE_NAME = "SOUFFLE";
     public static final Long LOCATION_ID = 42L;
     public static final Instant LOCATON_RECEIVED_AT
             = EPOCH.plusSeconds(1_200_000L);
+    public static final String LOCATION_CODE = "DAL";
     public static final String LOCATION_NAME = "The Dallas Yellow Rose";
 
     public static ChefRecord unsavedChefRecord() {
@@ -46,20 +50,21 @@ public final class FloraFixtures {
 
     public static IngredientRecord unsavedUnusedIngredientRecord() {
         return new IngredientRecord(null, null,
-                SOURCE_ID, SOURCE_NAME, INGREDIENT_QUANTITY, null,
-                CHEF_ID);
+                INGREDIENT_CODE, SOURCE_ID, SOURCE_NAME, INGREDIENT_QUANTITY,
+                null, CHEF_ID);
     }
 
     public static IngredientRecord unsavedUnusedIngredientRecordNamed(
             final Long sourceId, final String name) {
         return new IngredientRecord(null, null,
-                sourceId, name, INGREDIENT_QUANTITY, null, CHEF_ID);
+                INGREDIENT_CODE, sourceId, name, INGREDIENT_QUANTITY, null,
+                CHEF_ID);
     }
 
     public static IngredientRecord unsavedUsedIngredientRecord() {
         return new IngredientRecord(null, null,
-                SOURCE_ID, SOURCE_NAME, INGREDIENT_QUANTITY, RECIPE_ID,
-                CHEF_ID);
+                INGREDIENT_CODE, SOURCE_ID, SOURCE_NAME, INGREDIENT_QUANTITY,
+                RECIPE_ID, CHEF_ID);
     }
 
     public static IngredientRecord savedUnusedIngredientRecord() {
@@ -77,7 +82,7 @@ public final class FloraFixtures {
     }
 
     public static SourceRecord unsavedSourceRecord() {
-        return new SourceRecord(null, null, SOURCE_NAME);
+        return new SourceRecord(null, null, SOURCE_CODE, SOURCE_NAME);
     }
 
     public static SourceRecord savedSourceRecord() {
@@ -88,7 +93,7 @@ public final class FloraFixtures {
     }
 
     public static LocationRecord unsavedLocationRecord() {
-        return new LocationRecord(null, null, LOCATION_NAME);
+        return new LocationRecord(null, null, LOCATION_CODE, LOCATION_NAME);
     }
 
     public static LocationRecord savedLocationRecord() {
@@ -99,7 +104,8 @@ public final class FloraFixtures {
     }
 
     public static RecipeRecord unsavedRecipeRecord() {
-        return new RecipeRecord(null, null, RECIPE_NAME, CHEF_ID);
+        return new RecipeRecord(null, null,
+                RECIPE_CODE, RECIPE_NAME, CHEF_ID);
     }
 
     public static RecipeRecord savedRecipeRecord() {

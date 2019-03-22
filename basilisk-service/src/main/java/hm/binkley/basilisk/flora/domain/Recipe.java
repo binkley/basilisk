@@ -19,6 +19,10 @@ public final class Recipe {
         return record.getId();
     }
 
+    public String getCode() {
+        return record.getCode();
+    }
+
     public String getName() {
         return record.getName();
     }
@@ -35,7 +39,7 @@ public final class Recipe {
 
     public <R, I> R as(final As<R, I> toRecipe,
             final AsUsed<I> toIngredient) {
-        return toRecipe.from(getId(), getName(), getChefId(),
+        return toRecipe.from(getId(), getCode(), getName(), getChefId(),
                 getIngredients().map(it -> it.asUsed(toIngredient)));
     }
 }

@@ -19,6 +19,8 @@ public abstract class Ingredient {
         return record.getId();
     }
 
+    public final String getCode() { return record.getCode(); }
+
     public final Long getSourceId() { return record.getSourceId(); }
 
     public final String getName() {
@@ -37,7 +39,7 @@ public abstract class Ingredient {
 
     public final <I> I asAny(final AsAny<I> toIngredient) {
         return toIngredient.from(
-                getId(), getSourceId(), getName(), getQuantity(),
+                getId(), getCode(), getSourceId(), getName(), getQuantity(),
                 getRecipeId(), getChefId());
     }
 }

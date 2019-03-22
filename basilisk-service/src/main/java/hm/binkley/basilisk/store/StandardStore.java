@@ -17,6 +17,11 @@ public abstract class StandardStore<T extends StandardRecord<T, R, S>,
                 .map(this::assign);
     }
 
+    public final Optional<T> byCode(final String code) {
+        return springData.findByCode(code)
+                .map(this::assign);
+    }
+
     public final Stream<T> all() {
         return springData.readAll()
                 .map(this::assign);

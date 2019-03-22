@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 @Value
 public final class UnusedIngredientResponse {
     Long id;
+    String code;
     Long sourceId;
     String name;
     BigDecimal quantity;

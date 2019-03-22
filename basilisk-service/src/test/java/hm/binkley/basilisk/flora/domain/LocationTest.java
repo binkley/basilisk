@@ -14,8 +14,9 @@ class LocationTest {
 
         @SuppressWarnings("PMD") final var that
                 = new Location(record).as(
-                (id, name) -> {
+                (id, code, name) -> {
                     assertThat(id).isEqualTo(record.getId());
+                    assertThat(code).isEqualTo(record.getCode());
                     assertThat(name).isEqualTo(record.getName());
                     return targetLocation;
                 });

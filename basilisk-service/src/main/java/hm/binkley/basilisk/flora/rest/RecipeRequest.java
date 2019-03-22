@@ -14,6 +14,7 @@ import java.util.stream.Stream;
 @Data
 @RequiredArgsConstructor
 public final class RecipeRequest {
+    private final @Length(min = 3, max = 7) String code;
     private final @Length(min = 3, max = 32) String name;
     private final @NotNull Long chefId;
     @Builder.Default
@@ -22,14 +23,17 @@ public final class RecipeRequest {
 
     public <R, I> R as(final RecipeRequest.As<R, I> asRecipe,
             final UsedIngredientRequest.As<I> asUsedIngredient) {
-        return asRecipe.from(getName(), getChefId(), getIngredients().stream()
-                .map(it -> asUsedIngredient.from(
-                        it.getSourceId(), it.getName(), it.getQuantity(),
+        return asRecipe.from(getCode(), getName(), getChefId(),
+                getIngredients().stream().map(it -> asUsedIngredient.from(
+                        it.getCode(),
+                        it.getSourceId(),
+                        it.getName(),
+                        it.getQuantity(),
                         it.getChefId())));
     }
 
     public interface As<R, I> {
-        R from(final String name, final Long chefId,
+        R from(final String code, final String name, final Long chefId,
                 final Stream<I> ingredients);
     }
 }

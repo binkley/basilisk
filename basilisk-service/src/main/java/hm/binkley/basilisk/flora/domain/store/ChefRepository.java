@@ -10,6 +10,7 @@ import java.util.stream.Stream;
 @RepositoryRestResource
 public interface ChefRepository
         extends StandardRepository<ChefRecord, ChefRepository, ChefStore> {
+    @Override
     @Query("SELECT * FROM FLORA.CHEF WHERE code = :code")
     Optional<ChefRecord> findByCode(String code);
 

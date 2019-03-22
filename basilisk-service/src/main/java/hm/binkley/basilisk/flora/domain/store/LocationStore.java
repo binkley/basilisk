@@ -20,8 +20,8 @@ public class LocationStore
                 .map(this::assign);
     }
 
-    public LocationRecord create(final String name) {
-        final LocationRecord record = LocationRecord.unsaved(name);
+    public LocationRecord create(final String code, final String name) {
+        final LocationRecord record = LocationRecord.unsaved(code, name);
         assign(record);
         return record.save();
     }

@@ -20,6 +20,10 @@ public class Ingredients {
         return store.byId(id).map(this::asUsedOrUnused);
     }
 
+    public Optional<Ingredient> byCode(final String code) {
+        return store.byCode(code).map(this::asUsedOrUnused);
+    }
+
     public Stream<Ingredient> allByName(final String name) {
         return store.byName(name).map(this::asUsedOrUnused);
     }
@@ -45,19 +49,20 @@ public class Ingredients {
     }
 
     public interface AsAny<I> {
-        I from(final Long id, final Long sourceId, final String name,
-                final BigDecimal quantity, final Long recipeId,
-                final Long chefId);
+        I from(final Long id, final String code, final Long sourceId,
+                final String name, final BigDecimal quantity,
+                final Long recipeId, final Long chefId);
     }
 
     public interface AsUnused<I> {
-        I from(final Long id, final Long sourceId, final String name,
-                final BigDecimal quantity, final Long chefId);
+        I from(final Long id, final String code, final Long sourceId,
+                final String name, final BigDecimal quantity,
+                final Long chefId);
     }
 
     public interface AsUsed<I> {
-        I from(final Long id, final Long sourceId, final String name,
-                final BigDecimal quantity, final Long recipeId,
-                final Long chefId);
+        I from(final Long id, final String code, final Long sourceId,
+                final String name, final BigDecimal quantity,
+                final Long recipeId, final Long chefId);
     }
 }

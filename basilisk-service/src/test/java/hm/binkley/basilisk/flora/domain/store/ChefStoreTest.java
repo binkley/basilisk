@@ -47,20 +47,6 @@ class ChefStoreTest {
     }
 
     @Test
-    void shouldFindByCode() {
-        final var saved = savedChefRecord();
-        when(springData.findByCode(saved.getCode()))
-                .thenReturn(Optional.of(saved));
-
-        final var found = store.byCode(saved.getCode()).orElseThrow();
-
-        assertThat(found).isEqualTo(saved);
-        assertThat(found.store).isSameAs(store);
-
-        verifyNoMoreInteractions(springData);
-    }
-
-    @Test
     void shouldFindByName() {
         final var saved = savedChefRecord();
         when(springData.findByName(saved.getName()))

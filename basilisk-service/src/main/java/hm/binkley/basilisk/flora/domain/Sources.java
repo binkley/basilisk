@@ -20,6 +20,10 @@ public class Sources {
         return store.byId(id).map(this::from);
     }
 
+    public Optional<Source> byCode(final String code) {
+        return store.byCode(code).map(this::from);
+    }
+
     public Optional<Source> byName(final String name) {
         return store.byName(name).map(this::from);
     }
@@ -37,6 +41,7 @@ public class Sources {
     }
 
     public interface As<S, L> {
-        S from(final Long id, final String name, final Stream<L> availableAt);
+        S from(final Long id, final String code, final String name,
+                final Stream<L> availableAt);
     }
 }
