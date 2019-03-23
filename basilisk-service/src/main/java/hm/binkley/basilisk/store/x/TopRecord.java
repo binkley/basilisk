@@ -47,18 +47,14 @@ public class TopRecord {
     }
 
     public TopRecord add(final MiddleRecord middle) {
-        if (null == middle.id)
-            middle.save();
-        final var ref = new MiddleRef();
-        ref.middleId = middle.id;
+        final var ref = MiddleRef.of(middle);
         if (!middles.add(ref))
             throw new IllegalStateException("Duplicate: " + middle);
         return this;
     }
 
     public TopRecord remove(final MiddleRecord middle) {
-        final var ref = new MiddleRef();
-        ref.middleId = middle.id;
+        final var ref = MiddleRef.of(middle);
         if (!middles.remove(ref))
             throw new IllegalStateException("Absent: " + middle);
         return this;
@@ -69,5 +65,13 @@ public class TopRecord {
     @ToString
     public static class MiddleRef {
         public Long middleId;
+
+        public static MiddleRef of(final MiddleRecord middle) {
+            if (null == middle.id)
+                middle.save();
+            final var ref = new MiddleRef();
+            ref.middleId = middle.id;
+            return ref;
+        }
     }
 }
