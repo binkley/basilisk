@@ -3,7 +3,6 @@ package hm.binkley.basilisk.store.x;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -11,34 +10,34 @@ import static java.util.Objects.requireNonNull;
 
 @Component
 @RequiredArgsConstructor
-public class KindStore {
-    private final KindRepository springData;
+public class TopStore {
+    private final TopRepository springData;
 
-    public KindRecord unsaved(final BigDecimal coolness) {
-        return bind(KindRecord.unsaved(coolness));
+    public TopRecord unsaved(final String name) {
+        return bind(TopRecord.unsaved(name));
     }
 
-    public Optional<KindRecord> byId(final Long id) {
+    public Optional<TopRecord> byId(final Long id) {
         requireNonNull(id);
         return springData.findById(id)
                 .map(this::bind);
     }
 
-    public Stream<KindRecord> all() {
+    public Stream<TopRecord> all() {
         return springData.readAll()
                 .map(this::bind);
     }
 
-    public KindRecord save(final KindRecord record) {
+    public TopRecord save(final TopRecord record) {
         return springData.save(record);
     }
 
-    public void delete(final KindRecord record) {
+    public void delete(final TopRecord record) {
         springData.delete(record);
         record.id = null;
     }
 
-    private KindRecord bind(final KindRecord record) {
+    private TopRecord bind(final TopRecord record) {
         record.store = this;
         return record;
     }

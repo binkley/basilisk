@@ -21,8 +21,10 @@ CREATE TABLE X.MIDDLE
 
 CREATE TABLE X.BOTTOM
 (
+    -- One bottom to each middle; to each middle, many bottoms
     middle_id BIGINT  NOT NULL,
-    foo       VARCHAR NOT NULL
+    foo       VARCHAR NOT NULL,
+    UNIQUE (middle_id, foo)
 );
 
 CREATE TABLE X.TOP_MIDDLE

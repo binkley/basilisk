@@ -31,6 +31,8 @@ public abstract class StandardStore<T extends StandardRecord<T, R, S>,
         return springData.save(record);
     }
 
+    public void delete(final T record) { springData.delete(record); }
+
     @SuppressWarnings("unchecked")
     protected final T bind(final T record) {
         record.store = (S) this;

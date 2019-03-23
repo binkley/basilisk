@@ -15,7 +15,7 @@ import static java.util.Objects.requireNonNull;
 
 @EqualsAndHashCode(exclude = {"id", "store"})
 @Table("X.MIDDLE")
-@ToString
+@ToString(exclude = "store")
 public class MiddleRecord {
     @Id
     public Long id;
@@ -32,13 +32,6 @@ public class MiddleRecord {
         return unsaved;
     }
 
-    public MiddleRecord define(final KindRecord kind) {
-        if (null == kind.id)
-            kind.save();
-        kindId = kind.id;
-        return this;
-    }
-
     /** @todo Instead require caller to discard previous bottom objects? */
     public MiddleRecord save() {
         final var saved = store.save(this);
@@ -46,12 +39,14 @@ public class MiddleRecord {
         return saved;
     }
 
-    public MiddleRecord refresh() {
-        return store.byId(id).orElseThrow();
-    }
+    public void delete() { store.delete(this); }
 
-    public void delete() {
-        store.delete(this);
+    public MiddleRecord define(final KindRecord kind) {
+        check(kind);
+        if (null == kind.id)
+            kind.save();
+        kindId = kind.id;
+        return this;
     }
 
     public MiddleRecord add(final BottomRecord bottom) {

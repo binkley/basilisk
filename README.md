@@ -191,6 +191,23 @@ Some reading:
 - [Simple ownership](basilisk-service/src/main/java/hm/binkley/basilisk/store)
 - [Complex ownership](basilisk-service/src/main/java/hm/binkley/basilisk/store/x)
 
+Example complex cases:
+
+- Test cases:
+  [`XTest`](basilisk-service/src/databaseTest/java/hm/binkley/basilisk/store/x/XTest.java)
+- Many-to-one, value-to-entity:
+  [`Middle`](basilisk-service/src/main/java/hm/binkley/basilisk/store/x/Middle.java)
+  to
+  [`Bottom`](basilisk-service/src/main/java/hm/binkley/basilisk/store/x/Bottom.java)
+- Many-to-one, entity-to-entity:
+  [`Top`](basilisk-service/src/main/java/hm/binkley/basilisk/store/x/Top.java)
+  to
+  [`Middle`](basilisk-service/src/main/java/hm/binkley/basilisk/store/x/Middle.java)
+- One-to-one, entity-to-entity:
+  [`Kind`](basilisk-service/src/main/java/hm/binkley/basilisk/store/x/Kind.java)
+  to
+  [`Middle`](basilisk-service/src/main/java/hm/binkley/basilisk/store/x/Middle.java)
+  
 See
 [_Spring Data JDBC, References, and Aggregates_](https://spring.io/blog/2018/09/24/spring-data-jdbc-references-and-aggregates)
 for more details.

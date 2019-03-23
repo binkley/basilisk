@@ -6,6 +6,8 @@ import org.springframework.stereotype.Component;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import static java.util.Objects.requireNonNull;
+
 @Component
 @RequiredArgsConstructor
 public class MiddleStore {
@@ -16,6 +18,7 @@ public class MiddleStore {
     }
 
     public Optional<MiddleRecord> byId(final Long id) {
+        requireNonNull(id);
         return springData.findById(id)
                 .map(this::bind);
     }
@@ -45,6 +48,7 @@ public class MiddleStore {
 
     public void delete(final MiddleRecord record) {
         springData.delete(record);
+        record.id = null;
     }
 
     private MiddleRecord bind(final MiddleRecord record) {

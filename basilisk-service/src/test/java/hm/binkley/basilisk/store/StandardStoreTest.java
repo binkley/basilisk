@@ -11,6 +11,7 @@ import java.util.Optional;
 
 import static java.time.Instant.EPOCH;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -55,5 +56,12 @@ class StandardStoreTest {
                 .thenReturn(saved);
 
         assertThat(store.save(unsaved)).isEqualTo(saved);
+    }
+
+    @Test
+    void shouldDelete() {
+        store.delete(saved);
+
+        verify(repository).delete(saved);
     }
 }

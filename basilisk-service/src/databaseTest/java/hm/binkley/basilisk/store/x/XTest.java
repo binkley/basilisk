@@ -35,6 +35,8 @@ class XTest {
     private Kinds kinds;
     private MiddleStore middleStore;
     private Middles middles;
+    private TopStore topStore;
+    private Tops tops;
 
     private static <T> T first(final Iterable<T> c) {
         final var it = c.iterator();
@@ -43,8 +45,8 @@ class XTest {
         throw new NoSuchElementException();
     }
 
-    private static BottomRecord newBottom() {
-        return BottomRecord.unsaved("BAR");
+    private static Bottom newBottom() {
+        return new Bottom(BottomRecord.unsaved("BAR"));
     }
 
     @BeforeEach
@@ -53,45 +55,48 @@ class XTest {
         kinds = new Kinds(kindStore);
         middleStore = new MiddleStore(middleRepository);
         middles = new Middles(middleStore, kinds);
+        topStore = new TopStore(topRepository);
+        tops = new Tops(topStore, middles);
     }
 
     @Test
     void shouldCascadeSaveTopToBottom() {
-        final var unsaved = newTop()
-                .add(newMiddle()
-                        .define(newKind())
-                        .add(newBottom()));
-        final var saved = unsaved.save();
+        final var mid = 222;
+        final var unsavedMiddle = middles.unsaved(mid);
+        unsavedMiddle.addBottom("BAR");
+        final var coolness = new BigDecimal("2.3");
+        final var unsavedKind = kinds.unsaved(coolness);
+        unsavedMiddle.define(unsavedKind);
+        final var topName = "TWIRL";
+        final var unsavedTop = tops.unsaved(topName);
+        unsavedTop.add(unsavedMiddle);
 
+        final var savedTop = unsavedTop.save();
+
+        assertThat(savedTop.getName()).isEqualTo(topName);
+        assertThat(unsavedMiddle.getMid()).isEqualTo(mid);
+        assertThat(unsavedMiddle.getCoolness()).isEqualTo(coolness);
         assertBottomCount(1);
         assertMiddleCounts(1, 0);
+        assertKindCount(1);
 
-        assertThat(saved).isEqualTo(unsaved);
-        assertThat(saved.id).isEqualTo(unsaved.id);
-        assertThat(first(saved.middles))
-                .isEqualTo(first(unsaved.middles));
-        assertThat(first(saved.middles).middleId)
-                .isEqualTo(first(unsaved.middles).middleId);
+        assertThat(tops.byId(savedTop.getId()).orElseThrow())
+                .isEqualTo(savedTop);
+    }
 
-        final var foundMiddle = middleStore
-                .byId(first(saved.middles).middleId)
-                .orElseThrow();
+    @Test
+    void shouldGracefullyCopeWithNoKind() {
+        final var kind = newKind().save();
+        final var middle = newMiddle();
+        middle.define(kind).save();
 
-        assertThat(first(saved.middles).middleId)
-                .isEqualTo(foundMiddle.id);
+        assertThat(middle.getKind().orElseThrow()).isEqualTo(kind);
+        assertThat(middle.getCoolness()).isEqualTo(kind.getCoolness());
 
-        final var refreshed = saved.refresh();
-        final var refreshedMiddle = foundMiddle.refresh();
+        kind.delete();
 
-        assertThat(refreshed).isEqualTo(saved);
-        assertThat(refreshed.id).isEqualTo(saved.id);
-        assertThat(first(refreshed.middles))
-                .isEqualTo(first(saved.middles));
-        assertThat(first(refreshed.middles).middleId)
-                .isEqualTo(first(saved.middles).middleId);
-
-        assertThat(first(refreshed.middles).middleId)
-                .isEqualTo(refreshedMiddle.id);
+        assertThat(middle.getKind()).isEmpty();
+        assertThat(middle.getCoolness()).isNull();
     }
 
     @Test
@@ -105,11 +110,13 @@ class XTest {
 
     @Test
     void shouldAddValueObjectsAfterSave() {
+        final var bottom = newBottom();
         newMiddle()
                 .save()
-                .add(newBottom())
+                .add(bottom)
                 .save();
 
+        assertThat(bottom.getFoo()).isEqualTo("BAR");
         assertBottomCount(1);
     }
 
@@ -130,24 +137,28 @@ class XTest {
 
     @Test
     void shouldRemoveValueObjectsOnDeleteOwner() {
-        final var middle = newMiddle()
+        final var savedMiddle = newMiddle()
                 .add(newBottom())
                 .save();
+        final var savedId = savedMiddle.getId();
 
         assertBottomCount(1);
 
-        middle.delete();
+        savedMiddle.delete();
 
         assertBottomCount(0);
+
+        assertThat(middles.byId(savedId)).isEmpty();
     }
 
     @Test
     void shouldNotResaveAlreadySavedEntity() {
-        final var middle = newMiddle()
-                .save();
-        newTop().add(middle).save();
+        final var middle = MiddleRecord.unsaved(222);
+        middleRepository.save(middle);
+        topRepository.save(TopRecord.unsaved("TWIRL").add(middle));
 
         assertMiddleCounts(1, 0);
+
         verify(middleRepository).save(middle); // default - times(1)
     }
 
@@ -173,10 +184,58 @@ class XTest {
 
         assertMiddleCounts(1, 0);
 
+        final var firstMiddle = top.getMiddles().findFirst().orElseThrow();
+        assertThat(firstMiddle).isEqualTo(middle);
+        assertThat(firstMiddle.getId()).isEqualTo(middle.getId());
+
         top.remove(middle);
         top.save();
 
         assertMiddleCounts(0, 1);
+    }
+
+    @Test
+    void shouldResaveDeletedEntities() {
+        final var savedTop = newTop().save();
+        final var savedTopId = savedTop.getId();
+        final var savedKind = newKind().save();
+        final var savedKindId = savedKind.getId();
+        final var savedMiddle = newMiddle().save();
+        final var savedMiddleId = savedMiddle.getId();
+
+        assertTopCount(1);
+        assertKindCount(1);
+        assertMiddleCounts(0, 1);
+
+        final var resavedTop = savedTop.delete().save();
+        final var resavedKind = savedKind.delete().save();
+        final var resavedMiddle = savedMiddle.delete().save();
+
+        assertTopCount(1);
+        assertKindCount(1);
+        assertMiddleCounts(0, 1);
+
+        assertThat(resavedTop.getId()).isNotEqualTo(savedTopId);
+        assertThat(resavedKind.getId()).isNotEqualTo(savedKindId);
+        assertThat(resavedMiddle.getId()).isNotEqualTo(savedMiddleId);
+    }
+
+    @Test
+    void shouldComplainOnUsingDeletedEntities() {
+        final var deletedTop = newTop().save().delete();
+        final var deletedKind = newKind().save().delete();
+        final var deletedMiddle = newMiddle().save().delete();
+
+        assertTopCount(0);
+        assertKindCount(0);
+        assertMiddleCounts(0, 0);
+
+        assertThatThrownBy(() -> tops.byId(deletedTop.getId()))
+                .isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> kinds.byId(deletedKind.getId()))
+                .isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> middles.byId(deletedMiddle.getId()))
+                .isInstanceOf(NullPointerException.class);
     }
 
     @Test
@@ -207,8 +266,8 @@ class XTest {
 
     @Test
     void shouldComplainOnMismatchedBottomBeforeSave() {
-        final var middle = newMiddle();
-        final var bottom = newBottom();
+        final var middle = MiddleRecord.unsaved(222);
+        final var bottom = BottomRecord.unsaved("BAR");
         bottom.middleId = 1L;
 
         assertThatThrownBy(() -> middle.add(bottom))
@@ -217,8 +276,9 @@ class XTest {
 
     @Test
     void shouldComplainOnMismatchedBottomAfterSave() {
-        final var middle = newMiddle().save();
-        final var bottom = newBottom();
+        final var middle = MiddleRecord.unsaved(222);
+        middleRepository.save(middle);
+        final var bottom = BottomRecord.unsaved("BAR");
         bottom.middleId = middle.id + 1;
 
         assertThatThrownBy(() -> middle.add(bottom))
@@ -252,16 +312,16 @@ class XTest {
                 .isInstanceOf(IllegalStateException.class);
     }
 
-    private MiddleRecord newMiddle() {
-        return middleStore.unsaved(222);
+    private Middle newMiddle() {
+        return middles.unsaved(222);
     }
 
-    private KindRecord newKind() {
-        return kindStore.unsaved(new BigDecimal("2.3"));
+    private Kind newKind() {
+        return kinds.unsaved(new BigDecimal("2.3"));
     }
 
-    private TopRecord newTop() {
-        return TopRecord.unsaved("TWIRL", topRepository);
+    private Top newTop() {
+        return tops.unsaved("TWIRL");
     }
 
     private void assertBottomCount(final int total) {
@@ -272,5 +332,13 @@ class XTest {
         assertThat(middles.all()).hasSize(owned + free);
         assertThat(middles.owned()).hasSize(owned);
         assertThat(middles.free()).hasSize(free);
+    }
+
+    private void assertKindCount(final int total) {
+        assertThat(kinds.all()).hasSize(total);
+    }
+
+    private void assertTopCount(final int total) {
+        assertThat(tops.all()).hasSize(total);
     }
 }

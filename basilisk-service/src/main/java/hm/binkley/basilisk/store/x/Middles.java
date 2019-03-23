@@ -16,6 +16,11 @@ public class Middles {
         return new Middle(store.unsaved(mid), kinds);
     }
 
+    public Optional<Middle> byId(final Long id) {
+        return store.byId(id)
+                .map(this::bind);
+    }
+
     public Stream<Middle> all() {
         return store.all()
                 .map(this::bind);
@@ -28,11 +33,6 @@ public class Middles {
 
     public Stream<Middle> free() {
         return store.allFree()
-                .map(this::bind);
-    }
-
-    public Optional<Middle> byId(final Long id) {
-        return store.byId(id)
                 .map(this::bind);
     }
 

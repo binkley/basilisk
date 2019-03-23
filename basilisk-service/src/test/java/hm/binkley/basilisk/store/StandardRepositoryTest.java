@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 
@@ -22,6 +23,18 @@ class StandardRepositoryTest {
 
     @Mock
     private final MyTestRepository repository;
+
+    @Test
+    void shouldReadAll() {
+        final var saved = new MyTestRecord(1L, EPOCH, CODE, NUMBER);
+        when(repository.findAll()).thenReturn(
+                List.of(saved));
+        when(repository.readAll()).thenCallRealMethod();
+
+        final var found = repository.readAll();
+
+        assertThat(found).containsExactly(saved);
+    }
 
     @Test
     void shouldInsertWhenNew() {

@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 
 @EqualsAndHashCode(exclude = {"id", "store"})
 @Table("X.KIND")
-@ToString
+@ToString(exclude = "store")
 public class KindRecord {
     @Id
     public Long id;
@@ -28,11 +28,5 @@ public class KindRecord {
         return store.save(this);
     }
 
-    public KindRecord refresh() {
-        return store.byId(id).orElseThrow();
-    }
-
-    public void delete() {
-        store.delete(this);
-    }
+    public void delete() { store.delete(this); }
 }

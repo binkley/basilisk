@@ -12,9 +12,9 @@ import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
 
-@EqualsAndHashCode(exclude = "id")
+@EqualsAndHashCode(exclude = {"id", "store"})
 @Table("X.TOP")
-@ToString
+@ToString(exclude = "store")
 public class TopRecord {
     @Id
     public Long id;
@@ -22,31 +22,19 @@ public class TopRecord {
     @Column("top_id")
     public Set<MiddleRef> middles = new LinkedHashSet<>();
     @Transient
-    public TopRepository repository;
+    public TopStore store;
 
-    public static TopRecord unsaved(final String name,
-            final TopRepository repository) {
+    public static TopRecord unsaved(final String name) {
         final var unsaved = new TopRecord();
         unsaved.name = name;
-        unsaved.repository = repository;
         return unsaved;
     }
 
     public TopRecord save() {
-        final var saved = repository.save(this);
-        saved.repository = repository;
-        return saved;
+        return store.save(this);
     }
 
-    public TopRecord refresh() {
-        final var refreshed = repository.findById(id).orElseThrow();
-        refreshed.repository = repository;
-        return refreshed;
-    }
-
-    public void delete() {
-        repository.delete(this);
-    }
+    public void delete() { store.delete(this); }
 
     public TopRecord add(final MiddleRecord middle) {
         check(middle);
