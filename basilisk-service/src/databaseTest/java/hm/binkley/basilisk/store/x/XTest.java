@@ -89,13 +89,13 @@ class XTest {
     }
 
     @Test
-    void shouldNoResaveAlreadySavedEntity() {
+    void shouldNotResaveAlreadySavedEntity() {
         final var middle = newMiddle()
                 .save();
         newTop().add(middle).save();
 
         assertMiddleCounts(1, 0);
-        verify(middleRepository).save(middle);
+        verify(middleRepository).save(middle); // default - times(1)
     }
 
     @Test
@@ -140,6 +140,16 @@ class XTest {
     }
 
     @Test
+    void shouldComplainOnMissingBottom() {
+        final var middle = newMiddle();
+
+        assertThatThrownBy(() -> middle.add(null))
+                .isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> middle.remove(null))
+                .isInstanceOf(NullPointerException.class);
+    }
+
+    @Test
     void shouldComplainOnDuplicateBottom() {
         final var middle = newMiddle().add(newBottom());
 
@@ -173,6 +183,16 @@ class XTest {
 
         assertThatThrownBy(() -> middle.add(bottom))
                 .isInstanceOf(IllegalStateException.class);
+    }
+
+    @Test
+    void shouldComplainOnMissingMiddle() {
+        final var top = newTop();
+
+        assertThatThrownBy(() -> top.add(null))
+                .isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> top.remove(null))
+                .isInstanceOf(NullPointerException.class);
     }
 
     @Test

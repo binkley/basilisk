@@ -11,6 +11,8 @@ import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import static java.util.Objects.requireNonNull;
+
 @EqualsAndHashCode(exclude = {"id", "repository"})
 @Table("X.MIDDLE")
 @ToString
@@ -68,6 +70,7 @@ public class MiddleRecord {
     }
 
     private void check(final BottomRecord bottom) {
+        requireNonNull(bottom);
         /* OK if:
         1) Both unsaved OR both saved AND bottom saved to THIS
         1a) Duplicate check in Set will affect latter

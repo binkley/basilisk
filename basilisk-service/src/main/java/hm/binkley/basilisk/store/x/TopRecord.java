@@ -10,6 +10,8 @@ import org.springframework.data.relational.core.mapping.Table;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import static java.util.Objects.requireNonNull;
+
 @EqualsAndHashCode(exclude = "id")
 @Table("X.TOP")
 @ToString
@@ -47,6 +49,7 @@ public class TopRecord {
     }
 
     public TopRecord add(final MiddleRecord middle) {
+        check(middle);
         final var ref = MiddleRef.of(middle);
         if (!middles.add(ref))
             throw new IllegalStateException("Duplicate: " + middle);
@@ -54,10 +57,15 @@ public class TopRecord {
     }
 
     public TopRecord remove(final MiddleRecord middle) {
+        check(middle);
         final var ref = MiddleRef.of(middle);
         if (!middles.remove(ref))
             throw new IllegalStateException("Absent: " + middle);
         return this;
+    }
+
+    private void check(final MiddleRecord middle) {
+        requireNonNull(middle);
     }
 
     @EqualsAndHashCode
