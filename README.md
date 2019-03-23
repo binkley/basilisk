@@ -166,7 +166,7 @@ questions, suggestions, additions, bugs, or improvements!
 
 ## Design
 
-Demonstrating an alternative to classic Spring "layer cack" design, this
+Demonstrating an alternative to classic Spring "layer cake" design, this
 project uses a more domain-oriented approach:
 
 * REST layer with controllers
@@ -398,7 +398,7 @@ logging events; they are not for development/QA-only logging:
 Spring blogs on Spring Data JDBC domain relationships in
 [_Spring Data JDBC, References, and Aggregates_](https://spring.io/blog/2018/09/24/spring-data-jdbc-references-and-aggregates).
 
-- [`RecipeRepositoryTest`](basilisk-service/src/databaseTest/java/hm/binkley/basilisk/flora/domain/store/RecipeRepositoryTest.java)
+- [`RecipeRepositoryTest`](basilisk-service/src/databaseTest/java/hm/binkley/basilisk/flora/recipe/store/RecipeRepositoryTest.java)
   tests [the sample domain model](#model)
 - [`OneToOneRepositoryTest`](basilisk-service/src/databaseTest/java/hm/binkley/basilisk/store/OneToOneRepositoryTest.java)
   tests a one-to-one domain model
@@ -452,8 +452,8 @@ Break up the rest of your classes into categories of related function.  In
 this project, there are only four:
 
 - [configuration](basilisk-service/src/main/java/hm/binkley/basilisk/configuration)
-- [endpoints](basilisk-service/src/main/java/hm/binkley/basilisk/flora/rest)
-- [persistence](basilisk-service/src/main/java/hm/binkley/basilisk/flora/domain/store)
+- [endpoints](basilisk-service/src/main/java/hm/binkley/basilisk/rest)
+- [persistence](basilisk-service/src/main/java/hm/binkley/basilisk/store)
 - [services](basilisk-service/src/main/java/hm/binkley/basilisk/flora/service)
 
 Recall that package names are stylistically singular, not plural, _eg_,
@@ -465,12 +465,12 @@ Recall that package names are stylistically singular, not plural, _eg_,
 - [application (contract)](basilisk-contracts/src/test/resources/contracts/flora/A_see_no_chefs.yml)
 - [configuration (unit)](basilisk-service/src/test/java/hm/binkley/basilisk/configuration/JsonConfigurationTest.java)
 - [configuration (integration)](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/configuration/PropertiesConfigurationTest.java)
-- [controller (integration)](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/flora/rest/RecipeControllerTest.java)
-- [controller validation (integration)](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/flora/rest/RecipeControllerValidationTest.java)
-- [json request (unit)](basilisk-service/src/test/java/hm/binkley/basilisk/flora/rest/RecipeRequestTest.java)
-- [json response (integration)](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/flora/rest/RecipeResponseTest.java)
-- [logging (integration)](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/flora/rest/RecipeControllerTest.java)
-- [record validation (unit)](basilisk-service/src/test/java/hm/binkley/basilisk/flora/recipe/store/RecipeRecordValidationTest.java) (TODO)
+- [controller (integration)](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/flora/recipe/rest/RecipeControllerTest.java)
+- [controller validation (integration)](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/flora/recipe/rest/RecipeControllerValidationTest.java)
+- [json request (unit)](basilisk-service/src/test/java/hm/binkley/basilisk/flora/recipe/rest/RecipeRequestTest.java)
+- [json response (integration)](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/flora/recipe/rest/RecipeResponseTest.java)
+- [logging (integration)](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/flora/recipe/rest/RecipeControllerTest.java)
+- record validation (unit) -- *TODO*
 - [repository (database)](basilisk-service/src/databaseTest/java/hm/binkley/basilisk/flora/recipe/store/RecipeRepositoryTest.java)
 - [service (unit)](basilisk-service/src/test/java/hm/binkley/basilisk/flora/service/SpecialServiceTest.java)
 - [service validation (integration)](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/flora/service/SpecialServiceValidationTest.java)
@@ -541,7 +541,7 @@ original, unrefactored code.)
 
 Any bean can be validated by adding `@Validated` to the class.  See examples
 of
-[`RecipeController`](basilisk-service/src/main/java/hm/binkley/basilisk/flora/rest/RecipeController.java),
+[`RecipeController`](basilisk-service/src/main/java/hm/binkley/basilisk/flora/recipe/rest/RecipeController.java),
 [`FloraProperties`](basilisk-service/src/main/java/hm/binkley/basilisk/flora/configuration/FloraProperties.java),
 and
 [`SpecialService`](basilisk-service/src/main/java/hm/binkley/basilisk/flora/service/SpecialService.java).
@@ -608,10 +608,10 @@ your test.  Among the choices include:
   example in
   [`PropertiesConfigurationTest`](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/configuration/PropertiesConfigurationTest.java)
 - `@DataJdbcTest`; example in
-  [`RecipeRepositoryTest`](basilisk-service/src/databaseTest/java/hm/binkley/basilisk/flora/domain/store/RecipeRepositoryTest.java)
+  [`RecipeRepositoryTest`](basilisk-service/src/databaseTest/java/hm/binkley/basilisk/flora/recipe/store/RecipeRepositoryTest.java)
 - `@WebMvcTest` (use the `value` property to limit test to one controller);
   example in
-  [`RecipeControllerTest`](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/flora/rest/RecipeControllerTest.java)
+  [`RecipeControllerTest`](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/flora/recipe/rest/RecipeControllerTest.java)
 
 ### Configuration through annotations
 
@@ -627,7 +627,7 @@ See
 for an example of global custom JSON formatting, in this case, showing
 `Instant` as, _eg_, "2011-02-03T04:05:06Z" (no milliseconds; UTC timezone),
 based on `spring.jackson.date-format` and `spring.jackson.time-zone`
-application properties.  Comare to
+application properties.  Compare to
 `@org.springframework.format.annotation.DateTimeFormat`
 (which does not handle `Instant`).
 
@@ -670,9 +670,9 @@ NULL UNIQUE`, while retaining the surrogate key, `id`.
 ### Injected logger
 
 Rather than using a statically-defined logger instance, see
-[`RecipeController`](basilisk-service/src/main/java/hm/binkley/basilisk/flora/rest/RecipeController.java)
+[`RecipeController`](basilisk-service/src/main/java/hm/binkley/basilisk/flora/recipe/rest/RecipeController.java)
 for a Spring-injected logger on demand, suitable for
-[testing](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/flora/rest/RecipeControllerTest.java).
+[testing](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/flora/recipe/rest/RecipeControllerTest.java).
 
 Note the edit to [PMD configuration](config/pmd/ruleset.xml) to recognize the
 pattern for testable logging.
