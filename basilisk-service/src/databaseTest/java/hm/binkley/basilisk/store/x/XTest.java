@@ -3,6 +3,7 @@ package hm.binkley.basilisk.store.x;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
+import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -10,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.verify;
 
 @ActiveProfiles("test")
 @AutoConfigureEmbeddedDatabase
@@ -18,7 +20,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @SuppressWarnings("PMD")
 @Transactional
 class XTest {
+    @Spy
     private final TopRepository topRepository;
+    @Spy
     private final MiddleRepository middleRepository;
 
     private static BottomRecord newBottom() {
@@ -72,6 +76,25 @@ class XTest {
         middle.delete();
 
         assertBottomCount(0);
+    }
+
+    @Test
+    void shouldCascadeSave() {
+        final var middle = newMiddle();
+        newTop().add(middle).save();
+
+        assertMiddleCounts(1, 0);
+        verify(middleRepository).save(middle);
+    }
+
+    @Test
+    void shouldNoResaveAlreadySavedEntity() {
+        final var middle = newMiddle()
+                .save();
+        newTop().add(middle).save();
+
+        assertMiddleCounts(1, 0);
+        verify(middleRepository).save(middle);
     }
 
     @Test
