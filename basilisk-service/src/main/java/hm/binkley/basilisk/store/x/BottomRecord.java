@@ -7,12 +7,12 @@ import org.springframework.data.relational.core.mapping.Table;
 import static java.util.Objects.requireNonNull;
 
 /** These are <em>value objects</em>, compared by {@link #foo}. */
-@EqualsAndHashCode(exclude = "middle_id")
+@EqualsAndHashCode(exclude = "middleId")
 @Table("X.BOTTOM")
 @ToString
 public class BottomRecord {
     public String foo;
-    public Long middle_id;
+    public Long middleId;
 
     public static BottomRecord unsaved(final String foo) {
         final var unsaved = new BottomRecord();
@@ -21,6 +21,6 @@ public class BottomRecord {
     }
 
     void postParentSave(final MiddleRecord middle) {
-        middle_id = requireNonNull(middle.id, "Unsaved: " + middle);
+        middleId = requireNonNull(middle.id, "Unsaved: " + middle);
     }
 }

@@ -193,7 +193,7 @@ class XTest {
     void shouldComplainOnMismatchedBottomBeforeSave() {
         final var middle = newMiddle();
         final var bottom = newBottom();
-        bottom.middle_id = 1L;
+        bottom.middleId = 1L;
 
         assertThatThrownBy(() -> middle.add(bottom))
                 .isInstanceOf(IllegalStateException.class);
@@ -203,7 +203,7 @@ class XTest {
     void shouldComplainOnMismatchedBottomAfterSave() {
         final var middle = newMiddle().save();
         final var bottom = newBottom();
-        bottom.middle_id = middle.id + 1;
+        bottom.middleId = middle.id + 1;
 
         assertThatThrownBy(() -> middle.add(bottom))
                 .isInstanceOf(IllegalStateException.class);

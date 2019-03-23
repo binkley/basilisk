@@ -76,8 +76,8 @@ public class MiddleRecord {
         1a) Duplicate check in Set will affect latter
         2) Middle saved AND bottom not saved
          */
-        if (Objects.equals(id, bottom.middle_id)) return;
-        if (null != id && null == bottom.middle_id) return;
+        if (Objects.equals(id, bottom.middleId)) return;
+        if (null != id && null == bottom.middleId) return;
 
         throw new IllegalStateException(
                 "Mismatched: " + bottom + "; " + this);
