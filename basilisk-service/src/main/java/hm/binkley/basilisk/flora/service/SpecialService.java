@@ -1,7 +1,7 @@
 package hm.binkley.basilisk.flora.service;
 
 import hm.binkley.basilisk.flora.configuration.FloraProperties;
-import hm.binkley.basilisk.flora.domain.Recipe;
+import hm.binkley.basilisk.flora.recipe.Recipe;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Service;

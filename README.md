@@ -89,19 +89,22 @@ You can reach some conclusions from all this information:
 
 ### Implementing
 
-* [`Recipe`](basilisk-service/src/main/java/hm/binkley/basilisk/flora/domain/Recipe.java)
+* [`Recipe`](basilisk-service/src/main/java/hm/binkley/basilisk/flora/recipe/Recipe.java)
   is an aggregate root
-* [`Ingredient`](basilisk-service/src/main/java/hm/binkley/basilisk/flora/domain/Ingredient.java)
+* [`Ingredient`](basilisk-service/src/main/java/hm/binkley/basilisk/flora/ingredient/Ingredient.java)
   is a kind of root as well, in that unused ingredients are important, but
   ingredients can also belong to a recipe as well, as your "meal planners"
   schedule stock for each location and season
-* [`Source`](basilisk-service/src/main/java/hm/binkley/basilisk/flora/domain/Source.java)
+* [`Source`](basilisk-service/src/main/java/hm/binkley/basilisk/flora/source/Source.java)
   defines ingredients, in a similar fashion to classes in Java define
   instances; it is its own aggregate root
-* [`Chef`](basilisk-service/src/main/java/hm/binkley/basilisk/flora/domain/Chef.java)
+* [`Chef`](basilisk-service/src/main/java/hm/binkley/basilisk/flora/chef/Chef.java)
   is important, but _not_ an aggregate root.  You move chefs around your
   locations over time, but the recipes are tied more to ingredients, and
   possibly restricted by location and season
+* [`Location`](basilisk-service/src/main/java/hm/binkley/basilisk/flora/location/Location.java)
+  restricts what ingredients are available at a location (eg, _The Dallas
+  Yellow Rose_)
 
 ### Sort of a picture (if you turn the page sideways and squint)
 
@@ -355,7 +358,7 @@ external database process.
 
 Rather than use embedded JSON strings in Java tests, throughout is used JSON
 test files, for example, 
-[`chef-response-test.json`](basilisk-service/src/integrationTest/resources/hm/binkley/basilisk/flora/rest/chef-response-test.json).
+[`chef-response-test.json`](basilisk-service/src/integrationTest/resources/hm/binkley/basilisk/flora/chef/rest/chef-response-test.json).
 The rules of thumb for these:
 
 1. Place the JSON test file in the same package as the test class, but under
@@ -467,8 +470,8 @@ Recall that package names are stylistically singular, not plural, _eg_,
 - [json request (unit)](basilisk-service/src/test/java/hm/binkley/basilisk/flora/rest/RecipeRequestTest.java)
 - [json response (integration)](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/flora/rest/RecipeResponseTest.java)
 - [logging (integration)](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/flora/rest/RecipeControllerTest.java)
-- [record validation (unit)](basilisk-service/src/test/java/hm/binkley/basilisk/flora/domain/store/RecipeRecordValidationTest.java) (TODO)
-- [repository (database)](basilisk-service/src/databaseTest/java/hm/binkley/basilisk/flora/domain/store/RecipeRepositoryTest.java)
+- [record validation (unit)](basilisk-service/src/test/java/hm/binkley/basilisk/flora/recipe/store/RecipeRecordValidationTest.java) (TODO)
+- [repository (database)](basilisk-service/src/databaseTest/java/hm/binkley/basilisk/flora/recipe/store/RecipeRepositoryTest.java)
 - [service (unit)](basilisk-service/src/test/java/hm/binkley/basilisk/flora/service/SpecialServiceTest.java)
 - [service validation (integration)](basilisk-service/src/integrationTest/java/hm/binkley/basilisk/flora/service/SpecialServiceValidationTest.java)
 
@@ -660,7 +663,7 @@ See
 ### Natural keys
 
 See
-[`ChefRecord`](basilisk-service/src/main/java/hm/binkley/basilisk/flora/domain/store/ChefRecord.java)
+[`ChefRecord`](basilisk-service/src/main/java/hm/binkley/basilisk/flora/chef/store/ChefRecord.java)
 and the `code` field.  In the database this is expressed as `code VARCHAR NOT
 NULL UNIQUE`, while retaining the surrogate key, `id`.
 

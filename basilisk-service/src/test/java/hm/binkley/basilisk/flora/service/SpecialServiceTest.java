@@ -1,8 +1,8 @@
 package hm.binkley.basilisk.flora.service;
 
 import hm.binkley.basilisk.flora.configuration.FloraProperties;
-import hm.binkley.basilisk.flora.domain.Recipe;
-import hm.binkley.basilisk.flora.domain.UsedIngredient;
+import hm.binkley.basilisk.flora.recipe.Recipe;
+import hm.binkley.basilisk.flora.ingredient.UsedIngredient;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
