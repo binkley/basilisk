@@ -47,6 +47,19 @@ class SourcesTest {
     }
 
     @Test
+    void shouldFindByCode() {
+        final var record = savedSourceRecord();
+        when(store.byCode(record.getCode()))
+                .thenReturn(Optional.of(record));
+
+        final var found = sources.byCode(record.getCode()).orElseThrow();
+
+        assertThat(found).isEqualTo(new Source(record, locations));
+
+        verifyNoMoreInteractions(store);
+    }
+
+    @Test
     void shouldFindByName() {
         final var saved = savedSourceRecord();
         when(store.byName(saved.getName()))

@@ -59,6 +59,32 @@ class IngredientsTest {
     }
 
     @Test
+    void shouldFindUnusedByCode() {
+        final var record = savedUnusedIngredientRecord();
+        when(store.byCode(record.getCode()))
+                .thenReturn(Optional.of(record));
+
+        final var found = ingredients.byCode(record.getCode()).orElseThrow();
+
+        assertThat(found).isEqualTo(new UnusedIngredient(record));
+
+        verifyNoMoreInteractions(store);
+    }
+
+    @Test
+    void shouldFindUsedByCode() {
+        final var record = savedUsedIngredientRecord();
+        when(store.byCode(record.getCode()))
+                .thenReturn(Optional.of(record));
+
+        final var found = ingredients.byCode(record.getCode()).orElseThrow();
+
+        assertThat(found).isEqualTo(new UsedIngredient(record));
+
+        verifyNoMoreInteractions(store);
+    }
+
+    @Test
     void shouldUnusedFindByName() {
         final var record = savedUnusedIngredientRecord();
         when(store.byName(record.getName()))

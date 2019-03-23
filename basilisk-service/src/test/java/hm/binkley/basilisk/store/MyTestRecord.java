@@ -1,6 +1,7 @@
 package hm.binkley.basilisk.store;
 
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.ToString;
 
 import java.time.Instant;
@@ -10,6 +11,7 @@ import java.time.Instant;
 final class MyTestRecord
         extends StandardRecord<MyTestRecord, MyTestRepository,
         MyTestStore> {
+    @Getter
     int number;
 
     MyTestRecord(final Long id, final Instant receivedAt, final String code,

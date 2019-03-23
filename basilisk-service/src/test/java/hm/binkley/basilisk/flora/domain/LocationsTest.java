@@ -58,6 +58,19 @@ class LocationsTest {
     }
 
     @Test
+    void shouldFindByCode() {
+        final var record = savedLocationRecord();
+        when(store.byCode(record.getCode()))
+                .thenReturn(Optional.of(record));
+
+        final var found = locations.byCode(record.getCode()).orElseThrow();
+
+        assertThat(found).isEqualTo(new Location(record));
+
+        verifyNoMoreInteractions(store);
+    }
+
+    @Test
     void shouldFindByName() {
         final var record = savedLocationRecord();
         when(store.byName(record.getName()))

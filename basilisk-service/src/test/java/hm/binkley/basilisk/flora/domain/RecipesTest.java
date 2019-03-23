@@ -49,6 +49,19 @@ class RecipesTest {
     }
 
     @Test
+    void shouldFindByCode() {
+        final var record = savedRecipeRecord();
+        when(store.byCode(record.getCode()))
+                .thenReturn(Optional.of(record));
+
+        final var found = recipes.byCode(record.getCode()).orElseThrow();
+
+        assertThat(found).isEqualTo(new Recipe(record));
+
+        verifyNoMoreInteractions(store);
+    }
+
+    @Test
     void shouldFindByName() {
         final var record = savedRecipeRecord();
         when(store.byName(record.getName()))
