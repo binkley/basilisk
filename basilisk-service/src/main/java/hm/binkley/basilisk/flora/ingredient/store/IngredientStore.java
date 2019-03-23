@@ -18,7 +18,7 @@ public class IngredientStore
 
     public Stream<IngredientRecord> byName(final String name) {
         return springData.findAllByName(name)
-                .map(this::assign);
+                .map(this::bind);
     }
 
     public Stream<IngredientRecord> unused() {
@@ -31,7 +31,7 @@ public class IngredientStore
             final BigDecimal quantity, final Long chefId) {
         final IngredientRecord record = IngredientRecord.unsaved(
                 code, sourceId, name, quantity, chefId);
-        assign(record);
+        bind(record);
         return record.save();
     }
 }

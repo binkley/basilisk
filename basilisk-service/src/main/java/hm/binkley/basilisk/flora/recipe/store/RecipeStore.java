@@ -16,13 +16,13 @@ public class RecipeStore
 
     public Optional<RecipeRecord> byName(final String name) {
         return springData.findByName(name)
-                .map(this::assign);
+                .map(this::bind);
     }
 
     public RecipeRecord create(
             final String code, final String name, final Long chefId) {
         final RecipeRecord record = RecipeRecord.unsaved(code, name, chefId);
-        assign(record);
+        bind(record);
         return record.save();
     }
 

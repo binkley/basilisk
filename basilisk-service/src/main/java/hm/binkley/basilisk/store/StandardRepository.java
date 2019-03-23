@@ -8,15 +8,18 @@ import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.stream.Stream;
 
+import static java.util.stream.StreamSupport.stream;
+
 public interface StandardRepository<T extends StandardRecord<T, R, S>,
         R extends StandardRepository<T, R, S>,
         S extends StandardStore<T, R, S>>
         extends CrudRepository<T, Long> {
-    @Query("TODO: OVERRIDE AND SPECIFY QUERY")
-    Optional<T> findByCode(String code);
+    default Stream<T> readAll() {
+        return stream(findAll().spliterator(), false);
+    }
 
     @Query("TODO: OVERRIDE AND SPECIFY QUERY")
-    Stream<T> readAll();
+    Optional<T> findByCode(String code);
 
     default T upsert(final T maybeNew,
             final BiConsumer<T, @NotNull T> prepareUpsert) {

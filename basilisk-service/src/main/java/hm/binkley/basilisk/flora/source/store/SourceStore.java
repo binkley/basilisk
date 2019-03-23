@@ -16,12 +16,12 @@ public final class SourceStore
 
     public Optional<SourceRecord> byName(final String name) {
         return springData.findByName(name)
-                .map(this::assign);
+                .map(this::bind);
     }
 
     public SourceRecord create(final String code, final String name) {
         final SourceRecord record = SourceRecord.unsaved(code, name);
-        assign(record);
+        bind(record);
         return record.save();
     }
 }

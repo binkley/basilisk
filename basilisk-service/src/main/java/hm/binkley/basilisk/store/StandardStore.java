@@ -14,17 +14,17 @@ public abstract class StandardStore<T extends StandardRecord<T, R, S>,
 
     public final Optional<T> byId(final Long id) {
         return springData.findById(id)
-                .map(this::assign);
+                .map(this::bind);
     }
 
     public final Optional<T> byCode(final String code) {
         return springData.findByCode(code)
-                .map(this::assign);
+                .map(this::bind);
     }
 
     public final Stream<T> all() {
         return springData.readAll()
-                .map(this::assign);
+                .map(this::bind);
     }
 
     public T save(final T record) {
@@ -32,7 +32,7 @@ public abstract class StandardStore<T extends StandardRecord<T, R, S>,
     }
 
     @SuppressWarnings("unchecked")
-    protected final T assign(final T record) {
+    protected final T bind(final T record) {
         record.store = (S) this;
         return record;
     }

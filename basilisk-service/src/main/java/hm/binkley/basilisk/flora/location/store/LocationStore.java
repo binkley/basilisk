@@ -17,12 +17,12 @@ public class LocationStore
 
     public Optional<LocationRecord> byName(final String name) {
         return springData.findByName(name)
-                .map(this::assign);
+                .map(this::bind);
     }
 
     public LocationRecord create(final String code, final String name) {
         final LocationRecord record = LocationRecord.unsaved(code, name);
-        assign(record);
+        bind(record);
         return record.save();
     }
 }

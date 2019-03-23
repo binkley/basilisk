@@ -16,12 +16,12 @@ public class ChefStore
 
     public Optional<ChefRecord> byName(final String name) {
         return springData.findByName(name)
-                .map(this::assign);
+                .map(this::bind);
     }
 
     public ChefRecord create(final String code, final String name) {
         final ChefRecord record = ChefRecord.unsaved(code, name);
-        assign(record);
+        bind(record);
         return record.save();
     }
 }
