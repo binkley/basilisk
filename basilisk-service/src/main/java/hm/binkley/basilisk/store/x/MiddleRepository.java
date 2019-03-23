@@ -5,8 +5,14 @@ import org.springframework.data.repository.CrudRepository;
 
 import java.util.stream.Stream;
 
+import static java.util.stream.StreamSupport.stream;
+
 public interface MiddleRepository
         extends CrudRepository<MiddleRecord, Long> {
+    default Stream<MiddleRecord> readAll() {
+        return stream(findAll().spliterator(), false);
+    }
+
     @Query("SELECT * FROM X.MIDDLE m"
             + " WHERE EXISTS(SELECT 1 FROM X.TOP_MIDDLE tm"
             + " WHERE m.id = tm.middle_id)")

@@ -13,42 +13,45 @@ import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
 
-@EqualsAndHashCode(exclude = {"id", "repository"})
+@EqualsAndHashCode(exclude = {"id", "store"})
 @Table("X.MIDDLE")
 @ToString
 public class MiddleRecord {
     @Id
     public Long id;
+    public Long kindId;
     public int mid;
     @Column("middle_id")
     public Set<BottomRecord> bottoms = new LinkedHashSet<>();
     @Transient
-    public MiddleRepository repository;
+    public MiddleStore store;
 
-    public static MiddleRecord unsaved(final int mid,
-            final MiddleRepository repository) {
+    public static MiddleRecord unsaved(final int mid) {
         final var unsaved = new MiddleRecord();
         unsaved.mid = mid;
-        unsaved.repository = repository;
         return unsaved;
+    }
+
+    public MiddleRecord define(final KindRecord kind) {
+        if (null == kind.id)
+            kind.save();
+        kindId = kind.id;
+        return this;
     }
 
     /** @todo Instead require caller to discard previous bottom objects? */
     public MiddleRecord save() {
-        final var saved = repository.save(this);
-        saved.repository = repository;
-        bottoms.forEach(this::postSave);
+        final var saved = store.save(this);
+        bottoms.forEach(saved::postSave);
         return saved;
     }
 
     public MiddleRecord refresh() {
-        final var refreshed = repository.findById(id).orElseThrow();
-        refreshed.repository = repository;
-        return refreshed;
+        return store.byId(id).orElseThrow();
     }
 
     public void delete() {
-        repository.delete(this);
+        store.delete(this);
     }
 
     public MiddleRecord add(final BottomRecord bottom) {
@@ -81,5 +84,9 @@ public class MiddleRecord {
 
         throw new IllegalStateException(
                 "Mismatched: " + bottom + "; " + this);
+    }
+
+    private void check(final KindRecord kind) {
+        requireNonNull(kind);
     }
 }

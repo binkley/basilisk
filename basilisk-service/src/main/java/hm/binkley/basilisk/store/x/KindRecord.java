@@ -8,7 +8,7 @@ import org.springframework.data.relational.core.mapping.Table;
 
 import java.math.BigDecimal;
 
-@EqualsAndHashCode(exclude = {"id", "repository"})
+@EqualsAndHashCode(exclude = {"id", "store"})
 @Table("X.KIND")
 @ToString
 public class KindRecord {
@@ -16,29 +16,23 @@ public class KindRecord {
     public Long id;
     public BigDecimal coolness;
     @Transient
-    public KindRepository repository;
+    public KindStore store;
 
-    public static KindRecord unsaved(final BigDecimal coolness,
-            final KindRepository repository) {
+    public static KindRecord unsaved(final BigDecimal coolness) {
         final var unsaved = new KindRecord();
         unsaved.coolness = coolness;
-        unsaved.repository = repository;
         return unsaved;
     }
 
     public KindRecord save() {
-        final var saved = repository.save(this);
-        saved.repository = repository;
-        return saved;
+        return store.save(this);
     }
 
     public KindRecord refresh() {
-        final var refreshed = repository.findById(id).orElseThrow();
-        refreshed.repository = repository;
-        return refreshed;
+        return store.byId(id).orElseThrow();
     }
 
     public void delete() {
-        repository.delete(this);
+        store.delete(this);
     }
 }

@@ -2,6 +2,7 @@ package hm.binkley.basilisk.store.x;
 
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import lombok.RequiredArgsConstructor;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,7 +27,14 @@ class XTest {
     @Spy
     private final TopRepository topRepository;
     @Spy
+    private final KindRepository kindRepository;
+    @Spy
     private final MiddleRepository middleRepository;
+
+    private KindStore kindStore;
+    private Kinds kinds;
+    private MiddleStore middleStore;
+    private Middles middles;
 
     private static <T> T first(final Iterable<T> c) {
         final var it = c.iterator();
@@ -38,10 +47,19 @@ class XTest {
         return BottomRecord.unsaved("BAR");
     }
 
+    @BeforeEach
+    void setUp() {
+        kindStore = new KindStore(kindRepository);
+        kinds = new Kinds(kindStore);
+        middleStore = new MiddleStore(middleRepository);
+        middles = new Middles(middleStore, kinds);
+    }
+
     @Test
     void shouldCascadeSaveTopToBottom() {
         final var unsaved = newTop()
                 .add(newMiddle()
+                        .define(newKind())
                         .add(newBottom()));
         final var saved = unsaved.save();
 
@@ -55,11 +73,9 @@ class XTest {
         assertThat(first(saved.middles).middleId)
                 .isEqualTo(first(unsaved.middles).middleId);
 
-        final var foundMiddle = middleRepository
-                .findById(first(saved.middles).middleId)
+        final var foundMiddle = middleStore
+                .byId(first(saved.middles).middleId)
                 .orElseThrow();
-        // Lacking a "store", do this by hand
-        foundMiddle.repository = middleRepository;
 
         assertThat(first(saved.middles).middleId)
                 .isEqualTo(foundMiddle.id);
@@ -237,7 +253,11 @@ class XTest {
     }
 
     private MiddleRecord newMiddle() {
-        return MiddleRecord.unsaved(222, middleRepository);
+        return middleStore.unsaved(222);
+    }
+
+    private KindRecord newKind() {
+        return kindStore.unsaved(new BigDecimal("2.3"));
     }
 
     private TopRecord newTop() {
@@ -245,12 +265,12 @@ class XTest {
     }
 
     private void assertBottomCount(final int total) {
-        assertThat(middleRepository.findAllBottoms()).hasSize(total);
+        assertThat(middleStore.allBottoms()).hasSize(total);
     }
 
     private void assertMiddleCounts(final int owned, final int free) {
-        assertThat(middleRepository.findAll()).hasSize(owned + free);
-        assertThat(middleRepository.findAllOwned()).hasSize(owned);
-        assertThat(middleRepository.findAllFree()).hasSize(free);
+        assertThat(middles.all()).hasSize(owned + free);
+        assertThat(middles.owned()).hasSize(owned);
+        assertThat(middles.free()).hasSize(free);
     }
 }
