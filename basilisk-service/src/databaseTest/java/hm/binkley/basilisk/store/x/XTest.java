@@ -30,6 +30,16 @@ class XTest {
     }
 
     @Test
+    void shouldCascadeSaveTopToBottom() {
+        final var middle = newMiddle()
+                .add(newBottom());
+        newTop().add(middle).save();
+
+        assertBottomCount(1);
+        assertMiddleCounts(1, 0);
+    }
+
+    @Test
     void shouldAddValueObjectsBeforeSave() {
         newMiddle()
                 .add(newBottom())
@@ -76,15 +86,6 @@ class XTest {
         middle.delete();
 
         assertBottomCount(0);
-    }
-
-    @Test
-    void shouldCascadeSave() {
-        final var middle = newMiddle();
-        newTop().add(middle).save();
-
-        assertMiddleCounts(1, 0);
-        verify(middleRepository).save(middle);
     }
 
     @Test
