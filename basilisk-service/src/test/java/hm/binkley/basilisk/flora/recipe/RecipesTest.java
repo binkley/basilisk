@@ -41,9 +41,11 @@ class RecipesTest {
         when(store.byId(record.getId()))
                 .thenReturn(Optional.of(record));
 
-        final Optional<Recipe> found = recipes.byId(record.getId());
+        final var found = recipes
+                .byId(record.getId())
+                .orElseThrow();
 
-        assertThat(found).contains(new Recipe(record));
+        assertThat(found).isEqualTo(new Recipe(record));
 
         verifyNoMoreInteractions(store);
     }
@@ -54,7 +56,9 @@ class RecipesTest {
         when(store.byCode(record.getCode()))
                 .thenReturn(Optional.of(record));
 
-        final var found = recipes.byCode(record.getCode()).orElseThrow();
+        final var found = recipes
+                .byCode(record.getCode())
+                .orElseThrow();
 
         assertThat(found).isEqualTo(new Recipe(record));
 
@@ -67,7 +71,9 @@ class RecipesTest {
         when(store.byName(record.getName()))
                 .thenReturn(Optional.of(record));
 
-        final var found = recipes.byName(record.getName()).orElseThrow();
+        final var found = recipes
+                .byName(record.getName())
+                .orElseThrow();
 
         assertThat(found).isEqualTo(new Recipe(record));
 
@@ -80,7 +86,7 @@ class RecipesTest {
         when(store.all())
                 .thenReturn(Stream.of(record));
 
-        final Stream<Recipe> found = recipes.all();
+        final var found = recipes.all();
 
         assertThat(found).containsExactly(new Recipe(record));
 

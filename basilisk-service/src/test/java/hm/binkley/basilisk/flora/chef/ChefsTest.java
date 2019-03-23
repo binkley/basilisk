@@ -1,8 +1,8 @@
 package hm.binkley.basilisk.flora.chef;
 
+import hm.binkley.basilisk.flora.chef.rest.ChefRequest;
 import hm.binkley.basilisk.flora.chef.store.ChefRecord;
 import hm.binkley.basilisk.flora.chef.store.ChefStore;
-import hm.binkley.basilisk.flora.chef.rest.ChefRequest;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,9 +37,11 @@ class ChefsTest {
         when(store.byId(record.getId()))
                 .thenReturn(Optional.of(record));
 
-        final Optional<Chef> found = chefs.byId(record.getId());
+        final var found = chefs
+                .byId(record.getId())
+                .orElseThrow();
 
-        assertThat(found).contains(new Chef(record));
+        assertThat(found).isEqualTo(new Chef(record));
 
         verifyNoMoreInteractions(store);
     }
@@ -50,7 +52,9 @@ class ChefsTest {
         when(store.byCode(record.getCode()))
                 .thenReturn(Optional.of(record));
 
-        final var found = chefs.byCode(record.getCode()).orElseThrow();
+        final var found = chefs
+                .byCode(record.getCode())
+                .orElseThrow();
 
         assertThat(found).isEqualTo(new Chef(record));
 
@@ -63,7 +67,9 @@ class ChefsTest {
         when(store.byName(record.getName()))
                 .thenReturn(Optional.of(record));
 
-        final var found = chefs.byName(record.getName()).orElseThrow();
+        final var found = chefs
+                .byName(record.getName())
+                .orElseThrow();
 
         assertThat(found).isEqualTo(new Chef(record));
 
@@ -76,7 +82,7 @@ class ChefsTest {
         when(store.all())
                 .thenReturn(Stream.of(record));
 
-        final Stream<Chef> found = chefs.all();
+        final var found = chefs.all();
 
         assertThat(found).containsExactly(new Chef(record));
 

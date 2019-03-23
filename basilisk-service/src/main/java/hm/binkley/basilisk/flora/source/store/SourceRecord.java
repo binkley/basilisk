@@ -1,7 +1,6 @@
 package hm.binkley.basilisk.flora.source.store;
 
 import hm.binkley.basilisk.flora.location.store.LocationRecord;
-import hm.binkley.basilisk.flora.location.store.LocationRecord.LocationRef;
 import hm.binkley.basilisk.store.StandardRecord;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -42,7 +41,23 @@ public final class SourceRecord
 
     public SourceRecord addAvailableAt(
             final Stream<LocationRecord> locations) {
-        locations.map(LocationRecord::ref).forEach(availableAt::add);
+        locations.map(LocationRef::of).forEach(availableAt::add);
         return this;
+    }
+
+    @EqualsAndHashCode
+    @Table("FLORA.SOURCE_LOCATION")
+    @ToString
+    public static class LocationRef {
+        @Getter
+        public Long locationId;
+
+        public static LocationRef of(final LocationRecord location) {
+            if (null == location.id)
+                location.save();
+            final var ref = new LocationRef();
+            ref.locationId = location.id;
+            return ref;
+        }
     }
 }

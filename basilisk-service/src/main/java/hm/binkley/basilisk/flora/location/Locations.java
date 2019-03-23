@@ -1,7 +1,7 @@
 package hm.binkley.basilisk.flora.location;
 
 import hm.binkley.basilisk.flora.location.store.LocationRecord;
-import hm.binkley.basilisk.flora.location.store.LocationRecord.LocationRef;
+import hm.binkley.basilisk.flora.source.store.SourceRecord.LocationRef;
 import hm.binkley.basilisk.flora.location.store.LocationStore;
 import hm.binkley.basilisk.flora.location.rest.LocationRequest;
 import lombok.RequiredArgsConstructor;

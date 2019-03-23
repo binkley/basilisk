@@ -40,9 +40,11 @@ class SourcesTest {
         when(store.byId(saved.getId()))
                 .thenReturn(Optional.of(saved));
 
-        final Optional<Source> found = sources.byId(saved.getId());
+        final var found = sources
+                .byId(saved.getId())
+                .orElseThrow();
 
-        assertThat(found).contains(new Source(saved, locations));
+        assertThat(found).isEqualTo(new Source(saved, locations));
 
         verifyNoMoreInteractions(store, locations);
     }
@@ -53,7 +55,9 @@ class SourcesTest {
         when(store.byCode(record.getCode()))
                 .thenReturn(Optional.of(record));
 
-        final var found = sources.byCode(record.getCode()).orElseThrow();
+        final var found = sources
+                .byCode(record.getCode())
+                .orElseThrow();
 
         assertThat(found).isEqualTo(new Source(record, locations));
 
@@ -66,7 +70,9 @@ class SourcesTest {
         when(store.byName(saved.getName()))
                 .thenReturn(Optional.of(saved));
 
-        final var found = sources.byName(saved.getName()).orElseThrow();
+        final var found = sources
+                .byName(saved.getName())
+                .orElseThrow();
 
         assertThat(found).isEqualTo(new Source(saved, locations));
 
@@ -79,7 +85,7 @@ class SourcesTest {
         when(store.all())
                 .thenReturn(Stream.of(saved));
 
-        final Stream<Source> found = sources.all();
+        final var found = sources.all();
 
         assertThat(found).containsExactly(new Source(saved, locations));
 

@@ -1,8 +1,9 @@
 package hm.binkley.basilisk.flora.location;
 
+import hm.binkley.basilisk.flora.location.rest.LocationRequest;
 import hm.binkley.basilisk.flora.location.store.LocationRecord;
 import hm.binkley.basilisk.flora.location.store.LocationStore;
-import hm.binkley.basilisk.flora.location.rest.LocationRequest;
+import hm.binkley.basilisk.flora.source.store.SourceRecord.LocationRef;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,9 +38,11 @@ class LocationsTest {
         when(store.byId(record.getId()))
                 .thenReturn(Optional.of(record));
 
-        final Optional<Location> found = locations.byId(record.getId());
+        final var found = locations
+                .byId(record.getId())
+                .orElseThrow();
 
-        assertThat(found).contains(new Location(record));
+        assertThat(found).isEqualTo(new Location(record));
 
         verifyNoMoreInteractions(store);
     }
@@ -50,9 +53,11 @@ class LocationsTest {
         when(store.byId(record.getId()))
                 .thenReturn(Optional.of(record));
 
-        final Optional<Location> found = locations.byRef(record.ref());
+        final var found = locations
+                .byRef(LocationRef.of(record))
+                .orElseThrow();
 
-        assertThat(found).contains(new Location(record));
+        assertThat(found).isEqualTo(new Location(record));
 
         verifyNoMoreInteractions(store);
     }
@@ -63,7 +68,9 @@ class LocationsTest {
         when(store.byCode(record.getCode()))
                 .thenReturn(Optional.of(record));
 
-        final var found = locations.byCode(record.getCode()).orElseThrow();
+        final var found = locations
+                .byCode(record.getCode())
+                .orElseThrow();
 
         assertThat(found).isEqualTo(new Location(record));
 
@@ -76,7 +83,9 @@ class LocationsTest {
         when(store.byName(record.getName()))
                 .thenReturn(Optional.of(record));
 
-        final var found = locations.byName(record.getName()).orElseThrow();
+        final var found = locations
+                .byName(record.getName())
+                .orElseThrow();
 
         assertThat(found).isEqualTo(new Location(record));
 
@@ -89,7 +98,7 @@ class LocationsTest {
         when(store.all())
                 .thenReturn(Stream.of(record));
 
-        final Stream<Location> found = locations.all();
+        final var found = locations.all();
 
         assertThat(found).containsExactly(new Location(record));
 

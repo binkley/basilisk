@@ -28,18 +28,4 @@ public final class LocationRecord
             final String code, final String name) {
         return new LocationRecord(null, null, code, name);
     }
-
-    public LocationRef ref() {
-        final var ref = new LocationRef();
-        ref.locationId = id;
-        return ref;
-    }
-
-    @EqualsAndHashCode
-    @Table("FLORA.SOURCE_LOCATION")
-    @ToString
-    public static class LocationRef {
-        @Getter
-        public Long locationId;
-    }
 }

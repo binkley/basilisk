@@ -2,6 +2,7 @@ package hm.binkley.basilisk.flora.source;
 
 import hm.binkley.basilisk.flora.location.Location;
 import hm.binkley.basilisk.flora.location.Locations;
+import hm.binkley.basilisk.flora.source.store.SourceRecord.LocationRef;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -19,7 +20,7 @@ class SourceTest {
     @Test
     void shouldAs(@Mock final Locations locations) {
         final var locationRecord = savedLocationRecord();
-        when(locations.byRef(savedLocationRecord().ref()))
+        when(locations.byRef(LocationRef.of(savedLocationRecord())))
                 .thenReturn(Optional.of(new Location(locationRecord)));
         final var record = savedSourceRecord()
                 .addAvailableAt(locationRecord);
