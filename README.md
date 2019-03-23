@@ -112,7 +112,14 @@ These are "2nd-class objects", needed by "meal planners", but not as central
 - SOURCE
 - LOCATION
 
+Other relationships:
+
+- INGREDIENTs --> SOURCE: Many-to-one (sources is a kind of "template")
+- RECIPEs --> CHEF: Many-to-one (each chef prepares several recipes)
+- INGREDIENTs --> CHEF: Many-to-one (each chef has unused ingredients)
+
 [[TOC]](#basilisk)
+
 
 ## Features
 
