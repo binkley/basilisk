@@ -1,5 +1,6 @@
 package hm.binkley.basilisk.flora.source.store;
 
+import hm.binkley.basilisk.flora.location.store.LocationRecord;
 import hm.binkley.basilisk.flora.location.store.LocationStore;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,7 @@ import static hm.binkley.basilisk.flora.FloraFixtures.savedSourceRecord;
 import static hm.binkley.basilisk.flora.FloraFixtures.unsavedLocationRecord;
 import static hm.binkley.basilisk.flora.FloraFixtures.unsavedSourceRecord;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -53,5 +55,12 @@ class SourceRecordTest {
         final var saved = savedSourceRecord();
 
         assertThat(saved.clone()).isEqualTo(saved);
+    }
+
+    @Test
+    void shouldComplainIfLocationMissing() {
+        assertThatThrownBy(() ->
+                unsavedSourceRecord().addAvailableAt((LocationRecord) null))
+                .isInstanceOf(NullPointerException.class);
     }
 }

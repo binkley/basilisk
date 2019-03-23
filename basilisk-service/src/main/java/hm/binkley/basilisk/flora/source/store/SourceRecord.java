@@ -13,6 +13,8 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import static java.util.Objects.requireNonNull;
+
 @EqualsAndHashCode(callSuper = false)
 @Table("FLORA.SOURCE")
 @ToString(callSuper = true)
@@ -41,8 +43,14 @@ public final class SourceRecord
 
     public SourceRecord addAvailableAt(
             final Stream<LocationRecord> locations) {
-        locations.map(LocationRef::of).forEach(availableAt::add);
+        locations.peek(this::check)
+                .map(LocationRef::of)
+                .forEach(availableAt::add);
         return this;
+    }
+
+    private void check(final LocationRecord location) {
+        requireNonNull(location);
     }
 
     @EqualsAndHashCode
