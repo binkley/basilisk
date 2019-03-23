@@ -9,6 +9,8 @@ import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.NoSuchElementException;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.verify;
@@ -25,18 +27,55 @@ class XTest {
     @Spy
     private final MiddleRepository middleRepository;
 
+    private static <T> T first(final Iterable<T> c) {
+        final var it = c.iterator();
+        if (it.hasNext())
+            return it.next();
+        throw new NoSuchElementException();
+    }
+
     private static BottomRecord newBottom() {
         return BottomRecord.unsaved("BAR");
     }
 
     @Test
     void shouldCascadeSaveTopToBottom() {
-        final var middle = newMiddle()
-                .add(newBottom());
-        newTop().add(middle).save();
+        final var unsaved = newTop()
+                .add(newMiddle()
+                        .add(newBottom()));
+        final var saved = unsaved.save();
 
         assertBottomCount(1);
         assertMiddleCounts(1, 0);
+
+        assertThat(saved).isEqualTo(unsaved);
+        assertThat(saved.id).isEqualTo(unsaved.id);
+        assertThat(first(saved.middles))
+                .isEqualTo(first(unsaved.middles));
+        assertThat(first(saved.middles).middleId)
+                .isEqualTo(first(unsaved.middles).middleId);
+
+        final var foundMiddle = middleRepository
+                .findById(first(saved.middles).middleId)
+                .orElseThrow();
+        // Lacking a "store", do this by hand
+        foundMiddle.repository = middleRepository;
+
+        assertThat(first(saved.middles).middleId)
+                .isEqualTo(foundMiddle.id);
+
+        final var refreshed = saved.refresh();
+        final var refreshedMiddle = foundMiddle.refresh();
+
+        assertThat(refreshed).isEqualTo(saved);
+        assertThat(refreshed.id).isEqualTo(saved.id);
+        assertThat(first(refreshed.middles))
+                .isEqualTo(first(saved.middles));
+        assertThat(first(refreshed.middles).middleId)
+                .isEqualTo(first(saved.middles).middleId);
+
+        assertThat(first(refreshed.middles).middleId)
+                .isEqualTo(refreshedMiddle.id);
     }
 
     @Test
@@ -63,8 +102,7 @@ class XTest {
         final var bottom = newBottom();
         final var middle = newMiddle()
                 .add(bottom)
-                .save()
-                .refresh();
+                .save();
 
         assertBottomCount(1);
 
@@ -78,8 +116,7 @@ class XTest {
     void shouldRemoveValueObjectsOnDeleteOwner() {
         final var middle = newMiddle()
                 .add(newBottom())
-                .save()
-                .refresh();
+                .save();
 
         assertBottomCount(1);
 
@@ -100,17 +137,9 @@ class XTest {
 
     @Test
     void shouldNotRemoveAnotherEntityOnDeleteOwner() {
-        final var middle = newMiddle()
-                .add(newBottom())
-                .save()
-                .refresh();
-
-        assertMiddleCounts(0, 1);
-
         final var top = newTop()
-                .add(middle)
-                .save()
-                .refresh();
+                .add(newMiddle())
+                .save();
 
         assertMiddleCounts(1, 0);
 
@@ -121,15 +150,10 @@ class XTest {
 
     @Test
     void shouldNotRemoveAnotherEntityOnRemoveReference() {
-        var middle = newMiddle().add(newBottom());
-        middle = middle.save().refresh();
-
-        assertMiddleCounts(0, 1);
-
+        final var middle = newMiddle();
         final var top = newTop()
                 .add(middle)
-                .save()
-                .refresh();
+                .save();
 
         assertMiddleCounts(1, 0);
 
