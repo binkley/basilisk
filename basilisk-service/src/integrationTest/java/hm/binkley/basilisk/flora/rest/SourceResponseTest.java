@@ -35,6 +35,7 @@ class SourceResponseTest {
             throws IOException {
         assertThat(json.write(SourceResponse.builder()
                 .id(SOURCE_ID)
+                .code(SOURCE_CODE)
                 .name(SOURCE_NAME)
                 .build()))
                 .isEqualToJson(
@@ -46,6 +47,7 @@ class SourceResponseTest {
             throws IOException {
         assertThat(json.write(SourceResponse.builder()
                 .id(SOURCE_ID)
+                .code(SOURCE_CODE)
                 .name(SOURCE_NAME)
                 .availableAt(Set.of(LocationResponse.builder()
                         .id(LOCATION_ID)

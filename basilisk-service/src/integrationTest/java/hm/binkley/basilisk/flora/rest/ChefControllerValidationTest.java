@@ -87,7 +87,7 @@ class ChefControllerValidationTest {
                 .andExpect(jsonPath(violationField,
                         equalTo("code")))
                 .andExpect(jsonPath(violationMessage,
-                        equalTo("length must be between 3 and 6")))
+                        equalTo("length must be between 3 and 8")))
                 .andExpect(jsonPath(violationStatus,
                         equalTo(UNPROCESSABLE_ENTITY.name())))
         // TODO: Turn off stack traces

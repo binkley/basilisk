@@ -33,13 +33,13 @@ class AnyIngredientResponseTest {
     void shouldBecomeGoodJsonWhenUnused()
             throws IOException {
         assertThat(json.write(AnyIngredientResponse.builder()
+                .chefId(CHEF_ID)
+                .code(INGREDIENT_CODE)
                 .id(INGREDIENT_ID)
-                .name(INGREDIENT_CODE)
-                .sourceId(SOURCE_ID)
                 .name(SOURCE_NAME)
                 .quantity(INGREDIENT_QUANTITY)
                 .recipeId(null)
-                .chefId(CHEF_ID)
+                .sourceId(SOURCE_ID)
                 .build()))
                 .isEqualToJson("any-ingredient-unused-response-test.json");
     }
@@ -48,13 +48,13 @@ class AnyIngredientResponseTest {
     void shouldBecomeGoodJsonWhenUsed()
             throws IOException {
         assertThat(json.write(AnyIngredientResponse.builder()
-                .id(INGREDIENT_ID)
+                .chefId(CHEF_ID)
                 .code(INGREDIENT_CODE)
-                .sourceId(SOURCE_ID)
+                .id(INGREDIENT_ID)
                 .name(SOURCE_NAME)
                 .quantity(INGREDIENT_QUANTITY)
                 .recipeId(RECIPE_ID)
-                .chefId(CHEF_ID)
+                .sourceId(SOURCE_ID)
                 .build()))
                 .isEqualToJson("any-ingredient-used-response-test.json");
     }

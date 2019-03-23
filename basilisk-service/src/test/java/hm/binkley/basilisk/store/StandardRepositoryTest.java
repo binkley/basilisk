@@ -9,7 +9,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import javax.validation.constraints.NotNull;
 import java.util.Optional;
 import java.util.function.BiConsumer;
-import java.util.function.Function;
 
 import static java.time.Instant.EPOCH;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,11 +26,9 @@ class StandardRepositoryTest {
     @Test
     void shouldInsertWhenNew() {
         final var update = MyTestRecord.unsaved(CODE, NUMBER);
-        final Function<MyTestRecord, Optional<MyTestRecord>> findBy
-                = this::matching;
-        final BiConsumer<MyTestRecord, @NotNull MyTestRecord> prepareUpsert
+        final BiConsumer<MyTestRecord, @NotNull MyTestRecord> prepare
                 = this::replaceWith;
-        when(repository.upsert(update, prepareUpsert))
+        when(repository.upsert(update, prepare))
                 .thenCallRealMethod();
         when(repository.findByCode(update.code))
                 .thenReturn(Optional.empty());
@@ -39,7 +36,7 @@ class StandardRepositoryTest {
         when(repository.save(update))
                 .thenReturn(saved);
 
-        final var upserted = repository.upsert(update, prepareUpsert);
+        final var upserted = repository.upsert(update, prepare);
 
         assertThat(upserted).isEqualTo(saved);
     }
@@ -47,25 +44,19 @@ class StandardRepositoryTest {
     @Test
     void shouldUpdateWhenExisting() {
         final var update = MyTestRecord.unsaved(CODE, NUMBER);
-        final Function<MyTestRecord, Optional<MyTestRecord>> findBy
-                = this::matching;
-        final BiConsumer<MyTestRecord, @NotNull MyTestRecord> prepareUpsert
+        final BiConsumer<MyTestRecord, @NotNull MyTestRecord> prepare
                 = this::replaceWith;
         final var found = new MyTestRecord(1L, EPOCH, update.code, 1);
-        when(repository.upsert(update, prepareUpsert))
+        when(repository.upsert(update, prepare))
                 .thenCallRealMethod();
         when(repository.findByCode(update.code))
                 .thenReturn(Optional.of(found));
         when(repository.save(update))
                 .thenReturn(update);
 
-        final var upserted = repository.upsert(update, prepareUpsert);
+        final var upserted = repository.upsert(update, prepare);
 
         assertThat(upserted).isEqualTo(found);
-    }
-
-    private Optional<MyTestRecord> matching(final MyTestRecord maybeNew) {
-        return repository.findByCode(maybeNew.code);
     }
 
     private void replaceWith(final MyTestRecord found,

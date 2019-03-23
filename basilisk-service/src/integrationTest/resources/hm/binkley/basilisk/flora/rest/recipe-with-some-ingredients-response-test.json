@@ -1,12 +1,14 @@
 {
   "id": 4,
+  "code": "SFL#123",
   "name": "SOUFFLE",
   "chef-id": 17,
   "ingredients": [
     {
       "id": 31,
       "source-id": 12,
-      "name": "EGGS",
+      "code": "EGG#123",
+      "name": "MEDIUM EGGS",
       "quantity": 1,
       "recipe-id": 4,
       "chef-id": 17

@@ -95,12 +95,12 @@ class RecipeStoreTest {
     @Test
     void shouldSave() {
         final var unsaved = unsavedRecipeRecord();
-        final var id = 3L;
         final var saved = savedRecipeRecord();
 
         when(springData.save(unsaved))
                 .thenReturn(saved);
-        when(springData.findById(id)) // TODO: See RecipeRepositoryTest
+        // TODO: See RecipeRepositoryTest
+        when(springData.findById(saved.getId()))
                 .thenReturn(Optional.of(saved));
 
         assertThat(store.save(unsaved)).isEqualTo(saved);

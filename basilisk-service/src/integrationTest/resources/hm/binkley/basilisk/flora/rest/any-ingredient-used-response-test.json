@@ -1,7 +1,8 @@
 {
   "id": 31,
+  "code": "EGG#123",
   "source-id": 12,
-  "name": "EGGS",
+  "name": "MEDIUM EGGS",
   "quantity": 1,
   "recipe-id": 4,
   "chef-id": 17

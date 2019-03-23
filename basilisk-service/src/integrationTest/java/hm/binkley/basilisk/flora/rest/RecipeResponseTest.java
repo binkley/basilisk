@@ -38,6 +38,7 @@ class RecipeResponseTest {
             throws IOException {
         assertThat(json.write(RecipeResponse.builder()
                 .id(RECIPE_ID)
+                .code(RECIPE_CODE)
                 .name(RECIPE_NAME)
                 .chefId(CHEF_ID)
                 .build()))
@@ -50,6 +51,7 @@ class RecipeResponseTest {
             throws IOException {
         assertThat(json.write(RecipeResponse.builder()
                 .id(RECIPE_ID)
+                .code(RECIPE_CODE)
                 .name(RECIPE_NAME)
                 .chefId(CHEF_ID)
                 .ingredients(Set.of(UsedIngredientResponse.builder()

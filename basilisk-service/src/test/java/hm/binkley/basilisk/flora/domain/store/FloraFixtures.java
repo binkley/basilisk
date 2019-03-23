@@ -14,7 +14,7 @@ public final class FloraFixtures {
     public static final Long CHEF_ID = 17L;
     public static final Instant CHEF_RECIEVED_AT
             = EPOCH.plusSeconds(800_000L);
-    public static final String CHEF_CODE = "CAN#123";
+    public static final String CHEF_CODE = "CAN";
     public static final String CHEF_NAME = "Chef Boyardee";
     public static final Long SOURCE_ID = 12L;
     public static final Instant SOURCE_RECEIVED_AT

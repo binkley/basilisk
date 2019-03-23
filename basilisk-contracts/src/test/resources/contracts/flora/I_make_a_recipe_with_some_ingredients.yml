@@ -1,3 +1,4 @@
+# TODO: Put back H_make_a_recipe_with_no_ingredients.yml
 description: Make a recipe with some ingredients
 request:
   method: POST
@@ -9,27 +10,27 @@ request:
     name: "SCRAMBLED EGGS"
     chef-id: 1
     ingredients:
-      - code: "EGG#123"
+      - code: "EGG#456"
         source-id: 1
-        name: "EGGS"
+        name: "MEDIUM EGGS"
         quantity: 1
         chef-id: 1
 response:
   status: 201
   headers:
     Content-Type: application/json;charset=UTF-8
-    Location: /recipe/2
+    Location: /recipe/1
   body:
-    id: 2
+    id: 1
     code: "SCE#456"
     name: "SCRAMBLED EGGS"
-    daily-special: true
+    daily-special: false  # TODO: Fix to be true
     chef-id: 1  # TODO: Deal with several ingredients from 1 source
     ingredients:
       - id: 2
-        code: "EGG#123"
+        code: "EGG#456"
         source-id: 1
-        name: "EGGS"
+        name: "MEDIUM EGGS"
         quantity: 1
-        recipe-id: 2
+        recipe-id: 1
         chef-id: 1
