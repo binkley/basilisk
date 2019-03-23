@@ -26,11 +26,31 @@ class XTest {
     }
 
     @Test
-    void shouldAddNonEntitiesAfterSave() {
-        var middle = newMiddle().save();
+    void shouldAddValueObjectsBeforeSave() {
+        newMiddle()
+                .add(newBottom())
+                .save();
+
+        assertBottomCount(1);
+    }
+
+    @Test
+    void shouldAddValueObjectsAfterSave() {
+        newMiddle()
+                .save()
+                .add(newBottom())
+                .save();
+
+        assertBottomCount(1);
+    }
+
+    @Test
+    void shouldRemoveValueObjectsDirectly() {
         final var bottom = newBottom();
-        middle.add(bottom);
-        middle = middle.save();
+        final var middle = newMiddle()
+                .add(bottom)
+                .save()
+                .refresh();
 
         assertBottomCount(1);
 
@@ -41,23 +61,11 @@ class XTest {
     }
 
     @Test
-    void shouldRemoveNonEntitiesDirectly() {
-        final var bottom = newBottom();
-        var middle = newMiddle().add(bottom);
-        middle = middle.save().refresh();
-
-        assertBottomCount(1);
-
-        middle.remove(bottom);
-        middle.save();
-
-        assertBottomCount(0);
-    }
-
-    @Test
-    void shouldRemoveNonEntitiesOnDeleteOwner() {
-        var middle = newMiddle().add(newBottom());
-        middle = middle.save().refresh();
+    void shouldRemoveValueObjectsOnDeleteOwner() {
+        final var middle = newMiddle()
+                .add(newBottom())
+                .save()
+                .refresh();
 
         assertBottomCount(1);
 
@@ -68,14 +76,17 @@ class XTest {
 
     @Test
     void shouldNotRemoveAnotherEntityOnDeleteOwner() {
-        var middle = newMiddle().add(newBottom());
-        middle = middle.save().refresh();
+        final var middle = newMiddle()
+                .add(newBottom())
+                .save()
+                .refresh();
 
         assertMiddleCounts(0, 1);
 
-        var top = newTop();
-        top.add(middle);
-        top = top.save().refresh();
+        final var top = newTop()
+                .add(middle)
+                .save()
+                .refresh();
 
         assertMiddleCounts(1, 0);
 
@@ -91,9 +102,10 @@ class XTest {
 
         assertMiddleCounts(0, 1);
 
-        var top = newTop();
-        top.add(middle);
-        top = top.save().refresh();
+        final var top = newTop()
+                .add(middle)
+                .save()
+                .refresh();
 
         assertMiddleCounts(1, 0);
 
@@ -141,9 +153,10 @@ class XTest {
 
     @Test
     void shouldComplainOnDuplicateMiddle() {
-        final var top = newTop().add(newMiddle());
+        final var middle = newMiddle();
+        final var top = newTop().add(middle);
 
-        assertThatThrownBy(() -> top.add(newMiddle()))
+        assertThatThrownBy(() -> top.add(middle))
                 .isInstanceOf(IllegalStateException.class);
     }
 

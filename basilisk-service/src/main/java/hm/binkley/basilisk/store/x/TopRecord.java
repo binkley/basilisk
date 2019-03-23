@@ -47,6 +47,8 @@ public class TopRecord {
     }
 
     public TopRecord add(final MiddleRecord middle) {
+        if (null == middle.id)
+            middle.save();
         final var ref = new MiddleRef();
         ref.middleId = middle.id;
         if (!middles.add(ref))
