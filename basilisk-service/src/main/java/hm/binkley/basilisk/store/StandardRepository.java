@@ -12,9 +12,10 @@ public interface StandardRepository<T extends StandardRecord<T, R, S>,
         R extends StandardRepository<T, R, S>,
         S extends StandardStore<T, R, S>>
         extends CrudRepository<T, Long> {
-    @Query("TODO: OVERRIDE AND IMPLEMENT")
+    @Query("TODO: OVERRIDE AND SPECIFY QUERY")
     Optional<T> findByCode(String code);
 
+    @Query("TODO: OVERRIDE AND SPECIFY QUERY")
     Stream<T> readAll();
 
     default T upsert(final T maybeNew,
