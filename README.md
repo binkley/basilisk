@@ -15,6 +15,8 @@ Demonstrate Java 11, Spring Boot 2, Spring Data JDBC, JUnit 5, et al
 (Jump down [past "Model"](#features), to features, testing, etc.  Model is
 under construction.)
 
+<img src="https://www.featurepics.com/StockImage/20070125/yellow-rose-of-texas-stock-image-200039.jpg" alt="Yellow Rose of Texas" width="25%" align="right"/>
+
 ## Model
 
 ### Basil Lips B&Bs
@@ -27,14 +29,12 @@ around the globe:
 - ["Melbourne's Pink Heath"](https://www.anbg.gov.au/emblems/vic.emblem.html)
 - ["Cherry Blossom of Tokyo"](https://www.jrailpass.com/blog/cherry-blossoms-tokyo)
 
-![Yellow Rose of Texas](https://www.featurepics.com/StockImage/20070125/yellow-rose-of-texas-stock-image-200039.jpg | width=30%)
-![Melbourne Pink Heath](https://jpmbooks.files.wordpress.com/2012/06/img_0185.jpg | width=30%)
-![Tokyo Cherry Blossoms](https://cdn-images-1.medium.com/max/2000/1*C2nsRby3rpDCA5LFWfDZUw.jpeg | width=30%)
-
 Your business plan includes jet-setting world-class chefs and locally-sourced
 ingredients.
 
 ### The Food
+
+<img src="https://jpmbooks.files.wordpress.com/2012/06/img_0185.jpg" alt="Melbourne Pink Heath" width="25%" align="right"/>
 
 ### The Rules
 
@@ -61,6 +61,8 @@ ingredients.
   has the best fish in the world, year-round
 - [Texas strawberries](https://strawberryfestival.com) are best only in
   Dallas, and only in Spring
+
+<img src="https://cdn-images-1.medium.com/max/2000/1*C2nsRby3rpDCA5LFWfDZUw.jpeg" alt="Tokyo Cherry Blossoms" width="25%" align="right"/>
 
 ### Thinking about it
 
