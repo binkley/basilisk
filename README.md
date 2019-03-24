@@ -191,7 +191,7 @@ Some reading:
 - [Simple ownership](basilisk-service/src/main/java/hm/binkley/basilisk/store)
 - [Complex ownership](basilisk-service/src/main/java/hm/binkley/basilisk/store/x)
 
-Example complex cases:
+#### Example complex cases
 
 - Test cases:
   [`XTest`](basilisk-service/src/databaseTest/java/hm/binkley/basilisk/store/x/XTest.java)
@@ -211,6 +211,34 @@ Example complex cases:
 See
 [_Spring Data JDBC, References, and Aggregates_](https://spring.io/blog/2018/09/24/spring-data-jdbc-references-and-aggregates)
 for more details.
+
+#### Patterns to aid with Spring Data JDBC
+
+- **repository** -
+  [`MiddleRepository`](basilisk-service/src/main/java/hm/binkley/basilisk/store/x/MiddleRepository.java)
+  - Repositories are the key feature of Spring Data JDBC.  These are enhanced
+  with a helper `readAll()` method to provide a streaming view of records
+- **record** -
+  [`MiddleRecord`](basilisk-service/src/main/java/hm/binkley/basilisk/store/x/MiddleRecord.java)
+  - Records directly support Spring Data JDBC; annotations and other
+  implementation details go here.  These are injected with a "store" reference
+  to give a partial "active record" pattern (still, business logic, and
+  persistence should be kept separate by distinguishing records from domain
+  objects)
+- **store** -
+  [`MiddleStore`](basilisk-service/src/main/java/hm/binkley/basilisk/store/x/MiddleStore.java)
+  - Stores are light wrappers around repositories, managing the abstraction.
+  In principle, one could replace Spring Data JDBC with, say, Spring Data JPA
+  or jOOQ, and need only update the store
+- **domain object** -
+  [`Middle`](basilisk-service/src/main/java/hm/binkley/basilisk/store/x/Middle.java)
+  - Domain objects abstract business logic from persistence, and are light
+  wrappers around records.  They implement policy, such as if mutation should
+  trigger an immediate persistence write or not
+- **factory**
+  [`Middles`](basilisk-service/src/main/java/hm/binkley/basilisk/store/x/Middles.java)
+  - Factories manage domain object searching and creation, and are light
+  wrappers around stores, translating records into domain objects
 
 [[TOC]](#basilisk)
 
