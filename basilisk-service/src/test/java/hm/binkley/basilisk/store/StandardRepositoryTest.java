@@ -5,10 +5,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.stubbing.Answer;
 
 import javax.validation.constraints.NotNull;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 
 import static java.time.Instant.EPOCH;
@@ -24,9 +27,21 @@ class StandardRepositoryTest {
     @Mock
     private final MyTestRepository repository;
 
+    private static Answer<MyTestRecord> simulateSave(
+            final Long id, final Instant receivedAt) {
+        return invocation -> {
+            final MyTestRecord record = invocation.getArgument(0);
+            record.id = id;
+            record.receivedAt = receivedAt;
+            return record;
+        };
+    }
+
     @Test
     void shouldReadAll() {
-        final var saved = new MyTestRecord(1L, EPOCH, CODE, NUMBER);
+        final var saved = MyTestRecord.unsaved(CODE, NUMBER);
+        saved.id = 1L;
+        saved.receivedAt = EPOCH;
         when(repository.findAll()).thenReturn(
                 List.of(saved));
         when(repository.readAll()).thenCallRealMethod();
@@ -38,45 +53,61 @@ class StandardRepositoryTest {
 
     @Test
     void shouldInsertWhenNew() {
+        final var foundish = new AtomicReference<MyTestRecord>();
+        final var newish = new AtomicReference<MyTestRecord>();
+        final BiConsumer<MyTestRecord, @NotNull MyTestRecord> prepareUpsert
+                = (maybeFound, maybeNew) -> {
+            foundish.set(maybeFound);
+            newish.set(maybeNew);
+        };
+
         final var update = MyTestRecord.unsaved(CODE, NUMBER);
-        final BiConsumer<MyTestRecord, @NotNull MyTestRecord> prepare
-                = this::replaceWith;
-        when(repository.upsert(update, prepare))
+        when(repository.upsert(update, prepareUpsert))
                 .thenCallRealMethod();
-        when(repository.findByCode(update.code))
+        when(repository.findByCode(update.getCode()))
                 .thenReturn(Optional.empty());
-        final var saved = new MyTestRecord(1L, EPOCH, update.code, NUMBER);
+        final var savedId = 1L;
+        final var savedReceivedAt = EPOCH;
         when(repository.save(update))
-                .thenReturn(saved);
+                .then(simulateSave(savedId, savedReceivedAt));
 
-        final var upserted = repository.upsert(update, prepare);
+        final var upserted = repository.upsert(update, prepareUpsert);
 
-        assertThat(upserted).isEqualTo(saved);
+        assertThat(foundish.get()).isNull();
+        assertThat(newish.get()).isSameAs(update);
+        assertThat(upserted).isEqualTo(update);
+        assertThat(upserted.getId()).isEqualTo(savedId);
+        assertThat(upserted.getReceivedAt()).isEqualTo(savedReceivedAt);
     }
 
     @Test
     void shouldUpdateWhenExisting() {
+        final var foundish = new AtomicReference<MyTestRecord>();
+        final var newish = new AtomicReference<MyTestRecord>();
+        final BiConsumer<MyTestRecord, @NotNull MyTestRecord> prepareUpsert
+                = (maybeFound, maybeNew) -> {
+            foundish.set(maybeFound);
+            newish.set(maybeNew);
+        };
+
         final var update = MyTestRecord.unsaved(CODE, NUMBER);
-        final BiConsumer<MyTestRecord, @NotNull MyTestRecord> prepare
-                = this::replaceWith;
-        final var found = new MyTestRecord(1L, EPOCH, update.code, 1);
-        when(repository.upsert(update, prepare))
+        final var found = MyTestRecord.unsaved(
+                update.getCode(), update.getNumber() + 1);
+        found.id = 1L;
+        found.receivedAt = EPOCH;
+        when(repository.upsert(update, prepareUpsert))
                 .thenCallRealMethod();
-        when(repository.findByCode(update.code))
+        when(repository.findByCode(update.getCode()))
                 .thenReturn(Optional.of(found));
         when(repository.save(update))
-                .thenReturn(update);
+                .then(simulateSave(found.getId(), found.getReceivedAt()));
 
-        final var upserted = repository.upsert(update, prepare);
+        final var upserted = repository.upsert(update, prepareUpsert);
 
-        assertThat(upserted).isEqualTo(found);
-    }
-
-    private void replaceWith(final MyTestRecord found,
-            final @NotNull MyTestRecord update) {
-        // TODO: Reconcile with upsert
-        if (null == found) return;
-        update.id = found.id;
-        update.receivedAt = found.receivedAt;
+        assertThat(foundish.get()).isSameAs(found);
+        assertThat(newish.get()).isSameAs(update);
+        assertThat(upserted).isEqualTo(update);
+        assertThat(upserted.getId()).isEqualTo(found.getId());
+        assertThat(upserted.getReceivedAt()).isEqualTo(found.getReceivedAt());
     }
 }
