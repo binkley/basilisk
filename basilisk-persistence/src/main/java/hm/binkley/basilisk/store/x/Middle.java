@@ -41,17 +41,17 @@ public final class Middle {
         return this;
     }
 
-    public Middle define(final Kind kind) {
+    public Middle define(final @NotNull Kind kind) {
         kind.defineInto(record::define);
         return this;
     }
 
-    public Middle add(final Bottom bottom) {
+    public Middle add(final @NotNull Bottom bottom) {
         bottom.applyTo(record::add);
         return this;
     }
 
-    public Middle remove(final Bottom bottom) {
+    public Middle remove(final @NotNull Bottom bottom) {
         bottom.applyTo(record::remove);
         return this;
     }

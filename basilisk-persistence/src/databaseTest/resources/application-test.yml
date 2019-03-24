@@ -1,0 +1,11 @@
+logging:
+  level:
+    hm.binkley.basilisk: INFO
+    root: WARN
+
+spring:
+  datasource:
+    platform: postgresql
+    url: 'jdbc:postgresql:basilisk?user=basilisk'
+  main:
+    banner-mode: 'off'

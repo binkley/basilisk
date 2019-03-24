@@ -189,24 +189,24 @@ Some reading:
 ### Spring Data JDBC
 
 - [Simple ownership](basilisk-service/src/main/java/hm/binkley/basilisk/store)
-- [Complex ownership](basilisk-service/src/main/java/hm/binkley/basilisk/store/x)
+- [Complex ownership](basilisk-persistence/src/main/java/hm/binkley/basilisk/store/x)
 
 #### Example complex cases
 
 - Test cases:
-  [`XTest`](basilisk-service/src/databaseTest/java/hm/binkley/basilisk/store/x/XTest.java)
+  [`XTest`](basilisk-persistence/src/databaseTest/java/hm/binkley/basilisk/store/x/RepositoryTest.java)
 - Many-to-one, value-to-entity:
-  [`Middle`](basilisk-service/src/main/java/hm/binkley/basilisk/store/x/Middle.java)
+  [`Middle`](basilisk-persistence/src/main/java/hm/binkley/basilisk/store/x/Middle.java)
   to
-  [`Bottom`](basilisk-service/src/main/java/hm/binkley/basilisk/store/x/Bottom.java)
+  [`Bottom`](basilisk-persistence/src/main/java/hm/binkley/basilisk/store/x/Bottom.java)
 - Many-to-one, entity-to-entity:
-  [`Top`](basilisk-service/src/main/java/hm/binkley/basilisk/store/x/Top.java)
+  [`Top`](basilisk-persistence/src/main/java/hm/binkley/basilisk/store/x/Top.java)
   to
-  [`Middle`](basilisk-service/src/main/java/hm/binkley/basilisk/store/x/Middle.java)
+  [`Middle`](basilisk-persistence/src/main/java/hm/binkley/basilisk/store/x/Middle.java)
 - One-to-one, entity-to-entity:
-  [`Kind`](basilisk-service/src/main/java/hm/binkley/basilisk/store/x/Kind.java)
+  [`Kind`](basilisk-persistence/src/main/java/hm/binkley/basilisk/store/x/Kind.java)
   to
-  [`Middle`](basilisk-service/src/main/java/hm/binkley/basilisk/store/x/Middle.java)
+  [`Middle`](basilisk-persistence/src/main/java/hm/binkley/basilisk/store/x/Middle.java)
   
 See
 [_Spring Data JDBC, References, and Aggregates_](https://spring.io/blog/2018/09/24/spring-data-jdbc-references-and-aggregates)
@@ -215,30 +215,30 @@ for more details.
 #### Patterns to aid with Spring Data JDBC
 
 - **repository** -
-  [`MiddleRepository`](basilisk-service/src/main/java/hm/binkley/basilisk/store/x/MiddleRepository.java)
+  [`MiddleRepository`](basilisk-persistence/src/main/java/hm/binkley/basilisk/store/x/MiddleRepository.java)
   - Repositories are the key feature of Spring Data JDBC.  These are enhanced
   with a helper `readAll()` method to provide a streaming view of records (and
   an example of _default methods_ on interfaces)
 - **record** -
-  [`MiddleRecord`](basilisk-service/src/main/java/hm/binkley/basilisk/store/x/MiddleRecord.java)
+  [`MiddleRecord`](basilisk-persistence/src/main/java/hm/binkley/basilisk/store/x/MiddleRecord.java)
   - Records directly support Spring Data JDBC; annotations and other
   implementation details go here.  These are injected with a "store" reference
   to give a partial "active record" pattern (still, business logic, and
   persistence should be kept separate by distinguishing records from domain
   objects)
 - **store** -
-  [`MiddleStore`](basilisk-service/src/main/java/hm/binkley/basilisk/store/x/MiddleStore.java)
+  [`MiddleStore`](basilisk-persistence/src/main/java/hm/binkley/basilisk/store/x/MiddleStore.java)
   - Stores are light wrappers around repositories, managing the abstraction.
   In principle, one could replace Spring Data JDBC with, say, Spring Data JPA
   or jOOQ, and need only update the store.  These talk to their own repository
   only; for other records, they delegate to their matching factory
 - **domain object** -
-  [`Middle`](basilisk-service/src/main/java/hm/binkley/basilisk/store/x/Middle.java)
+  [`Middle`](basilisk-persistence/src/main/java/hm/binkley/basilisk/store/x/Middle.java)
   - Domain objects abstract business logic from persistence, and are light
   wrappers around records.  These implement policy, such as if mutation should
   trigger an immediate persistence write or not
 - **factory**
-  [`Middles`](basilisk-service/src/main/java/hm/binkley/basilisk/store/x/Middles.java)
+  [`Middles`](basilisk-persistence/src/main/java/hm/binkley/basilisk/store/x/Middles.java)
   - Factories manage domain object searching and creation, and are light
   wrappers around stores, translating records into domain objects.  These talk
   to their own store only; for other domain objects they talk to the

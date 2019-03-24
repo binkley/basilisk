@@ -23,7 +23,7 @@ import static org.mockito.Mockito.verify;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @SuppressWarnings("PMD")
 @Transactional
-class XTest {
+class RepositoryTest {
     @Spy
     private final TopRepository topRepository;
     @Spy
@@ -222,65 +222,6 @@ class XTest {
         assertThatThrownBy(() -> kinds.byId(deletedKind.getId()))
                 .isInstanceOf(NullPointerException.class);
         assertThatThrownBy(() -> middles.byId(deletedMiddle.getId()))
-                .isInstanceOf(NullPointerException.class);
-    }
-
-    @SuppressWarnings("ConstantConditions")
-    @Test
-    void shouldComplainOnMissingBottom() {
-        final var middle = newMiddle();
-
-        assertThatThrownBy(() -> middle.add(null))
-                .isInstanceOf(NullPointerException.class);
-        assertThatThrownBy(() -> middle.remove(null))
-                .isInstanceOf(NullPointerException.class);
-    }
-
-    @Test
-    void shouldComplainOnDuplicateBottom() {
-        final var middle = newMiddle().add(newBottom());
-
-        assertThatThrownBy(() -> middle.add(newBottom()))
-                .isInstanceOf(IllegalStateException.class);
-    }
-
-    @Test
-    void shouldComplainOnAbsentBottom() {
-        final var middle = newMiddle();
-
-        assertThatThrownBy(() -> middle.remove(newBottom()))
-                .isInstanceOf(NoSuchElementException.class);
-    }
-
-    @Test
-    void shouldComplainOnMismatchedBottomBeforeSave() {
-        final var middle = MiddleRecord.unsaved(222);
-        final var bottom = BottomRecord.unsaved("BAR");
-        bottom.middleId = 1L;
-
-        assertThatThrownBy(() -> middle.add(bottom))
-                .isInstanceOf(IllegalStateException.class);
-    }
-
-    @Test
-    void shouldComplainOnMismatchedBottomAfterSave() {
-        final var middle = MiddleRecord.unsaved(222);
-        middleRepository.save(middle);
-        final var bottom = BottomRecord.unsaved("BAR");
-        bottom.middleId = middle.id + 1;
-
-        assertThatThrownBy(() -> middle.add(bottom))
-                .isInstanceOf(IllegalStateException.class);
-    }
-
-    @SuppressWarnings("ConstantConditions")
-    @Test
-    void shouldComplainOnMissingMiddle() {
-        final var top = newTop();
-
-        assertThatThrownBy(() -> top.add(null))
-                .isInstanceOf(NullPointerException.class);
-        assertThatThrownBy(() -> top.remove(null))
                 .isInstanceOf(NullPointerException.class);
     }
 

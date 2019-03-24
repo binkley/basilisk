@@ -1,0 +1,24 @@
+apply plugin: "org.springframework.boot"
+
+testSets {
+    databaseTest { extendsFrom unitTest }
+}
+
+configurations {
+    all*.exclude module: 'junit'
+    all*.exclude module: 'slf4j-simple'
+}
+
+dependencies {
+    testImplementation project(":basilisk-testing")
+
+    databaseTestImplementation sourceSets.test.output
+}
+
+jar {
+    enabled = true
+}
+
+bootJar {
+    enabled = false
+}

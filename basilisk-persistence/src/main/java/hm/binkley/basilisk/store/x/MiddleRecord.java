@@ -7,6 +7,7 @@ import org.springframework.data.annotation.Transient;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
+import javax.validation.constraints.NotNull;
 import java.util.LinkedHashSet;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -42,7 +43,7 @@ public class MiddleRecord {
 
     public void delete() { store.delete(this); }
 
-    public MiddleRecord define(final KindRecord kind) {
+    public MiddleRecord define(final @NotNull KindRecord kind) {
         check(kind);
         if (null == kind.id)
             kind.save();
@@ -50,14 +51,14 @@ public class MiddleRecord {
         return this;
     }
 
-    public MiddleRecord add(final BottomRecord bottom) {
+    public MiddleRecord add(final @NotNull BottomRecord bottom) {
         check(bottom);
         if (!bottoms.add(bottom))
             throw new IllegalStateException("Duplicate: " + bottom);
         return this;
     }
 
-    public MiddleRecord remove(final BottomRecord bottom) {
+    public MiddleRecord remove(final @NotNull BottomRecord bottom) {
         check(bottom);
         if (!bottoms.remove(bottom))
             throw new NoSuchElementException("Absent: " + bottom);
