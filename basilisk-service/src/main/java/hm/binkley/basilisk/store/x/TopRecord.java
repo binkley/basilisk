@@ -8,6 +8,7 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.util.LinkedHashSet;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
@@ -48,7 +49,7 @@ public class TopRecord {
         check(middle);
         final var ref = MiddleRef.of(middle);
         if (!middles.remove(ref))
-            throw new IllegalStateException("Absent: " + middle);
+            throw new NoSuchElementException("Absent: " + middle);
         return this;
     }
 

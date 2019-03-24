@@ -8,6 +8,7 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.util.LinkedHashSet;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Set;
 
@@ -59,7 +60,7 @@ public class MiddleRecord {
     public MiddleRecord remove(final BottomRecord bottom) {
         check(bottom);
         if (!bottoms.remove(bottom))
-            throw new IllegalStateException("Absent: " + bottom);
+            throw new NoSuchElementException("Absent: " + bottom);
         return this;
     }
 

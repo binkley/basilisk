@@ -23,6 +23,7 @@ public interface MiddleRepository
             + " WHERE m.id = tm.middle_id)")
     Stream<MiddleRecord> findAllFree();
 
+    /** Finds all bottoms, regardless of middle; useful only in testing. */
     @Query("SELECT * FROM X.BOTTOM")
     Stream<BottomRecord> findAllBottoms();
 }

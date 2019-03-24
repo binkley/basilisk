@@ -31,19 +31,9 @@ class XTest {
     @Spy
     private final MiddleRepository middleRepository;
 
-    private KindStore kindStore;
     private Kinds kinds;
-    private MiddleStore middleStore;
     private Middles middles;
-    private TopStore topStore;
     private Tops tops;
-
-    private static <T> T first(final Iterable<T> c) {
-        final var it = c.iterator();
-        if (it.hasNext())
-            return it.next();
-        throw new NoSuchElementException();
-    }
 
     private static Bottom newBottom() {
         return new Bottom(BottomRecord.unsaved("BAR"));
@@ -51,12 +41,9 @@ class XTest {
 
     @BeforeEach
     void setUp() {
-        kindStore = new KindStore(kindRepository);
-        kinds = new Kinds(kindStore);
-        middleStore = new MiddleStore(middleRepository);
-        middles = new Middles(middleStore, kinds);
-        topStore = new TopStore(topRepository);
-        tops = new Tops(topStore, middles);
+        kinds = new Kinds(new KindStore(kindRepository));
+        middles = new Middles(new MiddleStore(middleRepository), kinds);
+        tops = new Tops(new TopStore(topRepository), middles);
     }
 
     @Test
@@ -238,6 +225,7 @@ class XTest {
                 .isInstanceOf(NullPointerException.class);
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Test
     void shouldComplainOnMissingBottom() {
         final var middle = newMiddle();
@@ -261,7 +249,7 @@ class XTest {
         final var middle = newMiddle();
 
         assertThatThrownBy(() -> middle.remove(newBottom()))
-                .isInstanceOf(IllegalStateException.class);
+                .isInstanceOf(NoSuchElementException.class);
     }
 
     @Test
@@ -285,6 +273,7 @@ class XTest {
                 .isInstanceOf(IllegalStateException.class);
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Test
     void shouldComplainOnMissingMiddle() {
         final var top = newTop();
@@ -309,7 +298,7 @@ class XTest {
         final var top = newTop();
 
         assertThatThrownBy(() -> top.remove(newMiddle()))
-                .isInstanceOf(IllegalStateException.class);
+                .isInstanceOf(NoSuchElementException.class);
     }
 
     private Middle newMiddle() {
@@ -325,7 +314,7 @@ class XTest {
     }
 
     private void assertBottomCount(final int total) {
-        assertThat(middleStore.allBottoms()).hasSize(total);
+        assertThat(middleRepository.findAllBottoms()).hasSize(total);
     }
 
     private void assertMiddleCounts(final int owned, final int free) {

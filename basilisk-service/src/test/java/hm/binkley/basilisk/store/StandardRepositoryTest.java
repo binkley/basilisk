@@ -11,7 +11,6 @@ import javax.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 
 import static java.time.Instant.EPOCH;
@@ -53,14 +52,7 @@ class StandardRepositoryTest {
 
     @Test
     void shouldInsertWhenNew() {
-        final var foundish = new AtomicReference<MyTestRecord>();
-        final var newish = new AtomicReference<MyTestRecord>();
-        final BiConsumer<MyTestRecord, @NotNull MyTestRecord> prepareUpsert
-                = (maybeFound, maybeNew) -> {
-            foundish.set(maybeFound);
-            newish.set(maybeNew);
-        };
-
+        final UpsertCapture prepareUpsert = new UpsertCapture();
         final var update = MyTestRecord.unsaved(CODE, NUMBER);
         when(repository.upsert(update, prepareUpsert))
                 .thenCallRealMethod();
@@ -73,8 +65,8 @@ class StandardRepositoryTest {
 
         final var upserted = repository.upsert(update, prepareUpsert);
 
-        assertThat(foundish.get()).isNull();
-        assertThat(newish.get()).isSameAs(update);
+        assertThat(prepareUpsert.maybeFound).isNull();
+        assertThat(prepareUpsert.maybeNew).isSameAs(update);
         assertThat(upserted).isEqualTo(update);
         assertThat(upserted.getId()).isEqualTo(savedId);
         assertThat(upserted.getReceivedAt()).isEqualTo(savedReceivedAt);
@@ -82,14 +74,7 @@ class StandardRepositoryTest {
 
     @Test
     void shouldUpdateWhenExisting() {
-        final var foundish = new AtomicReference<MyTestRecord>();
-        final var newish = new AtomicReference<MyTestRecord>();
-        final BiConsumer<MyTestRecord, @NotNull MyTestRecord> prepareUpsert
-                = (maybeFound, maybeNew) -> {
-            foundish.set(maybeFound);
-            newish.set(maybeNew);
-        };
-
+        final UpsertCapture prepareUpsert = new UpsertCapture();
         final var update = MyTestRecord.unsaved(CODE, NUMBER);
         final var found = MyTestRecord.unsaved(
                 update.getCode(), update.getNumber() + 1);
@@ -104,10 +89,23 @@ class StandardRepositoryTest {
 
         final var upserted = repository.upsert(update, prepareUpsert);
 
-        assertThat(foundish.get()).isSameAs(found);
-        assertThat(newish.get()).isSameAs(update);
+        assertThat(prepareUpsert.maybeFound).isSameAs(found);
+        assertThat(prepareUpsert.maybeNew).isSameAs(update);
         assertThat(upserted).isEqualTo(update);
         assertThat(upserted.getId()).isEqualTo(found.getId());
         assertThat(upserted.getReceivedAt()).isEqualTo(found.getReceivedAt());
+    }
+
+    private static final class UpsertCapture
+            implements BiConsumer<MyTestRecord, @NotNull MyTestRecord> {
+        private MyTestRecord maybeFound;
+        private MyTestRecord maybeNew;
+
+        @Override
+        public void accept(final MyTestRecord maybeFound,
+                final @NotNull MyTestRecord maybeNew) {
+            this.maybeFound = maybeFound;
+            this.maybeNew = maybeNew;
+        }
     }
 }

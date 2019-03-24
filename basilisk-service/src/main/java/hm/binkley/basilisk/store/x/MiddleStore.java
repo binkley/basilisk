@@ -38,10 +38,6 @@ public class MiddleStore {
                 .map(this::bind);
     }
 
-    public Stream<BottomRecord> allBottoms() {
-        return springData.findAllBottoms();
-    }
-
     public MiddleRecord save(final MiddleRecord record) {
         return springData.save(record);
     }
