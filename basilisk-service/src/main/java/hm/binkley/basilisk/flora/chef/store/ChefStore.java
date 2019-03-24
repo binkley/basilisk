@@ -14,14 +14,12 @@ public class ChefStore
         super(springData);
     }
 
+    public ChefRecord unsaved(final String code, final String name) {
+        return bind(ChefRecord.unsaved(code, name));
+    }
+
     public Optional<ChefRecord> byName(final String name) {
         return springData.findByName(name)
                 .map(this::bind);
-    }
-
-    public ChefRecord create(final String code, final String name) {
-        final ChefRecord record = ChefRecord.unsaved(code, name);
-        bind(record);
-        return record.save();
     }
 }

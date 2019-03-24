@@ -11,12 +11,19 @@ import lombok.ToString;
 public final class Chef {
     private final ChefRecord record;
 
-    public <C> C as(final Chef.As<C> asChef) {
-        return asChef.from(
-                record.getId(), record.getCode(), record.getName());
+    public Long getId() { return record.getId(); }
+
+    public String getCode() { return record.getCode(); }
+
+    public String getName() { return record.getName(); }
+
+    public Chef save() {
+        record.save();
+        return this;
     }
 
-    public interface As<C> {
-        C from(final Long id, final String code, final String name);
+    public Chef delete() {
+        record.delete();
+        return this;
     }
 }

@@ -33,6 +33,14 @@ class ChefStoreTest {
     }
 
     @Test
+    void shouldCreateUnsaved() {
+        final var unsaved = unsavedChefRecord();
+
+        assertThat(store.unsaved(unsaved.getCode(), unsaved.getName()))
+                .isEqualTo(unsaved);
+    }
+
+    @Test
     void shouldFindById() {
         final var saved = savedChefRecord();
         when(springData.findById(saved.getId()))
@@ -71,20 +79,6 @@ class ChefStoreTest {
         assertThat(found).isEqualTo(Set.of(saved));
         assertThat(found.stream().map(it -> it.store)).containsOnly(store);
 
-        verifyNoMoreInteractions(springData);
-    }
-
-    @Test
-    void shouldCreate() {
-        final var unsaved = unsavedChefRecord();
-        final var saved = savedChefRecord();
-        when(springData.save(unsaved))
-                .thenReturn(saved);
-
-        assertThat(store.create(unsaved.getCode(), unsaved.getName()))
-                .isEqualTo(saved);
-
-        verify(springData).save(unsaved);
         verifyNoMoreInteractions(springData);
     }
 

@@ -6,6 +6,7 @@ import hm.binkley.basilisk.configuration.JsonConfiguration;
 import hm.binkley.basilisk.configuration.JsonWebMvcTest;
 import hm.binkley.basilisk.flora.chef.Chef;
 import hm.binkley.basilisk.flora.chef.Chefs;
+import hm.binkley.basilisk.flora.chef.store.ChefRecord;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,11 @@ import java.util.stream.Stream;
 import static hm.binkley.basilisk.flora.FloraFixtures.CHEF_CODE;
 import static hm.binkley.basilisk.flora.FloraFixtures.CHEF_ID;
 import static hm.binkley.basilisk.flora.FloraFixtures.CHEF_NAME;
+import static hm.binkley.basilisk.flora.FloraFixtures.CHEF_RECIEVED_AT;
 import static hm.binkley.basilisk.flora.FloraFixtures.savedChefRecord;
+import static hm.binkley.basilisk.flora.FloraFixtures.unsavedChefRecord;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.LOCATION;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -38,7 +43,7 @@ class ChefControllerTest {
     private final ObjectMapper objectMapper;
 
     @MockBean
-    private Chefs recipes;
+    private Chefs chefs;
 
     private static String endpointWithId() {
         return "/chef/" + CHEF_ID;
@@ -47,13 +52,14 @@ class ChefControllerTest {
     private static Map<String, Object> responseMap() {
         return Map.of(
                 "id", CHEF_ID,
+                "code", CHEF_CODE,
                 "name", CHEF_NAME);
     }
 
     @Test
     void shouldGetAll()
             throws Exception {
-        when(recipes.all())
+        when(chefs.all())
                 .thenReturn(Stream.of(new Chef(savedChefRecord())));
 
         jsonMvc.perform(get("/chef"))
@@ -65,7 +71,7 @@ class ChefControllerTest {
     @Test
     void shouldGetById()
             throws Exception {
-        when(recipes.byId(CHEF_ID))
+        when(chefs.byId(CHEF_ID))
                 .thenReturn(Optional.of(new Chef(savedChefRecord())));
 
         jsonMvc.perform(get(endpointWithId()))
@@ -84,7 +90,7 @@ class ChefControllerTest {
     @Test
     void shouldGetByCode()
             throws Exception {
-        when(recipes.byCode(CHEF_CODE))
+        when(chefs.byCode(CHEF_CODE))
                 .thenReturn(Optional.of(new Chef(savedChefRecord())));
 
         jsonMvc.perform(get("/chef/with-code/" + CHEF_CODE))
@@ -102,7 +108,7 @@ class ChefControllerTest {
     @Test
     void shouldGetByName()
             throws Exception {
-        when(recipes.byName(CHEF_NAME))
+        when(chefs.byName(CHEF_NAME))
                 .thenReturn(Optional.of(new Chef(savedChefRecord())));
 
         jsonMvc.perform(get("/chef/with-name/" + CHEF_NAME))
@@ -117,15 +123,24 @@ class ChefControllerTest {
                 .andExpect(status().isNotFound());
     }
 
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     @Test
     void shouldPostNew()
             throws Exception {
         final ChefRequest request = ChefRequest.builder()
+                .code(CHEF_CODE)
                 .name(CHEF_NAME)
                 .build();
 
-        when(recipes.create(request))
-                .thenReturn(new Chef(savedChefRecord()));
+        final var unsaved = spy(unsavedChefRecord());
+        when(chefs.unsaved(request.getCode(), request.getName()))
+                .thenReturn(new Chef(unsaved));
+        doAnswer(invocation -> {
+            final ChefRecord record = (ChefRecord) invocation.getMock();
+            record.id = CHEF_ID;
+            record.receivedAt = CHEF_RECIEVED_AT;
+            return record;
+        }).when(unsaved).save();
 
         jsonMvc.perform(post("/chef")
                 .content(asJson(request)))

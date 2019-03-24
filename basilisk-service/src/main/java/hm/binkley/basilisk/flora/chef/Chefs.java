@@ -1,7 +1,5 @@
 package hm.binkley.basilisk.flora.chef;
 
-import hm.binkley.basilisk.flora.chef.rest.ChefRequest;
-import hm.binkley.basilisk.flora.chef.store.ChefRecord;
 import hm.binkley.basilisk.flora.chef.store.ChefStore;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +12,10 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class Chefs {
     private final ChefStore store;
+
+    public Chef unsaved(final String code, final String name) {
+        return new Chef(store.unsaved(code, name));
+    }
 
     public Optional<Chef> byId(final Long id) {
         return store.byId(id).map(Chef::new);
@@ -29,9 +31,5 @@ public class Chefs {
 
     public Stream<Chef> all() {
         return store.all().map(Chef::new);
-    }
-
-    public Chef create(final ChefRequest request) {
-        return new Chef(store.save(request.as(ChefRecord::unsaved)));
     }
 }

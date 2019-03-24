@@ -21,7 +21,6 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.NoSuchElementException;
 import java.util.Set;
-import java.util.function.Function;
 
 import static java.util.stream.Collectors.toSet;
 import static org.springframework.http.HttpStatus.CREATED;
@@ -35,10 +34,14 @@ import static org.springframework.http.ResponseEntity.created;
 public class ChefController {
     private final Chefs chefs;
 
+    private static ChefResponse toResponse(final Chef chef) {
+        return new ChefResponse(chef.getId(), chef.getCode(), chef.getName());
+    }
+
     @GetMapping
     public Set<ChefResponse> getAll() {
         return chefs.all()
-                .map(toResponse())
+                .map(ChefController::toResponse)
                 .collect(toSet());
     }
 
@@ -46,7 +49,7 @@ public class ChefController {
     public ChefResponse getById(
             @PathVariable("id") final Long id) {
         return chefs.byId(id)
-                .map(toResponse())
+                .map(ChefController::toResponse)
                 .orElseThrow();
     }
 
@@ -55,7 +58,7 @@ public class ChefController {
             @PathVariable("code") final @Length(min = 3, max = 32)
                     String code) {
         return chefs.byCode(code)
-                .map(toResponse())
+                .map(ChefController::toResponse)
                 .orElseThrow();
     }
 
@@ -64,7 +67,7 @@ public class ChefController {
             @PathVariable("name") final @Length(min = 3, max = 32)
                     String name) {
         return chefs.byName(name)
-                .map(toResponse())
+                .map(ChefController::toResponse)
                 .orElseThrow();
     }
 
@@ -72,15 +75,13 @@ public class ChefController {
     @ResponseStatus(CREATED)
     public ResponseEntity<ChefResponse> postChef(
             @RequestBody final @Valid ChefRequest request) {
-        final var domain = chefs.create(request);
-        final var response = toResponse().apply(domain);
+        final var domain = chefs
+                .unsaved(request.getCode(), request.getName())
+                .save();
+        final var response = toResponse(domain);
 
         return created(URI.create("/chef/" + response.getId()))
                 .body(response);
-    }
-
-    private Function<Chef, ChefResponse> toResponse() {
-        return it -> it.as(ChefResponse.using());
     }
 
     /** @todo Think more deeply about global controller advice */

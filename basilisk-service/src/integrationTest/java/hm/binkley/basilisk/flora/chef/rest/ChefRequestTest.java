@@ -13,7 +13,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.io.IOException;
 
 import static hm.binkley.basilisk.flora.FloraFixtures.CHEF_CODE;
-import static hm.binkley.basilisk.flora.FloraFixtures.CHEF_ID;
 import static hm.binkley.basilisk.flora.FloraFixtures.CHEF_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -21,17 +20,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import(JsonConfiguration.class)
 @JsonTest
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-class ChefResponseTest {
-    private final JacksonTester<ChefResponse> json;
+class ChefRequestTest {
+    private final JacksonTester<ChefRequest> json;
 
     @Test
-    void shouldBecomeGoodJson()
+    void shouldComeFromGoodJson()
             throws IOException {
-        assertThat(json.write(ChefResponse.builder()
-                .id(CHEF_ID)
-                .code(CHEF_CODE)
-                .name(CHEF_NAME)
-                .build()))
-                .isEqualToJson("chef-response-test.json");
+        assertThat(json.readObject("chef-request-test.json"))
+                .isEqualTo(ChefRequest.builder()
+                        .code(CHEF_CODE)
+                        .name(CHEF_NAME)
+                        .build());
     }
 }

@@ -1,7 +1,5 @@
 package hm.binkley.basilisk.flora.chef;
 
-import hm.binkley.basilisk.flora.chef.rest.ChefRequest;
-import hm.binkley.basilisk.flora.chef.store.ChefRecord;
 import hm.binkley.basilisk.flora.chef.store.ChefStore;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,6 +12,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import static hm.binkley.basilisk.flora.FloraFixtures.savedChefRecord;
+import static hm.binkley.basilisk.flora.FloraFixtures.unsavedChefRecord;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -29,6 +28,18 @@ class ChefsTest {
     @BeforeEach
     void setUp() {
         chefs = new Chefs(store);
+    }
+
+    @Test
+    void shouldCreateUnsaved() {
+        final var unsaved = unsavedChefRecord();
+        when(store.unsaved(unsaved.getCode(), unsaved.getName()))
+                .thenReturn(unsaved);
+
+        assertThat(chefs.unsaved(unsaved.getCode(), unsaved.getName()))
+                .isEqualTo(new Chef(unsaved));
+
+        verifyNoMoreInteractions(store);
     }
 
     @Test
@@ -85,22 +96,6 @@ class ChefsTest {
         final var found = chefs.all();
 
         assertThat(found).containsExactly(new Chef(record));
-
-        verifyNoMoreInteractions(store);
-    }
-
-    @Test
-    void shouldCreate() {
-        final var record = savedChefRecord();
-        when(store.save(ChefRecord.unsaved(
-                record.getCode(), record.getName())))
-                .thenReturn(record);
-
-        assertThat(chefs.create(ChefRequest.builder()
-                .code(record.getCode())
-                .name(record.getName())
-                .build()))
-                .isEqualTo(new Chef(record));
 
         verifyNoMoreInteractions(store);
     }
