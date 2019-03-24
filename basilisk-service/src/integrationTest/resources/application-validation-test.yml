@@ -1,0 +1,18 @@
+# Because this is in a different Spring active profile based on the file name,
+# it _overrides_ the main `application-test.yml`: no need to copy over the whole thing
+
+basilisk:
+  extra-word: 'Margaret Hamilton'
+
+flora:
+  daily-special: 'POTATO'
+
+# Hide WARN during validation tests
+# This is not the safest approach.  Consider:
+# Parallel builds sharing a class loader; the logger is a static final
+# in this class: what happens when something actually goes wrong outside
+# of a validation test?  Does Spring ensure different profiles have
+# different class loaders?
+logging:
+  level:
+    org.zalando.problem.spring.web.advice.AdviceTrait: ERROR

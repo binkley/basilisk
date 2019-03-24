@@ -4,6 +4,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.annotation.AliasFor;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
@@ -20,6 +21,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * @see JsonMockMvcConfiguration
  * @see WebMvcTest @WebMvcTest
  */
+@ActiveProfiles("validation-test")
 @Documented
 @Import(ProblemMockMvcConfiguration.class)
 @Retention(RUNTIME)
