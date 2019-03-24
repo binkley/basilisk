@@ -6,7 +6,6 @@ import hm.binkley.basilisk.configuration.JsonConfiguration;
 import hm.binkley.basilisk.configuration.JsonWebMvcTest;
 import hm.binkley.basilisk.flora.chef.Chef;
 import hm.binkley.basilisk.flora.chef.Chefs;
-import hm.binkley.basilisk.flora.chef.store.ChefRecord;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +24,7 @@ import static hm.binkley.basilisk.flora.FloraFixtures.CHEF_NAME;
 import static hm.binkley.basilisk.flora.FloraFixtures.CHEF_RECIEVED_AT;
 import static hm.binkley.basilisk.flora.FloraFixtures.savedChefRecord;
 import static hm.binkley.basilisk.flora.FloraFixtures.unsavedChefRecord;
+import static hm.binkley.basilisk.store.PersistenceTesting.simulateRecordSave;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
@@ -135,12 +135,8 @@ class ChefControllerTest {
         final var unsaved = spy(unsavedChefRecord());
         when(chefs.unsaved(request.getCode(), request.getName()))
                 .thenReturn(new Chef(unsaved));
-        doAnswer(invocation -> {
-            final ChefRecord record = (ChefRecord) invocation.getMock();
-            record.id = CHEF_ID;
-            record.receivedAt = CHEF_RECIEVED_AT;
-            return record;
-        }).when(unsaved).save();
+        doAnswer(simulateRecordSave(CHEF_ID, CHEF_RECIEVED_AT))
+                .when(unsaved).save();
 
         jsonMvc.perform(post("/chef")
                 .content(asJson(request)))

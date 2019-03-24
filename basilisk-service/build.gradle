@@ -2,4 +2,6 @@ apply from: "${project.rootDir}/spring-boot.gradle"
 
 dependencies {
     implementation project(":basilisk-persistence")
+
+    testImplementation project(":basilisk-persistence-testing")
 }

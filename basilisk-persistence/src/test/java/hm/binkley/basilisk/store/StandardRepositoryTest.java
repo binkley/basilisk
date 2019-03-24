@@ -5,14 +5,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.stubbing.Answer;
 
 import javax.validation.constraints.NotNull;
-import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 
+import static hm.binkley.basilisk.store.PersistenceTesting.simulateRepositorySave;
 import static java.time.Instant.EPOCH;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -25,16 +24,6 @@ class StandardRepositoryTest {
 
     @Mock
     private final MyTestRepository repository;
-
-    private static Answer<MyTestRecord> simulateSave(
-            final Long id, final Instant receivedAt) {
-        return invocation -> {
-            final MyTestRecord record = invocation.getArgument(0);
-            record.id = id;
-            record.receivedAt = receivedAt;
-            return record;
-        };
-    }
 
     @Test
     void shouldReadAll() {
@@ -60,8 +49,8 @@ class StandardRepositoryTest {
                 .thenReturn(Optional.empty());
         final var savedId = 1L;
         final var savedReceivedAt = EPOCH;
-        when(repository.save(update))
-                .then(simulateSave(savedId, savedReceivedAt));
+        when(repository.save(update)).then(simulateRepositorySave(
+                savedId, savedReceivedAt));
 
         final var upserted = repository.upsert(update, prepareUpsert);
 
@@ -84,8 +73,8 @@ class StandardRepositoryTest {
                 .thenCallRealMethod();
         when(repository.findByCode(update.getCode()))
                 .thenReturn(Optional.of(found));
-        when(repository.save(update))
-                .then(simulateSave(found.getId(), found.getReceivedAt()));
+        when(repository.save(update)).then(simulateRepositorySave(
+                found.getId(), found.getReceivedAt()));
 
         final var upserted = repository.upsert(update, prepareUpsert);
 

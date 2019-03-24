@@ -37,7 +37,7 @@ public final class FloraFixtures {
     public static final String RECIPE_CODE = "SFL#123";
     public static final String RECIPE_NAME = "SOUFFLE";
     public static final Long LOCATION_ID = 42L;
-    public static final Instant LOCATON_RECEIVED_AT
+    public static final Instant LOCATION_RECEIVED_AT
             = EPOCH.plusSeconds(1_200_000L);
     public static final String LOCATION_CODE = "DAL";
     public static final String LOCATION_NAME = "The Dallas Yellow Rose";
@@ -104,7 +104,7 @@ public final class FloraFixtures {
     public static LocationRecord savedLocationRecord() {
         final var saved = unsavedLocationRecord();
         saved.id = LOCATION_ID;
-        saved.receivedAt = LOCATON_RECEIVED_AT;
+        saved.receivedAt = LOCATION_RECEIVED_AT;
         return saved;
     }
 

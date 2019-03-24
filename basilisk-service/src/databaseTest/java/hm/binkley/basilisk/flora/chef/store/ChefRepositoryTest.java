@@ -12,8 +12,6 @@ import org.springframework.data.relational.core.conversion.DbActionExecutionExce
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Set;
-
 import static hm.binkley.basilisk.flora.FloraFixtures.unsavedChefRecord;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -93,16 +91,5 @@ class ChefRepositoryTest {
                 () -> repository.save(unsavedChefRecord()));
 
         assertThat(ex.getCause()).isInstanceOf(DuplicateKeyException.class);
-    }
-
-    @Test
-    void shouldStream() {
-        final var unsavedA = unsavedChefRecord();
-        final var unsavedB = distinctChefRecord();
-        repository.saveAll(Set.of(unsavedA, unsavedB));
-
-        try (final var found = repository.readAll()) {
-            assertThat(found).containsOnly(unsavedA, unsavedB);
-        }
     }
 }

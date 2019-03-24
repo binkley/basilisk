@@ -33,4 +33,19 @@ class ChefRecordTest {
         verify(store).save(unsaved);
         verifyNoMoreInteractions(store);
     }
+
+    @Test
+    void shouldDelete() {
+        final var unsaved = unsavedChefRecord();
+        unsaved.store = store;
+        final var saved = savedChefRecord();
+        saved.store = store;
+        when(store.delete(saved))
+                .thenReturn(unsaved);
+
+        assertThat(saved.delete()).isEqualTo(unsaved);
+
+        verify(store).delete(saved);
+        verifyNoMoreInteractions(store);
+    }
 }

@@ -10,7 +10,7 @@ configurations {
 }
 
 dependencies {
-    testImplementation project(":basilisk-testing")
+    testImplementation project(":basilisk-persistence-testing")
 
     databaseTestImplementation sourceSets.test.output
 }

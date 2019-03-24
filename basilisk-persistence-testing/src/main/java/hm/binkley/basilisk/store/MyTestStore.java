@@ -1,5 +1,8 @@
 package hm.binkley.basilisk.store;
 
+import lombok.Generated;
+
+@Generated // Lie to JaCoCo
 final class MyTestStore
         extends StandardStore<MyTestRecord, MyTestRepository,
         MyTestStore> {

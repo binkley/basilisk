@@ -11,10 +11,15 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import static hm.binkley.basilisk.flora.FloraFixtures.CHEF_ID;
+import static hm.binkley.basilisk.flora.FloraFixtures.CHEF_RECIEVED_AT;
 import static hm.binkley.basilisk.flora.FloraFixtures.savedChefRecord;
 import static hm.binkley.basilisk.flora.FloraFixtures.unsavedChefRecord;
+import static hm.binkley.basilisk.store.PersistenceTesting.simulateRepositoryDelete;
+import static hm.binkley.basilisk.store.PersistenceTesting.simulateRepositorySave;
 import static java.util.stream.Collectors.toSet;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -85,14 +90,32 @@ class ChefStoreTest {
     @Test
     void shouldSave() {
         final var unsaved = unsavedChefRecord();
-        final var saved = savedChefRecord();
-
         when(springData.save(unsaved))
-                .thenReturn(saved);
+                .then(simulateRepositorySave(CHEF_ID, CHEF_RECIEVED_AT));
 
-        assertThat(store.save(unsaved)).isEqualTo(saved);
+        final var saved = store.save(unsaved);
+
+        assertThat(saved).isEqualTo(unsaved);
+        assertThat(saved.getId()).isEqualTo(CHEF_ID);
+        assertThat(saved.getReceivedAt()).isEqualTo(CHEF_RECIEVED_AT);
 
         verify(springData).save(unsaved);
+        verifyNoMoreInteractions(springData);
+    }
+
+    @Test
+    void shouldDelete() {
+        final var saved = savedChefRecord();
+        doAnswer(simulateRepositoryDelete())
+                .when(springData).delete(saved);
+
+        final var deleted = store.delete(saved);
+
+        assertThat(deleted).isEqualTo(saved);
+        assertThat(deleted.getId()).isNull();
+        assertThat(deleted.getReceivedAt()).isNull();
+
+        verify(springData).delete(saved);
         verifyNoMoreInteractions(springData);
     }
 }

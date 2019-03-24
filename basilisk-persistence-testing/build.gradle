@@ -1,0 +1,12 @@
+configurations {
+    all*.exclude module: 'junit'
+    all*.exclude module: 'slf4j-simple'
+}
+
+dependencies {
+    implementation project(":basilisk-testing")
+    implementation project(":basilisk-persistence")
+
+    implementation "org.junit:junit"
+    implementation "org.mockito:mockito-core"
+}
