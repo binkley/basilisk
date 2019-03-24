@@ -217,7 +217,8 @@ for more details.
 - **repository** -
   [`MiddleRepository`](basilisk-service/src/main/java/hm/binkley/basilisk/store/x/MiddleRepository.java)
   - Repositories are the key feature of Spring Data JDBC.  These are enhanced
-  with a helper `readAll()` method to provide a streaming view of records
+  with a helper `readAll()` method to provide a streaming view of records (and
+  an example of _default methods_ on interfaces)
 - **record** -
   [`MiddleRecord`](basilisk-service/src/main/java/hm/binkley/basilisk/store/x/MiddleRecord.java)
   - Records directly support Spring Data JDBC; annotations and other
@@ -229,16 +230,22 @@ for more details.
   [`MiddleStore`](basilisk-service/src/main/java/hm/binkley/basilisk/store/x/MiddleStore.java)
   - Stores are light wrappers around repositories, managing the abstraction.
   In principle, one could replace Spring Data JDBC with, say, Spring Data JPA
-  or jOOQ, and need only update the store
+  or jOOQ, and need only update the store.  These talk to their own repository
+  only; for other records, they delegate to their matching factory
 - **domain object** -
   [`Middle`](basilisk-service/src/main/java/hm/binkley/basilisk/store/x/Middle.java)
   - Domain objects abstract business logic from persistence, and are light
-  wrappers around records.  They implement policy, such as if mutation should
+  wrappers around records.  These implement policy, such as if mutation should
   trigger an immediate persistence write or not
 - **factory**
   [`Middles`](basilisk-service/src/main/java/hm/binkley/basilisk/store/x/Middles.java)
   - Factories manage domain object searching and creation, and are light
-  wrappers around stores, translating records into domain objects
+  wrappers around stores, translating records into domain objects.  These talk
+  to their own store only; for other domain objects they talk to the
+  corresponding factories  
+
+A fuller implementation would provide _abstract base classes_ for each
+pattern; that is not done here to aid in reading the examples.
 
 [[TOC]](#basilisk)
 

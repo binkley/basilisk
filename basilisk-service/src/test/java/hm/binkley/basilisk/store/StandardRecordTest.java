@@ -19,7 +19,7 @@ class StandardRecordTest {
 
     @BeforeEach
     void setUp() {
-        record = new MyTestRecord(null, null, "ABC", 123);
+        record = MyTestRecord.unsaved("ABC", 123);
         record.store = store;
     }
 
@@ -28,5 +28,12 @@ class StandardRecordTest {
         record.save();
 
         verify(store).save(record);
+    }
+
+    @Test
+    void shouldDelete() {
+        record.delete();
+
+        verify(store).delete(record);
     }
 }

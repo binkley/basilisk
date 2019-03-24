@@ -11,7 +11,7 @@ import java.time.Instant;
 import java.util.function.Supplier;
 
 @EqualsAndHashCode(exclude = {"copy", "store"})
-@ToString
+@ToString(exclude = {"copy", "store"})
 public abstract class StandardRecord<T extends StandardRecord<T, R, S>,
         R extends StandardRepository<T, R, S>,
         S extends StandardStore<T, R, S>>
@@ -46,6 +46,11 @@ public abstract class StandardRecord<T extends StandardRecord<T, R, S>,
     @SuppressWarnings("unchecked")
     public final T save() {
         return store.save((T) this);
+    }
+
+    @SuppressWarnings("unchecked")
+    public final T delete() {
+        return store.delete((T) this);
     }
 
     @Override
