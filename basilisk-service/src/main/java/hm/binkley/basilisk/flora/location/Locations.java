@@ -1,9 +1,9 @@
 package hm.binkley.basilisk.flora.location;
 
-import hm.binkley.basilisk.flora.location.store.LocationRecord;
-import hm.binkley.basilisk.flora.source.store.SourceRecord.LocationRef;
-import hm.binkley.basilisk.flora.location.store.LocationStore;
 import hm.binkley.basilisk.flora.location.rest.LocationRequest;
+import hm.binkley.basilisk.flora.location.store.LocationRecord;
+import hm.binkley.basilisk.flora.location.store.LocationStore;
+import hm.binkley.basilisk.flora.source.store.SourceRecord.LocationRef;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

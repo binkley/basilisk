@@ -64,11 +64,4 @@ class RecipeRecordTest {
         verify(store).save(unsaved);
         verifyNoMoreInteractions(store);
     }
-
-    @Test
-    void shouldClone() {
-        final var unsaved = unsavedRecipeRecord();
-
-        assertThat(unsaved.clone()).isEqualTo(unsaved);
-    }
 }

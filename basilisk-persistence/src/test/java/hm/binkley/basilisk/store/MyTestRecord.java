@@ -16,8 +16,8 @@ final class MyTestRecord
 
     MyTestRecord(final Long id, final Instant receivedAt, final String code,
             final int number) {
-        super(() -> new MyTestRecord(id, receivedAt, code, number),
-                id, receivedAt, code);
+        super(id, receivedAt, code);
+        this.number = number;
     }
 
     static MyTestRecord unsaved(final String code, final int number) {

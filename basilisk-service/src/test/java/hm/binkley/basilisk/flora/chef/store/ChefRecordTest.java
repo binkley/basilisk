@@ -33,11 +33,4 @@ class ChefRecordTest {
         verify(store).save(unsaved);
         verifyNoMoreInteractions(store);
     }
-
-    @Test
-    void shouldClone() {
-        final var unsaved = savedChefRecord();
-
-        assertThat(unsaved.clone()).isEqualTo(unsaved);
-    }
 }

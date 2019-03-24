@@ -194,7 +194,8 @@ Some reading:
 #### Example complex cases
 
 - Test cases:
-  [`XTest`](basilisk-persistence/src/databaseTest/java/hm/binkley/basilisk/store/x/RepositoryTest.java)
+  * [`ConditionsTest`](basilisk-persistence/src/test/java/hm/binkley/basilisk/store/x/ConditionsTest.java)
+  * [`RepositoryTest`](basilisk-persistence/src/databaseTest/java/hm/binkley/basilisk/store/x/RepositoryTest.java)
 - Many-to-one, value-to-entity:
   [`Middle`](basilisk-persistence/src/main/java/hm/binkley/basilisk/store/x/Middle.java)
   to

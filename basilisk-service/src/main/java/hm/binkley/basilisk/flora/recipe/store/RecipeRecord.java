@@ -28,8 +28,7 @@ public final class RecipeRecord
 
     public RecipeRecord(final Long id, final Instant receivedAt,
             final String code, final String name, final Long chefId) {
-        super(() -> new RecipeRecord(id, receivedAt, code, name, chefId),
-                id, receivedAt, code);
+        super(id, receivedAt, code);
         this.name = name;
         this.chefId = chefId;
     }

@@ -1,9 +1,9 @@
 package hm.binkley.basilisk.flora;
 
 import hm.binkley.basilisk.flora.chef.store.ChefRecord;
-import hm.binkley.basilisk.flora.recipe.store.RecipeRecord;
 import hm.binkley.basilisk.flora.ingredient.store.IngredientRecord;
 import hm.binkley.basilisk.flora.location.store.LocationRecord;
+import hm.binkley.basilisk.flora.recipe.store.RecipeRecord;
 import hm.binkley.basilisk.flora.source.store.SourceRecord;
 import lombok.NoArgsConstructor;
 

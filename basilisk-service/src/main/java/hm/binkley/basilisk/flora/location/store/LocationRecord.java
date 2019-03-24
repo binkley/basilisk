@@ -19,8 +19,7 @@ public final class LocationRecord
 
     public LocationRecord(final Long id, final Instant receivedAt,
             final String code, final String name) {
-        super(() -> new LocationRecord(id, receivedAt, code, name),
-                id, receivedAt, code);
+        super(id, receivedAt, code);
         this.name = name;
     }
 

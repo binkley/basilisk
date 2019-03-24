@@ -51,13 +51,6 @@ class SourceRecordTest {
     }
 
     @Test
-    void shouldClone() {
-        final var saved = savedSourceRecord();
-
-        assertThat(saved.clone()).isEqualTo(saved);
-    }
-
-    @Test
     void shouldComplainIfLocationMissing() {
         assertThatThrownBy(() ->
                 unsavedSourceRecord().addAvailableAt((LocationRecord) null))

@@ -33,11 +33,4 @@ class IngredientRecordTest {
         verify(store).save(unsaved);
         verifyNoMoreInteractions(store);
     }
-
-    @Test
-    void shouldClone() {
-        final var unsaved = unsavedUnusedIngredientRecord();
-
-        assertThat(unsaved.clone()).isEqualTo(unsaved);
-    }
 }

@@ -1,8 +1,8 @@
 package hm.binkley.basilisk.flora.chef;
 
+import hm.binkley.basilisk.flora.chef.rest.ChefRequest;
 import hm.binkley.basilisk.flora.chef.store.ChefRecord;
 import hm.binkley.basilisk.flora.chef.store.ChefStore;
-import hm.binkley.basilisk.flora.chef.rest.ChefRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

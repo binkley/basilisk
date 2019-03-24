@@ -33,11 +33,4 @@ class LocationRecordTest {
         verify(store).save(unsaved);
         verifyNoMoreInteractions(store);
     }
-
-    @Test
-    void shouldClone() {
-        final var saved = savedLocationRecord();
-
-        assertThat(saved.clone()).isEqualTo(saved);
-    }
 }

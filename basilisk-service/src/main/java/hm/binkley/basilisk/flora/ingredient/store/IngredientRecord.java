@@ -30,9 +30,7 @@ public final class IngredientRecord
             final String code, final Long sourceId, final String name,
             final BigDecimal quantity, final Long recipeId,
             final Long chefId) {
-        super(() -> new IngredientRecord(id, receivedAt, code, sourceId, name,
-                        quantity, recipeId, chefId),
-                id, receivedAt, code);
+        super(id, receivedAt, code);
         this.code = code;
         this.sourceId = sourceId;
         this.name = name;

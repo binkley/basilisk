@@ -12,10 +12,10 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.IOException;
 
-import static hm.binkley.basilisk.flora.chef.rest.ChefResponse.using;
 import static hm.binkley.basilisk.flora.FloraFixtures.CHEF_CODE;
 import static hm.binkley.basilisk.flora.FloraFixtures.CHEF_ID;
 import static hm.binkley.basilisk.flora.FloraFixtures.CHEF_NAME;
+import static hm.binkley.basilisk.flora.chef.rest.ChefResponse.using;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
