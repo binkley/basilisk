@@ -1,30 +1,22 @@
 package hm.binkley.basilisk.flora.location;
 
-import hm.binkley.basilisk.flora.location.Locations.As;
+import hm.binkley.basilisk.StandardDomain;
 import hm.binkley.basilisk.flora.location.store.LocationRecord;
+import hm.binkley.basilisk.flora.location.store.LocationRepository;
+import hm.binkley.basilisk.flora.location.store.LocationStore;
 import lombok.EqualsAndHashCode;
-import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-@EqualsAndHashCode
-@RequiredArgsConstructor
-@ToString
-public final class Location {
-    private final LocationRecord record;
-
-    public Long getId() {
-        return record.getId();
-    }
-
-    public String getCode() {
-        return record.getCode();
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
+public final class Location
+        extends StandardDomain<LocationRecord, LocationRepository,
+        LocationStore, Location> {
+    public Location(final LocationRecord record) {
+        super(record);
     }
 
     public String getName() {
         return record.getName();
-    }
-
-    public <L> L as(final As<L> toLocation) {
-        return toLocation.from(getId(), getCode(), getName());
     }
 }

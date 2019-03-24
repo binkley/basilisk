@@ -18,9 +18,15 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import static hm.binkley.basilisk.flora.FloraFixtures.LOCATION_CODE;
 import static hm.binkley.basilisk.flora.FloraFixtures.LOCATION_ID;
 import static hm.binkley.basilisk.flora.FloraFixtures.LOCATION_NAME;
+import static hm.binkley.basilisk.flora.FloraFixtures.LOCATION_RECEIVED_AT;
 import static hm.binkley.basilisk.flora.FloraFixtures.savedLocationRecord;
+import static hm.binkley.basilisk.flora.FloraFixtures.unsavedLocationRecord;
+import static hm.binkley.basilisk.store.PersistenceTesting.simulateRecordSave;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.LOCATION;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -37,7 +43,7 @@ class LocationControllerTest {
     private final ObjectMapper objectMapper;
 
     @MockBean
-    private Locations recipes;
+    private Locations locations;
 
     private static String endpointWithId() {
         return "/location/" + LOCATION_ID;
@@ -46,13 +52,14 @@ class LocationControllerTest {
     private static Map<String, Object> responseMap() {
         return Map.of(
                 "id", LOCATION_ID,
+                "code", LOCATION_CODE,
                 "name", LOCATION_NAME);
     }
 
     @Test
     void shouldGetAll()
             throws Exception {
-        when(recipes.all())
+        when(locations.all())
                 .thenReturn(Stream.of(new Location(savedLocationRecord())));
 
         jsonMvc.perform(get("/location"))
@@ -64,7 +71,7 @@ class LocationControllerTest {
     @Test
     void shouldGetById()
             throws Exception {
-        when(recipes.byId(LOCATION_ID))
+        when(locations.byId(LOCATION_ID))
                 .thenReturn(Optional.of(new Location(savedLocationRecord())));
 
         jsonMvc.perform(get(endpointWithId()))
@@ -83,7 +90,7 @@ class LocationControllerTest {
     @Test
     void shouldGetByName()
             throws Exception {
-        when(recipes.byName(LOCATION_NAME))
+        when(locations.byName(LOCATION_NAME))
                 .thenReturn(Optional.of(new Location(savedLocationRecord())));
 
         jsonMvc.perform(get("/location/with-name/" + LOCATION_NAME))
@@ -98,15 +105,20 @@ class LocationControllerTest {
                 .andExpect(status().isNotFound());
     }
 
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     @Test
     void shouldPostNew()
             throws Exception {
         final LocationRequest request = LocationRequest.builder()
+                .code(LOCATION_CODE)
                 .name(LOCATION_NAME)
                 .build();
 
-        when(recipes.create(request))
-                .thenReturn(new Location(savedLocationRecord()));
+        final var unsaved = spy(unsavedLocationRecord());
+        when(locations.unsaved(request.getCode(), request.getName()))
+                .thenReturn(new Location(unsaved));
+        doAnswer(simulateRecordSave(LOCATION_ID, LOCATION_RECEIVED_AT))
+                .when(unsaved).save();
 
         jsonMvc.perform(post("/location")
                 .content(asJson(request)))

@@ -1,6 +1,6 @@
 package hm.binkley.basilisk.store;
 
-interface MyTestRepository
+public interface MyTestRepository
         extends StandardRepository<MyTestRecord, MyTestRepository,
         MyTestStore> {
 }

@@ -1,29 +1,20 @@
 package hm.binkley.basilisk.flora.chef;
 
+import hm.binkley.basilisk.StandardDomain;
 import hm.binkley.basilisk.flora.chef.store.ChefRecord;
+import hm.binkley.basilisk.flora.chef.store.ChefRepository;
+import hm.binkley.basilisk.flora.chef.store.ChefStore;
 import lombok.EqualsAndHashCode;
-import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-@EqualsAndHashCode
-@RequiredArgsConstructor
-@ToString
-public final class Chef {
-    private final ChefRecord record;
-
-    public Long getId() { return record.getId(); }
-
-    public String getCode() { return record.getCode(); }
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
+public final class Chef
+        extends StandardDomain<
+        ChefRecord, ChefRepository, ChefStore, Chef> {
+    public Chef(final ChefRecord record) {
+        super(record);
+    }
 
     public String getName() { return record.getName(); }
-
-    public Chef save() {
-        record.save();
-        return this;
-    }
-
-    public Chef delete() {
-        record.delete();
-        return this;
-    }
 }

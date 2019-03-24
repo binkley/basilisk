@@ -1,28 +1,27 @@
 package hm.binkley.basilisk.flora.source;
 
+import hm.binkley.basilisk.StandardDomain;
 import hm.binkley.basilisk.flora.location.Location;
 import hm.binkley.basilisk.flora.location.Locations;
 import hm.binkley.basilisk.flora.source.store.SourceRecord;
+import hm.binkley.basilisk.flora.source.store.SourceRepository;
+import hm.binkley.basilisk.flora.source.store.SourceStore;
 import lombok.EqualsAndHashCode;
-import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import java.util.Optional;
 import java.util.stream.Stream;
 
-@EqualsAndHashCode
-@RequiredArgsConstructor
-@ToString
-public final class Source {
-    private final SourceRecord record;
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
+public final class Source
+        extends StandardDomain<SourceRecord, SourceRepository, SourceStore,
+        Source> {
     private final Locations locations;
 
-    public Long getId() {
-        return record.getId();
-    }
-
-    public String getCode() {
-        return record.getCode();
+    public Source(final SourceRecord record, final Locations locations) {
+        super(record);
+        this.locations = locations;
     }
 
     public String getName() {
@@ -33,11 +32,5 @@ public final class Source {
         return record.getAvailableAt().stream()
                 .map(locations::byRef)
                 .map(Optional::orElseThrow);
-    }
-
-    public <S, L> S as(final Sources.As<S, L> toSource,
-            final Locations.As<L> toLocation) {
-        return toSource.from(getId(), getCode(), getName(),
-                getAvailableAt().map(it -> it.as(toLocation)));
     }
 }

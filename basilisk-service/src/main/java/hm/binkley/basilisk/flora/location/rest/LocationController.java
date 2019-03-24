@@ -21,7 +21,6 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.NoSuchElementException;
 import java.util.Set;
-import java.util.function.Function;
 
 import static java.util.stream.Collectors.toSet;
 import static org.springframework.http.HttpStatus.CREATED;
@@ -35,10 +34,15 @@ import static org.springframework.http.ResponseEntity.created;
 public class LocationController {
     private final Locations locations;
 
+    public static LocationResponse toResponse(final Location location) {
+        return new LocationResponse(location.getId(), location.getCode(),
+                location.getName());
+    }
+
     @GetMapping
     public Set<LocationResponse> getAll() {
         return locations.all()
-                .map(toResponse())
+                .map(LocationController::toResponse)
                 .collect(toSet());
     }
 
@@ -46,7 +50,7 @@ public class LocationController {
     public LocationResponse getById(
             @PathVariable("id") final Long id) {
         return locations.byId(id)
-                .map(toResponse())
+                .map(LocationController::toResponse)
                 .orElseThrow();
     }
 
@@ -55,7 +59,7 @@ public class LocationController {
             @PathVariable("name") final @Length(min = 3, max = 32)
                     String name) {
         return locations.byName(name)
-                .map(toResponse())
+                .map(LocationController::toResponse)
                 .orElseThrow();
     }
 
@@ -63,15 +67,13 @@ public class LocationController {
     @ResponseStatus(CREATED)
     public ResponseEntity<LocationResponse> postLocation(
             @RequestBody final @Valid LocationRequest request) {
-        final var domain = locations.create(request);
-        final var response = toResponse().apply(domain);
+        final var domain = locations
+                .unsaved(request.getCode(), request.getName())
+                .save();
+        final var response = toResponse(domain);
 
         return created(URI.create("/location/" + response.getId()))
                 .body(response);
-    }
-
-    private Function<Location, LocationResponse> toResponse() {
-        return it -> it.as(LocationResponse.using());
     }
 
     /** @todo Think more deeply about global controller advice */

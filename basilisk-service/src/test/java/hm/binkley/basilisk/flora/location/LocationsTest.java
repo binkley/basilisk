@@ -1,7 +1,5 @@
 package hm.binkley.basilisk.flora.location;
 
-import hm.binkley.basilisk.flora.location.rest.LocationRequest;
-import hm.binkley.basilisk.flora.location.store.LocationRecord;
 import hm.binkley.basilisk.flora.location.store.LocationStore;
 import hm.binkley.basilisk.flora.source.store.SourceRecord.LocationRef;
 import lombok.RequiredArgsConstructor;
@@ -12,9 +10,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import static hm.binkley.basilisk.flora.FloraFixtures.savedLocationRecord;
+import static hm.binkley.basilisk.flora.FloraFixtures.unsavedLocationRecord;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -33,16 +31,15 @@ class LocationsTest {
     }
 
     @Test
-    void shouldFindById() {
-        final var record = savedLocationRecord();
-        when(store.byId(record.getId()))
-                .thenReturn(Optional.of(record));
+    void shouldCreateUnsaved() {
+        final var record = unsavedLocationRecord();
+        when(store.unsaved(record.getCode(), record.getName()))
+                .thenReturn(record);
 
-        final var found = locations
-                .byId(record.getId())
-                .orElseThrow();
+        final var unsaved = locations.unsaved(
+                record.getCode(), record.getName());
 
-        assertThat(found).isEqualTo(new Location(record));
+        assertThat(unsaved).isEqualTo(new Location(record));
 
         verifyNoMoreInteractions(store);
     }
@@ -53,23 +50,7 @@ class LocationsTest {
         when(store.byId(record.getId()))
                 .thenReturn(Optional.of(record));
 
-        final var found = locations
-                .byRef(LocationRef.of(record))
-                .orElseThrow();
-
-        assertThat(found).isEqualTo(new Location(record));
-
-        verifyNoMoreInteractions(store);
-    }
-
-    @Test
-    void shouldFindByCode() {
-        final var record = savedLocationRecord();
-        when(store.byCode(record.getCode()))
-                .thenReturn(Optional.of(record));
-
-        final var found = locations
-                .byCode(record.getCode())
+        final var found = locations.byRef(LocationRef.of(record))
                 .orElseThrow();
 
         assertThat(found).isEqualTo(new Location(record));
@@ -83,40 +64,9 @@ class LocationsTest {
         when(store.byName(record.getName()))
                 .thenReturn(Optional.of(record));
 
-        final var found = locations
-                .byName(record.getName())
-                .orElseThrow();
+        final var found = locations.byName(record.getName()).orElseThrow();
 
         assertThat(found).isEqualTo(new Location(record));
-
-        verifyNoMoreInteractions(store);
-    }
-
-    @Test
-    void shouldFindAll() {
-        final var record = savedLocationRecord();
-        when(store.all())
-                .thenReturn(Stream.of(record));
-
-        final var found = locations.all();
-
-        assertThat(found).containsExactly(new Location(record));
-
-        verifyNoMoreInteractions(store);
-    }
-
-    @Test
-    void shouldCreate() {
-        final var record = savedLocationRecord();
-        when(store.save(LocationRecord.unsaved(
-                record.getCode(), record.getName())))
-                .thenReturn(record);
-
-        assertThat(locations.create(LocationRequest.builder()
-                .code(record.getCode())
-                .name(record.getName())
-                .build()))
-                .isEqualTo(new Location(record));
 
         verifyNoMoreInteractions(store);
     }

@@ -15,14 +15,13 @@ public class LocationStore
         super(springData);
     }
 
+    public LocationRecord unsaved(final String code,
+            final String name) {
+        return bind(LocationRecord.unsaved(code, name));
+    }
+
     public Optional<LocationRecord> byName(final String name) {
         return springData.findByName(name)
                 .map(this::bind);
-    }
-
-    public LocationRecord create(final String code, final String name) {
-        final LocationRecord record = LocationRecord.unsaved(code, name);
-        bind(record);
-        return record.save();
     }
 }

@@ -9,7 +9,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import static hm.binkley.basilisk.flora.FloraFixtures.savedChefRecord;
 import static hm.binkley.basilisk.flora.FloraFixtures.unsavedChefRecord;
@@ -32,42 +31,13 @@ class ChefsTest {
 
     @Test
     void shouldCreateUnsaved() {
-        final var unsaved = unsavedChefRecord();
-        when(store.unsaved(unsaved.getCode(), unsaved.getName()))
-                .thenReturn(unsaved);
+        final var record = unsavedChefRecord();
+        when(store.unsaved(record.getCode(), record.getName()))
+                .thenReturn(record);
 
-        assertThat(chefs.unsaved(unsaved.getCode(), unsaved.getName()))
-                .isEqualTo(new Chef(unsaved));
+        final var unsaved = chefs.unsaved(record.getCode(), record.getName());
 
-        verifyNoMoreInteractions(store);
-    }
-
-    @Test
-    void shouldFindById() {
-        final var record = savedChefRecord();
-        when(store.byId(record.getId()))
-                .thenReturn(Optional.of(record));
-
-        final var found = chefs
-                .byId(record.getId())
-                .orElseThrow();
-
-        assertThat(found).isEqualTo(new Chef(record));
-
-        verifyNoMoreInteractions(store);
-    }
-
-    @Test
-    void shouldFindByCode() {
-        final var record = savedChefRecord();
-        when(store.byCode(record.getCode()))
-                .thenReturn(Optional.of(record));
-
-        final var found = chefs
-                .byCode(record.getCode())
-                .orElseThrow();
-
-        assertThat(found).isEqualTo(new Chef(record));
+        assertThat(unsaved).isEqualTo(new Chef(record));
 
         verifyNoMoreInteractions(store);
     }
@@ -78,24 +48,9 @@ class ChefsTest {
         when(store.byName(record.getName()))
                 .thenReturn(Optional.of(record));
 
-        final var found = chefs
-                .byName(record.getName())
-                .orElseThrow();
+        final var found = chefs.byName(record.getName()).orElseThrow();
 
         assertThat(found).isEqualTo(new Chef(record));
-
-        verifyNoMoreInteractions(store);
-    }
-
-    @Test
-    void shouldFindAll() {
-        final var record = savedChefRecord();
-        when(store.all())
-                .thenReturn(Stream.of(record));
-
-        final var found = chefs.all();
-
-        assertThat(found).containsExactly(new Chef(record));
 
         verifyNoMoreInteractions(store);
     }

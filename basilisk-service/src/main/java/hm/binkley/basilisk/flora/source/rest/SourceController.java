@@ -1,6 +1,6 @@
 package hm.binkley.basilisk.flora.source.rest;
 
-import hm.binkley.basilisk.flora.location.rest.LocationResponse;
+import hm.binkley.basilisk.flora.location.rest.LocationController;
 import hm.binkley.basilisk.flora.source.Source;
 import hm.binkley.basilisk.flora.source.Sources;
 import lombok.RequiredArgsConstructor;
@@ -20,10 +20,11 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.LinkedHashSet;
 import java.util.NoSuchElementException;
 import java.util.Set;
-import java.util.function.Function;
 
+import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toSet;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -36,10 +37,17 @@ import static org.springframework.http.ResponseEntity.created;
 public class SourceController {
     private final Sources sources;
 
+    private static SourceResponse toResponse(final Source source) {
+        return new SourceResponse(source.getId(), source.getCode(),
+                source.getName(), source.getAvailableAt()
+                .map(LocationController::toResponse)
+                .collect(toCollection(LinkedHashSet::new)));
+    }
+
     @GetMapping
     public Set<SourceResponse> getAll() {
         return sources.all()
-                .map(toResponse())
+                .map(SourceController::toResponse)
                 .collect(toSet());
     }
 
@@ -47,7 +55,7 @@ public class SourceController {
     public SourceResponse getById(
             @PathVariable("id") final Long id) {
         return sources.byId(id)
-                .map(toResponse())
+                .map(SourceController::toResponse)
                 .orElseThrow();
     }
 
@@ -56,7 +64,7 @@ public class SourceController {
             @PathVariable("name") final @Length(min = 3, max = 32)
                     String name) {
         return sources.byName(name)
-                .map(toResponse())
+                .map(SourceController::toResponse)
                 .orElseThrow();
     }
 
@@ -65,14 +73,10 @@ public class SourceController {
     public ResponseEntity<SourceResponse> postSource(
             @RequestBody final @Valid SourceRequest request) {
         final var domain = sources.create(request);
-        final var response = toResponse().apply(domain);
+        final var response = toResponse(domain);
 
         return created(URI.create("/source/" + response.getId()))
                 .body(response);
-    }
-
-    private Function<Source, SourceResponse> toResponse() {
-        return it -> it.as(SourceResponse.using(), LocationResponse.using());
     }
 
     /** @todo Think more deeply about global controller advice */
