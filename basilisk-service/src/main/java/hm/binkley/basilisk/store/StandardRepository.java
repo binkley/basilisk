@@ -23,13 +23,12 @@ public interface StandardRepository<T extends StandardRecord<T, R, S>,
 
     default T upsert(final T maybeNew,
             final BiConsumer<T, @NotNull T> prepareUpsert) {
-        final var maybeFound = findByCode(maybeNew.getCode());
-        if (maybeFound.isPresent()) {
-            final var found = maybeFound.get();
-            maybeNew.become(found);
-            prepareUpsert.accept(found, maybeNew);
-        } else
-            prepareUpsert.accept(null, maybeNew);
+        final var maybeFound = findByCode(maybeNew.getCode())
+                .orElse(null);
+        if (null != maybeFound) {
+            maybeNew.become(maybeFound);
+        }
+        prepareUpsert.accept(maybeFound, maybeNew);
         return save(maybeNew);
     }
 }
