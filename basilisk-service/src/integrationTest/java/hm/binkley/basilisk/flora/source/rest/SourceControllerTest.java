@@ -4,9 +4,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hm.binkley.basilisk.configuration.JsonConfiguration;
 import hm.binkley.basilisk.configuration.JsonWebMvcTest;
+import hm.binkley.basilisk.flora.location.Location;
 import hm.binkley.basilisk.flora.location.Locations;
+import hm.binkley.basilisk.flora.location.rest.LocationRequest;
 import hm.binkley.basilisk.flora.source.Source;
 import hm.binkley.basilisk.flora.source.Sources;
+import hm.binkley.basilisk.flora.source.store.SourceRecord.LocationRef;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,15 +17,26 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import static hm.binkley.basilisk.flora.FloraFixtures.LOCATION_CODE;
+import static hm.binkley.basilisk.flora.FloraFixtures.LOCATION_ID;
+import static hm.binkley.basilisk.flora.FloraFixtures.LOCATION_NAME;
+import static hm.binkley.basilisk.flora.FloraFixtures.LOCATION_RECEIVED_AT;
+import static hm.binkley.basilisk.flora.FloraFixtures.SOURCE_CODE;
 import static hm.binkley.basilisk.flora.FloraFixtures.SOURCE_ID;
 import static hm.binkley.basilisk.flora.FloraFixtures.SOURCE_NAME;
+import static hm.binkley.basilisk.flora.FloraFixtures.SOURCE_RECEIVED_AT;
 import static hm.binkley.basilisk.flora.FloraFixtures.savedSourceRecord;
+import static hm.binkley.basilisk.flora.FloraFixtures.unsavedLocationRecord;
 import static hm.binkley.basilisk.flora.FloraFixtures.unsavedSourceRecord;
+import static hm.binkley.basilisk.store.PersistenceTesting.simulateRecordSave;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.LOCATION;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -50,7 +64,19 @@ class SourceControllerTest {
     private static Map<String, Object> responseMap() {
         return Map.of(
                 "id", SOURCE_ID,
+                "code", SOURCE_CODE,
                 "name", SOURCE_NAME);
+    }
+
+    private static Map<String, Object> responseMapWithAvailableAt() {
+        return Map.of(
+                "id", SOURCE_ID,
+                "code", SOURCE_CODE,
+                "name", SOURCE_NAME,
+                "available-at", List.of(Map.of(
+                        "id", LOCATION_ID,
+                        "code", LOCATION_CODE,
+                        "name", LOCATION_NAME)));
     }
 
     @Test
@@ -104,21 +130,66 @@ class SourceControllerTest {
     }
 
     @Test
-    void shouldPostNew()
+    void shouldPostNewWithNoAvailableAt()
             throws Exception {
-        final var unsaved = unsavedSourceRecord();
+        final var unsaved = spy(unsavedSourceRecord());
+        final var unsavedLocation = spy(unsavedLocationRecord());
         final SourceRequest request = SourceRequest.builder()
+                .code(unsaved.getCode())
                 .name(unsaved.getName())
+                .availableAt(List.of())
                 .build();
 
-        when(sources.create(request)).thenReturn(
-                new Source(savedSourceRecord(), locations));
+        when(sources.unsaved(request.getCode(), request.getName()))
+                .thenReturn(new Source(unsaved, locations));
+        doAnswer(simulateRecordSave(SOURCE_ID, SOURCE_RECEIVED_AT))
+                .when(unsaved).save();
+        when(locations.unsaved(
+                unsavedLocation.getCode(), unsavedLocation.getName()))
+                .thenReturn(new Location(unsavedLocation));
+        doAnswer(simulateRecordSave(LOCATION_ID, LOCATION_RECEIVED_AT))
+                .when(unsavedLocation).save();
 
         jsonMvc.perform(post("/source")
                 .content(asJson(request)))
                 .andExpect(status().isCreated())
                 .andExpect(header().string(LOCATION, endpointWithId()))
                 .andExpect(content().json(asJson(responseMap())));
+    }
+
+    @Test
+    void shouldPostNewWithSomeAvailableAt()
+            throws Exception {
+        final var unsaved = spy(unsavedSourceRecord());
+        final var unsavedLocation = spy(unsavedLocationRecord());
+        final SourceRequest request = SourceRequest.builder()
+                .code(unsaved.getCode())
+                .name(unsaved.getName())
+                .availableAt(List.of(LocationRequest.builder()
+                        .code(unsavedLocation.getCode())
+                        .name(unsavedLocation.getName())
+                        .build()))
+                .build();
+
+        when(sources.unsaved(request.getCode(), request.getName()))
+                .thenReturn(new Source(unsaved, locations));
+        doAnswer(simulateRecordSave(SOURCE_ID, SOURCE_RECEIVED_AT))
+                .when(unsaved).save();
+        final var location = new Location(unsavedLocation);
+        when(locations.unsaved(
+                unsavedLocation.getCode(), unsavedLocation.getName()))
+                .thenReturn(location);
+        doAnswer(simulateRecordSave(LOCATION_ID, LOCATION_RECEIVED_AT))
+                .when(unsavedLocation).save();
+        when(locations.byRef(LocationRef.of(unsavedLocation)))
+                .thenReturn(Optional.of(location));
+
+        jsonMvc.perform(post("/source")
+                .content(asJson(request)))
+                .andExpect(status().isCreated())
+                .andExpect(header().string(LOCATION, endpointWithId()))
+                .andExpect(content().json(asJson(
+                        responseMapWithAvailableAt())));
     }
 
     private String asJson(final Object o)

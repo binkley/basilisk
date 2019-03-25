@@ -61,8 +61,8 @@ public final class Middle {
         return save();
     }
 
-    public Middle applyInto(final Consumer<MiddleRecord> addTo) {
-        addTo.accept(record);
+    public Middle applyInto(final Consumer<MiddleRecord> addInto) {
+        addInto.accept(record);
         return this;
     }
 }

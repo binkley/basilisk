@@ -10,6 +10,7 @@ import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.Instant;
 import java.util.LinkedHashSet;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -36,15 +37,31 @@ public final class SourceRecord
         return new SourceRecord(null, null, code, name);
     }
 
-    public SourceRecord addAvailableAt(final LocationRecord location) {
-        return addAvailableAt(Stream.of(location));
-    }
-
     public SourceRecord addAvailableAt(
             final Stream<LocationRecord> locations) {
-        locations.peek(this::check)
-                .map(LocationRef::of)
-                .forEach(availableAt::add);
+        locations.forEach(this::addAvailableAt);
+        return this;
+    }
+
+    public SourceRecord addAvailableAt(final LocationRecord location) {
+        check(location);
+        final var ref = LocationRef.of(location);
+        if (!availableAt.add(ref))
+            throw new IllegalStateException("Duplicate: " + location);
+        return this;
+    }
+
+    public SourceRecord removeAvailableAt(
+            final Stream<LocationRecord> locations) {
+        locations.forEach(this::removeAvailableAt);
+        return this;
+    }
+
+    public SourceRecord removeAvailableAt(final LocationRecord location) {
+        check(location);
+        final var ref = LocationRef.of(location);
+        if (!availableAt.remove(ref))
+            throw new NoSuchElementException("Absent: " + location);
         return this;
     }
 

@@ -13,7 +13,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.IOException;
 import java.util.Set;
-import java.util.stream.Stream;
 
 import static hm.binkley.basilisk.flora.FloraFixtures.LOCATION_CODE;
 import static hm.binkley.basilisk.flora.FloraFixtures.LOCATION_ID;
@@ -21,7 +20,6 @@ import static hm.binkley.basilisk.flora.FloraFixtures.LOCATION_NAME;
 import static hm.binkley.basilisk.flora.FloraFixtures.SOURCE_CODE;
 import static hm.binkley.basilisk.flora.FloraFixtures.SOURCE_ID;
 import static hm.binkley.basilisk.flora.FloraFixtures.SOURCE_NAME;
-import static hm.binkley.basilisk.flora.source.rest.SourceResponse.using;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
@@ -52,20 +50,11 @@ class SourceResponseTest {
                 .name(SOURCE_NAME)
                 .availableAt(Set.of(LocationResponse.builder()
                         .id(LOCATION_ID)
+                        .code(LOCATION_CODE)
                         .name(LOCATION_NAME)
                         .build()))
                 .build()))
                 .isEqualToJson(
                         "source-with-some-available-at-response-test.json");
-    }
-
-    @Test
-    void shouldUse() {
-        final var locationResponse = new LocationResponse(
-                LOCATION_ID, LOCATION_CODE, LOCATION_NAME);
-        assertThat(using().from(SOURCE_ID, SOURCE_CODE, SOURCE_NAME,
-                Stream.of(locationResponse)))
-                .isEqualTo(new SourceResponse(SOURCE_ID, SOURCE_CODE,
-                        SOURCE_NAME, Set.of(locationResponse)));
     }
 }

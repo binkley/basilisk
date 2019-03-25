@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.ContextConfiguration;
 
+import static io.restassured.filter.log.LogDetail.ALL;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
@@ -26,6 +27,9 @@ abstract class ContractTestBase {
     void setUp() {
         RestAssured.baseURI = "http://localhost";
         RestAssured.port = port;
+        RestAssured.config.getLogConfig()
+                .enablePrettyPrinting(true)
+                .enableLoggingOfRequestAndResponseIfValidationFails(ALL);
     }
 
     void assertEmptyArray(final JSONArray array) {

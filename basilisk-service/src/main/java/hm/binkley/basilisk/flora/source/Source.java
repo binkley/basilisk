@@ -33,4 +33,24 @@ public final class Source
                 .map(locations::byRef)
                 .map(Optional::orElseThrow);
     }
+
+    public Source addAvailableAt(final Stream<Location> locations) {
+        locations.forEach(this::addAvailableAt);
+        return this;
+    }
+
+    public Source addAvailableAt(final Location location) {
+        location.applyInto(record::addAvailableAt);
+        return this;
+    }
+
+    public Source removeAvailableAt(final Stream<Location> locations) {
+        locations.forEach(this::removeAvailableAt);
+        return this;
+    }
+
+    public Source removeAvailableAt(final Location location) {
+        location.applyInto(record::removeAvailableAt);
+        return this;
+    }
 }

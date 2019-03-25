@@ -1,5 +1,6 @@
 package hm.binkley.basilisk.flora.source.rest;
 
+import hm.binkley.basilisk.flora.location.Locations;
 import hm.binkley.basilisk.flora.location.rest.LocationController;
 import hm.binkley.basilisk.flora.source.Source;
 import hm.binkley.basilisk.flora.source.Sources;
@@ -36,6 +37,7 @@ import static org.springframework.http.ResponseEntity.created;
 @Validated
 public class SourceController {
     private final Sources sources;
+    private final Locations locations;
 
     private static SourceResponse toResponse(final Source source) {
         return new SourceResponse(source.getId(), source.getCode(),
@@ -72,14 +74,21 @@ public class SourceController {
     @ResponseStatus(CREATED)
     public ResponseEntity<SourceResponse> postSource(
             @RequestBody final @Valid SourceRequest request) {
-        final var domain = sources.create(request);
-        final var response = toResponse(domain);
+        final var source = sources
+                .unsaved(request.getCode(), request.getName());
+        request.getAvailableAt().forEach(location -> source.addAvailableAt(
+                locations.unsaved(location.getCode(), location.getName())));
+        source.save();
+        final var response = toResponse(source);
 
         return created(URI.create("/source/" + response.getId()))
                 .body(response);
     }
 
-    /** @todo Think more deeply about global controller advice */
+    /**
+     * @todo Return 422 or other than 404 for bad child elements
+     * @todo Think more deeply about global controller advice
+     */
     @ExceptionHandler({
             NoSuchElementException.class,
             MethodArgumentTypeMismatchException.class})

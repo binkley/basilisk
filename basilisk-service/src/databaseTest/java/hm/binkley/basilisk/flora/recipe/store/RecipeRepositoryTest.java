@@ -132,15 +132,4 @@ class RecipeRepositoryTest {
 
         assertThat(ex.getCause()).isInstanceOf(DuplicateKeyException.class);
     }
-
-    @Test
-    void shouldStream() {
-        final var unsavedA = unsavedRecipeRecord();
-        final var unsavedB = distinctRecipeRecord();
-        repository.saveAll(Set.of(unsavedA, unsavedB));
-
-        try (final var found = repository.readAll()) {
-            assertThat(found).containsOnly(unsavedA, unsavedB);
-        }
-    }
 }

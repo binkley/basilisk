@@ -7,6 +7,9 @@ request:
   body:
     code: "FARM#123"
     name: "EGGS"
+    available-at:
+      - code: "MEL"
+        name: "Melbourne's Pink Heath"
 response:
   status: 201
   headers:
@@ -16,3 +19,7 @@ response:
     id: 1
     code: "FARM#123"
     name: "EGGS"
+    available-at:
+      - id: 2
+        code: "MEL"
+        name: "Melbourne's Pink Heath"

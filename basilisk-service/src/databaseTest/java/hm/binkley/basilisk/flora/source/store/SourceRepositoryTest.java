@@ -83,15 +83,4 @@ class SourceRepositoryTest {
                 .isEqualTo(unsavedA);
         assertThat(repository.findByName("OLIVE OIL")).isEmpty();
     }
-
-    @Test
-    void shouldStream() {
-        final var unsavedA = unsavedSourceRecord();
-        final var unsavedB = distinctSourceRecord();
-        repository.saveAll(Set.of(unsavedA, unsavedB));
-
-        try (final var found = repository.readAll()) {
-            assertThat(found).containsOnly(unsavedA, unsavedB);
-        }
-    }
 }

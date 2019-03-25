@@ -14,14 +14,12 @@ public final class SourceStore
         super(springData);
     }
 
+    public SourceRecord unsaved(final String code, final String name) {
+        return bind(SourceRecord.unsaved(code, name));
+    }
+
     public Optional<SourceRecord> byName(final String name) {
         return springData.findByName(name)
                 .map(this::bind);
-    }
-
-    public SourceRecord create(final String code, final String name) {
-        final SourceRecord record = SourceRecord.unsaved(code, name);
-        bind(record);
-        return record.save();
     }
 }

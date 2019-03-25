@@ -60,15 +60,4 @@ class IngredientRepositoryTest {
                 .containsExactly(unsavedA);
         assertThat(repository.findAllByName("OLIVE OIL")).isEmpty();
     }
-
-    @Test
-    void shouldStream() {
-        final var unsavedA = unsavedUnusedIngredientRecord();
-        final var unsavedB = distinctIngredientRecord();
-        repository.saveAll(Set.of(unsavedA, unsavedB));
-
-        try (final var found = repository.readAll()) {
-            assertThat(found).containsOnly(unsavedA, unsavedB);
-        }
-    }
 }
