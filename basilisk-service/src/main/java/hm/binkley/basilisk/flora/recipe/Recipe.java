@@ -33,6 +33,7 @@ public final class Recipe {
         return record.getChefId();
     }
 
+    /** @todo Ask ingredient factory; do not do this directly */
     public Stream<UsedIngredient> getIngredients() {
         return record.getIngredients().stream()
                 .map(UsedIngredient::new);

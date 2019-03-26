@@ -27,7 +27,10 @@ public interface StandardRepository<T extends StandardRecord<T, R, S>,
      * issues</li>
      * </ol>
      *
-     * @todo Smarter stream handling
+     * @todo Todo -- require implementers to provide this; Spring directly
+     * handles returning Stream, and will lazy-load
+     * @see <a href="https://www.baeldung.com/spring-data-java-8"><cite>Spring
+     * Data Java 8 Support</cite></a>
      */
     default Stream<T> readAll() {
         return stream(findAll().spliterator(), false);
