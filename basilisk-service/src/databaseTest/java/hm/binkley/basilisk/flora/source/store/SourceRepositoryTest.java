@@ -1,6 +1,7 @@
 package hm.binkley.basilisk.flora.source.store;
 
 import hm.binkley.basilisk.configuration.DatabaseConfiguration;
+import hm.binkley.basilisk.flora.source.store.SourceRecord.LocationRef;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
@@ -74,6 +75,17 @@ class SourceRepositoryTest {
     }
 
     @Test
+    void shouldFindByCode() {
+        final var unsavedA = unsavedSourceRecord();
+        final var unsavedB = distinctSourceRecord();
+        repository.saveAll(Set.of(unsavedA, unsavedB));
+
+        assertThat(repository.findByCode(unsavedA.getCode()).orElseThrow())
+                .isEqualTo(unsavedA);
+        assertThat(repository.findByCode("OLIVE OIL")).isEmpty();
+    }
+
+    @Test
     void shouldFindByName() {
         final var unsavedA = unsavedSourceRecord();
         final var unsavedB = distinctSourceRecord();
@@ -82,5 +94,19 @@ class SourceRepositoryTest {
         assertThat(repository.findByName(unsavedA.getName()).orElseThrow())
                 .isEqualTo(unsavedA);
         assertThat(repository.findByName("OLIVE OIL")).isEmpty();
+    }
+
+    @Test
+    void shouldSaveLocationRef() {
+        final var locationRef = LocationRef.of(savedLocationRecord());
+        final var unsaved = unsavedSourceRecord();
+        unsaved.getAvailableAt().add(locationRef);
+
+        final var saved = repository.save(unsaved);
+        final var readBack = repository
+                .findById(saved.getId())
+                .orElseThrow();
+
+        assertThat(readBack.getAvailableAt()).containsExactly(locationRef);
     }
 }

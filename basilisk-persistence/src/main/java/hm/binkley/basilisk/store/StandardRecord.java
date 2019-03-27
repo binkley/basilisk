@@ -8,6 +8,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 
 import java.time.Instant;
+import java.util.function.Function;
 
 @EqualsAndHashCode(exclude = "store")
 @SuppressWarnings("PMD.AbstractClassWithoutAbstractMethod")
@@ -33,9 +34,20 @@ public abstract class StandardRecord<T extends StandardRecord<T, R, S>,
         this.code = code;
     }
 
+    public <F> F asRef(final Function<Long, F> ctor) {
+        return ctor.apply(idOrSave());
+    }
+
     void become(final T other) {
         id = other.getId();
         receivedAt = other.getReceivedAt();
+    }
+
+    private Long idOrSave() {
+        final var id = getId();
+        return null == id
+                ? save().getId()
+                : id;
     }
 
     @SuppressWarnings("unchecked")

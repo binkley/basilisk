@@ -2,6 +2,7 @@ package hm.binkley.basilisk.flora.source.store;
 
 import hm.binkley.basilisk.flora.location.store.LocationRecord;
 import hm.binkley.basilisk.store.StandardRecord;
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -15,6 +16,7 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
+import static lombok.AccessLevel.PRIVATE;
 
 @EqualsAndHashCode(callSuper = false)
 @Table("FLORA.SOURCE")
@@ -69,6 +71,7 @@ public final class SourceRecord
         requireNonNull(location);
     }
 
+    @AllArgsConstructor(access = PRIVATE)
     @EqualsAndHashCode
     @Table("FLORA.SOURCE_LOCATION")
     @ToString
@@ -76,12 +79,8 @@ public final class SourceRecord
         @Getter
         public Long locationId;
 
-        public static LocationRef of(final LocationRecord location) {
-            if (null == location.id)
-                location.save();
-            final var ref = new LocationRef();
-            ref.locationId = location.id;
-            return ref;
+        public static LocationRef of(final LocationRecord record) {
+            return record.asRef(LocationRef::new);
         }
     }
 }
