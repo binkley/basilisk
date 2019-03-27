@@ -7,6 +7,8 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.util.stream.Stream;
 
+import static hm.binkley.basilisk.store.AutoClosingStream.autoClosing;
+
 @Component
 public class IngredientStore
         extends StandardStore<IngredientRecord, IngredientRepository,
@@ -17,12 +19,12 @@ public class IngredientStore
     }
 
     public Stream<IngredientRecord> byName(final String name) {
-        return springData.findAllByName(name)
+        return autoClosing(springData.findAllByName(name))
                 .map(this::bind);
     }
 
     public Stream<IngredientRecord> unused() {
-        return springData.findAllByRecipeIdIsNull()
+        return autoClosing(springData.findAllByRecipeIdIsNull())
                 .peek(it -> it.store = this);
     }
 

@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import static hm.binkley.basilisk.store.AutoClosingStream.autoClosing;
 import static java.util.Objects.requireNonNull;
 
 @Component
@@ -25,7 +26,7 @@ public class KindStore {
     }
 
     public Stream<KindRecord> all() {
-        return springData.readAll()
+        return autoClosing(springData.readAll())
                 .map(this::bind);
     }
 

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import static hm.binkley.basilisk.store.AutoClosingStream.autoClosing;
 import static java.util.Objects.requireNonNull;
 
 @Component
@@ -24,17 +25,17 @@ public class MiddleStore {
     }
 
     public Stream<MiddleRecord> all() {
-        return springData.readAll()
+        return autoClosing(springData.readAll())
                 .map(this::bind);
     }
 
     public Stream<MiddleRecord> allOwned() {
-        return springData.findAllOwned()
+        return autoClosing(springData.findAllOwned())
                 .map(this::bind);
     }
 
     public Stream<MiddleRecord> allFree() {
-        return springData.findAllFree()
+        return autoClosing(springData.findAllFree())
                 .map(this::bind);
     }
 

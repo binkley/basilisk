@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import static hm.binkley.basilisk.store.AutoClosingStream.autoClosing;
 import static java.util.Objects.requireNonNull;
 
 @Component
@@ -24,7 +25,7 @@ public class TopStore {
     }
 
     public Stream<TopRecord> all() {
-        return springData.readAll()
+        return autoClosing(springData.readAll())
                 .map(this::bind);
     }
 

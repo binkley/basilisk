@@ -711,6 +711,13 @@ See
 See
 [`StandardRepository`](basilisk-service/src/main/java/hm/binkley/basilisk/store/SeasonRepository.java).
 
+### Auto-closing streams
+
+To avoid leaking database connections, or holding table/row locks overlong,
+use
+[auto-closing streams](basilisk-persistence/src/main/java/hm/binkley/basilisk/store/AutoClosingStream.java)
+in _Store_ objects, to wrap streams returned from Spring Data JDBC.
+
 ### Natural keys
 
 See

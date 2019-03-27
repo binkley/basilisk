@@ -6,6 +6,7 @@ import javax.validation.constraints.NotNull;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import static hm.binkley.basilisk.store.AutoClosingStream.autoClosing;
 import static java.util.Objects.requireNonNull;
 
 @RequiredArgsConstructor
@@ -28,7 +29,7 @@ public abstract class StandardStore<T extends StandardRecord<T, R, S>,
     }
 
     public final Stream<T> all() {
-        return springData.readAll()
+        return autoClosing(springData.readAll())
                 .map(this::bind);
     }
 
