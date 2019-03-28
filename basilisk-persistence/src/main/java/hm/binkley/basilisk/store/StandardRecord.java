@@ -57,13 +57,16 @@ public abstract class StandardRecord<T extends StandardRecord<T, R, S>,
                 : id;
     }
 
-    @SuppressWarnings("unchecked")
     public final T save() {
-        return store.save((T) this);
+        return store.save(self());
+    }
+
+    public final T delete() {
+        return store.delete(self());
     }
 
     @SuppressWarnings("unchecked")
-    public final T delete() {
-        return store.delete((T) this);
+    private T self() {
+        return (T) this;
     }
 }
