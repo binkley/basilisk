@@ -4,7 +4,6 @@ import hm.binkley.basilisk.StandardFactory;
 import hm.binkley.basilisk.flora.location.store.LocationRecord;
 import hm.binkley.basilisk.flora.location.store.LocationRepository;
 import hm.binkley.basilisk.flora.location.store.LocationStore;
-import hm.binkley.basilisk.flora.source.store.SourceRecord.LocationRef;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.springframework.stereotype.Component;
@@ -23,10 +22,6 @@ public class Locations
 
     public Location unsaved(final String code, final String name) {
         return new Location(store.unsaved(code, name));
-    }
-
-    public Optional<Location> byRef(final LocationRef ref) {
-        return byId(ref.getLocationId());
     }
 
     public Optional<Location> byName(final String name) {

@@ -9,12 +9,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Stream;
 
 import static hm.binkley.basilisk.flora.FloraFixtures.RECIPE_ID;
 import static hm.binkley.basilisk.flora.FloraFixtures.savedRecipeRecord;
 import static hm.binkley.basilisk.flora.FloraFixtures.unsavedRecipeRecord;
-import static java.util.stream.Collectors.toSet;
+import static java.util.stream.Collectors.toCollection;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -67,7 +68,8 @@ class RecipeStoreTest {
         when(springData.readAll())
                 .thenReturn(Stream.of(saved));
 
-        final var found = store.all().collect(toSet());
+        final var found = store.all()
+                .collect(toCollection(TreeSet::new));
 
         assertThat(found).isEqualTo(Set.of(saved));
         assertThat(found.stream().map(it -> it.store)).containsOnly(store);

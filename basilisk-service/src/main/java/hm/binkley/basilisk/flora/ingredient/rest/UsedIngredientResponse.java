@@ -12,7 +12,8 @@ import static lombok.AccessLevel.PUBLIC;
 @AllArgsConstructor(access = PUBLIC)
 @Builder
 @Value
-public final class UsedIngredientResponse {
+public final class UsedIngredientResponse
+        implements Comparable<UsedIngredientResponse> {
     Long id;
     String code;
     Long sourceId;
@@ -23,5 +24,10 @@ public final class UsedIngredientResponse {
 
     public static AsUsed<UsedIngredientResponse> using() {
         return UsedIngredientResponse::new;
+    }
+
+    @Override
+    public int compareTo(final UsedIngredientResponse that) {
+        return getCode().compareTo(that.getCode());
     }
 }

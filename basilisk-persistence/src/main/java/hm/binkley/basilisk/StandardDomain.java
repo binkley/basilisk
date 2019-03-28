@@ -14,7 +14,8 @@ import lombok.ToString;
 public abstract class StandardDomain<T extends StandardRecord<T, R, S>,
         R extends StandardRepository<T, R, S>,
         S extends StandardStore<T, R, S>,
-        D extends StandardDomain<T, R, S, D>> {
+        D extends StandardDomain<T, R, S, D>>
+        implements Comparable<D> {
     protected final T record;
 
     public final Long getId() { return record.getId(); }
@@ -31,5 +32,10 @@ public abstract class StandardDomain<T extends StandardRecord<T, R, S>,
     public final D delete() {
         record.delete();
         return (D) this;
+    }
+
+    @Override
+    public int compareTo(final D that) {
+        return getCode().compareTo(that.getCode());
     }
 }

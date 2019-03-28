@@ -9,7 +9,6 @@ import hm.binkley.basilisk.flora.location.Locations;
 import hm.binkley.basilisk.flora.location.rest.LocationRequest;
 import hm.binkley.basilisk.flora.source.Source;
 import hm.binkley.basilisk.flora.source.Sources;
-import hm.binkley.basilisk.flora.source.store.SourceRecord.LocationRef;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +19,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Stream;
 
 import static hm.binkley.basilisk.flora.FloraFixtures.LOCATION_CODE;
@@ -65,7 +63,8 @@ class SourceControllerTest {
         return Map.of(
                 "id", SOURCE_ID,
                 "code", SOURCE_CODE,
-                "name", SOURCE_NAME);
+                "name", SOURCE_NAME,
+                "available-at", List.of());
     }
 
     private static Map<String, Object> responseMapWithAvailableAt() {
@@ -87,7 +86,8 @@ class SourceControllerTest {
 
         jsonMvc.perform(get("/source"))
                 .andExpect(status().isOk())
-                .andExpect(content().json(asJson(Set.of(responseMap()))));
+                .andExpect(content().json(asJson(List.of(
+                        responseMap())), true));
     }
 
     @Test
@@ -99,7 +99,7 @@ class SourceControllerTest {
 
         jsonMvc.perform(get(endpointWithId()))
                 .andExpect(status().isOk())
-                .andExpect(content().json(asJson(responseMap())));
+                .andExpect(content().json(asJson(responseMap()), true));
     }
 
     @Test
@@ -118,7 +118,7 @@ class SourceControllerTest {
 
         jsonMvc.perform(get("/source/find/" + record.getName()))
                 .andExpect(status().isOk())
-                .andExpect(content().json(asJson(responseMap())));
+                .andExpect(content().json(asJson(responseMap()), true));
     }
 
     @Test
@@ -154,7 +154,7 @@ class SourceControllerTest {
                 .content(asJson(request)))
                 .andExpect(status().isCreated())
                 .andExpect(header().string(LOCATION, endpointWithId()))
-                .andExpect(content().json(asJson(responseMap())));
+                .andExpect(content().json(asJson(responseMap()), true));
     }
 
     @Test
@@ -181,7 +181,7 @@ class SourceControllerTest {
                 .thenReturn(location);
         doAnswer(simulateRecordSave(LOCATION_ID, LOCATION_RECEIVED_AT))
                 .when(unsavedLocation).save();
-        when(locations.byRef(LocationRef.of(unsavedLocation)))
+        when(locations.byId(LOCATION_ID))
                 .thenReturn(Optional.of(location));
 
         jsonMvc.perform(post("/source")
@@ -189,7 +189,7 @@ class SourceControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(header().string(LOCATION, endpointWithId()))
                 .andExpect(content().json(asJson(
-                        responseMapWithAvailableAt())));
+                        responseMapWithAvailableAt()), true));
     }
 
     private String asJson(final Object o)

@@ -4,6 +4,7 @@ import hm.binkley.basilisk.StandardDomain;
 import hm.binkley.basilisk.flora.location.Location;
 import hm.binkley.basilisk.flora.location.Locations;
 import hm.binkley.basilisk.flora.source.store.SourceRecord;
+import hm.binkley.basilisk.flora.source.store.SourceRecord.LocationRef;
 import hm.binkley.basilisk.flora.source.store.SourceRepository;
 import hm.binkley.basilisk.flora.source.store.SourceStore;
 import lombok.EqualsAndHashCode;
@@ -30,7 +31,8 @@ public final class Source
 
     public Stream<Location> getAvailableAt() {
         return record.getAvailableAt().stream()
-                .map(locations::byRef)
+                .map(LocationRef::getLocationId)
+                .map(locations::byId)
                 .map(Optional::orElseThrow);
     }
 

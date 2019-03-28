@@ -1,7 +1,6 @@
 package hm.binkley.basilisk.flora.location;
 
 import hm.binkley.basilisk.flora.location.store.LocationStore;
-import hm.binkley.basilisk.flora.source.store.SourceRecord.LocationRef;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,20 +39,6 @@ class LocationsTest {
                 record.getCode(), record.getName());
 
         assertThat(unsaved).isEqualTo(new Location(record));
-
-        verifyNoMoreInteractions(store);
-    }
-
-    @Test
-    void shouldFindByRef() {
-        final var record = savedLocationRecord();
-        when(store.byId(record.getId()))
-                .thenReturn(Optional.of(record));
-
-        final var found = locations.byRef(LocationRef.of(record))
-                .orElseThrow();
-
-        assertThat(found).isEqualTo(new Location(record));
 
         verifyNoMoreInteractions(store);
     }

@@ -4,9 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hm.binkley.basilisk.configuration.JsonConfiguration;
 import hm.binkley.basilisk.configuration.JsonWebMvcTest;
+import hm.binkley.basilisk.flora.ingredient.Ingredient;
 import hm.binkley.basilisk.flora.ingredient.Ingredients;
 import hm.binkley.basilisk.flora.ingredient.UnusedIngredient;
 import hm.binkley.basilisk.flora.ingredient.UsedIngredient;
+import hm.binkley.basilisk.flora.ingredient.store.IngredientRecord;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,15 +17,12 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Stream;
 
-import static hm.binkley.basilisk.flora.FloraFixtures.CHEF_ID;
 import static hm.binkley.basilisk.flora.FloraFixtures.INGREDIENT_ID;
-import static hm.binkley.basilisk.flora.FloraFixtures.SOURCE_ID;
-import static hm.binkley.basilisk.flora.FloraFixtures.SOURCE_NAME;
 import static hm.binkley.basilisk.flora.FloraFixtures.savedUnusedIngredientRecord;
 import static hm.binkley.basilisk.flora.FloraFixtures.savedUsedIngredientRecord;
 import static hm.binkley.basilisk.flora.FloraFixtures.unsavedUnusedIngredientRecord;
@@ -49,67 +48,95 @@ class IngredientControllerTest {
         return "/ingredient/" + INGREDIENT_ID;
     }
 
-    private static Map<String, Object> responseMap() {
-        return Map.of(
-                "id", INGREDIENT_ID,
-                "source-id", SOURCE_ID,
-                "name", SOURCE_NAME,
-                "chef-id", CHEF_ID);
-    }
-
-    private static Map<String, Object> responseMapFor(
-            final Long recipeId) {
+    private static Map<String, Object> responseMapForAny(
+            final Ingredient ingredient) {
         // As recipeId is nullable, cannot use Map.of()
         final var response = new LinkedHashMap<String, Object>();
-        response.put("id", INGREDIENT_ID);
-        response.put("source-id", SOURCE_ID);
-        response.put("name", SOURCE_NAME);
-        response.put("recipe-id", recipeId);
-        response.put("chef-id", CHEF_ID);
+        response.put("id", ingredient.getId());
+        response.put("code", ingredient.getCode());
+        response.put("source-id", ingredient.getSourceId());
+        response.put("name", ingredient.getName());
+        response.put("quantity", ingredient.getQuantity());
+        response.put("recipe-id", ingredient.getRecipeId());
+        response.put("chef-id", ingredient.getChefId());
+        return response;
+    }
+
+    private static Map<String, Object> responseMapForUsed(
+            final UsedIngredient ingredient) {
+        // As recipeId is nullable, cannot use Map.of()
+        final var response = new LinkedHashMap<String, Object>();
+        response.put("id", ingredient.getId());
+        response.put("code", ingredient.getCode());
+        response.put("source-id", ingredient.getSourceId());
+        response.put("name", ingredient.getName());
+        response.put("quantity", ingredient.getQuantity());
+        response.put("recipe-id", ingredient.getRecipeId());
+        response.put("chef-id", ingredient.getChefId());
+        return response;
+    }
+
+    private static Map<String, Object> responseMapForUnused(
+            final UnusedIngredient ingredient) {
+        // As recipeId is nullable, cannot use Map.of()
+        final var response = new LinkedHashMap<String, Object>();
+        response.put("id", ingredient.getId());
+        response.put("code", ingredient.getCode());
+        response.put("source-id", ingredient.getSourceId());
+        response.put("name", ingredient.getName());
+        response.put("quantity", ingredient.getQuantity());
+        response.put("chef-id", ingredient.getChefId());
         return response;
     }
 
     @Test
     void shouldGetAll()
             throws Exception {
-        final var unusedIngredient = new UnusedIngredient(
-                savedUnusedIngredientRecord());
+        final var record = savedUnusedIngredientRecord();
+        final var unusedIngredient = new UnusedIngredient(record);
         final var usedIngredient = new UsedIngredient(
-                savedUsedIngredientRecord());
+                new IngredientRecord(record.getId() + 1,
+                        record.getReceivedAt(), record.getCode() + "x",
+                        record.getSourceId() + 1, record.getName() + "x",
+                        record.getQuantity(), record.getRecipeId(),
+                        record.getChefId()));
 
         when(ingredients.all())
                 .thenReturn(Stream.of(unusedIngredient, usedIngredient));
 
         jsonMvc.perform(get("/ingredient"))
                 .andExpect(status().isOk())
-                .andExpect(content().json(asJson(Set.of(
-                        responseMapFor(null),
-                        responseMapFor(usedIngredient.getRecipeId())))));
+                .andExpect(content().json(asJson(List.of(
+                        responseMapForAny(unusedIngredient),
+                        responseMapForAny(usedIngredient))), true));
     }
 
     @Test
     void shouldGetUnused()
             throws Exception {
+        final var ingredient = new UnusedIngredient(
+                savedUnusedIngredientRecord());
         when(ingredients.allUnused())
-                .thenReturn(Stream.of(new UnusedIngredient(
-                        savedUnusedIngredientRecord())));
+                .thenReturn(Stream.of(ingredient));
 
         jsonMvc.perform(get("/ingredient/unused"))
                 .andExpect(status().isOk())
-                .andExpect(content().json(asJson(Set.of(
-                        responseMap()))));
+                .andExpect(content().json(asJson(List.of(
+                        responseMapForUnused(ingredient))), true));
     }
 
     @Test
     void shouldGetById()
             throws Exception {
-        when(ingredients.byId(INGREDIENT_ID))
-                .thenReturn(Optional.of(new UnusedIngredient(
-                        savedUnusedIngredientRecord())));
+        final var ingredient = new UnusedIngredient(
+                savedUnusedIngredientRecord());
+        when(ingredients.byId(ingredient.getId()))
+                .thenReturn(Optional.of(ingredient));
 
         jsonMvc.perform(get(endpointWithId()))
                 .andExpect(status().isOk())
-                .andExpect(content().json(asJson(responseMap())));
+                .andExpect(content().json(asJson(
+                        responseMapForAny(ingredient)), true));
     }
 
     @Test
@@ -122,14 +149,15 @@ class IngredientControllerTest {
     @Test
     void shouldGetByName()
             throws Exception {
-        when(ingredients.allByName(SOURCE_NAME))
-                .thenReturn(Stream.of(new UsedIngredient(
-                        savedUsedIngredientRecord())));
+        final var ingredient = new UsedIngredient(
+                savedUsedIngredientRecord());
+        when(ingredients.allByName(ingredient.getName()))
+                .thenReturn(Stream.of(ingredient));
 
-        jsonMvc.perform(get("/ingredient/find/" + SOURCE_NAME))
+        jsonMvc.perform(get("/ingredient/find/" + ingredient.getName()))
                 .andExpect(status().isOk())
-                .andExpect(content().json(asJson(
-                        Set.of(responseMap()))));
+                .andExpect(content().json(asJson(List.of(
+                        responseMapForUsed(ingredient))), true));
     }
 
     @Test
@@ -144,16 +172,17 @@ class IngredientControllerTest {
                 .chefId(record.getChefId())
                 .build();
 
+        final var ingredient = new UnusedIngredient(
+                savedUnusedIngredientRecord());
         when(ingredients.createUnused(request))
-                .thenReturn(new UnusedIngredient(
-                        savedUnusedIngredientRecord()));
+                .thenReturn(ingredient);
 
         jsonMvc.perform(post("/ingredient")
                 .content(asJson(request)))
                 .andExpect(status().isCreated())
                 .andExpect(header().string(LOCATION, endpointWithId()))
                 .andExpect(content().json(asJson(
-                        responseMap())));
+                        responseMapForUnused(ingredient)), true));
     }
 
     private String asJson(final Object o)

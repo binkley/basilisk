@@ -63,4 +63,13 @@ class StandardDomainTest {
         verify(record).delete();
         verifyNoMoreInteractions(record);
     }
+
+    @Test
+    void shouldSort() {
+        final var recordA = MyTestRecord.unsaved("ABC", 2);
+        final var recordB = MyTestRecord.unsaved("DEF", 1);
+
+        assertThat(new MyTestDomain(recordA))
+                .isLessThan(new MyTestDomain(recordB));
+    }
 }

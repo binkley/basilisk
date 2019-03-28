@@ -588,6 +588,11 @@ In IntelliJ, use the "Refactor | Delombok | All annotations" menu item to
 see the generated code.  (Do not forget to undo afterwards, to restore the
 original, unrefactored code.)
 
+### More on code generation
+
+Though Lombok is widely used in this project, care is taken to use builders
+sparingly, and "withers" are [forbidden](lombok.config).
+
 ### Bean validation
 
 Any bean can be validated by adding `@Validated` to the class.  See examples
@@ -734,5 +739,12 @@ for a Spring-injected logger on demand, suitable for
 
 Note the edit to [PMD configuration](config/pmd/ruleset.xml) to recognize the
 pattern for testable logging.
+
+### Sorted collections
+
+Though not much hinges on it, I find it easier in studying output, and in
+debugging, when collections are sorted.  Hence, `SortedSet` is used in any
+place where a non-`List` collection is returned in a REST response, and in
+tests.
 
 [[TOC]](#basilisk)

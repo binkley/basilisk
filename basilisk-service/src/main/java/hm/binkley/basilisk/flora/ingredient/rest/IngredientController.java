@@ -21,10 +21,11 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.NoSuchElementException;
-import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.function.Function;
 
-import static java.util.stream.Collectors.toSet;
+import static java.util.stream.Collectors.toCollection;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.ResponseEntity.created;
@@ -37,10 +38,10 @@ public class IngredientController {
     private final Ingredients ingredients;
 
     @GetMapping
-    public Set<AnyIngredientResponse> getAll() {
+    public SortedSet<AnyIngredientResponse> getAll() {
         return ingredients.all()
                 .map(toAnyResponse())
-                .collect(toSet());
+                .collect(toCollection(TreeSet::new));
     }
 
     @GetMapping("{id}")
@@ -52,19 +53,19 @@ public class IngredientController {
     }
 
     @GetMapping("find/{name}")
-    public Set<AnyIngredientResponse> getAllByName(
+    public SortedSet<AnyIngredientResponse> getAllByName(
             @PathVariable("name") final @Length(min = 3, max = 32)
                     String name) {
         return ingredients.allByName(name)
                 .map(toAnyResponse())
-                .collect(toSet());
+                .collect(toCollection(TreeSet::new));
     }
 
     @GetMapping("unused")
-    public Set<UnusedIngredientResponse> getAllUnused() {
+    public SortedSet<UnusedIngredientResponse> getAllUnused() {
         return ingredients.allUnused()
                 .map(toUnusedResponse())
-                .collect(toSet());
+                .collect(toCollection(TreeSet::new));
     }
 
     @PostMapping

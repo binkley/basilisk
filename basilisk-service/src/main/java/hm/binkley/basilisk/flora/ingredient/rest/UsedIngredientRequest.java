@@ -11,7 +11,8 @@ import java.math.BigDecimal;
 @Builder
 @Data
 @RequiredArgsConstructor
-public final class UsedIngredientRequest {
+public final class UsedIngredientRequest
+        implements Comparable<UsedIngredientRequest> {
     private final @NotNull Long sourceId;
     private final @Length(min = 3, max = 8) String code;
     private final @Length(min = 3, max = 32) String name;
@@ -22,6 +23,11 @@ public final class UsedIngredientRequest {
         return asOther.from(
                 getCode(), getSourceId(), getName(), getQuantity(),
                 getChefId());
+    }
+
+    @Override
+    public int compareTo(final UsedIngredientRequest that) {
+        return getCode().compareTo(that.getCode());
     }
 
     public interface As<I> {

@@ -7,8 +7,9 @@ import lombok.ToString;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
-import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.stream.Stream;
 
 import static hm.binkley.basilisk.flora.FloraFixtures.CHEF_ID;
@@ -34,17 +35,18 @@ class RecipeRequestTest {
         final var request = RecipeRequest.builder()
                 .code(RECIPE_CODE)
                 .name(RECIPE_NAME)
-                .ingredients(Set.of(ingredientRequest))
+                .ingredients(new TreeSet<>(Set.of(ingredientRequest)))
                 .build();
 
         assertThat(request.as(Recipey::from, Ingredientey::new))
                 .isEqualTo(new Recipey(request.getCode(), request.getName(),
-                        request.getChefId(), Set.of(new Ingredientey(
-                        ingredientRequest.getCode(),
-                        ingredientRequest.getSourceId(),
-                        ingredientRequest.getName(),
-                        ingredientRequest.getQuantity(),
-                        ingredientRequest.getChefId()))));
+                        request.getChefId(),
+                        new TreeSet<>(Set.of(new Ingredientey(
+                                ingredientRequest.getCode(),
+                                ingredientRequest.getSourceId(),
+                                ingredientRequest.getName(),
+                                ingredientRequest.getQuantity(),
+                                ingredientRequest.getChefId())))));
     }
 
     @EqualsAndHashCode
@@ -54,23 +56,29 @@ class RecipeRequestTest {
         private final String code;
         private final String name;
         private final Long chefId;
-        private final Set<Ingredientey> ingredients;
+        private final SortedSet<Ingredientey> ingredients;
 
         private static Recipey from(final String code, final String name,
                 final Long chefId, final Stream<Ingredientey> ingredients) {
             return new Recipey(code, name, chefId,
-                    ingredients.collect(toCollection(LinkedHashSet::new)));
+                    ingredients.collect(toCollection(TreeSet::new)));
         }
     }
 
     @EqualsAndHashCode
     @RequiredArgsConstructor
     @ToString
-    private static final class Ingredientey {
+    private static final class Ingredientey
+            implements Comparable<Ingredientey> {
         private final String code;
         private final Long sourceId;
         private final String name;
         private final BigDecimal quantity;
         private final Long chefId;
+
+        @Override
+        public int compareTo(final Ingredientey that) {
+            return code.compareTo(that.code);
+        }
     }
 }

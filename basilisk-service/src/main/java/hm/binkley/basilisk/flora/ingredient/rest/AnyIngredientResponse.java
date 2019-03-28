@@ -8,7 +8,8 @@ import java.math.BigDecimal;
 
 @Builder
 @Value
-public final class AnyIngredientResponse {
+public final class AnyIngredientResponse
+        implements Comparable<AnyIngredientResponse> {
     Long id;
     String code;
     Long sourceId;
@@ -19,5 +20,10 @@ public final class AnyIngredientResponse {
 
     public static AsAny<AnyIngredientResponse> using() {
         return AnyIngredientResponse::new;
+    }
+
+    @Override
+    public int compareTo(final AnyIngredientResponse that) {
+        return getCode().compareTo(that.getCode());
     }
 }

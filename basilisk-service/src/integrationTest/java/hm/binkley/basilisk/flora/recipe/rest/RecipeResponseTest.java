@@ -13,6 +13,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.IOException;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Stream;
 
 import static hm.binkley.basilisk.flora.FloraFixtures.CHEF_ID;
@@ -55,15 +56,16 @@ class RecipeResponseTest {
                 .code(RECIPE_CODE)
                 .name(RECIPE_NAME)
                 .chefId(CHEF_ID)
-                .ingredients(Set.of(UsedIngredientResponse.builder()
-                        .id(INGREDIENT_ID)
-                        .code(INGREDIENT_CODE)
-                        .sourceId(SOURCE_ID)
-                        .name(SOURCE_NAME)
-                        .quantity(INGREDIENT_QUANTITY)
-                        .recipeId(RECIPE_ID)
-                        .chefId(CHEF_ID)
-                        .build()))
+                .ingredients(new TreeSet<>(Set.of(
+                        UsedIngredientResponse.builder()
+                                .id(INGREDIENT_ID)
+                                .code(INGREDIENT_CODE)
+                                .sourceId(SOURCE_ID)
+                                .name(SOURCE_NAME)
+                                .quantity(INGREDIENT_QUANTITY)
+                                .recipeId(RECIPE_ID)
+                                .chefId(CHEF_ID)
+                                .build())))
                 .build()))
                 .isEqualToJson(
                         "recipe-with-some-ingredients-response-test.json");
@@ -80,6 +82,6 @@ class RecipeResponseTest {
                 Stream.of(ingredientResponse)))
                 .isEqualTo(new RecipeResponse(RECIPE_ID, RECIPE_CODE,
                         RECIPE_NAME, true, CHEF_ID,
-                        Set.of(ingredientResponse)));
+                        new TreeSet<>(Set.of(ingredientResponse))));
     }
 }

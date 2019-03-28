@@ -70,4 +70,12 @@ class StandardRecordTest {
 
         verify(store).delete(record);
     }
+
+    @Test
+    void shouldSort() {
+        final var recordA = MyTestRecord.unsaved("ABC", 2);
+        final var recordB = MyTestRecord.unsaved("DEF", 1);
+
+        assertThat(recordA).isLessThan(recordB);
+    }
 }

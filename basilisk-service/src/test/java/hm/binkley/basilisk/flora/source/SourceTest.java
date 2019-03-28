@@ -2,7 +2,6 @@ package hm.binkley.basilisk.flora.source;
 
 import hm.binkley.basilisk.flora.location.Location;
 import hm.binkley.basilisk.flora.location.Locations;
-import hm.binkley.basilisk.flora.source.store.SourceRecord.LocationRef;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,7 +28,7 @@ class SourceTest {
     void shouldHaveAvailableAt() {
         final var locationRecord = savedLocationRecord();
         final var location = new Location(locationRecord);
-        when(locations.byRef(LocationRef.of(locationRecord)))
+        when(locations.byId(locationRecord.getId()))
                 .thenReturn(Optional.of(location));
         final var record = savedSourceRecord()
                 .addAvailableAt(locationRecord);

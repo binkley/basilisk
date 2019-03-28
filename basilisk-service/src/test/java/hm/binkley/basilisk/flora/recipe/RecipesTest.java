@@ -14,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Stream;
 
 import static hm.binkley.basilisk.flora.FloraFixtures.savedRecipeRecord;
@@ -113,13 +114,14 @@ class RecipesTest {
                 .code(record.getCode())
                 .name(record.getName())
                 .chefId(record.getChefId())
-                .ingredients(Set.of(UsedIngredientRequest.builder()
-                        .code(ingredientRecord.getCode())
-                        .sourceId(ingredientRecord.getSourceId())
-                        .name(ingredientRecord.getName())
-                        .quantity(ingredientRecord.getQuantity())
-                        .chefId(ingredientRecord.getChefId())
-                        .build()))
+                .ingredients(new TreeSet<>(Set.of(
+                        UsedIngredientRequest.builder()
+                                .code(ingredientRecord.getCode())
+                                .sourceId(ingredientRecord.getSourceId())
+                                .name(ingredientRecord.getName())
+                                .quantity(ingredientRecord.getQuantity())
+                                .chefId(ingredientRecord.getChefId())
+                                .build())))
                 .build()))
                 .isEqualTo(new Recipe(record));
 

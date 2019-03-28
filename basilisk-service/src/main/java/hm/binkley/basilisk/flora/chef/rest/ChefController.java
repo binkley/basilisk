@@ -20,9 +20,10 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.NoSuchElementException;
-import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
-import static java.util.stream.Collectors.toSet;
+import static java.util.stream.Collectors.toCollection;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.ResponseEntity.created;
@@ -39,10 +40,10 @@ public class ChefController {
     }
 
     @GetMapping
-    public Set<ChefResponse> getAll() {
+    public SortedSet<ChefResponse> getAll() {
         return chefs.all()
                 .map(ChefController::toResponse)
-                .collect(toSet());
+                .collect(toCollection(TreeSet::new));
     }
 
     @GetMapping("{id}")

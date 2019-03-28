@@ -13,6 +13,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.IOException;
 import java.util.Set;
+import java.util.TreeSet;
 
 import static hm.binkley.basilisk.flora.FloraFixtures.LOCATION_CODE;
 import static hm.binkley.basilisk.flora.FloraFixtures.LOCATION_ID;
@@ -48,11 +49,11 @@ class SourceResponseTest {
                 .id(SOURCE_ID)
                 .code(SOURCE_CODE)
                 .name(SOURCE_NAME)
-                .availableAt(Set.of(LocationResponse.builder()
+                .availableAt(new TreeSet<>(Set.of(LocationResponse.builder()
                         .id(LOCATION_ID)
                         .code(LOCATION_CODE)
                         .name(LOCATION_NAME)
-                        .build()))
+                        .build())))
                 .build()))
                 .isEqualToJson(
                         "source-with-some-available-at-response-test.json");

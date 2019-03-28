@@ -9,8 +9,8 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.Instant;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.stream.Stream;
 
 @EqualsAndHashCode(callSuper = false)
@@ -24,7 +24,7 @@ public final class RecipeRecord
     Long chefId;
     @Column("recipe_id")
     @Getter
-    Set<IngredientRecord> ingredients = new LinkedHashSet<>();
+    SortedSet<IngredientRecord> ingredients = new TreeSet<>();
 
     public RecipeRecord(final Long id, final Instant receivedAt,
             final String code, final String name, final Long chefId) {

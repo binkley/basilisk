@@ -15,7 +15,8 @@ import java.util.function.Function;
 @ToString(exclude = "store")
 public abstract class StandardRecord<T extends StandardRecord<T, R, S>,
         R extends StandardRepository<T, R, S>,
-        S extends StandardStore<T, R, S>> {
+        S extends StandardStore<T, R, S>>
+        implements Comparable<T> {
     @Getter
     @Id
     public Long id;
@@ -34,8 +35,14 @@ public abstract class StandardRecord<T extends StandardRecord<T, R, S>,
         this.code = code;
     }
 
+    /** @todo Use natural key, not surrogate key */
     public <F> F asRef(final Function<Long, F> ctor) {
         return ctor.apply(idOrSave());
+    }
+
+    @Override
+    public int compareTo(final T that) {
+        return getCode().compareTo(that.getCode());
     }
 
     void become(final T other) {

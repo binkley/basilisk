@@ -1,6 +1,7 @@
 package hm.binkley.basilisk.flora;
 
 import hm.binkley.basilisk.flora.chef.store.ChefRecord;
+import hm.binkley.basilisk.flora.ingredient.rest.UsedIngredientRequest;
 import hm.binkley.basilisk.flora.ingredient.store.IngredientRecord;
 import hm.binkley.basilisk.flora.location.store.LocationRecord;
 import hm.binkley.basilisk.flora.recipe.store.RecipeRecord;
@@ -118,5 +119,15 @@ public final class FloraFixtures {
         saved.id = RECIPE_ID;
         saved.receivedAt = RECIPE_RECEIVED_AT;
         return saved;
+    }
+
+    public static UsedIngredientRequest usedIngredientRequest() {
+        return UsedIngredientRequest.builder()
+                .code(INGREDIENT_CODE)
+                .sourceId(SOURCE_ID)
+                .name(SOURCE_NAME)
+                .quantity(INGREDIENT_QUANTITY)
+                .chefId(CHEF_ID)
+                .build();
     }
 }

@@ -1,16 +1,16 @@
 package hm.binkley.basilisk.store;
 
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.Wither;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
-@Data
-@RequiredArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode
 @Table("BASILISK.ROOST_MIGRATION")
+@ToString
 public class RoostMigrationRef {
     @Column("MIGRATION")
-    @Wither
-    private final Long id;
+    public Long id;
 }
