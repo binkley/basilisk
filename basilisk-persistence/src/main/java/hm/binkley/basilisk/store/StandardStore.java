@@ -6,7 +6,7 @@ import javax.validation.constraints.NotNull;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static hm.binkley.basilisk.store.AutoClosingStream.autoClosing;
+import static hm.binkley.basilisk.AutoClosingStream.autoClosing;
 import static java.util.Objects.requireNonNull;
 
 @RequiredArgsConstructor

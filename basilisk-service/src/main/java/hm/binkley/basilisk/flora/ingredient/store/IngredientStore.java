@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.util.stream.Stream;
 
-import static hm.binkley.basilisk.store.AutoClosingStream.autoClosing;
+import static hm.binkley.basilisk.AutoClosingStream.autoClosing;
 
 @Component
 public class IngredientStore

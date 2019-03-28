@@ -1,4 +1,4 @@
-package hm.binkley.basilisk.store;
+package hm.binkley.basilisk;
 
 import lombok.AllArgsConstructor;
 import lombok.Generated;
