@@ -2,6 +2,7 @@ package hm.binkley.basilisk.flora.ingredient;
 
 import hm.binkley.basilisk.flora.ingredient.Ingredients.AsUnused;
 import hm.binkley.basilisk.flora.ingredient.store.IngredientRecord;
+import hm.binkley.basilisk.flora.source.Sources;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
@@ -9,8 +10,9 @@ import lombok.ToString;
 @ToString(callSuper = true)
 public final class UnusedIngredient
         extends Ingredient {
-    public UnusedIngredient(final IngredientRecord record) {
-        super(record);
+    public UnusedIngredient(
+            final IngredientRecord record, final Sources sources) {
+        super(record, sources);
     }
 
     public <I> I asUnused(final AsUnused<I> toIngredient) {

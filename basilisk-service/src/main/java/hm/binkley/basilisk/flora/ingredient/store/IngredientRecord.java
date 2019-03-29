@@ -16,7 +16,7 @@ public final class IngredientRecord
         extends StandardRecord<IngredientRecord, IngredientRepository,
         IngredientStore> {
     @Getter
-    public Long recipeId; // TODO: Resolve automating setting this
+    public Long recipeId; // TODO: Replace with relationship table
     @Getter
     Long sourceId;
     @Getter
@@ -24,7 +24,7 @@ public final class IngredientRecord
     @Getter
     BigDecimal quantity;
     @Getter
-    Long chefId;
+    Long chefId; // TODO: Research "inverted" many-to-one between entities
 
     public IngredientRecord(final Long id, final Instant receivedAt,
             final String code, final Long sourceId, final String name,

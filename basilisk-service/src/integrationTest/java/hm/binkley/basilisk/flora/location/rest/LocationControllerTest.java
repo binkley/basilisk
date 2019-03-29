@@ -71,8 +71,9 @@ class LocationControllerTest {
     @Test
     void shouldGetById()
             throws Exception {
-        when(locations.byId(LOCATION_ID))
-                .thenReturn(Optional.of(new Location(savedLocationRecord())));
+        final var record = savedLocationRecord();
+        when(locations.byId(record.getId()))
+                .thenReturn(Optional.of(new Location(record)));
 
         jsonMvc.perform(get(endpointWithId()))
                 .andExpect(status().isOk())
@@ -90,10 +91,11 @@ class LocationControllerTest {
     @Test
     void shouldGetByName()
             throws Exception {
-        when(locations.byName(LOCATION_NAME))
-                .thenReturn(Optional.of(new Location(savedLocationRecord())));
+        final var record = savedLocationRecord();
+        when(locations.byName(record.getName()))
+                .thenReturn(Optional.of(new Location(record)));
 
-        jsonMvc.perform(get("/location/with-name/" + LOCATION_NAME))
+        jsonMvc.perform(get("/location/with-name/" + record.getName()))
                 .andExpect(status().isOk())
                 .andExpect(content().json(asJson(responseMap())));
     }
@@ -101,7 +103,7 @@ class LocationControllerTest {
     @Test
     void shouldNotGetByName()
             throws Exception {
-        jsonMvc.perform(get("/location/with-name/" + LOCATION_NAME))
+        jsonMvc.perform(get("/location/with-name/anything"))
                 .andExpect(status().isNotFound());
     }
 
@@ -109,12 +111,13 @@ class LocationControllerTest {
     @Test
     void shouldPostNew()
             throws Exception {
+        final var record = unsavedLocationRecord();
         final LocationRequest request = LocationRequest.builder()
-                .code(LOCATION_CODE)
-                .name(LOCATION_NAME)
+                .code(record.getCode())
+                .name(record.getName())
                 .build();
 
-        final var unsaved = spy(unsavedLocationRecord());
+        final var unsaved = spy(record);
         when(locations.unsaved(request.getCode(), request.getName()))
                 .thenReturn(new Location(unsaved));
         doAnswer(simulateRecordSave(LOCATION_ID, LOCATION_RECEIVED_AT))

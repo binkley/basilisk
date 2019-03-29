@@ -36,7 +36,7 @@ public final class Recipe {
     /** @todo Ask ingredient factory; do not do this directly */
     public Stream<UsedIngredient> getIngredients() {
         return record.getIngredients().stream()
-                .map(UsedIngredient::new);
+                .map(record -> new UsedIngredient(record, null));
     }
 
     public <R, I> R as(final As<R, I> toRecipe,

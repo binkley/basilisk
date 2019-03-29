@@ -3,6 +3,7 @@ package hm.binkley.basilisk.flora.ingredient;
 import hm.binkley.basilisk.flora.ingredient.rest.UnusedIngredientRequest;
 import hm.binkley.basilisk.flora.ingredient.store.IngredientRecord;
 import hm.binkley.basilisk.flora.ingredient.store.IngredientStore;
+import hm.binkley.basilisk.flora.source.Sources;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,12 +26,14 @@ import static org.mockito.Mockito.when;
 class IngredientsTest {
     @Mock
     private final IngredientStore store;
+    @Mock
+    private final Sources sources;
 
     private Ingredients ingredients;
 
     @BeforeEach
     void setUp() {
-        ingredients = new Ingredients(store);
+        ingredients = new Ingredients(store, sources);
     }
 
     @Test
@@ -45,9 +48,9 @@ class IngredientsTest {
                 record.getCode(), record.getSourceId(), record.getName(),
                 record.getQuantity(), record.getChefId());
 
-        assertThat(unsaved).isEqualTo(new UsedIngredient(record));
+        assertThat(unsaved).isEqualTo(new UsedIngredient(record, sources));
 
-        verifyNoMoreInteractions(store);
+        verifyNoMoreInteractions(store, sources);
     }
 
     @Test
@@ -60,9 +63,9 @@ class IngredientsTest {
                 .byId(record.getId())
                 .orElseThrow();
 
-        assertThat(found).isEqualTo(new UnusedIngredient(record));
+        assertThat(found).isEqualTo(new UnusedIngredient(record, sources));
 
-        verifyNoMoreInteractions(store);
+        verifyNoMoreInteractions(store, sources);
     }
 
     @Test
@@ -75,9 +78,9 @@ class IngredientsTest {
                 .byId(record.getId())
                 .orElseThrow();
 
-        assertThat(found).isEqualTo(new UsedIngredient(record));
+        assertThat(found).isEqualTo(new UsedIngredient(record, sources));
 
-        verifyNoMoreInteractions(store);
+        verifyNoMoreInteractions(store, sources);
     }
 
     @Test
@@ -90,9 +93,9 @@ class IngredientsTest {
                 .byCode(record.getCode())
                 .orElseThrow();
 
-        assertThat(found).isEqualTo(new UnusedIngredient(record));
+        assertThat(found).isEqualTo(new UnusedIngredient(record, sources));
 
-        verifyNoMoreInteractions(store);
+        verifyNoMoreInteractions(store, sources);
     }
 
     @Test
@@ -105,9 +108,9 @@ class IngredientsTest {
                 .byCode(record.getCode())
                 .orElseThrow();
 
-        assertThat(found).isEqualTo(new UsedIngredient(record));
+        assertThat(found).isEqualTo(new UsedIngredient(record, sources));
 
-        verifyNoMoreInteractions(store);
+        verifyNoMoreInteractions(store, sources);
     }
 
     @Test
@@ -118,9 +121,10 @@ class IngredientsTest {
 
         final var found = ingredients.allByName(record.getName());
 
-        assertThat(found).containsExactly(new UnusedIngredient(record));
+        assertThat(found)
+                .containsExactly(new UnusedIngredient(record, sources));
 
-        verifyNoMoreInteractions(store);
+        verifyNoMoreInteractions(store, sources);
     }
 
     @Test
@@ -131,9 +135,10 @@ class IngredientsTest {
 
         final var found = ingredients.allByName(record.getName());
 
-        assertThat(found).containsExactly(new UsedIngredient(record));
+        assertThat(found)
+                .containsExactly(new UsedIngredient(record, sources));
 
-        verifyNoMoreInteractions(store);
+        verifyNoMoreInteractions(store, sources);
     }
 
     @Test
@@ -144,9 +149,10 @@ class IngredientsTest {
 
         final var found = ingredients.allUnused();
 
-        assertThat(found).containsExactly(new UnusedIngredient(record));
+        assertThat(found)
+                .containsExactly(new UnusedIngredient(record, sources));
 
-        verifyNoMoreInteractions(store);
+        verifyNoMoreInteractions(store, sources);
     }
 
     @Test
@@ -165,8 +171,8 @@ class IngredientsTest {
                 .quantity(record.getQuantity())
                 .chefId(record.getChefId())
                 .build()))
-                .isEqualTo(new UnusedIngredient(record));
+                .isEqualTo(new UnusedIngredient(record, sources));
 
-        verifyNoMoreInteractions(store);
+        verifyNoMoreInteractions(store, sources);
     }
 }

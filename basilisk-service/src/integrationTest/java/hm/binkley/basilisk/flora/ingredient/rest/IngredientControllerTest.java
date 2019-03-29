@@ -93,13 +93,13 @@ class IngredientControllerTest {
     void shouldGetAll()
             throws Exception {
         final var record = savedUnusedIngredientRecord();
-        final var unusedIngredient = new UnusedIngredient(record);
+        final var unusedIngredient = new UnusedIngredient(record, null);
         final var usedIngredient = new UsedIngredient(
                 new IngredientRecord(record.getId() + 1,
                         record.getReceivedAt(), record.getCode() + "x",
                         record.getSourceId() + 1, record.getName() + "x",
                         record.getQuantity(), record.getRecipeId(),
-                        record.getChefId()));
+                        record.getChefId()), null);
 
         when(ingredients.all())
                 .thenReturn(Stream.of(unusedIngredient, usedIngredient));
@@ -115,7 +115,7 @@ class IngredientControllerTest {
     void shouldGetUnused()
             throws Exception {
         final var ingredient = new UnusedIngredient(
-                savedUnusedIngredientRecord());
+                savedUnusedIngredientRecord(), null);
         when(ingredients.allUnused())
                 .thenReturn(Stream.of(ingredient));
 
@@ -129,7 +129,7 @@ class IngredientControllerTest {
     void shouldGetById()
             throws Exception {
         final var ingredient = new UnusedIngredient(
-                savedUnusedIngredientRecord());
+                savedUnusedIngredientRecord(), null);
         when(ingredients.byId(ingredient.getId()))
                 .thenReturn(Optional.of(ingredient));
 
@@ -150,7 +150,7 @@ class IngredientControllerTest {
     void shouldGetByName()
             throws Exception {
         final var ingredient = new UsedIngredient(
-                savedUsedIngredientRecord());
+                savedUsedIngredientRecord(), null);
         when(ingredients.allByName(ingredient.getName()))
                 .thenReturn(Stream.of(ingredient));
 
@@ -173,7 +173,7 @@ class IngredientControllerTest {
                 .build();
 
         final var ingredient = new UnusedIngredient(
-                savedUnusedIngredientRecord());
+                savedUnusedIngredientRecord(), null);
         when(ingredients.createUnused(request))
                 .thenReturn(ingredient);
 
