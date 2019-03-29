@@ -15,6 +15,7 @@ import java.util.stream.Stream;
 
 import static hm.binkley.basilisk.flora.FloraFixtures.savedUnusedIngredientRecord;
 import static hm.binkley.basilisk.flora.FloraFixtures.savedUsedIngredientRecord;
+import static hm.binkley.basilisk.flora.FloraFixtures.unsavedUsedIngredientRecord;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -30,6 +31,23 @@ class IngredientsTest {
     @BeforeEach
     void setUp() {
         ingredients = new Ingredients(store);
+    }
+
+    @Test
+    void shouldCreateUnsaved() {
+        final var record = unsavedUsedIngredientRecord();
+        when(store.unsaved(
+                record.getCode(), record.getSourceId(), record.getName(),
+                record.getQuantity(), record.getChefId()))
+                .thenReturn(record);
+
+        final var unsaved = ingredients.unsaved(
+                record.getCode(), record.getSourceId(), record.getName(),
+                record.getQuantity(), record.getChefId());
+
+        assertThat(unsaved).isEqualTo(new UsedIngredient(record));
+
+        verifyNoMoreInteractions(store);
     }
 
     @Test
@@ -114,22 +132,6 @@ class IngredientsTest {
         final var found = ingredients.allByName(record.getName());
 
         assertThat(found).containsExactly(new UsedIngredient(record));
-
-        verifyNoMoreInteractions(store);
-    }
-
-    @Test
-    void shouldFindAll() {
-        final var unusedRecord = savedUnusedIngredientRecord();
-        final var usedRecord = savedUsedIngredientRecord();
-        when(store.all())
-                .thenReturn(Stream.of(unusedRecord, usedRecord));
-
-        final Stream<Ingredient> found = ingredients.all();
-
-        assertThat(found).containsExactly(
-                new UnusedIngredient(unusedRecord),
-                new UsedIngredient(usedRecord));
 
         verifyNoMoreInteractions(store);
     }

@@ -1,25 +1,24 @@
 package hm.binkley.basilisk.flora.ingredient;
 
+import hm.binkley.basilisk.StandardDomain;
 import hm.binkley.basilisk.flora.ingredient.Ingredients.AsAny;
 import hm.binkley.basilisk.flora.ingredient.store.IngredientRecord;
+import hm.binkley.basilisk.flora.ingredient.store.IngredientRepository;
+import hm.binkley.basilisk.flora.ingredient.store.IngredientStore;
 import lombok.EqualsAndHashCode;
-import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import java.math.BigDecimal;
 
-@EqualsAndHashCode
-@RequiredArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 @SuppressWarnings("PMD.AbstractClassWithoutAbstractMethod")
-@ToString
-public abstract class Ingredient {
-    private final IngredientRecord record;
-
-    public final Long getId() {
-        return record.getId();
+@ToString(callSuper = true)
+public abstract class Ingredient
+        extends StandardDomain<IngredientRecord, IngredientRepository,
+        IngredientStore, Ingredient> {
+    public Ingredient(final IngredientRecord record) {
+        super(record);
     }
-
-    public final String getCode() { return record.getCode(); }
 
     public final Long getSourceId() { return record.getSourceId(); }
 
@@ -43,3 +42,4 @@ public abstract class Ingredient {
                 getRecipeId(), getChefId());
     }
 }
+

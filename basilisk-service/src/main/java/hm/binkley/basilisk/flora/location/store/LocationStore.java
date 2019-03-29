@@ -15,8 +15,7 @@ public class LocationStore
         super(springData);
     }
 
-    public LocationRecord unsaved(final String code,
-            final String name) {
+    public LocationRecord unsaved(final String code, final String name) {
         return bind(LocationRecord.unsaved(code, name));
     }
 

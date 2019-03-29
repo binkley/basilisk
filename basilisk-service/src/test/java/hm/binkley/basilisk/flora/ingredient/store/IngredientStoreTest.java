@@ -34,6 +34,20 @@ class IngredientStoreTest {
     }
 
     @Test
+    void shouldCreateUnsaved() {
+        final var record = unsavedUnusedIngredientRecord();
+
+        final var unsaved = store.unsaved(
+                record.getCode(), record.getSourceId(), record.getName(),
+                record.getQuantity(), record.getChefId());
+
+        assertThat(unsaved).isEqualTo(record);
+        assertThat(unsaved.store).isSameAs(store);
+
+        verifyNoMoreInteractions(springData);
+    }
+
+    @Test
     void shouldFindById() {
         final var id = 3L;
         final var saved = unsavedUnusedIngredientRecord();

@@ -1,35 +1,42 @@
 package hm.binkley.basilisk.flora.ingredient;
 
+import hm.binkley.basilisk.StandardFactory;
 import hm.binkley.basilisk.flora.ingredient.rest.UnusedIngredientRequest;
 import hm.binkley.basilisk.flora.ingredient.store.IngredientRecord;
+import hm.binkley.basilisk.flora.ingredient.store.IngredientRepository;
 import hm.binkley.basilisk.flora.ingredient.store.IngredientStore;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 @Component
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class Ingredients {
-    private final IngredientStore store;
-
-    public Optional<Ingredient> byId(final Long id) {
-        return store.byId(id).map(this::asUsedOrUnused);
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
+public class Ingredients
+        extends StandardFactory<IngredientRecord, IngredientRepository,
+        IngredientStore, Ingredient> {
+    public Ingredients(final IngredientStore store) {
+        super(Ingredients::asUsedOrUnused, store);
     }
 
-    public Optional<Ingredient> byCode(final String code) {
-        return store.byCode(code).map(this::asUsedOrUnused);
+    private static Ingredient asUsedOrUnused(final IngredientRecord record) {
+        return record.isUsed()
+                ? new UsedIngredient(record)
+                : new UnusedIngredient(record);
+    }
+
+    public Ingredient unsaved(final String code, final Long sourceId,
+            final String name,
+            final BigDecimal quantity, final Long chefId) {
+        return asUsedOrUnused(store.unsaved(
+                code, sourceId, name, quantity, chefId));
     }
 
     public Stream<Ingredient> allByName(final String name) {
-        return store.byName(name).map(this::asUsedOrUnused);
-    }
-
-    public Stream<Ingredient> all() {
-        return store.all().map(this::asUsedOrUnused);
+        return store.byName(name).map(Ingredients::asUsedOrUnused);
     }
 
     public Stream<UnusedIngredient> allUnused() {
@@ -40,12 +47,6 @@ public class Ingredients {
             final UnusedIngredientRequest request) {
         return new UnusedIngredient(store.save(
                 request.as(IngredientRecord::unsaved)));
-    }
-
-    private Ingredient asUsedOrUnused(final IngredientRecord record) {
-        return record.isUsed()
-                ? new UsedIngredient(record)
-                : new UnusedIngredient(record);
     }
 
     public interface AsAny<I> {

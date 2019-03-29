@@ -18,6 +18,12 @@ public class IngredientStore
         super(springData);
     }
 
+    public IngredientRecord unsaved(final String code, final Long sourceId,
+            final String name, final BigDecimal quantity, final Long chefId) {
+        return bind(IngredientRecord.unsaved(
+                code, sourceId, name, quantity, chefId));
+    }
+
     public Stream<IngredientRecord> byName(final String name) {
         return autoClosing(springData.findAllByName(name))
                 .map(this::bind);
@@ -25,15 +31,14 @@ public class IngredientStore
 
     public Stream<IngredientRecord> unused() {
         return autoClosing(springData.findAllByRecipeIdIsNull())
-                .peek(it -> it.store = this);
+                .map(this::bind);
     }
 
     public IngredientRecord create(
             final String code, final Long sourceId, final String name,
             final BigDecimal quantity, final Long chefId) {
-        final IngredientRecord record = IngredientRecord.unsaved(
-                code, sourceId, name, quantity, chefId);
-        bind(record);
-        return record.save();
+        return bind(IngredientRecord.unsaved(
+                code, sourceId, name, quantity, chefId))
+                .save();
     }
 }
