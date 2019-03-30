@@ -57,10 +57,6 @@ allprojects {
         }
     }
 
-    jacoco {
-        toolVersion = "0.8.3"
-    }
-
     task jacoco {
         group = "Verification"
         description = "Checks Java test coverage."
