@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static hm.binkley.basilisk.flora.FloraFixtures.CHEF_ID;
+import static hm.binkley.basilisk.flora.FloraFixtures.INGREDIENT_CODE;
 import static hm.binkley.basilisk.flora.FloraFixtures.INGREDIENT_QUANTITY;
 import static hm.binkley.basilisk.flora.FloraFixtures.SOURCE_NAME;
 import static org.hamcrest.Matchers.equalTo;
@@ -28,10 +29,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ProblemWebMvcTest(IngredientController.class)
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 class IngredientControllerValidationTest {
+    private static final String ROOT = "/ingredient";
     private static final String FIRST_FIELD = "$.violations[0].field";
     private static final String FIRST_MESSAGE = "$.violations[0].message";
     private static final String STATUS = "$.status";
-
+    private static final String STACK_TRACE = "$.stackTrace";
     private final MockMvc problemMvc;
     private final ObjectMapper objectMapper;
 
@@ -50,9 +52,29 @@ class IngredientControllerValidationTest {
                         equalTo("length must be between 3 and 32")))
                 .andExpect(jsonPath(STATUS,
                         equalTo(UNPROCESSABLE_ENTITY.name())))
-        // TODO: Turn off stack traces
-        //      .andExpect(jsonPath("$.stackTrace").doesNotExist())
-        ;
+                .andExpect(jsonPath(STACK_TRACE).doesNotExist());
+
+        verifyNoMoreInteractions(ingredients);
+    }
+
+    @Test
+    void shouldRejectShortRequestCodes()
+            throws Exception {
+        problemMvc.perform(post(ROOT)
+                .content(asJson(UnusedIngredientRequest.builder()
+                        .code(INGREDIENT_CODE.substring(0, 1))
+                        .name(SOURCE_NAME)
+                        .quantity(INGREDIENT_QUANTITY)
+                        .chefId(CHEF_ID)
+                        .build())))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath(FIRST_FIELD,
+                        equalTo("code")))
+                .andExpect(jsonPath(FIRST_MESSAGE,
+                        equalTo("length must be between 3 and 8")))
+                .andExpect(jsonPath(STATUS,
+                        equalTo(UNPROCESSABLE_ENTITY.name())))
+                .andExpect(jsonPath(STACK_TRACE).doesNotExist());
 
         verifyNoMoreInteractions(ingredients);
     }
@@ -60,9 +82,10 @@ class IngredientControllerValidationTest {
     @Test
     void shouldRejectShortRequestNames()
             throws Exception {
-        problemMvc.perform(post("/ingredient")
+        problemMvc.perform(post(ROOT)
                 .content(asJson(UnusedIngredientRequest.builder()
-                        .name("F")
+                        .code(INGREDIENT_CODE)
+                        .name(SOURCE_NAME.substring(0, 1))
                         .quantity(INGREDIENT_QUANTITY)
                         .chefId(CHEF_ID)
                         .build())))
@@ -73,9 +96,7 @@ class IngredientControllerValidationTest {
                         equalTo("length must be between 3 and 32")))
                 .andExpect(jsonPath(STATUS,
                         equalTo(UNPROCESSABLE_ENTITY.name())))
-        // TODO: Turn off stack traces
-        //      .andExpect(jsonPath("$.stackTrace").doesNotExist())
-        ;
+                .andExpect(jsonPath(STACK_TRACE).doesNotExist());
 
         verifyNoMoreInteractions(ingredients);
     }
@@ -83,8 +104,9 @@ class IngredientControllerValidationTest {
     @Test
     void shouldRejectMissingQuantity()
             throws Exception {
-        problemMvc.perform(post("/ingredient")
+        problemMvc.perform(post(ROOT)
                 .content(asJson(UnusedIngredientRequest.builder()
+                        .code(INGREDIENT_CODE)
                         .name(SOURCE_NAME)
                         .quantity(null)
                         .chefId(CHEF_ID)
@@ -96,9 +118,7 @@ class IngredientControllerValidationTest {
                         equalTo("must not be null")))
                 .andExpect(jsonPath(STATUS,
                         equalTo(UNPROCESSABLE_ENTITY.name())))
-        // TODO: Turn off stack traces
-        //      .andExpect(jsonPath("$.stackTrace").doesNotExist())
-        ;
+                .andExpect(jsonPath(STACK_TRACE).doesNotExist());
 
         verifyNoMoreInteractions(ingredients);
     }
@@ -106,8 +126,9 @@ class IngredientControllerValidationTest {
     @Test
     void shouldRejectMissingChefId()
             throws Exception {
-        problemMvc.perform(post("/ingredient")
+        problemMvc.perform(post(ROOT)
                 .content(asJson(UnusedIngredientRequest.builder()
+                        .code(INGREDIENT_CODE)
                         .name(SOURCE_NAME)
                         .quantity(INGREDIENT_QUANTITY)
                         .chefId(null)
@@ -119,9 +140,7 @@ class IngredientControllerValidationTest {
                         equalTo("must not be null")))
                 .andExpect(jsonPath(STATUS,
                         equalTo(UNPROCESSABLE_ENTITY.name())))
-        // TODO: Turn off stack traces
-        //      .andExpect(jsonPath("$.stackTrace").doesNotExist())
-        ;
+                .andExpect(jsonPath(STACK_TRACE).doesNotExist());
 
         verifyNoMoreInteractions(ingredients);
     }

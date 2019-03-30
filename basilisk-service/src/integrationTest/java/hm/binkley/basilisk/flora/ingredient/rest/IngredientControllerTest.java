@@ -166,6 +166,7 @@ class IngredientControllerTest {
         final var record = unsavedUnusedIngredientRecord();
         final UnusedIngredientRequest request = UnusedIngredientRequest
                 .builder()
+                .code(record.getCode())
                 .sourceId(record.getSourceId())
                 .name(record.getName())
                 .quantity(record.getQuantity())

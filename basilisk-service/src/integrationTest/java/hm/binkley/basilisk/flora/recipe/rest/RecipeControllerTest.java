@@ -145,6 +145,7 @@ class RecipeControllerTest {
             throws Exception {
         final var record = unsavedRecipeRecord();
         final RecipeRequest request = RecipeRequest.builder()
+                .code(record.getCode())
                 .name(record.getName())
                 .chefId(record.getChefId())
                 .build();
