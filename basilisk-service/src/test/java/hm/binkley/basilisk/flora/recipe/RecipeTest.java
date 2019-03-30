@@ -11,7 +11,7 @@ class RecipeTest {
     void shouldAs() {
         final var ingredientRecord = savedUsedIngredientRecord();
         final var record = savedRecipeRecord()
-                .add(ingredientRecord);
+                .addUnusedIngredient(ingredientRecord);
         // The types are immaterial, just that the transformation worked
         final var targetRecipe = 1;
         final var targetIngredient = "2";

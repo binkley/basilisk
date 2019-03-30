@@ -54,4 +54,3 @@ public abstract class Ingredient
                 getRecipeId(), getChefId());
     }
 }
-

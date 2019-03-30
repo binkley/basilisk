@@ -16,7 +16,8 @@ import java.util.stream.Stream;
 public class Recipes {
     private static final RecipeRequest.As<RecipeRecord, IngredientRecord>
             asRecipeRecord = (code, name, chefId, ingredients) ->
-            RecipeRecord.unsaved(code, name, chefId).addAll(ingredients);
+            RecipeRecord.unsaved(code, name, chefId)
+                    .addAllUnusedIngredients(ingredients);
 
     private final RecipeStore store;
 

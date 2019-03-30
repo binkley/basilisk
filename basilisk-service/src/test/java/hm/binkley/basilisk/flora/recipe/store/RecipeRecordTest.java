@@ -27,7 +27,7 @@ class RecipeRecordTest {
     void shouldAddSomeIngredients() {
         final var ingredientRecord = unsavedUnusedIngredientRecord();
         final var record = unsavedRecipeRecord()
-                .addAll(Stream.of(ingredientRecord));
+                .addAllUnusedIngredients(Stream.of(ingredientRecord));
 
         assertThat(record.ingredients).isEqualTo(Set.of(ingredientRecord));
     }

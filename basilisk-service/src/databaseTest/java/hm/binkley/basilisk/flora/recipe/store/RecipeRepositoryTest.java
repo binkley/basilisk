@@ -64,7 +64,7 @@ class RecipeRepositoryTest {
     @Test
     void shouldSaveWithSomeIngredients() {
         final var unsaved = unsavedRecipeRecord()
-                .add(unsavedUnusedIngredientRecord());
+                .addUnusedIngredient(unsavedUnusedIngredientRecord());
 
         final var saved = repository.save(unsaved);
 

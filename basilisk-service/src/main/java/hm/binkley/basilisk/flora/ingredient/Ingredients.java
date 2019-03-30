@@ -36,11 +36,11 @@ public class Ingredients
                 : new UnusedIngredient(record, sources);
     }
 
-    public Ingredient unsaved(final String code, final Long sourceId,
-            final String name,
-            final BigDecimal quantity, final Long chefId) {
-        return bind(store.unsaved(
-                code, sourceId, name, quantity, chefId));
+    public UnusedIngredient unsaved(
+            final String code, final Long sourceId, final String name,
+            final BigDecimal quantity) {
+        return unusedBind(store.unsaved(
+                code, sourceId, name, quantity, null));
     }
 
     public Stream<Ingredient> allByName(final String name) {

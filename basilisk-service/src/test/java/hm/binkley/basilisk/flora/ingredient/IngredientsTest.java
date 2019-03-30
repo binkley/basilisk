@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 
 import static hm.binkley.basilisk.flora.FloraFixtures.savedUnusedIngredientRecord;
 import static hm.binkley.basilisk.flora.FloraFixtures.savedUsedIngredientRecord;
-import static hm.binkley.basilisk.flora.FloraFixtures.unsavedUsedIngredientRecord;
+import static hm.binkley.basilisk.flora.FloraFixtures.unsavedUnusedIngredientRecord;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -38,17 +38,17 @@ class IngredientsTest {
 
     @Test
     void shouldCreateUnsaved() {
-        final var record = unsavedUsedIngredientRecord();
+        final var record = unsavedUnusedIngredientRecord();
         when(store.unsaved(
                 record.getCode(), record.getSourceId(), record.getName(),
-                record.getQuantity(), record.getChefId()))
+                record.getQuantity(), null))
                 .thenReturn(record);
 
         final var unsaved = ingredients.unsaved(
                 record.getCode(), record.getSourceId(), record.getName(),
-                record.getQuantity(), record.getChefId());
+                record.getQuantity());
 
-        assertThat(unsaved).isEqualTo(new UsedIngredient(record, sources));
+        assertThat(unsaved).isEqualTo(new UnusedIngredient(record, sources));
 
         verifyNoMoreInteractions(store, sources);
     }

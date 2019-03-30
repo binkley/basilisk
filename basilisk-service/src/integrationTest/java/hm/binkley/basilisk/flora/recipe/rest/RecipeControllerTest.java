@@ -177,7 +177,7 @@ class RecipeControllerTest {
                 .build();
 
         final var recipe = new Recipe(savedRecipeRecord()
-                .add(savedUsedIngredientRecord()));
+                .addUnusedIngredient(savedUsedIngredientRecord()));
         when(specialService.isDailySpecial(recipe))
                 .thenReturn(true);
         when(recipes.create(request))

@@ -38,13 +38,15 @@ public final class RecipeRecord
         return new RecipeRecord(null, null, code, name, chefId);
     }
 
-    public RecipeRecord add(final IngredientRecord ingredient) {
+    public RecipeRecord addUnusedIngredient(
+            final IngredientRecord ingredient) {
         ingredients.add(ingredient);
         return this;
     }
 
-    public RecipeRecord addAll(final Stream<IngredientRecord> ingredients) {
-        ingredients.forEach(this::add);
+    public RecipeRecord addAllUnusedIngredients(
+            final Stream<IngredientRecord> ingredients) {
+        ingredients.forEach(this::addUnusedIngredient);
         return this;
     }
 }

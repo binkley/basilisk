@@ -98,11 +98,11 @@ class RecipesTest {
     void shouldCreateNew() {
         final var ingredientRecord = unsavedUnusedIngredientRecord();
         final var record = savedRecipeRecord()
-                .add(ingredientRecord);
+                .addUnusedIngredient(ingredientRecord);
 
         when(store.save(RecipeRecord.unsaved(
                 record.getCode(), record.getName(), record.getChefId())
-                .add(IngredientRecord.unsaved(
+                .addUnusedIngredient(IngredientRecord.unsaved(
                         ingredientRecord.getCode(),
                         ingredientRecord.getSourceId(),
                         ingredientRecord.getName(),
