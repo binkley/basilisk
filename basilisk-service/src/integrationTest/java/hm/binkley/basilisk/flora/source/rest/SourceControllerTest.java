@@ -140,7 +140,7 @@ class SourceControllerTest {
                 .availableAt(List.of())
                 .build();
 
-        when(sources.unsaved(request.getCode(), request.getName()))
+        when(sources.unsaved(unsaved.getCode(), unsaved.getName()))
                 .thenReturn(new Source(unsaved, locations));
         doAnswer(simulateRecordSave(SOURCE_ID, SOURCE_RECEIVED_AT))
                 .when(unsaved).save();

@@ -14,7 +14,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.io.IOException;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.stream.Stream;
 
 import static hm.binkley.basilisk.flora.FloraFixtures.CHEF_ID;
 import static hm.binkley.basilisk.flora.FloraFixtures.INGREDIENT_CODE;
@@ -25,7 +24,6 @@ import static hm.binkley.basilisk.flora.FloraFixtures.RECIPE_ID;
 import static hm.binkley.basilisk.flora.FloraFixtures.RECIPE_NAME;
 import static hm.binkley.basilisk.flora.FloraFixtures.SOURCE_ID;
 import static hm.binkley.basilisk.flora.FloraFixtures.SOURCE_NAME;
-import static hm.binkley.basilisk.flora.recipe.rest.RecipeResponse.using;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
@@ -69,19 +67,5 @@ class RecipeResponseTest {
                 .build()))
                 .isEqualToJson(
                         "recipe-with-some-ingredients-response-test.json");
-    }
-
-    @Test
-    void shouldUse() {
-        final var ingredientResponse = new UsedIngredientResponse(
-                INGREDIENT_ID, INGREDIENT_CODE, SOURCE_ID, SOURCE_NAME,
-                INGREDIENT_QUANTITY, RECIPE_ID, CHEF_ID);
-
-        assertThat(using(true).from(
-                RECIPE_ID, RECIPE_CODE, RECIPE_NAME, CHEF_ID,
-                Stream.of(ingredientResponse)))
-                .isEqualTo(new RecipeResponse(RECIPE_ID, RECIPE_CODE,
-                        RECIPE_NAME, true, CHEF_ID,
-                        new TreeSet<>(Set.of(ingredientResponse))));
     }
 }

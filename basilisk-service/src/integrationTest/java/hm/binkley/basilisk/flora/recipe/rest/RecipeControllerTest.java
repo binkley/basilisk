@@ -161,7 +161,7 @@ class RecipeControllerTest {
                 .andExpect(content().json(asJson(
                         responseMapFor(record.getName(), false)), true));
 
-        final var response = controller.toResponse().apply(recipe);
+        final var response = controller.toResponse(recipe);
         verify(logger).info(CREATED_RECIPE, response);
     }
 

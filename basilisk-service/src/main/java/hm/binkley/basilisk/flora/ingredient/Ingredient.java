@@ -46,6 +46,7 @@ public abstract class Ingredient
         return record.getRecipeId();
     }
 
+    /** @todo Ref, not record id */
     public final Long getChefId() { return record.getChefId(); }
 
     public final <I> I asAny(final AsAny<I> toIngredient) {

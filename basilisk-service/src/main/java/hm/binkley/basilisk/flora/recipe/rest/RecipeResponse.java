@@ -2,7 +2,7 @@ package hm.binkley.basilisk.flora.recipe.rest;
 
 import hm.binkley.basilisk.Codeable;
 import hm.binkley.basilisk.flora.ingredient.rest.UsedIngredientResponse;
-import hm.binkley.basilisk.flora.recipe.Recipes.As;
+import hm.binkley.basilisk.flora.recipe.Recipe;
 import lombok.Builder;
 import lombok.Value;
 
@@ -23,10 +23,13 @@ public final class RecipeResponse
     @Builder.Default
     SortedSet<UsedIngredientResponse> ingredients = new TreeSet<>();
 
-    public static As<RecipeResponse, UsedIngredientResponse> using(
+    public static RecipeResponse of(final Recipe domain,
             final boolean dailySpecial) {
-        return (id, code, name, chefId, ingredients) -> new RecipeResponse(
-                id, code, name, dailySpecial, chefId,
-                ingredients.collect(toCollection(TreeSet::new)));
+        return new RecipeResponse(
+                domain.getId(), domain.getCode(), domain.getName(),
+                dailySpecial, domain.getChefId(),
+                domain.getIngredients()
+                        .map(UsedIngredientResponse::of)
+                        .collect(toCollection(TreeSet::new)));
     }
 }

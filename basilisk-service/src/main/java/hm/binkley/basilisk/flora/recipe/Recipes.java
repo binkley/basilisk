@@ -1,40 +1,35 @@
 package hm.binkley.basilisk.flora.recipe;
 
+import hm.binkley.basilisk.StandardFactory;
 import hm.binkley.basilisk.flora.ingredient.store.IngredientRecord;
 import hm.binkley.basilisk.flora.recipe.rest.RecipeRequest;
 import hm.binkley.basilisk.flora.recipe.store.RecipeRecord;
+import hm.binkley.basilisk.flora.recipe.store.RecipeRepository;
 import hm.binkley.basilisk.flora.recipe.store.RecipeStore;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 import java.util.stream.Stream;
 
 @Component
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class Recipes {
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
+public class Recipes
+        extends StandardFactory<RecipeRecord, RecipeRepository, RecipeStore,
+        Recipe> {
     private static final RecipeRequest.As<RecipeRecord, IngredientRecord>
             asRecipeRecord = (code, name, chefId, ingredients) ->
             RecipeRecord.unsaved(code, name, chefId)
                     .addAllUnusedIngredients(ingredients);
 
-    private final RecipeStore store;
-
-    public Optional<Recipe> byId(final Long id) {
-        return store.byId(id).map(Recipe::new);
-    }
-
-    public Optional<Recipe> byCode(final String code) {
-        return store.byCode(code).map(Recipe::new);
+    public Recipes(final RecipeStore store) {
+        super(store, Recipe::new);
     }
 
     public Optional<Recipe> byName(final String name) {
-        return store.byName(name).map(Recipe::new);
-    }
-
-    public Stream<Recipe> all() {
-        return store.all().map(Recipe::new);
+        return store.byName(name).map(binder);
     }
 
     public Recipe create(final RecipeRequest request) {

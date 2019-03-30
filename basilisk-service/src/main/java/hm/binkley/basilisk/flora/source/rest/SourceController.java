@@ -1,8 +1,6 @@
 package hm.binkley.basilisk.flora.source.rest;
 
 import hm.binkley.basilisk.flora.location.Locations;
-import hm.binkley.basilisk.flora.location.rest.LocationController;
-import hm.binkley.basilisk.flora.source.Source;
 import hm.binkley.basilisk.flora.source.Sources;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.Length;
@@ -38,17 +36,10 @@ public class SourceController {
     private final Sources sources;
     private final Locations locations;
 
-    private static SourceResponse toResponse(final Source source) {
-        return new SourceResponse(source.getId(), source.getCode(),
-                source.getName(), source.getAvailableAt()
-                .map(LocationController::toResponse)
-                .collect(toCollection(TreeSet::new)));
-    }
-
     @GetMapping
     public SortedSet<SourceResponse> getAll() {
         return sources.all()
-                .map(SourceController::toResponse)
+                .map(SourceResponse::of)
                 .collect(toCollection(TreeSet::new));
     }
 
@@ -56,7 +47,7 @@ public class SourceController {
     public SourceResponse getById(
             @PathVariable("id") final Long id) {
         return sources.byId(id)
-                .map(SourceController::toResponse)
+                .map(SourceResponse::of)
                 .orElseThrow();
     }
 
@@ -65,7 +56,7 @@ public class SourceController {
             @PathVariable("name") final @Length(min = 3, max = 32)
                     String name) {
         return sources.byName(name)
-                .map(SourceController::toResponse)
+                .map(SourceResponse::of)
                 .orElseThrow();
     }
 
@@ -78,7 +69,7 @@ public class SourceController {
         request.getAvailableAt().forEach(location -> source.addAvailableAt(
                 locations.unsaved(location.getCode(), location.getName())));
         source.save();
-        final var response = toResponse(source);
+        final var response = SourceResponse.of(source);
 
         return created(URI.create("/source/" + response.getId()))
                 .body(response);

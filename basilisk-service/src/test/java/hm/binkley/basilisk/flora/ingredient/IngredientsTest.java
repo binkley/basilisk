@@ -1,7 +1,5 @@
 package hm.binkley.basilisk.flora.ingredient;
 
-import hm.binkley.basilisk.flora.ingredient.rest.UnusedIngredientRequest;
-import hm.binkley.basilisk.flora.ingredient.store.IngredientRecord;
 import hm.binkley.basilisk.flora.ingredient.store.IngredientStore;
 import hm.binkley.basilisk.flora.source.Sources;
 import lombok.RequiredArgsConstructor;
@@ -151,27 +149,6 @@ class IngredientsTest {
 
         assertThat(found)
                 .containsExactly(new UnusedIngredient(record, sources));
-
-        verifyNoMoreInteractions(store, sources);
-    }
-
-    @Test
-    void shouldCreateUnused() {
-        final var record = savedUsedIngredientRecord();
-
-        when(store.save(IngredientRecord.unsaved(
-                record.getCode(), record.getSourceId(), record.getName(),
-                record.getQuantity(), record.getChefId())))
-                .thenReturn(record);
-
-        assertThat(ingredients.createUnused(UnusedIngredientRequest.builder()
-                .code(record.getCode())
-                .sourceId(record.getSourceId())
-                .name(record.getName())
-                .quantity(record.getQuantity())
-                .chefId(record.getChefId())
-                .build()))
-                .isEqualTo(new UnusedIngredient(record, sources));
 
         verifyNoMoreInteractions(store, sources);
     }

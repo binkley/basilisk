@@ -10,7 +10,6 @@ import lombok.ToString;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
-import java.util.function.Function;
 
 @Component
 @EqualsAndHashCode(callSuper = true)
@@ -18,16 +17,8 @@ import java.util.function.Function;
 public class Sources
         extends StandardFactory<SourceRecord, SourceRepository, SourceStore,
         Source> {
-    private final Locations locations;
-
     public Sources(final SourceStore store, final Locations locations) {
-        super(binder(locations), store);
-        this.locations = locations;
-    }
-
-    private static Function<SourceRecord, Source> binder(
-            final Locations locations) {
-        return record -> new Source(record, locations);
+        super(store, record -> new Source(record, locations));
     }
 
     public Source unsaved(final String code, final String name) {
@@ -35,10 +26,6 @@ public class Sources
     }
 
     public Optional<Source> byName(final String name) {
-        return store.byName(name).map(this::bind);
-    }
-
-    private Source bind(final SourceRecord record) {
-        return binder(locations).apply(record);
+        return store.byName(name).map(binder);
     }
 }

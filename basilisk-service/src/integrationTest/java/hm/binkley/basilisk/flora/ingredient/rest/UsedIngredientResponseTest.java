@@ -16,10 +16,8 @@ import static hm.binkley.basilisk.flora.FloraFixtures.CHEF_ID;
 import static hm.binkley.basilisk.flora.FloraFixtures.INGREDIENT_CODE;
 import static hm.binkley.basilisk.flora.FloraFixtures.INGREDIENT_ID;
 import static hm.binkley.basilisk.flora.FloraFixtures.INGREDIENT_QUANTITY;
-import static hm.binkley.basilisk.flora.FloraFixtures.RECIPE_ID;
 import static hm.binkley.basilisk.flora.FloraFixtures.SOURCE_ID;
 import static hm.binkley.basilisk.flora.FloraFixtures.SOURCE_NAME;
-import static hm.binkley.basilisk.flora.ingredient.rest.UsedIngredientResponse.using;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
@@ -41,15 +39,5 @@ class UsedIngredientResponseTest {
                 .chefId(CHEF_ID)
                 .build()))
                 .isEqualToJson("used-ingredient-response-test.json");
-    }
-
-    @Test
-    void shouldUse() {
-        assertThat(using().from(INGREDIENT_ID, INGREDIENT_CODE, SOURCE_ID,
-                SOURCE_NAME, INGREDIENT_QUANTITY, RECIPE_ID, CHEF_ID))
-                .isEqualTo(new UsedIngredientResponse(
-                        INGREDIENT_ID, INGREDIENT_CODE, SOURCE_ID,
-                        SOURCE_NAME, INGREDIENT_QUANTITY, RECIPE_ID,
-                        CHEF_ID));
     }
 }

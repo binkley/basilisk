@@ -16,7 +16,7 @@ import java.util.Optional;
 public class Chefs
         extends StandardFactory<ChefRecord, ChefRepository, ChefStore, Chef> {
     public Chefs(final ChefStore store) {
-        super(Chef::new, store);
+        super(store, Chef::new);
     }
 
     public Chef unsaved(final String code, final String name) {
@@ -24,6 +24,6 @@ public class Chefs
     }
 
     public Optional<Chef> byName(final String name) {
-        return store.byName(name).map(Chef::new);
+        return store.byName(name).map(binder);
     }
 }

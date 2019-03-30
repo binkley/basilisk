@@ -31,6 +31,13 @@ class StandardFactoryTest {
 
     private MyTestFactory factory;
 
+    private static MyTestRecord savedMyTestRecord() {
+        final var unsaved = MyTestRecord.unsaved(CODE, NUMBER);
+        unsaved.id = ID;
+        unsaved.receivedAt = RECEIVED_AT;
+        return unsaved;
+    }
+
     @BeforeEach
     void setUp() {
         factory = new MyTestFactory(store);
@@ -38,7 +45,7 @@ class StandardFactoryTest {
 
     @Test
     void shouldFindById() {
-        final var saved = new MyTestRecord(ID, RECEIVED_AT, CODE, NUMBER);
+        final MyTestRecord saved = savedMyTestRecord();
         when(store.byId(ID))
                 .thenReturn(Optional.of(saved));
 
@@ -51,7 +58,7 @@ class StandardFactoryTest {
 
     @Test
     void shouldFindByCode() {
-        final var saved = new MyTestRecord(ID, RECEIVED_AT, CODE, NUMBER);
+        final MyTestRecord saved = savedMyTestRecord();
         when(store.byCode(CODE))
                 .thenReturn(Optional.of(saved));
 
@@ -64,7 +71,7 @@ class StandardFactoryTest {
 
     @Test
     void shouldFindAll() {
-        final var saved = new MyTestRecord(ID, RECEIVED_AT, CODE, NUMBER);
+        final MyTestRecord saved = savedMyTestRecord();
         when(store.all())
                 .thenReturn(Stream.of(saved));
 
@@ -73,5 +80,14 @@ class StandardFactoryTest {
         assertThat(found).containsExactly(new MyTestDomain(saved));
 
         verifyNoMoreInteractions(store);
+    }
+
+    @Test
+    void shouldBind() {
+        final MyTestRecord saved = savedMyTestRecord();
+
+        final var bound = factory.bind(saved);
+
+        assertThat(bound.record).isSameAs(saved);
     }
 }

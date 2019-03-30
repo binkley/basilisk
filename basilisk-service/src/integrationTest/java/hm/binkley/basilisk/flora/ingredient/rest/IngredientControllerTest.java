@@ -9,6 +9,7 @@ import hm.binkley.basilisk.flora.ingredient.Ingredients;
 import hm.binkley.basilisk.flora.ingredient.UnusedIngredient;
 import hm.binkley.basilisk.flora.ingredient.UsedIngredient;
 import hm.binkley.basilisk.flora.ingredient.store.IngredientRecord;
+import hm.binkley.basilisk.flora.source.Sources;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +24,13 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import static hm.binkley.basilisk.flora.FloraFixtures.INGREDIENT_ID;
+import static hm.binkley.basilisk.flora.FloraFixtures.INGREDIENT_RECEIVED_AT;
 import static hm.binkley.basilisk.flora.FloraFixtures.savedUnusedIngredientRecord;
 import static hm.binkley.basilisk.flora.FloraFixtures.savedUsedIngredientRecord;
 import static hm.binkley.basilisk.flora.FloraFixtures.unsavedUnusedIngredientRecord;
+import static hm.binkley.basilisk.store.PersistenceTesting.simulateRecordSave;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.LOCATION;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -43,6 +48,8 @@ class IngredientControllerTest {
 
     @MockBean
     private Ingredients ingredients;
+    @MockBean
+    private Sources sources;
 
     private static String endpointWithId() {
         return "/ingredient/" + INGREDIENT_ID;
@@ -93,13 +100,13 @@ class IngredientControllerTest {
     void shouldGetAll()
             throws Exception {
         final var record = savedUnusedIngredientRecord();
-        final var unusedIngredient = new UnusedIngredient(record, null);
+        final var unusedIngredient = new UnusedIngredient(record, sources);
         final var usedIngredient = new UsedIngredient(
                 new IngredientRecord(record.getId() + 1,
                         record.getReceivedAt(), record.getCode() + "x",
                         record.getSourceId() + 1, record.getName() + "x",
                         record.getQuantity(), record.getRecipeId(),
-                        record.getChefId()), null);
+                        record.getChefId()), sources);
 
         when(ingredients.all())
                 .thenReturn(Stream.of(unusedIngredient, usedIngredient));
@@ -115,7 +122,7 @@ class IngredientControllerTest {
     void shouldGetUnused()
             throws Exception {
         final var ingredient = new UnusedIngredient(
-                savedUnusedIngredientRecord(), null);
+                savedUnusedIngredientRecord(), sources);
         when(ingredients.allUnused())
                 .thenReturn(Stream.of(ingredient));
 
@@ -129,7 +136,7 @@ class IngredientControllerTest {
     void shouldGetById()
             throws Exception {
         final var ingredient = new UnusedIngredient(
-                savedUnusedIngredientRecord(), null);
+                savedUnusedIngredientRecord(), sources);
         when(ingredients.byId(ingredient.getId()))
                 .thenReturn(Optional.of(ingredient));
 
@@ -150,7 +157,7 @@ class IngredientControllerTest {
     void shouldGetByName()
             throws Exception {
         final var ingredient = new UsedIngredient(
-                savedUsedIngredientRecord(), null);
+                savedUsedIngredientRecord(), sources);
         when(ingredients.allByName(ingredient.getName()))
                 .thenReturn(Stream.of(ingredient));
 
@@ -163,20 +170,23 @@ class IngredientControllerTest {
     @Test
     void shouldPostNew()
             throws Exception {
-        final var record = unsavedUnusedIngredientRecord();
-        final UnusedIngredientRequest request = UnusedIngredientRequest
-                .builder()
-                .code(record.getCode())
-                .sourceId(record.getSourceId())
-                .name(record.getName())
-                .quantity(record.getQuantity())
-                .chefId(record.getChefId())
+        final var unsaved = spy(unsavedUnusedIngredientRecord());
+        final UnusedIngredientRequest request
+                = UnusedIngredientRequest.builder()
+                .code(unsaved.getCode())
+                .sourceId(unsaved.getSourceId())
+                .name(unsaved.getName())
+                .quantity(unsaved.getQuantity())
+                .chefId(unsaved.getChefId())
                 .build();
 
-        final var ingredient = new UnusedIngredient(
-                savedUnusedIngredientRecord(), null);
-        when(ingredients.createUnused(request))
+        final var ingredient = new UnusedIngredient(unsaved, sources);
+        when(ingredients.unsaved(
+                unsaved.getCode(), unsaved.getSourceId(), unsaved.getName(),
+                unsaved.getQuantity(), unsaved.getChefId()))
                 .thenReturn(ingredient);
+        doAnswer(simulateRecordSave(INGREDIENT_ID, INGREDIENT_RECEIVED_AT))
+                .when(unsaved).save();
 
         jsonMvc.perform(post("/ingredient")
                 .content(asJson(request)))

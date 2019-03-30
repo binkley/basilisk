@@ -17,7 +17,7 @@ public class Locations
         extends StandardFactory<LocationRecord, LocationRepository,
         LocationStore, Location> {
     public Locations(final LocationStore store) {
-        super(Location::new, store);
+        super(store, Location::new);
     }
 
     public Location unsaved(final String code, final String name) {
@@ -25,6 +25,6 @@ public class Locations
     }
 
     public Optional<Location> byName(final String name) {
-        return store.byName(name).map(Location::new);
+        return store.byName(name).map(binder);
     }
 }

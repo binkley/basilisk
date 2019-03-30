@@ -10,7 +10,7 @@ public class MyTestFactory
         extends StandardFactory<MyTestRecord, MyTestRepository, MyTestStore,
         MyTestDomain> {
     public MyTestFactory(final MyTestStore store) {
-        super(MyTestDomain::new, store);
+        super(store, MyTestDomain::new);
     }
 
     public MyTestDomain unsaved(final String code, final int number) {

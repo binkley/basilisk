@@ -1,6 +1,7 @@
 package hm.binkley.basilisk.flora.ingredient.rest;
 
 import hm.binkley.basilisk.Codeable;
+import hm.binkley.basilisk.flora.ingredient.Ingredient;
 import lombok.Builder;
 import lombok.Value;
 
@@ -16,4 +17,11 @@ public final class UnusedIngredientResponse
     String name;
     BigDecimal quantity;
     Long chefId;
+
+    public static UnusedIngredientResponse of(final Ingredient ingredient) {
+        return new UnusedIngredientResponse(
+                ingredient.getId(), ingredient.getCode(),
+                ingredient.getSourceId(), ingredient.getName(),
+                ingredient.getQuantity(), ingredient.getChefId());
+    }
 }

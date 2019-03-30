@@ -1,6 +1,5 @@
 package hm.binkley.basilisk.flora.recipe.rest;
 
-import hm.binkley.basilisk.flora.ingredient.rest.UsedIngredientResponse;
 import hm.binkley.basilisk.flora.recipe.Recipe;
 import hm.binkley.basilisk.flora.recipe.Recipes;
 import hm.binkley.basilisk.flora.service.SpecialService;
@@ -25,7 +24,6 @@ import java.net.URI;
 import java.util.NoSuchElementException;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.function.Function;
 
 import static java.util.stream.Collectors.toCollection;
 import static org.springframework.http.HttpStatus.CREATED;
@@ -38,23 +36,26 @@ import static org.springframework.http.ResponseEntity.created;
 @Validated
 public class RecipeController {
     static final String CREATED_RECIPE = "Created a new recipe: {}";
-
     private final Recipes recipes;
     private final SpecialService specialService;
     private final Logger logger;
 
+    RecipeResponse toResponse(final Recipe domain) {
+        return RecipeResponse.of(
+                domain, specialService.isDailySpecial(domain));
+    }
+
     @GetMapping
     public SortedSet<RecipeResponse> getAll() {
         return recipes.all()
-                .map(toResponse())
+                .map(this::toResponse)
                 .collect(toCollection(TreeSet::new));
     }
 
     @GetMapping("{id}")
-    public RecipeResponse getById(
-            @PathVariable("id") final Long id) {
+    public RecipeResponse getById(@PathVariable("id") final Long id) {
         return recipes.byId(id)
-                .map(toResponse())
+                .map(this::toResponse)
                 .orElseThrow();
     }
 
@@ -63,7 +64,7 @@ public class RecipeController {
             @PathVariable("name") final @Length(min = 3, max = 32)
                     String name) {
         return recipes.byName(name)
-                .map(toResponse())
+                .map(this::toResponse)
                 .orElseThrow();
     }
 
@@ -72,17 +73,11 @@ public class RecipeController {
     public ResponseEntity<RecipeResponse> postRecipe(
             @RequestBody final @Valid RecipeRequest request) {
         final var domain = recipes.create(request);
-        final var response = toResponse().apply(domain);
+        final var response = toResponse(domain);
         logger.info(CREATED_RECIPE, response);
 
         return created(URI.create("/recipe/" + response.getId()))
                 .body(response);
-    }
-
-    Function<Recipe, RecipeResponse> toResponse() {
-        return it -> it.as(
-                RecipeResponse.using(specialService.isDailySpecial(it)),
-                UsedIngredientResponse.using());
     }
 
     /** @todo Think more deeply about global controller advice */
