@@ -64,13 +64,6 @@ allprojects {
         dependsOn tasks.withType(JacocoReportBase)
     }
 
-    task checkstyle {
-        group = "Verification"
-        description = "Checks Java coding style."
-
-        dependsOn tasks.withType(Checkstyle)
-    }
-
     task spotbugs {
         group = "Verification"
         description = "Checks for Java potential coding errors."
@@ -84,6 +77,7 @@ allprojects {
 //noinspection GroovyAssignabilityCheck
 subprojects {
     ext {
+        pmdVersion = "6.11.0"
         postgresVersion = "10.6.0"
         spotbugsVersion = "3.1.12"
         springBootVersion = "2.1.3.RELEASE"
@@ -172,7 +166,7 @@ subprojects {
     }
 
     pmd {
-        toolVersion = "6.11.0"
+        toolVersion = "${pmdVersion}"
 
         consoleOutput = true
         ruleSets = []
