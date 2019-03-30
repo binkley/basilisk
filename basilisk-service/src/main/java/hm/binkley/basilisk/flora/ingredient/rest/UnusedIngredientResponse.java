@@ -1,5 +1,6 @@
 package hm.binkley.basilisk.flora.ingredient.rest;
 
+import hm.binkley.basilisk.Codeable;
 import hm.binkley.basilisk.flora.ingredient.Ingredients.AsUnused;
 import lombok.Builder;
 import lombok.Value;
@@ -9,7 +10,7 @@ import java.math.BigDecimal;
 @Builder
 @Value
 public final class UnusedIngredientResponse
-        implements Comparable<UnusedIngredientResponse> {
+        implements Codeable<UnusedIngredientResponse> {
     Long id;
     String code;
     Long sourceId;
@@ -19,10 +20,5 @@ public final class UnusedIngredientResponse
 
     public static AsUnused<UnusedIngredientResponse> using() {
         return UnusedIngredientResponse::new;
-    }
-
-    @Override
-    public int compareTo(final UnusedIngredientResponse that) {
-        return getCode().compareTo(that.getCode());
     }
 }

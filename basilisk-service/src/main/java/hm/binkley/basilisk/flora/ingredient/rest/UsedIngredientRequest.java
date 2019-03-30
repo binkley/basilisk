@@ -1,5 +1,6 @@
 package hm.binkley.basilisk.flora.ingredient.rest;
 
+import hm.binkley.basilisk.Codeable;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +13,7 @@ import java.math.BigDecimal;
 @Data
 @RequiredArgsConstructor
 public final class UsedIngredientRequest
-        implements Comparable<UsedIngredientRequest> {
+        implements Codeable<UsedIngredientRequest> {
     private final @NotNull Long sourceId;
     private final @Length(min = 3, max = 8) String code;
     private final @Length(min = 3, max = 32) String name;
@@ -23,11 +24,6 @@ public final class UsedIngredientRequest
         return asOther.from(
                 getCode(), getSourceId(), getName(), getQuantity(),
                 getChefId());
-    }
-
-    @Override
-    public int compareTo(final UsedIngredientRequest that) {
-        return getCode().compareTo(that.getCode());
     }
 
     public interface As<I> {

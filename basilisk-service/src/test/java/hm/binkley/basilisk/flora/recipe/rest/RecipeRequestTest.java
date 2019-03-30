@@ -1,7 +1,9 @@
 package hm.binkley.basilisk.flora.recipe.rest;
 
+import hm.binkley.basilisk.Codeable;
 import hm.binkley.basilisk.flora.ingredient.rest.UsedIngredientRequest;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import org.junit.jupiter.api.Test;
@@ -69,16 +71,12 @@ class RecipeRequestTest {
     @RequiredArgsConstructor
     @ToString
     private static final class Ingredientey
-            implements Comparable<Ingredientey> {
+            implements Codeable<Ingredientey> {
+        @Getter
         private final String code;
         private final Long sourceId;
         private final String name;
         private final BigDecimal quantity;
         private final Long chefId;
-
-        @Override
-        public int compareTo(final Ingredientey that) {
-            return code.compareTo(that.code);
-        }
     }
 }

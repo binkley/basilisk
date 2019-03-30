@@ -7,6 +7,8 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+import javax.validation.constraints.NotNull;
+
 @EqualsAndHashCode
 @RequiredArgsConstructor
 @SuppressWarnings("PMD.AbstractClassWithoutAbstractMethod")
@@ -15,12 +17,13 @@ public abstract class StandardDomain<T extends StandardRecord<T, R, S>,
         R extends StandardRepository<T, R, S>,
         S extends StandardStore<T, R, S>,
         D extends StandardDomain<T, R, S, D>>
-        implements Comparable<D> {
+        implements Codeable<D> {
     protected final T record;
 
     public final Long getId() { return record.getId(); }
 
-    public final String getCode() { return record.getCode(); }
+    @Override
+    public final @NotNull String getCode() { return record.getCode(); }
 
     @SuppressWarnings("unchecked")
     public final D save() {
@@ -32,10 +35,5 @@ public abstract class StandardDomain<T extends StandardRecord<T, R, S>,
     public final D delete() {
         record.delete();
         return (D) this;
-    }
-
-    @Override
-    public int compareTo(final D that) {
-        return getCode().compareTo(that.getCode());
     }
 }

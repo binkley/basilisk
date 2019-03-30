@@ -1,5 +1,6 @@
 package hm.binkley.basilisk.flora.location.rest;
 
+import hm.binkley.basilisk.Codeable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
@@ -10,13 +11,8 @@ import static lombok.AccessLevel.PUBLIC;
 @Builder
 @Value
 public final class LocationResponse
-        implements Comparable<LocationResponse> {
+        implements Codeable<LocationResponse> {
     Long id;
     String code;
     String name;
-
-    @Override
-    public int compareTo(final LocationResponse that) {
-        return getCode().compareTo(that.getCode());
-    }
 }

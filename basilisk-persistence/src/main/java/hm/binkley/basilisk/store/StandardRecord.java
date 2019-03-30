@@ -1,5 +1,6 @@
 package hm.binkley.basilisk.store;
 
+import hm.binkley.basilisk.Codeable;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -16,7 +17,7 @@ import java.util.function.Function;
 public abstract class StandardRecord<T extends StandardRecord<T, R, S>,
         R extends StandardRepository<T, R, S>,
         S extends StandardStore<T, R, S>>
-        implements Comparable<T> {
+        implements Codeable<T> {
     @Getter
     @Id
     public Long id;
@@ -38,11 +39,6 @@ public abstract class StandardRecord<T extends StandardRecord<T, R, S>,
     /** @todo Use natural key, not surrogate key */
     public <F> F asRef(final Function<Long, F> ctor) {
         return ctor.apply(idOrSave());
-    }
-
-    @Override
-    public int compareTo(final T that) {
-        return getCode().compareTo(that.getCode());
     }
 
     void become(final T other) {

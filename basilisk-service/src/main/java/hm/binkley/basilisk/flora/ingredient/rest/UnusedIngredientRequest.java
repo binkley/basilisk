@@ -1,5 +1,6 @@
 package hm.binkley.basilisk.flora.ingredient.rest;
 
+import hm.binkley.basilisk.Codeable;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +12,8 @@ import java.math.BigDecimal;
 @Builder
 @Data
 @RequiredArgsConstructor
-public final class UnusedIngredientRequest {
+public final class UnusedIngredientRequest
+        implements Codeable<UnusedIngredientRequest> {
     private final @NotNull Long sourceId;
     private final @Length(min = 3, max = 8) String code;
     private final @Length(min = 3, max = 32) String name;

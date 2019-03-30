@@ -1,5 +1,6 @@
 package hm.binkley.basilisk.flora.recipe.rest;
 
+import hm.binkley.basilisk.Codeable;
 import hm.binkley.basilisk.flora.ingredient.rest.UsedIngredientRequest;
 import lombok.Builder;
 import lombok.Data;
@@ -14,7 +15,8 @@ import java.util.stream.Stream;
 @Builder
 @Data
 @RequiredArgsConstructor
-public final class RecipeRequest {
+public final class RecipeRequest
+        implements Codeable<RecipeRequest> {
     private final @Length(min = 3, max = 8) String code;
     private final @Length(min = 3, max = 32) String name;
     private final @NotNull Long chefId;

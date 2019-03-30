@@ -1,5 +1,6 @@
 package hm.binkley.basilisk.flora.ingredient.rest;
 
+import hm.binkley.basilisk.Codeable;
 import hm.binkley.basilisk.flora.ingredient.Ingredients.AsUsed;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,7 +14,7 @@ import static lombok.AccessLevel.PUBLIC;
 @Builder
 @Value
 public final class UsedIngredientResponse
-        implements Comparable<UsedIngredientResponse> {
+        implements Codeable<UsedIngredientResponse> {
     Long id;
     String code;
     Long sourceId;
@@ -24,10 +25,5 @@ public final class UsedIngredientResponse
 
     public static AsUsed<UsedIngredientResponse> using() {
         return UsedIngredientResponse::new;
-    }
-
-    @Override
-    public int compareTo(final UsedIngredientResponse that) {
-        return getCode().compareTo(that.getCode());
     }
 }

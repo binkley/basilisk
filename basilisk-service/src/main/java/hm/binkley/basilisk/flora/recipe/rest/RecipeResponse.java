@@ -1,5 +1,6 @@
 package hm.binkley.basilisk.flora.recipe.rest;
 
+import hm.binkley.basilisk.Codeable;
 import hm.binkley.basilisk.flora.ingredient.rest.UsedIngredientResponse;
 import hm.binkley.basilisk.flora.recipe.Recipes.As;
 import lombok.Builder;
@@ -13,7 +14,7 @@ import static java.util.stream.Collectors.toCollection;
 @Builder
 @Value
 public final class RecipeResponse
-        implements Comparable<RecipeResponse> {
+        implements Codeable<RecipeResponse> {
     Long id;
     String code;
     String name;
@@ -27,10 +28,5 @@ public final class RecipeResponse
         return (id, code, name, chefId, ingredients) -> new RecipeResponse(
                 id, code, name, dailySpecial, chefId,
                 ingredients.collect(toCollection(TreeSet::new)));
-    }
-
-    @Override
-    public int compareTo(final RecipeResponse that) {
-        return getCode().compareTo(that.getCode());
     }
 }
