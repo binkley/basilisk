@@ -2,7 +2,6 @@ package hm.binkley.basilisk.flora.ingredient.rest;
 
 import hm.binkley.basilisk.flora.ingredient.Ingredient;
 import hm.binkley.basilisk.flora.ingredient.Ingredients;
-import hm.binkley.basilisk.flora.ingredient.UnusedIngredient;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +22,6 @@ import java.net.URI;
 import java.util.NoSuchElementException;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.function.Function;
 
 import static java.util.stream.Collectors.toCollection;
 import static org.springframework.http.HttpStatus.CREATED;
@@ -37,10 +35,27 @@ import static org.springframework.http.ResponseEntity.created;
 public class IngredientController {
     private final Ingredients ingredients;
 
+    private static AnyIngredientResponse toAnyResponse(
+            final Ingredient ingredient) {
+        return new AnyIngredientResponse(
+                ingredient.getId(), ingredient.getCode(),
+                ingredient.getSourceId(), ingredient.getName(),
+                ingredient.getQuantity(), ingredient.getRecipeId(),
+                ingredient.getChefId());
+    }
+
+    private static UnusedIngredientResponse toUnusedResponse(
+            final Ingredient ingredient) {
+        return new UnusedIngredientResponse(
+                ingredient.getId(), ingredient.getCode(),
+                ingredient.getSourceId(), ingredient.getName(),
+                ingredient.getQuantity(), ingredient.getChefId());
+    }
+
     @GetMapping
     public SortedSet<AnyIngredientResponse> getAll() {
         return ingredients.all()
-                .map(toAnyResponse())
+                .map(IngredientController::toAnyResponse)
                 .collect(toCollection(TreeSet::new));
     }
 
@@ -48,7 +63,7 @@ public class IngredientController {
     public AnyIngredientResponse getById(
             @PathVariable("id") final Long id) {
         return ingredients.byId(id)
-                .map(toAnyResponse())
+                .map(IngredientController::toAnyResponse)
                 .orElseThrow();
     }
 
@@ -57,14 +72,14 @@ public class IngredientController {
             @PathVariable("name") final @Length(min = 3, max = 32)
                     String name) {
         return ingredients.allByName(name)
-                .map(toAnyResponse())
+                .map(IngredientController::toAnyResponse)
                 .collect(toCollection(TreeSet::new));
     }
 
     @GetMapping("unused")
     public SortedSet<UnusedIngredientResponse> getAllUnused() {
         return ingredients.allUnused()
-                .map(toUnusedResponse())
+                .map(IngredientController::toUnusedResponse)
                 .collect(toCollection(TreeSet::new));
     }
 
@@ -73,18 +88,10 @@ public class IngredientController {
     public ResponseEntity<UnusedIngredientResponse> postIngredient(
             @RequestBody final @Valid UnusedIngredientRequest request) {
         final var domain = ingredients.createUnused(request);
-        final var response = toUnusedResponse().apply(domain);
+        final var response = toUnusedResponse(domain);
 
         return created(URI.create("/ingredient/" + response.getId()))
                 .body(response);
-    }
-
-    private Function<UnusedIngredient, UnusedIngredientResponse> toUnusedResponse() {
-        return it -> it.asUnused(UnusedIngredientResponse.using());
-    }
-
-    private Function<Ingredient, AnyIngredientResponse> toAnyResponse() {
-        return it -> it.asAny(AnyIngredientResponse.using());
     }
 
     /** @todo Think more deeply about global controller advice */

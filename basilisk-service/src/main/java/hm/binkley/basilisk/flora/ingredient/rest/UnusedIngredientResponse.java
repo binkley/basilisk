@@ -1,7 +1,6 @@
 package hm.binkley.basilisk.flora.ingredient.rest;
 
 import hm.binkley.basilisk.Codeable;
-import hm.binkley.basilisk.flora.ingredient.Ingredients.AsUnused;
 import lombok.Builder;
 import lombok.Value;
 
@@ -17,8 +16,4 @@ public final class UnusedIngredientResponse
     String name;
     BigDecimal quantity;
     Long chefId;
-
-    public static AsUnused<UnusedIngredientResponse> using() {
-        return UnusedIngredientResponse::new;
-    }
 }

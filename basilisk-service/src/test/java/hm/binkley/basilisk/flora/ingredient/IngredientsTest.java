@@ -41,12 +41,12 @@ class IngredientsTest {
         final var record = unsavedUnusedIngredientRecord();
         when(store.unsaved(
                 record.getCode(), record.getSourceId(), record.getName(),
-                record.getQuantity(), null))
+                record.getQuantity(), record.getChefId()))
                 .thenReturn(record);
 
         final var unsaved = ingredients.unsaved(
                 record.getCode(), record.getSourceId(), record.getName(),
-                record.getQuantity());
+                record.getQuantity(), record.getChefId());
 
         assertThat(unsaved).isEqualTo(new UnusedIngredient(record, sources));
 

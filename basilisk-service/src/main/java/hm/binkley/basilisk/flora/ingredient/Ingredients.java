@@ -38,9 +38,9 @@ public class Ingredients
 
     public UnusedIngredient unsaved(
             final String code, final Long sourceId, final String name,
-            final BigDecimal quantity) {
+            final BigDecimal quantity, final Long chefId) {
         return unusedBind(store.unsaved(
-                code, sourceId, name, quantity, null));
+                code, sourceId, name, quantity, chefId));
     }
 
     public Stream<Ingredient> allByName(final String name) {

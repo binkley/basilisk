@@ -1,7 +1,6 @@
 package hm.binkley.basilisk.flora.ingredient.rest;
 
 import hm.binkley.basilisk.Codeable;
-import hm.binkley.basilisk.flora.ingredient.Ingredients.AsAny;
 import lombok.Builder;
 import lombok.Value;
 
@@ -18,8 +17,4 @@ public final class AnyIngredientResponse
     BigDecimal quantity;
     Long recipeId;
     Long chefId;
-
-    public static AsAny<AnyIngredientResponse> using() {
-        return AnyIngredientResponse::new;
-    }
 }
