@@ -11,9 +11,10 @@ import java.util.stream.Stream;
 public class Middles {
     private final MiddleStore store;
     private final Kinds kinds;
+    private final Sides sides;
 
     public Middle unsaved(final String code, final int mid) {
-        return new Middle(store.unsaved(code, mid), kinds);
+        return new Middle(store.unsaved(code, mid), kinds, sides);
     }
 
     public Optional<Middle> byCode(final String code) {
@@ -37,6 +38,6 @@ public class Middles {
     }
 
     private Middle bind(final MiddleRecord record) {
-        return new Middle(record, kinds);
+        return new Middle(record, kinds, sides);
     }
 }

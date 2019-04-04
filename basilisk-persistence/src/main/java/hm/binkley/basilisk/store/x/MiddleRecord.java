@@ -21,6 +21,7 @@ public class MiddleRecord {
     @Id
     public @NotNull String code;
     public String kindCode;
+    public String sideCode;
     public int mid;
     @Column("middle_code")
     public Set<BottomRecord> bottoms = new LinkedHashSet<>();
@@ -43,10 +44,35 @@ public class MiddleRecord {
 
     public void delete() { store.delete(this); }
 
-    public MiddleRecord define(final @NotNull KindRecord kind) {
+    public MiddleRecord defineKind(final @NotNull KindRecord kind) {
         check(kind);
         kind.save();
         kindCode = kind.code;
+        return this;
+    }
+
+    @SuppressWarnings("PMD.NullAssignment")
+    public MiddleRecord undefineKind() {
+        if (null == kindCode) {
+            throw new IllegalStateException("Absent kind");
+        }
+        kindCode = null;
+        return this;
+    }
+
+    public MiddleRecord defineSide(final @NotNull SideRecord side) {
+        check(side);
+        side.save();
+        sideCode = side.code;
+        return this;
+    }
+
+    @SuppressWarnings("PMD.NullAssignment")
+    public MiddleRecord undefineSide() {
+        if (null == sideCode) {
+            throw new IllegalStateException("Absent side");
+        }
+        sideCode = null;
         return this;
     }
 
@@ -66,14 +92,16 @@ public class MiddleRecord {
 
     private void check(final BottomRecord bottom) {
         requireNonNull(bottom);
-        if (code.equals(bottom.middleCode)
-                || null == bottom.middleCode) return;
-
-        throw new IllegalStateException(
-                "Mismatched: " + bottom + "; " + this);
+        if (null != bottom.middleCode)
+            throw new IllegalStateException(
+                    "Mismatched: " + bottom + "; " + this);
     }
 
     private void check(final KindRecord kind) {
         requireNonNull(kind);
+    }
+
+    private void check(final SideRecord side) {
+        requireNonNull(side);
     }
 }

@@ -14,8 +14,9 @@ import static java.util.Objects.requireNonNull;
 public class TopStore {
     private final TopRepository springData;
 
-    public TopRecord unsaved(final String code, final String name) {
-        return bind(TopRecord.unsaved(code, name));
+    public TopRecord unsaved(final String code, final String name,
+            final SideRecord side) {
+        return bind(TopRecord.unsaved(code, name, side));
     }
 
     public Optional<TopRecord> byCode(final String code) {
@@ -30,7 +31,7 @@ public class TopStore {
     }
 
     public TopRecord save(final TopRecord record) {
-        springData.upsert(record.code, record.name);
+        springData.upsert(record.code, record.name, record.sideCode);
         return springData.save(record);
     }
 

@@ -23,18 +23,27 @@ public class TopRecord {
     public String name;
     @Column("top_code")
     public Set<MiddleRef> middles = new LinkedHashSet<>();
+    public @NotNull String sideCode;
     @Transient
     public TopStore store;
 
-    public static TopRecord unsaved(final String code, final String name) {
+    public static TopRecord unsaved(final String code, final String name,
+            final SideRecord side) {
         checkCode(code);
+        check(side);
         final var unsaved = new TopRecord();
         unsaved.code = code;
         unsaved.name = name;
+        side.save();
+        unsaved.sideCode = side.code;
         return unsaved;
     }
 
     private static void checkCode(final String code) { requireNonNull(code);}
+
+    private static void check(final SideRecord side) {
+        requireNonNull(side);
+    }
 
     public TopRecord save() {
         return store.save(this);

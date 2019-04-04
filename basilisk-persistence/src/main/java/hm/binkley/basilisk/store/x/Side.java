@@ -6,7 +6,7 @@ import lombok.ToString;
 
 import javax.validation.constraints.NotNull;
 import java.time.Instant;
-import java.util.function.Consumer;
+import java.util.function.Function;
 
 @EqualsAndHashCode
 @RequiredArgsConstructor
@@ -28,8 +28,7 @@ public final class Side {
         return this;
     }
 
-    public Side defineInto(final Consumer<SideRecord> define) {
-        define.accept(record);
-        return this;
+    public <T> T defineInto(final Function<SideRecord, T> define) {
+        return define.apply(record);
     }
 }

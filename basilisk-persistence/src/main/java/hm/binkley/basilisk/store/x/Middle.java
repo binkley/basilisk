@@ -6,8 +6,10 @@ import lombok.ToString;
 
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 @EqualsAndHashCode(exclude = "kinds")
 @RequiredArgsConstructor
@@ -15,6 +17,7 @@ import java.util.function.Consumer;
 public final class Middle {
     private final @NotNull MiddleRecord record;
     private final @NotNull Kinds kinds;
+    private final @NotNull Sides sides;
 
     public String getCode() { return record.code; }
 
@@ -26,9 +29,25 @@ public final class Middle {
                 .orElse(null);
     }
 
+    public Instant getTime() {
+        return getSide()
+                .map(Side::getTime)
+                .orElse(null);
+    }
+
     public Optional<Kind> getKind() {
         return Optional.ofNullable(record.kindCode)
                 .flatMap(kinds::byCode);
+    }
+
+    public Optional<Side> getSide() {
+        return Optional.ofNullable(record.sideCode)
+                .flatMap(sides::byCode);
+    }
+
+    public Stream<Bottom> getBottoms() {
+        return record.bottoms.stream()
+                .map(Bottom::new);
     }
 
     public Middle save() {
@@ -41,8 +60,23 @@ public final class Middle {
         return this;
     }
 
-    public Middle define(final @NotNull Kind kind) {
-        kind.defineInto(record::define);
+    public Middle defineKind(final @NotNull Kind kind) {
+        kind.defineInto(record::defineKind);
+        return this;
+    }
+
+    public Middle undefineKind() {
+        record.undefineKind();
+        return this;
+    }
+
+    public Middle defineSide(final @NotNull Side side) {
+        side.defineInto(record::defineSide);
+        return this;
+    }
+
+    public Middle undefineSide() {
+        record.undefineSide();
         return this;
     }
 

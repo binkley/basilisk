@@ -23,6 +23,16 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @SuppressWarnings("PMD")
 @Transactional
 class RepositoriesTest {
+    private static final String bottomFoo = "BAR";
+    private static final String sideCode = "SID";
+    private static final Instant sideTime = Instant.ofEpochSecond(1_000_000);
+    private static final String kindCode = "KIN";
+    private static final BigDecimal kindCoolness = new BigDecimal("2.3");
+    private static final String middleCode = "MID";
+    private static final int middleMid = 222;
+    private static final String topCode = "TOP";
+    private static final String topName = "TWIRL";
+
     @Spy
     private final TopRepository topRepository;
     @Spy
@@ -38,42 +48,57 @@ class RepositoriesTest {
     private Tops tops;
 
     private static Bottom newBottom() {
-        return new Bottom(BottomRecord.unsaved("BAR"));
+        return new Bottom(BottomRecord.unsaved(bottomFoo));
     }
 
     @BeforeEach
     void setUp() {
         sides = new Sides(new SideStore(sideRepository));
         kinds = new Kinds(new KindStore(kindRepository));
-        middles = new Middles(new MiddleStore(middleRepository), kinds);
-        tops = new Tops(new TopStore(topRepository), middles);
+        middles = new Middles(new MiddleStore(middleRepository),
+                kinds, sides);
+        tops = new Tops(new TopStore(topRepository), middles, sides);
     }
 
     @Test
     void shouldCascadeSaveTopToBottom() {
-        final var mid = 222;
-        final var unsavedMiddle = middles.unsaved("MID", mid);
-        unsavedMiddle.addBottom("BAR");
-        final var coolness = new BigDecimal("2.3");
-        final var unsavedKind = kinds.unsaved("KIN", coolness);
-        unsavedMiddle.define(unsavedKind);
-        final var topName = "TWIRL";
-        final var unsavedTop = tops.unsaved("TOP", topName);
-        unsavedTop.add(unsavedMiddle);
+        final var unsavedSide = sides.unsaved(sideCode, sideTime);
+        final var unsavedKind = kinds.unsaved(kindCode, kindCoolness);
+        final var unsavedMiddle = middles.unsaved(middleCode, middleMid)
+                .defineKind(unsavedKind)
+                .defineSide(unsavedSide)
+                .addBottom(bottomFoo);
+        final var unsavedTop = tops.unsaved(topCode, topName, unsavedSide)
+                .add(unsavedMiddle);
 
         final var savedTop = unsavedTop.save();
+        final var readBackTop = tops.byCode(savedTop.getCode()).orElseThrow();
 
-        assertThat(savedTop.getName()).isEqualTo(topName);
-        assertThat(unsavedMiddle.getMid()).isEqualTo(mid);
-        assertThat(unsavedMiddle.getCoolness()).isEqualTo(coolness);
+        assertThat(readBackTop).isEqualTo(unsavedTop);
+        assertThat(readBackTop.getName()).isEqualTo(topName);
+        final var readBackSide = readBackTop.getSide();
+        assertThat(readBackSide).isEqualTo(unsavedSide);
+        assertThat(readBackSide.getTime()).isEqualTo(sideTime);
+        final var readBackMiddle = readBackTop.getMiddles()
+                .findFirst()
+                .orElseThrow();
+        assertThat(readBackMiddle).isEqualTo(unsavedMiddle);
+        assertThat(readBackMiddle.getSide()
+                .orElseThrow()).isEqualTo(readBackSide);
+        assertThat(readBackMiddle.getMid()).isEqualTo(middleMid);
+        assertThat(readBackMiddle.getBottoms()
+                .findFirst()
+                .orElseThrow()
+                .getFoo()).isEqualTo(bottomFoo);
+        final var readBackKind = readBackMiddle.getKind().orElseThrow();
+        assertThat(readBackKind).isEqualTo(unsavedKind);
+        assertThat(readBackKind.getCoolness()).isEqualTo(kindCoolness);
+
         assertBottomCount(1);
-        assertSideCount(0);
+        assertSideCount(1);
         assertMiddleCounts(1, 0);
         assertKindCount(1);
         assertTopCount(1);
-
-        assertThat(tops.byCode(savedTop.getCode()).orElseThrow())
-                .isEqualTo(savedTop);
     }
 
     @Test
@@ -89,12 +114,13 @@ class RepositoriesTest {
     @Test
     void shouldGracefullyCopeWithNoKind() {
         final var kind = newKind().save();
-        final var middle = newMiddle();
-        middle.define(kind).save();
+        final var middle = newMiddle()
+                .defineKind(kind).save();
 
         assertThat(middle.getKind().orElseThrow()).isEqualTo(kind);
         assertThat(middle.getCoolness()).isEqualTo(kind.getCoolness());
 
+        middle.undefineKind().save();
         kind.delete();
 
         assertThat(middle.getKind()).isEmpty();
@@ -102,8 +128,22 @@ class RepositoriesTest {
     }
 
     @Test
+    void shouldGracefullyCopeWithNoSide() {
+        final var side = newSide().save();
+        final var middle = newMiddle()
+                .defineSide(side).save();
+
+        assertThat(middle.getSide().orElseThrow()).isEqualTo(side);
+
+        middle.undefineSide().save();
+        side.delete();
+
+        assertThat(middle.getSide()).isEmpty();
+    }
+
+    @Test
     void shouldSaveOneToOneRelationshipsAtDefinition() {
-        newMiddle().define(newKind());
+        newMiddle().defineKind(newKind());
 
         assertKindCount(1);
     }
@@ -136,7 +176,7 @@ class RepositoriesTest {
                 .add(bottom)
                 .save();
 
-        assertThat(bottom.getFoo()).isEqualTo("BAR");
+        assertThat(bottom.getFoo()).isEqualTo(bottomFoo);
         assertBottomCount(1);
     }
 
@@ -213,19 +253,19 @@ class RepositoriesTest {
     }
 
     private Side newSide() {
-        return sides.unsaved("SID", Instant.ofEpochSecond(1_000_000));
+        return sides.unsaved(sideCode, sideTime);
     }
 
     private Middle newMiddle() {
-        return middles.unsaved("MID", 222);
+        return middles.unsaved(middleCode, middleMid);
     }
 
     private Kind newKind() {
-        return kinds.unsaved("KIN", new BigDecimal("2.3"));
+        return kinds.unsaved(kindCode, kindCoolness);
     }
 
     private Top newTop() {
-        return tops.unsaved("TOP", "TWIRL");
+        return tops.unsaved(topCode, topName, newSide());
     }
 
     private void assertBottomCount(final int total) {
