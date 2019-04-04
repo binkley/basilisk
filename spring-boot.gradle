@@ -12,10 +12,11 @@ configurations {
 }
 
 dependencies {
+    runtimeOnly "org.zalando:logbook-spring-boot-starter"
     runtimeOnly "org.jolokia:jolokia-core"
 
     testImplementation project(":basilisk-testing")
-    
+
     integrationTestImplementation sourceSets.test.output
 
     databaseTestImplementation sourceSets.test.output

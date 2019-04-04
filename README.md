@@ -129,6 +129,7 @@ Other relationships:
 * [Spring Boot Actuator](#actuator)
 * [Spring Boot Admin](#admin)
 * [Spring Data JDBC auditing](#spring-data-jdbc-auditing)
+* [Logbook](https://github.com/zalando/logbook)
 * [Swagger](#swagger)
 * [Run script](#running)
 * Incremental build
