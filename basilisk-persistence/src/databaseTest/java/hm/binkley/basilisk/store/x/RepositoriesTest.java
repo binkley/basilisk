@@ -11,6 +11,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -28,8 +29,10 @@ class RepositoriesTest {
     private final KindRepository kindRepository;
     @Spy
     private final MiddleRepository middleRepository;
+    @Spy
+    private final SideRepository sideRepository;
 
-    private MiddleStore middleStore;
+    private Sides sides;
     private Kinds kinds;
     private Middles middles;
     private Tops tops;
@@ -40,9 +43,9 @@ class RepositoriesTest {
 
     @BeforeEach
     void setUp() {
+        sides = new Sides(new SideStore(sideRepository));
         kinds = new Kinds(new KindStore(kindRepository));
-        middleStore = new MiddleStore(middleRepository);
-        middles = new Middles(middleStore, kinds);
+        middles = new Middles(new MiddleStore(middleRepository), kinds);
         tops = new Tops(new TopStore(topRepository), middles);
     }
 
@@ -64,12 +67,23 @@ class RepositoriesTest {
         assertThat(unsavedMiddle.getMid()).isEqualTo(mid);
         assertThat(unsavedMiddle.getCoolness()).isEqualTo(coolness);
         assertBottomCount(1);
+        assertSideCount(0);
         assertMiddleCounts(1, 0);
         assertKindCount(1);
         assertTopCount(1);
 
         assertThat(tops.byCode(savedTop.getCode()).orElseThrow())
                 .isEqualTo(savedTop);
+    }
+
+    @Test
+    void shouldSaveDateTimeTypes() {
+        final var unsaved = newSide();
+
+        final var saved = unsaved.save();
+
+        assertThat(saved).isEqualTo(unsaved);
+        assertSideCount(1);
     }
 
     @Test
@@ -198,6 +212,10 @@ class RepositoriesTest {
                 .isInstanceOf(IllegalStateException.class);
     }
 
+    private Side newSide() {
+        return sides.unsaved("SID", Instant.ofEpochSecond(1_000_000));
+    }
+
     private Middle newMiddle() {
         return middles.unsaved("MID", 222);
     }
@@ -212,6 +230,10 @@ class RepositoriesTest {
 
     private void assertBottomCount(final int total) {
         assertThat(middleRepository.findAllBottoms()).hasSize(total);
+    }
+
+    private void assertSideCount(final int total) {
+        assertThat(sides.all()).hasSize(total);
     }
 
     private void assertMiddleCounts(final int owned, final int free) {
