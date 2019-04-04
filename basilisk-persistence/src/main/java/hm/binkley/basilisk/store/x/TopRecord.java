@@ -7,29 +7,34 @@ import org.springframework.data.annotation.Transient;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
+import javax.validation.constraints.NotNull;
 import java.util.LinkedHashSet;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
 
-@EqualsAndHashCode(exclude = {"id", "store"})
+@EqualsAndHashCode(exclude = "store")
 @Table("X.TOP")
 @ToString(exclude = "store")
 public class TopRecord {
     @Id
-    public Long id;
+    public @NotNull String code;
     public String name;
-    @Column("top_id")
+    @Column("top_code")
     public Set<MiddleRef> middles = new LinkedHashSet<>();
     @Transient
     public TopStore store;
 
-    public static TopRecord unsaved(final String name) {
+    public static TopRecord unsaved(final String code, final String name) {
+        checkCode(code);
         final var unsaved = new TopRecord();
+        unsaved.code = code;
         unsaved.name = name;
         return unsaved;
     }
+
+    private static void checkCode(final String code) { requireNonNull(code);}
 
     public TopRecord save() {
         return store.save(this);
@@ -61,13 +66,12 @@ public class TopRecord {
     @Table("X.TOP_MIDDLE")
     @ToString
     public static class MiddleRef {
-        public Long middleId;
+        public String middleCode;
 
         public static MiddleRef of(final MiddleRecord middle) {
-            if (null == middle.id)
-                middle.save();
+            middle.save();
             final var ref = new MiddleRef();
-            ref.middleId = middle.id;
+            ref.middleCode = middle.code;
             return ref;
         }
     }

@@ -1,14 +1,23 @@
 package hm.binkley.basilisk.store.x;
 
+import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 
+import java.math.BigDecimal;
 import java.util.stream.Stream;
 
-import static java.util.stream.StreamSupport.stream;
-
 public interface KindRepository
-        extends CrudRepository<KindRecord, Long> {
-    default Stream<KindRecord> readAll() {
-        return stream(findAll().spliterator(), false);
-    }
+        extends CrudRepository<KindRecord, String> {
+    @Query("SELECT * FROM X.KIND")
+    Stream<KindRecord> readAll();
+
+    @Query("INSERT INTO X.KIND (code, coolness)"
+            + " VALUES (:code, :coolness)"
+            + " ON CONFLICT (code) DO UPDATE"
+            + " SET coolness = excluded.coolness"
+            + " RETURNING *")
+    <S extends KindRecord> S upsert(
+            @Param("code") String code,
+            @Param("coolness") BigDecimal coolness);
 }

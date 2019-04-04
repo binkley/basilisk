@@ -14,13 +14,13 @@ import static java.util.Objects.requireNonNull;
 public class TopStore {
     private final TopRepository springData;
 
-    public TopRecord unsaved(final String name) {
-        return bind(TopRecord.unsaved(name));
+    public TopRecord unsaved(final String code, final String name) {
+        return bind(TopRecord.unsaved(code, name));
     }
 
-    public Optional<TopRecord> byId(final Long id) {
-        requireNonNull(id);
-        return springData.findById(id)
+    public Optional<TopRecord> byCode(final String code) {
+        requireNonNull(code);
+        return springData.findById(code)
                 .map(this::bind);
     }
 
@@ -30,12 +30,12 @@ public class TopStore {
     }
 
     public TopRecord save(final TopRecord record) {
+        springData.upsert(record.code, record.name);
         return springData.save(record);
     }
 
     public void delete(final TopRecord record) {
         springData.delete(record);
-        record.id = null;
     }
 
     private TopRecord bind(final TopRecord record) {

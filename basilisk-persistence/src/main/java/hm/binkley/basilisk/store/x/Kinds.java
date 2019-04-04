@@ -12,12 +12,12 @@ import java.util.stream.Stream;
 public class Kinds {
     private final KindStore store;
 
-    public Kind unsaved(final BigDecimal coolness) {
-        return new Kind(store.unsaved(coolness));
+    public Kind unsaved(final String code, final BigDecimal coolness) {
+        return new Kind(store.unsaved(code, coolness));
     }
 
-    public Optional<Kind> byId(final Long id) {
-        return store.byId(id)
+    public Optional<Kind> byCode(final String code) {
+        return store.byCode(code)
                 .map(Kind::new);
     }
 

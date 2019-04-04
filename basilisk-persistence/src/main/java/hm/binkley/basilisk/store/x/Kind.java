@@ -14,7 +14,7 @@ import java.util.function.Consumer;
 public final class Kind {
     private final @NotNull KindRecord record;
 
-    public Long getId() { return record.id; }
+    public String getCode() { return record.code; }
 
     public BigDecimal getCoolness() { return record.coolness; }
 

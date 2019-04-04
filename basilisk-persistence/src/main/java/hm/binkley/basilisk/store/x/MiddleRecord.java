@@ -10,44 +10,43 @@ import org.springframework.data.relational.core.mapping.Table;
 import javax.validation.constraints.NotNull;
 import java.util.LinkedHashSet;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
 
-@EqualsAndHashCode(exclude = {"id", "store"})
+@EqualsAndHashCode(exclude = "store")
 @Table("X.MIDDLE")
 @ToString(exclude = "store")
 public class MiddleRecord {
     @Id
-    public Long id;
-    public Long kindId;
+    public @NotNull String code;
+    public String kindCode;
     public int mid;
-    @Column("middle_id")
+    @Column("middle_code")
     public Set<BottomRecord> bottoms = new LinkedHashSet<>();
     @Transient
     public MiddleStore store;
 
-    public static MiddleRecord unsaved(final int mid) {
+    public static MiddleRecord unsaved(final String code, final int mid) {
+        checkCode(code);
         final var unsaved = new MiddleRecord();
+        unsaved.code = code;
         unsaved.mid = mid;
         return unsaved;
     }
 
-    /** @todo Instead require caller to discard previous bottom objects? */
+    private static void checkCode(final String code) { requireNonNull(code);}
+
     public MiddleRecord save() {
-        final var saved = store.save(this);
-        bottoms.forEach(saved::postSave);
-        return saved;
+        return store.save(this);
     }
 
     public void delete() { store.delete(this); }
 
     public MiddleRecord define(final @NotNull KindRecord kind) {
         check(kind);
-        if (null == kind.id)
-            kind.save();
-        kindId = kind.id;
+        kind.save();
+        kindCode = kind.code;
         return this;
     }
 
@@ -65,19 +64,10 @@ public class MiddleRecord {
         return this;
     }
 
-    private void postSave(final BottomRecord middle) {
-        middle.postParentSave(this);
-    }
-
     private void check(final BottomRecord bottom) {
         requireNonNull(bottom);
-        /* OK if:
-        1) Both unsaved OR both saved AND bottom saved to THIS
-        1a) Duplicate check in Set will affect latter
-        2) Middle saved AND bottom not saved
-         */
-        if (Objects.equals(id, bottom.middleId)) return;
-        if (null != id && null == bottom.middleId) return;
+        if (code.equals(bottom.middleCode)
+                || null == bottom.middleCode) return;
 
         throw new IllegalStateException(
                 "Mismatched: " + bottom + "; " + this);

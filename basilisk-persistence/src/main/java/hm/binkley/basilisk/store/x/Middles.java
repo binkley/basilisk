@@ -12,12 +12,12 @@ public class Middles {
     private final MiddleStore store;
     private final Kinds kinds;
 
-    public Middle unsaved(final int mid) {
-        return new Middle(store.unsaved(mid), kinds);
+    public Middle unsaved(final String code, final int mid) {
+        return new Middle(store.unsaved(code, mid), kinds);
     }
 
-    public Optional<Middle> byId(final Long id) {
-        return store.byId(id)
+    public Optional<Middle> byCode(final String code) {
+        return store.byCode(code)
                 .map(this::bind);
     }
 

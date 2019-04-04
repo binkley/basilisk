@@ -12,12 +12,12 @@ public class Tops {
     private final TopStore store;
     private final Middles middles;
 
-    public Top unsaved(final String name) {
-        return bind(store.unsaved(name));
+    public Top unsaved(final String code, final String name) {
+        return bind(store.unsaved(code, name));
     }
 
-    public Optional<Top> byId(final Long id) {
-        return store.byId(id)
+    public Optional<Top> byCode(final String code) {
+        return store.byCode(code)
                 .map(this::bind);
     }
 

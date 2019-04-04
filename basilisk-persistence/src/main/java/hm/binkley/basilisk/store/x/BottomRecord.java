@@ -4,23 +4,19 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.springframework.data.relational.core.mapping.Table;
 
-import static java.util.Objects.requireNonNull;
+import javax.validation.constraints.NotNull;
 
 /** These are <em>value objects</em>, compared by {@link #foo}. */
-@EqualsAndHashCode(exclude = "middleId")
+@EqualsAndHashCode(exclude = "middleCode")
 @Table("X.BOTTOM")
 @ToString
 public class BottomRecord {
-    public String foo;
-    public Long middleId;
+    public @NotNull String foo;
+    public String middleCode;
 
     public static BottomRecord unsaved(final String foo) {
         final var unsaved = new BottomRecord();
         unsaved.foo = foo;
         return unsaved;
-    }
-
-    void postParentSave(final MiddleRecord middle) {
-        middleId = requireNonNull(middle.id, "Unsaved: " + middle);
     }
 }

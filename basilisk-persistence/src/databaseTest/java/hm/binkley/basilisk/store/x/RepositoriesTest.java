@@ -11,11 +11,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.verify;
 
 @ActiveProfiles("test")
 @AutoConfigureEmbeddedDatabase
@@ -23,7 +21,7 @@ import static org.mockito.Mockito.verify;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @SuppressWarnings("PMD")
 @Transactional
-class RepositoryTest {
+class RepositoriesTest {
     @Spy
     private final TopRepository topRepository;
     @Spy
@@ -31,6 +29,7 @@ class RepositoryTest {
     @Spy
     private final MiddleRepository middleRepository;
 
+    private MiddleStore middleStore;
     private Kinds kinds;
     private Middles middles;
     private Tops tops;
@@ -42,20 +41,21 @@ class RepositoryTest {
     @BeforeEach
     void setUp() {
         kinds = new Kinds(new KindStore(kindRepository));
-        middles = new Middles(new MiddleStore(middleRepository), kinds);
+        middleStore = new MiddleStore(middleRepository);
+        middles = new Middles(middleStore, kinds);
         tops = new Tops(new TopStore(topRepository), middles);
     }
 
     @Test
     void shouldCascadeSaveTopToBottom() {
         final var mid = 222;
-        final var unsavedMiddle = middles.unsaved(mid);
+        final var unsavedMiddle = middles.unsaved("MID", mid);
         unsavedMiddle.addBottom("BAR");
         final var coolness = new BigDecimal("2.3");
-        final var unsavedKind = kinds.unsaved(coolness);
+        final var unsavedKind = kinds.unsaved("KIN", coolness);
         unsavedMiddle.define(unsavedKind);
         final var topName = "TWIRL";
-        final var unsavedTop = tops.unsaved(topName);
+        final var unsavedTop = tops.unsaved("TOP", topName);
         unsavedTop.add(unsavedMiddle);
 
         final var savedTop = unsavedTop.save();
@@ -66,8 +66,9 @@ class RepositoryTest {
         assertBottomCount(1);
         assertMiddleCounts(1, 0);
         assertKindCount(1);
+        assertTopCount(1);
 
-        assertThat(tops.byId(savedTop.getId()).orElseThrow())
+        assertThat(tops.byCode(savedTop.getCode()).orElseThrow())
                 .isEqualTo(savedTop);
     }
 
@@ -84,6 +85,24 @@ class RepositoryTest {
 
         assertThat(middle.getKind()).isEmpty();
         assertThat(middle.getCoolness()).isNull();
+    }
+
+    @Test
+    void shouldSaveOneToOneRelationshipsAtDefinition() {
+        newMiddle().define(newKind());
+
+        assertKindCount(1);
+    }
+
+    @Test
+    void shouldSaveManyToOneRelationshipsAtReference() {
+        final var top = newTop().add(newMiddle());
+
+        assertMiddleCounts(0, 1);
+
+        top.save();
+
+        assertMiddleCounts(1, 0);
     }
 
     @Test
@@ -127,7 +146,7 @@ class RepositoryTest {
         final var savedMiddle = newMiddle()
                 .add(newBottom())
                 .save();
-        final var savedId = savedMiddle.getId();
+        final var savedCode = savedMiddle.getCode();
 
         assertBottomCount(1);
 
@@ -135,18 +154,7 @@ class RepositoryTest {
 
         assertBottomCount(0);
 
-        assertThat(middles.byId(savedId)).isEmpty();
-    }
-
-    @Test
-    void shouldNotResaveAlreadySavedEntity() {
-        final var middle = MiddleRecord.unsaved(222);
-        middleRepository.save(middle);
-        topRepository.save(TopRecord.unsaved("TWIRL").add(middle));
-
-        assertMiddleCounts(1, 0);
-
-        verify(middleRepository).save(middle); // default - times(1)
+        assertThat(middles.byCode(savedCode)).isEmpty();
     }
 
     @Test
@@ -173,56 +181,12 @@ class RepositoryTest {
 
         final var firstMiddle = top.getMiddles().findFirst().orElseThrow();
         assertThat(firstMiddle).isEqualTo(middle);
-        assertThat(firstMiddle.getId()).isEqualTo(middle.getId());
+        assertThat(firstMiddle.getCode()).isEqualTo(middle.getCode());
 
         top.remove(middle);
         top.save();
 
         assertMiddleCounts(0, 1);
-    }
-
-    @Test
-    void shouldResaveDeletedEntities() {
-        final var savedTop = newTop().save();
-        final var savedTopId = savedTop.getId();
-        final var savedKind = newKind().save();
-        final var savedKindId = savedKind.getId();
-        final var savedMiddle = newMiddle().save();
-        final var savedMiddleId = savedMiddle.getId();
-
-        assertTopCount(1);
-        assertKindCount(1);
-        assertMiddleCounts(0, 1);
-
-        final var resavedTop = savedTop.delete().save();
-        final var resavedKind = savedKind.delete().save();
-        final var resavedMiddle = savedMiddle.delete().save();
-
-        assertTopCount(1);
-        assertKindCount(1);
-        assertMiddleCounts(0, 1);
-
-        assertThat(resavedTop.getId()).isNotEqualTo(savedTopId);
-        assertThat(resavedKind.getId()).isNotEqualTo(savedKindId);
-        assertThat(resavedMiddle.getId()).isNotEqualTo(savedMiddleId);
-    }
-
-    @Test
-    void shouldComplainOnUsingDeletedEntities() {
-        final var deletedTop = newTop().save().delete();
-        final var deletedKind = newKind().save().delete();
-        final var deletedMiddle = newMiddle().save().delete();
-
-        assertTopCount(0);
-        assertKindCount(0);
-        assertMiddleCounts(0, 0);
-
-        assertThatThrownBy(() -> tops.byId(deletedTop.getId()))
-                .isInstanceOf(NullPointerException.class);
-        assertThatThrownBy(() -> kinds.byId(deletedKind.getId()))
-                .isInstanceOf(NullPointerException.class);
-        assertThatThrownBy(() -> middles.byId(deletedMiddle.getId()))
-                .isInstanceOf(NullPointerException.class);
     }
 
     @Test
@@ -234,24 +198,16 @@ class RepositoryTest {
                 .isInstanceOf(IllegalStateException.class);
     }
 
-    @Test
-    void shouldComplainOnAbsentMiddle() {
-        final var top = newTop();
-
-        assertThatThrownBy(() -> top.remove(newMiddle()))
-                .isInstanceOf(NoSuchElementException.class);
-    }
-
     private Middle newMiddle() {
-        return middles.unsaved(222);
+        return middles.unsaved("MID", 222);
     }
 
     private Kind newKind() {
-        return kinds.unsaved(new BigDecimal("2.3"));
+        return kinds.unsaved("KIN", new BigDecimal("2.3"));
     }
 
     private Top newTop() {
-        return tops.unsaved("TWIRL");
+        return tops.unsaved("TOP", "TWIRL");
     }
 
     private void assertBottomCount(final int total) {

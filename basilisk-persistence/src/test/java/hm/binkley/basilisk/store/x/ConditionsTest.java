@@ -7,6 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
 import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -22,6 +23,7 @@ class ConditionsTest {
     @Mock
     private final MiddleRepository middleRepository;
 
+    private Kinds kinds;
     private Middles middles;
     private Tops tops;
 
@@ -31,9 +33,19 @@ class ConditionsTest {
 
     @BeforeEach
     void setUp() {
-        middles = new Middles(new MiddleStore(middleRepository),
-                new Kinds(new KindStore(kindRepository)));
+        kinds = new Kinds(new KindStore(kindRepository));
+        middles = new Middles(new MiddleStore(middleRepository), kinds);
         tops = new Tops(new TopStore(topRepository), middles);
+    }
+
+    @Test
+    void shouldComplainOnMissingNaturalKey() {
+        assertThatThrownBy(() -> tops.unsaved(null, "TWIRL"))
+                .isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> kinds.unsaved(null, new BigDecimal("2.3")))
+                .isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> middles.unsaved(null, 222))
+                .isInstanceOf(NullPointerException.class);
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -73,22 +85,10 @@ class ConditionsTest {
     }
 
     @Test
-    void shouldComplainOnMismatchedBottomBeforeSave() {
-        final var middle = MiddleRecord.unsaved(222);
-        middle.id = null;
-        final var bottom = BottomRecord.unsaved("BAR");
-        bottom.middleId = 2L;
-
-        assertThatThrownBy(() -> middle.add(bottom))
-                .isInstanceOf(IllegalStateException.class);
-    }
-
-    @Test
     void shouldComplainOnMismatchedBottomAfterSave() {
-        final var middle = MiddleRecord.unsaved(222);
-        middle.id = 1L;
+        final var middle = MiddleRecord.unsaved("MID", 222);
         final var bottom = BottomRecord.unsaved("BAR");
-        bottom.middleId = middle.id + 1;
+        bottom.middleCode = middle.code + "-X";
 
         assertThatThrownBy(() -> middle.add(bottom))
                 .isInstanceOf(IllegalStateException.class);
@@ -105,11 +105,19 @@ class ConditionsTest {
                 .isInstanceOf(NullPointerException.class);
     }
 
+    @Test
+    void shouldComplainOnAbsentMiddle() {
+        final var top = newTop();
+
+        assertThatThrownBy(() -> top.remove(newMiddle()))
+                .isInstanceOf(NoSuchElementException.class);
+    }
+
     private Middle newMiddle() {
-        return middles.unsaved(222);
+        return middles.unsaved("MID", 222);
     }
 
     private Top newTop() {
-        return tops.unsaved("TWIRL");
+        return tops.unsaved("TOP", "TWIRL");
     }
 }

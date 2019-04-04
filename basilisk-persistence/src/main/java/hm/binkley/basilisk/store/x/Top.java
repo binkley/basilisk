@@ -16,13 +16,13 @@ public final class Top {
     private final @NotNull Middles middles;
 
     /** @todo More elegant way than exposing this details? */
-    public Long getId() { return record.id; }
+    public String getCode() { return record.code; }
 
     public String getName() { return record.name; }
 
     public Stream<Middle> getMiddles() {
         return record.middles.stream()
-                .map(ref -> middles.byId(ref.middleId))
+                .map(ref -> middles.byCode(ref.middleCode))
                 .map(Optional::orElseThrow);
     }
 

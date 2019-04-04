@@ -16,7 +16,7 @@ public final class Middle {
     private final @NotNull MiddleRecord record;
     private final @NotNull Kinds kinds;
 
-    public Long getId() { return record.id; }
+    public String getCode() { return record.code; }
 
     public int getMid() { return record.mid; }
 
@@ -27,8 +27,8 @@ public final class Middle {
     }
 
     public Optional<Kind> getKind() {
-        return Optional.ofNullable(record.kindId)
-                .flatMap(kinds::byId);
+        return Optional.ofNullable(record.kindCode)
+                .flatMap(kinds::byCode);
     }
 
     public Middle save() {

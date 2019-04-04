@@ -15,13 +15,13 @@ import static java.util.Objects.requireNonNull;
 public class KindStore {
     private final KindRepository springData;
 
-    public KindRecord unsaved(final BigDecimal coolness) {
-        return bind(KindRecord.unsaved(coolness));
+    public KindRecord unsaved(final String code, final BigDecimal coolness) {
+        return bind(KindRecord.unsaved(code, coolness));
     }
 
-    public Optional<KindRecord> byId(final Long id) {
-        requireNonNull(id);
-        return springData.findById(id)
+    public Optional<KindRecord> byCode(final String code) {
+        requireNonNull(code);
+        return springData.findById(code)
                 .map(this::bind);
     }
 
@@ -31,12 +31,12 @@ public class KindStore {
     }
 
     public KindRecord save(final KindRecord record) {
+        springData.upsert(record.code, record.coolness);
         return springData.save(record);
     }
 
     public void delete(final KindRecord record) {
         springData.delete(record);
-        record.id = null;
     }
 
     private KindRecord bind(final KindRecord record) {
