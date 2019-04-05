@@ -5,30 +5,28 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import javax.validation.constraints.NotNull;
-import java.time.Instant;
-import java.util.function.Function;
+import java.util.function.Consumer;
 
 @EqualsAndHashCode
 @RequiredArgsConstructor
 @ToString
-public final class Side {
-    private final @NotNull SideRecord record;
+public final class Near {
+    private final @NotNull NearRecord record;
 
     public String getCode() { return record.code; }
 
-    public Instant getTime() { return record.time; }
-
-    public Side save() {
+    public Near save() {
         record.save();
         return this;
     }
 
-    public Side delete() {
+    public Near delete() {
         record.delete();
         return this;
     }
 
-    public <T> T applyTo(final Function<SideRecord, T> applyTo) {
-        return applyTo.apply(record);
+    public Near applyInto(final Consumer<NearRecord> into) {
+        into.accept(record);
+        return this;
     }
 }

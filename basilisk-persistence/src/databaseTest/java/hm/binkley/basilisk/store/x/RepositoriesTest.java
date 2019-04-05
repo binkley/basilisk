@@ -15,6 +15,7 @@ import java.time.Instant;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.mock;
 
 @ActiveProfiles("test")
 @AutoConfigureEmbeddedDatabase
@@ -34,6 +35,8 @@ class RepositoriesTest {
     private static final String topName = "TWIRL";
 
     @Spy
+    private final NearRepository nearRepository;
+    @Spy
     private final TopRepository topRepository;
     @Spy
     private final KindRepository kindRepository;
@@ -42,6 +45,7 @@ class RepositoriesTest {
     @Spy
     private final SideRepository sideRepository;
 
+    private Nears nears;
     private Sides sides;
     private Kinds kinds;
     private Middles middles;
@@ -53,23 +57,30 @@ class RepositoriesTest {
 
     @BeforeEach
     void setUp() {
+        nears = new Nears(new NearStore(nearRepository));
         sides = new Sides(new SideStore(sideRepository));
-        kinds = new Kinds(new KindStore(kindRepository));
+        kinds = new Kinds(new KindStore(kindRepository), nears);
         middles = new Middles(new MiddleStore(middleRepository),
-                kinds, sides);
-        tops = new Tops(new TopStore(topRepository), middles, sides);
+                kinds, sides, nears);
+        tops = new Tops(new TopStore(topRepository), middles, sides, nears);
     }
 
     @Test
     void shouldCascadeSaveTopToBottom() {
+        final var unsavedKindNear = nears.unsaved("KNR");
+        final var unsavedMiddleNear = nears.unsaved("MNR");
+        final var unsavedTopNear = nears.unsaved("TNR");
         final var unsavedSide = sides.unsaved(sideCode, sideTime);
-        final var unsavedKind = kinds.unsaved(kindCode, kindCoolness);
+        final var unsavedKind = kinds.unsaved(kindCode, kindCoolness)
+                .addNear(unsavedKindNear);
         final var unsavedMiddle = middles.unsaved(middleCode, middleMid)
-                .defineKind(unsavedKind)
-                .defineSide(unsavedSide)
-                .addBottom(bottomFoo);
+                .attachToKind(unsavedKind)
+                .attachToSide(unsavedSide)
+                .addBottom(bottomFoo)
+                .addNear(unsavedMiddleNear);
         final var unsavedTop = tops.unsaved(topCode, topName, unsavedSide)
-                .add(unsavedMiddle);
+                .addMiddle(unsavedMiddle)
+                .addNear(unsavedTopNear);
 
         final var savedTop = unsavedTop.save();
         final var readBackTop = tops.byCode(savedTop.getCode()).orElseThrow();
@@ -93,12 +104,59 @@ class RepositoriesTest {
         final var readBackKind = readBackMiddle.getKind().orElseThrow();
         assertThat(readBackKind).isEqualTo(unsavedKind);
         assertThat(readBackKind.getCoolness()).isEqualTo(kindCoolness);
+        final var readBackKindNear = readBackKind.getNears()
+                .findFirst()
+                .orElseThrow();
+        assertThat(readBackKindNear).isEqualTo(unsavedKindNear);
 
         assertBottomCount(1);
         assertSideCount(1);
         assertMiddleCounts(1, 0);
         assertKindCount(1);
         assertTopCount(1);
+    }
+
+    @Test
+    void shouldDelete() {
+        final var top = newTop().save();
+
+        assertTopCount(1);
+
+        top.delete();
+
+        assertTopCount(0);
+
+        final var middle = newMiddle().save();
+
+        assertMiddleCounts(0, 1);
+
+        middle.delete();
+
+        assertMiddleCounts(0, 0);
+
+        final var side = newSide().save();
+
+        assertSideCount(1);
+
+        side.delete();
+
+        assertSideCount(0);
+
+        final var kind = newKind().save();
+
+        assertKindCount(1);
+
+        kind.delete();
+
+        assertKindCount(0);
+
+        final var near = nears.unsaved("NER").save();
+
+        assertNearCount(1);
+
+        near.delete();
+
+        assertNearCount(0);
     }
 
     @Test
@@ -115,12 +173,12 @@ class RepositoriesTest {
     void shouldGracefullyCopeWithNoKind() {
         final var kind = newKind().save();
         final var middle = newMiddle()
-                .defineKind(kind).save();
+                .attachToKind(kind).save();
 
         assertThat(middle.getKind().orElseThrow()).isEqualTo(kind);
         assertThat(middle.getCoolness()).isEqualTo(kind.getCoolness());
 
-        middle.undefineKind().save();
+        middle.detachFromKind().save();
         kind.delete();
 
         assertThat(middle.getKind()).isEmpty();
@@ -131,11 +189,11 @@ class RepositoriesTest {
     void shouldGracefullyCopeWithNoSide() {
         final var side = newSide().save();
         final var middle = newMiddle()
-                .defineSide(side).save();
+                .attachToSide(side).save();
 
         assertThat(middle.getSide().orElseThrow()).isEqualTo(side);
 
-        middle.undefineSide().save();
+        middle.detachFromSide().save();
         side.delete();
 
         assertThat(middle.getSide()).isEmpty();
@@ -143,14 +201,14 @@ class RepositoriesTest {
 
     @Test
     void shouldSaveOneToOneRelationshipsAtDefinition() {
-        newMiddle().defineKind(newKind());
+        newMiddle().attachToKind(newKind());
 
         assertKindCount(1);
     }
 
     @Test
     void shouldSaveManyToOneRelationshipsAtReference() {
-        final var top = newTop().add(newMiddle());
+        final var top = newTop().addMiddle(newMiddle());
 
         assertMiddleCounts(0, 1);
 
@@ -162,7 +220,7 @@ class RepositoriesTest {
     @Test
     void shouldAddValueObjectsBeforeSave() {
         newMiddle()
-                .add(newBottom())
+                .addBottom(newBottom())
                 .save();
 
         assertBottomCount(1);
@@ -173,7 +231,7 @@ class RepositoriesTest {
         final var bottom = newBottom();
         newMiddle()
                 .save()
-                .add(bottom)
+                .addBottom(bottom)
                 .save();
 
         assertThat(bottom.getFoo()).isEqualTo(bottomFoo);
@@ -184,12 +242,12 @@ class RepositoriesTest {
     void shouldRemoveValueObjectsDirectly() {
         final var bottom = newBottom();
         final var middle = newMiddle()
-                .add(bottom)
+                .addBottom(bottom)
                 .save();
 
         assertBottomCount(1);
 
-        middle.remove(bottom);
+        middle.removeBottom(bottom);
         middle.save();
 
         assertBottomCount(0);
@@ -198,7 +256,7 @@ class RepositoriesTest {
     @Test
     void shouldRemoveValueObjectsOnDeleteOwner() {
         final var savedMiddle = newMiddle()
-                .add(newBottom())
+                .addBottom(newBottom())
                 .save();
         final var savedCode = savedMiddle.getCode();
 
@@ -214,7 +272,7 @@ class RepositoriesTest {
     @Test
     void shouldNotRemoveAnotherEntityOnDeleteOwner() {
         final var top = newTop()
-                .add(newMiddle())
+                .addMiddle(newMiddle())
                 .save();
 
         assertMiddleCounts(1, 0);
@@ -228,7 +286,7 @@ class RepositoriesTest {
     void shouldNotRemoveAnotherEntityOnRemoveReference() {
         final var middle = newMiddle();
         final var top = newTop()
-                .add(middle)
+                .addMiddle(middle)
                 .save();
 
         assertMiddleCounts(1, 0);
@@ -237,19 +295,69 @@ class RepositoriesTest {
         assertThat(firstMiddle).isEqualTo(middle);
         assertThat(firstMiddle.getCode()).isEqualTo(middle.getCode());
 
-        top.remove(middle);
+        top.removeMiddle(middle);
         top.save();
 
         assertMiddleCounts(0, 1);
     }
 
     @Test
+    void shouldRollupNearness() {
+        final var kindNear = nears.unsaved("KNR");
+        final var kind = newKind()
+                .addNear(kindNear);
+        final var middle = newMiddle()
+                .attachToKind(kind);
+        final var top = newTop()
+                .addMiddle(middle)
+                .save();
+
+        assertThat(top.getNetNears()).containsExactly(kindNear);
+
+        final var middleNear = nears.unsaved("MNR");
+        middle.addNear(middleNear).save();
+
+        assertThat(top.getNetNears()).containsExactly(middleNear);
+
+        final var topNear = nears.unsaved("TNR");
+        top.addNear(topNear).save();
+
+        assertThat(top.getNetNears()).containsExactly(topNear);
+
+        kind.removeNear(kindNear).save();
+
+        assertThat(kind.getNears()).isEmpty();
+        assertThat(top.getNetNears()).containsExactly(topNear);
+
+        middle.removeNear(middleNear).save();
+
+        assertThat(middle.getNears()).isEmpty();
+        assertThat(top.getNetNears()).containsExactly(topNear);
+
+        top.removeNear(topNear).save();
+
+        assertThat(top.getNears()).isEmpty();
+        assertThat(top.getNetNears()).isEmpty();
+    }
+
+    @Test
     void shouldComplainOnDuplicateMiddle() {
         final var middle = newMiddle();
-        final var top = newTop().add(middle);
+        final var top = newTop().addMiddle(middle);
 
-        assertThatThrownBy(() -> top.add(middle))
+        assertThatThrownBy(() -> top.addMiddle(middle))
                 .isInstanceOf(IllegalStateException.class);
+    }
+
+    @Test
+    void whereDoesThisTestGo() {
+        final var kindRecord = KindRecord.unsaved(
+                "KIN", new BigDecimal("2.3"));
+        assertThat(kindRecord.hasNears()).isFalse();
+        final var nearRecord = NearRecord.unsaved("NER");
+        nearRecord.store = mock(NearStore.class);
+        kindRecord.addNear(nearRecord);
+        assertThat(kindRecord.hasNears()).isTrue();
     }
 
     private Side newSide() {
@@ -288,5 +396,9 @@ class RepositoriesTest {
 
     private void assertTopCount(final int total) {
         assertThat(tops.all()).hasSize(total);
+    }
+
+    private void assertNearCount(final int total) {
+        assertThat(nears.all()).hasSize(total);
     }
 }

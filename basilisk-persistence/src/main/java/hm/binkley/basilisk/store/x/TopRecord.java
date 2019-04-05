@@ -24,6 +24,8 @@ public class TopRecord {
     @Column("top_code")
     public Set<MiddleRef> middles = new LinkedHashSet<>();
     public @NotNull String sideCode;
+    @Column("top_code")
+    public Set<NearRef> nears = new LinkedHashSet<>();
     @Transient
     public TopStore store;
 
@@ -67,8 +69,32 @@ public class TopRecord {
         return this;
     }
 
+    public TopRecord add(final NearRecord near) {
+        check(near);
+        final var ref = NearRef.of(near);
+        if (!nears.add(ref))
+            throw new IllegalStateException("Duplicate: " + near);
+        return this;
+    }
+
+    public TopRecord remove(final NearRecord near) {
+        check(near);
+        final var ref = NearRef.of(near);
+        if (!nears.remove(ref))
+            throw new NoSuchElementException("Absent: " + near);
+        return this;
+    }
+
+    public boolean hasNears() {
+        return !nears.isEmpty();
+    }
+
     private void check(final MiddleRecord middle) {
         requireNonNull(middle);
+    }
+
+    private void check(final NearRecord near) {
+        requireNonNull(near);
     }
 
     @EqualsAndHashCode
@@ -81,6 +107,20 @@ public class TopRecord {
             middle.save();
             final var ref = new MiddleRef();
             ref.middleCode = middle.code;
+            return ref;
+        }
+    }
+
+    @EqualsAndHashCode
+    @Table("X.TOP_NEAR")
+    @ToString
+    public static class NearRef {
+        public String nearCode;
+
+        public static NearRef of(final NearRecord near) {
+            near.save();
+            final var ref = new NearRef();
+            ref.nearCode = near.code;
             return ref;
         }
     }

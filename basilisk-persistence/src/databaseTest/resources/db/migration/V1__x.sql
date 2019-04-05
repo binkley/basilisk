@@ -1,5 +1,10 @@
 CREATE SCHEMA X;
 
+CREATE TABLE X.NEAR
+(
+    code VARCHAR NOT NULL PRIMARY KEY
+);
+
 CREATE TABLE X.SIDE
 (
     code VARCHAR     NOT NULL PRIMARY KEY,
@@ -33,14 +38,35 @@ CREATE TABLE X.MIDDLE
 CREATE TABLE X.BOTTOM
 (
     -- One bottom to each middle; to each middle, many bottoms
-    middle_code VARCHAR NOT NULL,
+    middle_code VARCHAR NOT NULL REFERENCES X.MIDDLE (code),
     foo         VARCHAR NOT NULL,
     UNIQUE (middle_code, foo)
 );
 
 CREATE TABLE X.TOP_MIDDLE
 (
-    top_code    VARCHAR NOT NULL,
-    middle_code VARCHAR NOT NULL,
+    top_code    VARCHAR NOT NULL REFERENCES X.TOP (code),
+    middle_code VARCHAR NOT NULL REFERENCES X.MIDDLE (code),
     UNIQUE (top_code, middle_code)
+);
+
+CREATE TABLE X.TOP_NEAR
+(
+    top_code  VARCHAR NOT NULL REFERENCES X.TOP (code),
+    near_code VARCHAR NOT NULL REFERENCES X.NEAR (code),
+    UNIQUE (top_code, near_code)
+);
+
+CREATE TABLE X.MIDDLE_NEAR
+(
+    middle_code VARCHAR NOT NULL REFERENCES X.MIDDLE (code),
+    near_code   VARCHAR NOT NULL REFERENCES X.NEAR (code),
+    UNIQUE (middle_code, near_code)
+);
+
+CREATE TABLE X.KIND_NEAR
+(
+    kind_code VARCHAR NOT NULL REFERENCES X.KIND (code),
+    near_code VARCHAR NOT NULL REFERENCES X.NEAR (code),
+    UNIQUE (kind_code, near_code)
 );

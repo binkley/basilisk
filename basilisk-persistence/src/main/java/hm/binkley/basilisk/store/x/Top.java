@@ -9,13 +9,15 @@ import java.time.Instant;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-@EqualsAndHashCode(exclude = "middles")
+@EqualsAndHashCode(exclude = {"middles", "sides", "nears"})
 @RequiredArgsConstructor
-@ToString(exclude = "middles")
-public final class Top {
+@ToString(exclude = {"middles", "sides", "nears"})
+public final class Top
+        implements WithNears {
     private final @NotNull TopRecord record;
     private final @NotNull Middles middles;
     private final @NotNull Sides sides;
+    private final @NotNull Nears nears;
 
     /** @todo More elegant way than exposing this details? */
     public String getCode() { return record.code; }
@@ -36,6 +38,23 @@ public final class Top {
         return sides.byCode(record.sideCode).orElseThrow();
     }
 
+    @Override
+    public Stream<Near> getNears() {
+        return record.nears.stream()
+                .map(ref -> nears.byCode(ref.nearCode))
+                .map(Optional::orElseThrow);
+    }
+
+    @Override
+    public Stream<Near> getNetNears() {
+        if (record.hasNears())
+            return getNears();
+
+        return getMiddles()
+                .flatMap(Middle::getNetNears)
+                .distinct();
+    }
+
     public Top save() {
         record.save();
         return this;
@@ -46,13 +65,23 @@ public final class Top {
         return this;
     }
 
-    public Top add(final Middle middle) {
+    public Top addMiddle(final Middle middle) {
         middle.applyInto(record::add);
         return this;
     }
 
-    public Top remove(final Middle middle) {
+    public Top removeMiddle(final Middle middle) {
         middle.applyInto(record::remove);
+        return this;
+    }
+
+    public Top addNear(final @NotNull Near near) {
+        near.applyInto(record::add);
+        return this;
+    }
+
+    public Top removeNear(final @NotNull Near near) {
+        near.applyInto(record::remove);
         return this;
     }
 }

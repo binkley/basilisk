@@ -15,6 +15,15 @@ import static org.mockito.Mockito.when;
 class DomainsTest {
     @Test
     void shouldDelegateToRecord() {
+        final var nearCode = "NER";
+        final var nearRecord = spy(NearRecord.unsaved(nearCode));
+        doReturn(nearRecord).when(nearRecord).save();
+        final var near = new Near(nearRecord);
+        final var nears = mock(Nears.class);
+        when(nears.byCode(nearCode)).thenReturn(Optional.of(near));
+
+        assertThat(near.getCode()).isEqualTo(nearCode);
+
         final var sideCode = "SID";
         final var sideRecord = spy(SideRecord.unsaved(
                 sideCode, Instant.ofEpochMilli(1_000_000)));
@@ -28,7 +37,7 @@ class DomainsTest {
         final var topCode = "TOP";
         final var top = new Top(TopRecord.unsaved(
                 topCode, "TWIRL", sideRecord),
-                mock(Middles.class), sides);
+                mock(Middles.class), sides, nears);
 
         assertThat(top.getCode()).isEqualTo(topCode);
         assertThat(top.getTime()).isEqualTo(sideRecord.time);
@@ -37,7 +46,7 @@ class DomainsTest {
         final var kindRecord = spy(KindRecord.unsaved(
                 kindCode, new BigDecimal("2.3")));
         doReturn(kindRecord).when(kindRecord).save();
-        final var kind = new Kind(kindRecord);
+        final var kind = new Kind(kindRecord, nears);
         final var kinds = mock(Kinds.class);
         when(kinds.byCode(kindCode)).thenReturn(Optional.of(kind));
 
@@ -45,9 +54,9 @@ class DomainsTest {
 
         final var middleCode = "MID";
         final var middle = new Middle(MiddleRecord.unsaved(
-                middleCode, 222), kinds, sides)
-                .defineKind(kind)
-                .defineSide(side);
+                middleCode, 222), kinds, sides, nears)
+                .attachToKind(kind)
+                .attachToSide(side);
 
         assertThat(middle.getCode()).isEqualTo(middleCode);
         assertThat(middle.getCoolness()).isEqualTo(kindRecord.coolness);

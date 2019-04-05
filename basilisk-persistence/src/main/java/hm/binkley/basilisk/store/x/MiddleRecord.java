@@ -25,6 +25,8 @@ public class MiddleRecord {
     public int mid;
     @Column("middle_code")
     public Set<BottomRecord> bottoms = new LinkedHashSet<>();
+    @Column("middle_code")
+    public Set<NearRef> nears = new LinkedHashSet<>();
     @Transient
     public MiddleStore store;
 
@@ -52,7 +54,7 @@ public class MiddleRecord {
     }
 
     @SuppressWarnings("PMD.NullAssignment")
-    public MiddleRecord undefineKind() {
+    public MiddleRecord detachFromKind() {
         if (null == kindCode) {
             throw new IllegalStateException("Absent kind");
         }
@@ -60,7 +62,7 @@ public class MiddleRecord {
         return this;
     }
 
-    public MiddleRecord defineSide(final @NotNull SideRecord side) {
+    public MiddleRecord attachToSide(final @NotNull SideRecord side) {
         check(side);
         side.save();
         sideCode = side.code;
@@ -68,7 +70,7 @@ public class MiddleRecord {
     }
 
     @SuppressWarnings("PMD.NullAssignment")
-    public MiddleRecord undefineSide() {
+    public MiddleRecord detachFromSide() {
         if (null == sideCode) {
             throw new IllegalStateException("Absent side");
         }
@@ -76,18 +78,42 @@ public class MiddleRecord {
         return this;
     }
 
-    public MiddleRecord add(final @NotNull BottomRecord bottom) {
+    public MiddleRecord addBottom(final @NotNull BottomRecord bottom) {
         check(bottom);
         if (!bottoms.add(bottom))
             throw new IllegalStateException("Duplicate: " + bottom);
         return this;
     }
 
-    public MiddleRecord remove(final @NotNull BottomRecord bottom) {
+    public MiddleRecord removeBottom(final @NotNull BottomRecord bottom) {
         check(bottom);
         if (!bottoms.remove(bottom))
             throw new NoSuchElementException("Absent: " + bottom);
         return this;
+    }
+
+    public MiddleRecord addNear(final NearRecord near) {
+        check(near);
+        final var ref = NearRef.of(near);
+        if (!nears.add(ref))
+            throw new IllegalStateException("Duplicate: " + near);
+        return this;
+    }
+
+    public MiddleRecord removeNear(final NearRecord near) {
+        check(near);
+        final var ref = NearRef.of(near);
+        if (!nears.remove(ref))
+            throw new NoSuchElementException("Absent: " + near);
+        return this;
+    }
+
+    public boolean hasNears() {
+        return !nears.isEmpty();
+    }
+
+    private void check(final KindRecord kind) {
+        requireNonNull(kind);
     }
 
     private void check(final BottomRecord bottom) {
@@ -97,11 +123,25 @@ public class MiddleRecord {
                     "Mismatched: " + bottom + "; " + this);
     }
 
-    private void check(final KindRecord kind) {
-        requireNonNull(kind);
-    }
-
     private void check(final SideRecord side) {
         requireNonNull(side);
+    }
+
+    private void check(final NearRecord near) {
+        requireNonNull(near);
+    }
+
+    @EqualsAndHashCode
+    @Table("X.MIDDLE_NEAR")
+    @ToString
+    public static class NearRef {
+        public String nearCode;
+
+        public static NearRef of(final NearRecord near) {
+            near.save();
+            final var ref = new NearRef();
+            ref.nearCode = near.code;
+            return ref;
+        }
     }
 }

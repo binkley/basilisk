@@ -11,18 +11,23 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class Kinds {
     private final KindStore store;
+    private final Nears nears;
 
     public Kind unsaved(final String code, final BigDecimal coolness) {
-        return new Kind(store.unsaved(code, coolness));
+        return bind(store.unsaved(code, coolness));
     }
 
     public Optional<Kind> byCode(final String code) {
         return store.byCode(code)
-                .map(Kind::new);
+                .map(this::bind);
     }
 
     public Stream<Kind> all() {
         return store.all()
-                .map(Kind::new);
+                .map(this::bind);
+    }
+
+    private Kind bind(final KindRecord record) {
+        return new Kind(record, nears);
     }
 }

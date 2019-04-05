@@ -18,6 +18,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
 class ConditionsTest {
     @Mock
+    private final NearRepository nearRepository;
+    @Mock
     private final SideRepository sideRepository;
     @Mock
     private final TopRepository topRepository;
@@ -26,6 +28,7 @@ class ConditionsTest {
     @Mock
     private final MiddleRepository middleRepository;
 
+    private Nears nears;
     private Sides sides;
     private Kinds kinds;
     private Middles middles;
@@ -37,11 +40,12 @@ class ConditionsTest {
 
     @BeforeEach
     void setUp() {
+        nears = new Nears(new NearStore(nearRepository));
         sides = new Sides(new SideStore(sideRepository));
-        kinds = new Kinds(new KindStore(kindRepository));
+        kinds = new Kinds(new KindStore(kindRepository), nears);
         middles = new Middles(new MiddleStore(middleRepository),
-                kinds, sides);
-        tops = new Tops(new TopStore(topRepository), middles, sides);
+                kinds, sides, nears);
+        tops = new Tops(new TopStore(topRepository), middles, sides, nears);
     }
 
     @Test
@@ -61,12 +65,56 @@ class ConditionsTest {
     }
 
     @Test
+    void shouldComplainOnMissingNear() {
+        final var top = newTop();
+        final var middle = newMiddle();
+        final var kind = newKind();
+
+        assertThatThrownBy(() -> top.addNear(null))
+                .isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> middle.addNear(null))
+                .isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> kind.addNear(null))
+                .isInstanceOf(NullPointerException.class);
+    }
+
+    @Test
+    void shouldComplainOnDuplicateNear() {
+        final var near = nears.unsaved("NER");
+        final var top = newTop().addNear(near);
+        final var middle = newMiddle().addNear(near);
+        final var kind = newKind().addNear(near);
+
+        assertThatThrownBy(() -> top.addNear(near))
+                .isInstanceOf(IllegalStateException.class);
+        assertThatThrownBy(() -> middle.addNear(near))
+                .isInstanceOf(IllegalStateException.class);
+        assertThatThrownBy(() -> kind.addNear(near))
+                .isInstanceOf(IllegalStateException.class);
+    }
+
+    @Test
+    void shouldComplainOnAbsentNear() {
+        final var near = nears.unsaved("NER");
+        final var top = newTop();
+        final var middle = newMiddle();
+        final var kind = newKind();
+
+        assertThatThrownBy(() -> top.removeNear(near))
+                .isInstanceOf(NoSuchElementException.class);
+        assertThatThrownBy(() -> middle.removeNear(near))
+                .isInstanceOf(NoSuchElementException.class);
+        assertThatThrownBy(() -> kind.removeNear(near))
+                .isInstanceOf(NoSuchElementException.class);
+    }
+
+    @Test
     void shouldComplainOnMissingSide() {
         final var middle = newMiddle();
 
         assertThatThrownBy(() -> tops.unsaved("TOP", "TWIRL", null))
                 .isInstanceOf(NullPointerException.class);
-        assertThatThrownBy(() -> middle.defineSide(null))
+        assertThatThrownBy(() -> middle.attachToSide(null))
                 .isInstanceOf(NullPointerException.class);
     }
 
@@ -74,7 +122,7 @@ class ConditionsTest {
     void shouldComplainOnMissingKind() {
         final var middle = newMiddle();
 
-        assertThatThrownBy(() -> middle.defineKind(null))
+        assertThatThrownBy(() -> middle.attachToKind(null))
                 .isInstanceOf(NullPointerException.class);
     }
 
@@ -82,7 +130,7 @@ class ConditionsTest {
     void shouldComplainOnAbsentKind() {
         final var middle = newMiddle();
 
-        assertThatThrownBy(middle::undefineKind)
+        assertThatThrownBy(middle::detachFromKind)
                 .isInstanceOf(IllegalStateException.class);
     }
 
@@ -90,7 +138,7 @@ class ConditionsTest {
     void shouldComplainOnAbsentSide() {
         final var middle = newMiddle();
 
-        assertThatThrownBy(middle::undefineSide)
+        assertThatThrownBy(middle::detachFromSide)
                 .isInstanceOf(IllegalStateException.class);
     }
 
@@ -98,17 +146,17 @@ class ConditionsTest {
     void shouldComplainOnMissingBottom() {
         final var middle = newMiddle();
 
-        assertThatThrownBy(() -> middle.add(null))
+        assertThatThrownBy(() -> middle.addNear(null))
                 .isInstanceOf(NullPointerException.class);
-        assertThatThrownBy(() -> middle.remove(null))
+        assertThatThrownBy(() -> middle.removeNear(null))
                 .isInstanceOf(NullPointerException.class);
     }
 
     @Test
     void shouldComplainOnDuplicateBottom() {
-        final var middle = newMiddle().add(newBottom());
+        final var middle = newMiddle().addBottom(newBottom());
 
-        assertThatThrownBy(() -> middle.add(newBottom()))
+        assertThatThrownBy(() -> middle.addBottom(newBottom()))
                 .isInstanceOf(IllegalStateException.class);
     }
 
@@ -116,7 +164,7 @@ class ConditionsTest {
     void shouldComplainOnAbsentBottom() {
         final var middle = newMiddle();
 
-        assertThatThrownBy(() -> middle.remove(newBottom()))
+        assertThatThrownBy(() -> middle.removeBottom(newBottom()))
                 .isInstanceOf(NoSuchElementException.class);
     }
 
@@ -126,7 +174,7 @@ class ConditionsTest {
         final var bottom = BottomRecord.unsaved("BAR");
         bottom.middleCode = middle.code + "-X";
 
-        assertThatThrownBy(() -> middle.add(bottom))
+        assertThatThrownBy(() -> middle.addBottom(bottom))
                 .isInstanceOf(IllegalStateException.class);
     }
 
@@ -134,9 +182,9 @@ class ConditionsTest {
     void shouldComplainOnMissingMiddle() {
         final var top = newTop();
 
-        assertThatThrownBy(() -> top.add(null))
+        assertThatThrownBy(() -> top.addNear(null))
                 .isInstanceOf(NullPointerException.class);
-        assertThatThrownBy(() -> top.remove(null))
+        assertThatThrownBy(() -> top.removeNear(null))
                 .isInstanceOf(NullPointerException.class);
     }
 
@@ -144,12 +192,16 @@ class ConditionsTest {
     void shouldComplainOnAbsentMiddle() {
         final var top = newTop();
 
-        assertThatThrownBy(() -> top.remove(newMiddle()))
+        assertThatThrownBy(() -> top.removeMiddle(newMiddle()))
                 .isInstanceOf(NoSuchElementException.class);
     }
 
     private Side newSide() {
         return sides.unsaved("SID", Instant.ofEpochMilli(1_000_000));
+    }
+
+    private Kind newKind() {
+        return kinds.unsaved("KIN", new BigDecimal("2.3"));
     }
 
     private Middle newMiddle() {

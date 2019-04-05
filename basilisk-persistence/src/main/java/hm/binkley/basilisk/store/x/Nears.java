@@ -3,30 +3,29 @@ package hm.binkley.basilisk.store.x;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.time.Instant;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 @Component
 @RequiredArgsConstructor
-public class Sides {
-    private final SideStore store;
+public class Nears {
+    private final NearStore store;
 
-    public Side unsaved(final String code, final Instant time) {
-        return bind(store.unsaved(code, time));
+    public Near unsaved(final String code) {
+        return bind(store.unsaved(code));
     }
 
-    public Optional<Side> byCode(final String code) {
+    public Optional<Near> byCode(final String code) {
         return store.byCode(code)
                 .map(this::bind);
     }
 
-    public Stream<Side> all() {
+    public Stream<Near> all() {
         return store.all()
                 .map(this::bind);
     }
 
-    private Side bind(final SideRecord record) {
-        return new Side(record);
+    private Near bind(final NearRecord record) {
+        return new Near(record);
     }
 }

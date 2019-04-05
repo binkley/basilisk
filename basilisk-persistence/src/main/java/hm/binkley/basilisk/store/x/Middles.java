@@ -12,9 +12,10 @@ public class Middles {
     private final MiddleStore store;
     private final Kinds kinds;
     private final Sides sides;
+    private final Nears nears;
 
     public Middle unsaved(final String code, final int mid) {
-        return new Middle(store.unsaved(code, mid), kinds, sides);
+        return bind(store.unsaved(code, mid));
     }
 
     public Optional<Middle> byCode(final String code) {
@@ -38,6 +39,6 @@ public class Middles {
     }
 
     private Middle bind(final MiddleRecord record) {
-        return new Middle(record, kinds, sides);
+        return new Middle(record, kinds, sides, nears);
     }
 }

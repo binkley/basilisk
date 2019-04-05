@@ -12,10 +12,11 @@ public class Tops {
     private final TopStore store;
     private final Middles middles;
     private final Sides sides;
+    private final Nears nears;
 
     public Top unsaved(
             final String code, final String name, final Side side) {
-        return side.defineInto(sideRecord ->
+        return side.applyTo(sideRecord ->
                 bind(store.unsaved(code, name, sideRecord)));
     }
 
@@ -30,6 +31,6 @@ public class Tops {
     }
 
     private Top bind(final TopRecord record) {
-        return new Top(record, middles, sides);
+        return new Top(record, middles, sides, nears);
     }
 }
