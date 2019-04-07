@@ -75,9 +75,8 @@ public class KindRecord {
         public String nearCode;
 
         public static NearRef of(final NearRecord near) {
-            near.save();
             final var ref = new NearRef();
-            ref.nearCode = near.code;
+            ref.nearCode = near.save().code;
             return ref;
         }
     }

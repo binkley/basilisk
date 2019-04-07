@@ -69,16 +69,6 @@ public final class Middle
                 .orElse(Stream.empty());
     }
 
-    public Middle save() {
-        record.save();
-        return this;
-    }
-
-    public Middle delete() {
-        record.delete();
-        return this;
-    }
-
     public Middle attachToKind(final @NotNull Kind kind) {
         kind.applyTo(record::defineKind);
         return this;
@@ -121,6 +111,16 @@ public final class Middle
 
     public Middle removeNear(final @NotNull Near near) {
         near.applyInto(record::removeNear);
+        return this;
+    }
+
+    public Middle save() {
+        record.save();
+        return this;
+    }
+
+    public Middle delete() {
+        record.delete();
         return this;
     }
 

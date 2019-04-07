@@ -36,8 +36,7 @@ public class TopRecord {
         final var unsaved = new TopRecord();
         unsaved.code = code;
         unsaved.name = name;
-        side.save();
-        unsaved.sideCode = side.code;
+        unsaved.sideCode = side.save().code;
         return unsaved;
     }
 
@@ -47,13 +46,7 @@ public class TopRecord {
         requireNonNull(side);
     }
 
-    public TopRecord save() {
-        return store.save(this);
-    }
-
-    public void delete() { store.delete(this); }
-
-    public TopRecord add(final MiddleRecord middle) {
+    public TopRecord addMiddle(final MiddleRecord middle) {
         check(middle);
         final var ref = MiddleRef.of(middle);
         if (!middles.add(ref))
@@ -61,7 +54,7 @@ public class TopRecord {
         return this;
     }
 
-    public TopRecord remove(final MiddleRecord middle) {
+    public TopRecord removeMiddle(final MiddleRecord middle) {
         check(middle);
         final var ref = MiddleRef.of(middle);
         if (!middles.remove(ref))
@@ -69,7 +62,7 @@ public class TopRecord {
         return this;
     }
 
-    public TopRecord add(final NearRecord near) {
+    public TopRecord addNear(final NearRecord near) {
         check(near);
         final var ref = NearRef.of(near);
         if (!nears.add(ref))
@@ -77,7 +70,7 @@ public class TopRecord {
         return this;
     }
 
-    public TopRecord remove(final NearRecord near) {
+    public TopRecord removeNear(final NearRecord near) {
         check(near);
         final var ref = NearRef.of(near);
         if (!nears.remove(ref))
@@ -85,9 +78,11 @@ public class TopRecord {
         return this;
     }
 
-    public boolean hasNears() {
-        return !nears.isEmpty();
-    }
+    public boolean hasNears() { return !nears.isEmpty(); }
+
+    public TopRecord save() { return store.save(this); }
+
+    public void delete() { store.delete(this); }
 
     private void check(final MiddleRecord middle) {
         requireNonNull(middle);
@@ -104,9 +99,8 @@ public class TopRecord {
         public String middleCode;
 
         public static MiddleRef of(final MiddleRecord middle) {
-            middle.save();
             final var ref = new MiddleRef();
-            ref.middleCode = middle.code;
+            ref.middleCode = middle.save().code;
             return ref;
         }
     }
@@ -118,9 +112,8 @@ public class TopRecord {
         public String nearCode;
 
         public static NearRef of(final NearRecord near) {
-            near.save();
             final var ref = new NearRef();
-            ref.nearCode = near.code;
+            ref.nearCode = near.save().code;
             return ref;
         }
     }

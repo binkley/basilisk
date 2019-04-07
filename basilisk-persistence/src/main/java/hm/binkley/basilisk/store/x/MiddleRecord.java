@@ -48,8 +48,7 @@ public class MiddleRecord {
 
     public MiddleRecord defineKind(final @NotNull KindRecord kind) {
         check(kind);
-        kind.save();
-        kindCode = kind.code;
+        kindCode = kind.save().code;
         return this;
     }
 
@@ -64,8 +63,7 @@ public class MiddleRecord {
 
     public MiddleRecord attachToSide(final @NotNull SideRecord side) {
         check(side);
-        side.save();
-        sideCode = side.code;
+        sideCode = side.save().code;
         return this;
     }
 
@@ -138,9 +136,8 @@ public class MiddleRecord {
         public String nearCode;
 
         public static NearRef of(final NearRecord near) {
-            near.save();
             final var ref = new NearRef();
-            ref.nearCode = near.code;
+            ref.nearCode = near.save().code;
             return ref;
         }
     }

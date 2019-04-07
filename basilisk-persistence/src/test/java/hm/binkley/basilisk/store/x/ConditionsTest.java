@@ -12,6 +12,8 @@ import java.time.Instant;
 import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doAnswer;
 
 @ExtendWith(MockitoExtension.class)
 @RequiredArgsConstructor
@@ -66,6 +68,8 @@ class ConditionsTest {
 
     @Test
     void shouldComplainOnMissingNear() {
+        doAnswer(invocation -> invocation.getArgument(0))
+                .when(sideRepository).save(any(SideRecord.class));
         final var top = newTop();
         final var middle = newMiddle();
         final var kind = newKind();
@@ -80,6 +84,10 @@ class ConditionsTest {
 
     @Test
     void shouldComplainOnDuplicateNear() {
+        doAnswer(invocation -> invocation.getArgument(0))
+                .when(nearRepository).save(any(NearRecord.class));
+        doAnswer(invocation -> invocation.getArgument(0))
+                .when(sideRepository).save(any(SideRecord.class));
         final var near = nears.unsaved("NER");
         final var top = newTop().addNear(near);
         final var middle = newMiddle().addNear(near);
@@ -95,6 +103,10 @@ class ConditionsTest {
 
     @Test
     void shouldComplainOnAbsentNear() {
+        doAnswer(invocation -> invocation.getArgument(0))
+                .when(nearRepository).save(any(NearRecord.class));
+        doAnswer(invocation -> invocation.getArgument(0))
+                .when(sideRepository).save(any(SideRecord.class));
         final var near = nears.unsaved("NER");
         final var top = newTop();
         final var middle = newMiddle();
@@ -180,6 +192,8 @@ class ConditionsTest {
 
     @Test
     void shouldComplainOnMissingMiddle() {
+        doAnswer(invocation -> invocation.getArgument(0))
+                .when(sideRepository).save(any(SideRecord.class));
         final var top = newTop();
 
         assertThatThrownBy(() -> top.addNear(null))
@@ -190,6 +204,10 @@ class ConditionsTest {
 
     @Test
     void shouldComplainOnAbsentMiddle() {
+        doAnswer(invocation -> invocation.getArgument(0))
+                .when(sideRepository).save(any(SideRecord.class));
+        doAnswer(invocation -> invocation.getArgument(0))
+                .when(middleRepository).save(any(MiddleRecord.class));
         final var top = newTop();
 
         assertThatThrownBy(() -> top.removeMiddle(newMiddle()))

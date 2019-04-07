@@ -16,6 +16,7 @@ import java.time.Instant;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @ActiveProfiles("test")
 @AutoConfigureEmbeddedDatabase
@@ -355,7 +356,10 @@ class RepositoriesTest {
                 "KIN", new BigDecimal("2.3"));
         assertThat(kindRecord.hasNears()).isFalse();
         final var nearRecord = NearRecord.unsaved("NER");
-        nearRecord.store = mock(NearStore.class);
+        final var nearStore = mock(NearStore.class);
+        when(nearStore.save(nearRecord))
+                .thenReturn(nearRecord);
+        nearRecord.store = nearStore;
         kindRecord.addNear(nearRecord);
         assertThat(kindRecord.hasNears()).isTrue();
     }

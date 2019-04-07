@@ -28,7 +28,7 @@ public final class Side {
         return this;
     }
 
-    public <T> T applyTo(final Function<SideRecord, T> applyTo) {
-        return applyTo.apply(record);
+    <T> T applyTo(final Function<SideRecord, T> to) {
+        return to.apply(record);
     }
 }
