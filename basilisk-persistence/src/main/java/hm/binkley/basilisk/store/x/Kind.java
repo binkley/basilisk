@@ -14,7 +14,7 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 @ToString(exclude = "nears")
 public final class Kind
-        implements WithNears {
+        implements HasNears {
     private final @NotNull KindRecord record;
     private final @NotNull Nears nears;
 

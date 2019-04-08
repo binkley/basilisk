@@ -15,7 +15,7 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 @ToString(exclude = {"kinds", "sides", "nears"})
 public final class Middle
-        implements WithNears {
+        implements HasNears {
     private final @NotNull MiddleRecord record;
     private final @NotNull Kinds kinds;
     private final @NotNull Sides sides;

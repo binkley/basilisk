@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 @ToString(exclude = {"middles", "sides", "nears"})
 public final class Top
-        implements WithNears {
+        implements HasNears {
     private final @NotNull TopRecord record;
     private final @NotNull Middles middles;
     private final @NotNull Sides sides;

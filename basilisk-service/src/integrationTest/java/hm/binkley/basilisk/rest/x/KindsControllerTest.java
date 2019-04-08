@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.ClassRelativeResourceLoader;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.io.IOException;
@@ -40,9 +39,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @JsonWebMvcTest(KindsController.class)
 class KindsControllerTest {
-    private final ResourceLoader loader = new ClassRelativeResourceLoader(
-            getClass());
-
     private final MockMvc controller;
 
     @MockBean
@@ -134,6 +130,7 @@ class KindsControllerTest {
 
     private String from(final String jsonFile)
             throws IOException {
+        final var loader = new ClassRelativeResourceLoader(getClass());
         // It's a Jedi mind trick
         return new Scanner(
                 loader.getResource(jsonFile).readableChannel(), UTF_8)
