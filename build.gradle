@@ -89,8 +89,8 @@ subprojects {
     }
 
     ext["assertj.version"] = "3.12.2"
-    ext["junit-jupiter.version"] = "5.4.1"
-    ext["mockito.version"] = "2.25.1"
+    ext["junit-jupiter.version"] = "5.4.2"
+    ext["mockito.version"] = "2.26.0"
 
     apply plugin: JavaPlugin
     apply plugin: "net.ltgt.apt"
