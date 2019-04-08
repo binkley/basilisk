@@ -64,7 +64,8 @@ class NearsControllerTest {
         controller.perform(get("/nears/get"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(from(
-                        "nears-controller-test-get-none.json"), true));
+                        "nears-controller-test-get-none-response.json"),
+                        true));
     }
 
     @Test
@@ -75,7 +76,8 @@ class NearsControllerTest {
         controller.perform(get("/nears/get"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(from(
-                        "nears-controller-test-get-all.json"), true));
+                        "nears-controller-test-get-all-response.json"),
+                        true));
     }
 
     @Test
@@ -87,7 +89,8 @@ class NearsControllerTest {
         controller.perform(get("/nears/get/" + nearRecord.code))
                 .andExpect(status().isOk())
                 .andExpect(content().json(from(
-                        "nears-controller-test-get-one.json"), true));
+                        "nears-controller-test-get-one-response.json"),
+                        true));
     }
 
     @Disabled("TODO: Implement general 404 handling")

@@ -75,7 +75,8 @@ class KindsControllerTest {
         controller.perform(get("/kinds/get"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(from(
-                        "kinds-controller-test-get-none.json"), true));
+                        "kinds-controller-test-get-none-response.json"),
+                        true));
     }
 
     @Test
@@ -87,7 +88,8 @@ class KindsControllerTest {
         controller.perform(get("/kinds/get"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(from(
-                        "kinds-controller-test-get-all.json"), true));
+                        "kinds-controller-test-get-all-response.json"),
+                        true));
     }
 
     @Test
@@ -98,7 +100,8 @@ class KindsControllerTest {
         controller.perform(get("/kinds/get/" + kindRecord.code))
                 .andExpect(status().isOk())
                 .andExpect(content().json(from(
-                        "kinds-controller-test-get-one.json"), true));
+                        "kinds-controller-test-get-one-response.json"),
+                        true));
     }
 
     @Disabled("TODO: Implement general 404 handling")
