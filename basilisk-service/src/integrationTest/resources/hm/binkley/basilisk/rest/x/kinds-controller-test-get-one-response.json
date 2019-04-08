@@ -1,6 +1,11 @@
 {
   "code": "KIN",
   "coolness": 2.3,
+  "own-nears": [
+    {
+      "code": "NER"
+    }
+  ],
   "net-nears": [
     {
       "code": "NER"

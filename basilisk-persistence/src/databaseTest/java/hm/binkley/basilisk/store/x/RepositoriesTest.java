@@ -105,7 +105,7 @@ class RepositoriesTest {
         final var readBackKind = readBackMiddle.getKind().orElseThrow();
         assertThat(readBackKind).isEqualTo(unsavedKind);
         assertThat(readBackKind.getCoolness()).isEqualTo(kindCoolness);
-        final var readBackKindNear = readBackKind.getNears()
+        final var readBackKindNear = readBackKind.getOwnNears()
                 .findFirst()
                 .orElseThrow();
         assertThat(readBackKindNear).isEqualTo(unsavedKindNear);
@@ -327,17 +327,17 @@ class RepositoriesTest {
 
         kind.removeNear(kindNear).save();
 
-        assertThat(kind.getNears()).isEmpty();
+        assertThat(kind.getOwnNears()).isEmpty();
         assertThat(top.getNetNears()).containsExactly(topNear);
 
         middle.removeNear(middleNear).save();
 
-        assertThat(middle.getNears()).isEmpty();
+        assertThat(middle.getOwnNears()).isEmpty();
         assertThat(top.getNetNears()).containsExactly(topNear);
 
         top.removeNear(topNear).save();
 
-        assertThat(top.getNears()).isEmpty();
+        assertThat(top.getOwnNears()).isEmpty();
         assertThat(top.getNetNears()).isEmpty();
     }
 

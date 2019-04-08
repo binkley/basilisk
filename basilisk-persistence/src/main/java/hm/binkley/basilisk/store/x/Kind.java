@@ -23,7 +23,7 @@ public final class Kind
     public BigDecimal getCoolness() { return record.coolness; }
 
     @Override
-    public Stream<Near> getNears() {
+    public Stream<Near> getOwnNears() {
         return record.nears.stream()
                 .map(ref -> nears.byCode(ref.nearCode))
                 .map(Optional::orElseThrow);
@@ -31,7 +31,7 @@ public final class Kind
 
     @Override
     public Stream<Near> getNetNears() {
-        return getNears();
+        return getOwnNears();
     }
 
     public Kind save() {

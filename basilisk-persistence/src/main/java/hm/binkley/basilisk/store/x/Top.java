@@ -39,7 +39,7 @@ public final class Top
     }
 
     @Override
-    public Stream<Near> getNears() {
+    public Stream<Near> getOwnNears() {
         return record.nears.stream()
                 .map(ref -> nears.byCode(ref.nearCode))
                 .map(Optional::orElseThrow);
@@ -48,7 +48,7 @@ public final class Top
     @Override
     public Stream<Near> getNetNears() {
         if (record.hasNears())
-            return getNears();
+            return getOwnNears();
 
         return getMiddles()
                 .flatMap(Middle::getNetNears)
