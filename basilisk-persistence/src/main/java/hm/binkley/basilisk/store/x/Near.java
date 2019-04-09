@@ -10,7 +10,8 @@ import java.util.function.Consumer;
 @EqualsAndHashCode
 @RequiredArgsConstructor
 @ToString
-public final class Near {
+public final class Near
+        implements Comparable<Near> {
     private final @NotNull NearRecord record;
 
     public String getCode() { return record.code; }
@@ -28,5 +29,10 @@ public final class Near {
     Near applyInto(final Consumer<NearRecord> into) {
         into.accept(record);
         return this;
+    }
+
+    @Override
+    public int compareTo(final Near that) {
+        return getCode().compareTo(that.getCode());
     }
 }

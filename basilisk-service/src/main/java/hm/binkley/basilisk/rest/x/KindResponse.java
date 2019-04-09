@@ -4,8 +4,8 @@ import hm.binkley.basilisk.store.x.Kind;
 import lombok.Value;
 
 import java.math.BigDecimal;
-import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 import static java.util.stream.Collectors.toCollection;
 
@@ -20,9 +20,9 @@ public final class KindResponse {
         return new KindResponse(kind.getCode(), kind.getCoolness(),
                 kind.getOwnNears()
                         .map(NearResponse::of)
-                        .collect(toCollection(LinkedHashSet::new)),
+                        .collect(toCollection(TreeSet::new)),
                 kind.getNetNears()
                         .map(NearResponse::of)
-                        .collect(toCollection(LinkedHashSet::new)));
+                        .collect(toCollection(TreeSet::new)));
     }
 }

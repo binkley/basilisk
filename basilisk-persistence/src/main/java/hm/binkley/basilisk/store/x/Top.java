@@ -6,8 +6,16 @@ import lombok.ToString;
 
 import javax.validation.constraints.NotNull;
 import java.time.Instant;
+import java.util.Collection;
 import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collector;
 import java.util.stream.Stream;
+
+import static java.util.function.Predicate.not;
+import static java.util.stream.Collectors.toCollection;
+import static java.util.stream.Collectors.toList;
 
 @EqualsAndHashCode(exclude = {"middles", "sides", "nears"})
 @RequiredArgsConstructor
@@ -18,6 +26,10 @@ public final class Top
     private final @NotNull Middles middles;
     private final @NotNull Sides sides;
     private final @NotNull Nears nears;
+
+    private static Collector<Near, ?, Set<Near>> toSortedSet() {
+        return toCollection(TreeSet::new);
+    }
 
     /** @todo More elegant way than exposing this details? */
     public String getCode() { return record.code; }
@@ -46,13 +58,25 @@ public final class Top
     }
 
     @Override
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     public Stream<Near> getNetNears() {
         if (record.hasNears())
             return getOwnNears();
 
-        return getMiddles()
-                .flatMap(Middle::getNetNears)
-                .distinct();
+        // TODO: Better solution for intersection of streams
+        final var remaining = getMiddles()
+                .map(Middle::getNetNears)
+                .collect(toList());
+        if (remaining.isEmpty()) return Stream.empty();
+        final var first = remaining.remove(0);
+        if (remaining.isEmpty()) return first;
+
+        return remaining.stream()
+                .map(s -> s.collect(toSortedSet()))
+                .filter(not(Collection::isEmpty))
+                .collect(() -> first.collect(toSortedSet()),
+                        Set::retainAll, Set::retainAll)
+                .stream();
     }
 
     public Top save() {
