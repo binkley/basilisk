@@ -52,7 +52,7 @@ class IngredientControllerTest {
     private Sources sources;
 
     private static String endpointWithId() {
-        return "/ingredient/" + INGREDIENT_ID;
+        return "/ingredients/" + INGREDIENT_ID;
     }
 
     private static Map<String, Object> responseMapForAny(
@@ -111,7 +111,7 @@ class IngredientControllerTest {
         when(ingredients.all())
                 .thenReturn(Stream.of(unusedIngredient, usedIngredient));
 
-        jsonMvc.perform(get("/ingredient"))
+        jsonMvc.perform(get("/ingredients"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(asJson(List.of(
                         responseMapForAny(unusedIngredient),
@@ -126,7 +126,7 @@ class IngredientControllerTest {
         when(ingredients.allUnused())
                 .thenReturn(Stream.of(ingredient));
 
-        jsonMvc.perform(get("/ingredient/unused"))
+        jsonMvc.perform(get("/ingredients/unused"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(asJson(List.of(
                         responseMapForUnused(ingredient))), true));
@@ -161,7 +161,7 @@ class IngredientControllerTest {
         when(ingredients.allByName(ingredient.getName()))
                 .thenReturn(Stream.of(ingredient));
 
-        jsonMvc.perform(get("/ingredient/find/" + ingredient.getName()))
+        jsonMvc.perform(get("/ingredients/find/" + ingredient.getName()))
                 .andExpect(status().isOk())
                 .andExpect(content().json(asJson(List.of(
                         responseMapForUsed(ingredient))), true));
@@ -188,7 +188,7 @@ class IngredientControllerTest {
         doAnswer(simulateRecordSave(INGREDIENT_ID, INGREDIENT_RECEIVED_AT))
                 .when(unsaved).save();
 
-        jsonMvc.perform(post("/ingredient")
+        jsonMvc.perform(post("/ingredients")
                 .content(asJson(request)))
                 .andExpect(status().isCreated())
                 .andExpect(header().string(LOCATION, endpointWithId()))

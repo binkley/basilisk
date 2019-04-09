@@ -28,7 +28,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.ResponseEntity.created;
 
-@RequestMapping("/location")
+@RequestMapping("/locations")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @RestController
 @Validated
@@ -73,7 +73,7 @@ public class LocationController {
                 .save();
         final var response = toResponse(domain);
 
-        return created(URI.create("/location/" + response.getId()))
+        return created(URI.create("/locations/" + response.getId()))
                 .body(response);
     }
 

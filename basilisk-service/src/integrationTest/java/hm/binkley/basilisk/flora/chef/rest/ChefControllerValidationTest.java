@@ -41,7 +41,7 @@ class ChefControllerValidationTest {
     @Test
     void shouldRejectShortCodes()
             throws Exception {
-        problemMvc.perform(get("/chef/with-code/F"))
+        problemMvc.perform(get("/chefs/with-code/F"))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath(violationField,
                         equalTo("getByCode.code")))
@@ -60,7 +60,7 @@ class ChefControllerValidationTest {
     @Test
     void shouldRejectShortNames()
             throws Exception {
-        problemMvc.perform(get("/chef/with-name/F"))
+        problemMvc.perform(get("/chefs/with-name/F"))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath(violationField,
                         equalTo("getByName.name")))
@@ -78,7 +78,7 @@ class ChefControllerValidationTest {
     @Test
     void shouldRejectShortRequestCodes()
             throws Exception {
-        problemMvc.perform(post("/chef")
+        problemMvc.perform(post("/chefs")
                 .content(asJson(ChefRequest.builder()
                         .code("F")
                         .name(CHEF_NAME)
@@ -100,7 +100,7 @@ class ChefControllerValidationTest {
     @Test
     void shouldRejectShortRequestNames()
             throws Exception {
-        problemMvc.perform(post("/chef")
+        problemMvc.perform(post("/chefs")
                 .content(asJson(ChefRequest.builder()
                         .code(CHEF_CODE)
                         .name("F")

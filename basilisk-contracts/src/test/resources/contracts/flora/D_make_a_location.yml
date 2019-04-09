@@ -1,7 +1,7 @@
 description: Make a location
 request:
   method: POST
-  url: /location
+  url: /locations
   headers:
     Content-Type: application/json;charset=UTF-8
   body:
@@ -11,7 +11,7 @@ response:
   status: 201
   headers:
     Content-Type: application/json;charset=UTF-8
-    Location: /location/1
+    Location: /locations/1
   body:
     id: 1
     code: "DAL"

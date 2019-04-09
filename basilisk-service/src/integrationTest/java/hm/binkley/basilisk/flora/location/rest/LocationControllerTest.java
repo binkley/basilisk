@@ -46,7 +46,7 @@ class LocationControllerTest {
     private Locations locations;
 
     private static String endpointWithId() {
-        return "/location/" + LOCATION_ID;
+        return "/locations/" + LOCATION_ID;
     }
 
     private static Map<String, Object> responseMap() {
@@ -62,7 +62,7 @@ class LocationControllerTest {
         when(locations.all())
                 .thenReturn(Stream.of(new Location(savedLocationRecord())));
 
-        jsonMvc.perform(get("/location"))
+        jsonMvc.perform(get("/locations"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(asJson(Set.of(
                         responseMap()))));
@@ -95,7 +95,7 @@ class LocationControllerTest {
         when(locations.byName(record.getName()))
                 .thenReturn(Optional.of(new Location(record)));
 
-        jsonMvc.perform(get("/location/with-name/" + record.getName()))
+        jsonMvc.perform(get("/locations/with-name/" + record.getName()))
                 .andExpect(status().isOk())
                 .andExpect(content().json(asJson(responseMap())));
     }
@@ -103,7 +103,7 @@ class LocationControllerTest {
     @Test
     void shouldNotGetByName()
             throws Exception {
-        jsonMvc.perform(get("/location/with-name/anything"))
+        jsonMvc.perform(get("/locations/with-name/anything"))
                 .andExpect(status().isNotFound());
     }
 
@@ -123,7 +123,7 @@ class LocationControllerTest {
         doAnswer(simulateRecordSave(LOCATION_ID, LOCATION_RECEIVED_AT))
                 .when(unsaved).save();
 
-        jsonMvc.perform(post("/location")
+        jsonMvc.perform(post("/locations")
                 .content(asJson(request)))
                 .andExpect(status().isCreated())
                 .andExpect(header().string(LOCATION, endpointWithId()))

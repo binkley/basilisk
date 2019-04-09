@@ -28,7 +28,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.ResponseEntity.created;
 
-@RequestMapping("/source")
+@RequestMapping("/sources")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @RestController
 @Validated
@@ -71,7 +71,7 @@ public class SourceController {
         source.save();
         final var response = SourceResponse.of(source);
 
-        return created(URI.create("/source/" + response.getId()))
+        return created(URI.create("/sources/" + response.getId()))
                 .body(response);
     }
 

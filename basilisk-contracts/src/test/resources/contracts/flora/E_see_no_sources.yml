@@ -1,7 +1,7 @@
 description: Find no sources
 request:
   method: GET
-  url: /source
+  url: /sources
   headers:
     Content-Type: application/json;charset=UTF-8
 response:

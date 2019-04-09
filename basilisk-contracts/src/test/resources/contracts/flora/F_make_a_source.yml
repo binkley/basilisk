@@ -1,7 +1,7 @@
 description: Make a source
 request:
   method: POST
-  url: /source
+  url: /sources
   headers:
     Content-Type: application/json;charset=UTF-8
   body:
@@ -14,7 +14,7 @@ response:
   status: 201
   headers:
     Content-Type: application/json;charset=UTF-8
-    Location: /source/1
+    Location: /sources/1
   body:
     id: 1
     code: "FARM#123"

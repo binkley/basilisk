@@ -58,9 +58,7 @@ class RecipeControllerTest {
     @MockBean
     private Logger logger;
 
-    private static String endpointWithId() {
-        return "/recipe/" + RECIPE_ID;
-    }
+    private static String endpointWithId() { return "/recipes/" + RECIPE_ID; }
 
     private static Map<String, Object> responseMapFor(final String name,
             final boolean hasIngredients) {
@@ -98,7 +96,7 @@ class RecipeControllerTest {
         when(specialService.isDailySpecial(recipe))
                 .thenReturn(false);
 
-        jsonMvc.perform(get("/recipe"))
+        jsonMvc.perform(get("/recipes"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(asJson(List.of(
                         responseMapFor(recipe.getName(), false))), true));
@@ -134,7 +132,7 @@ class RecipeControllerTest {
         when(recipes.byName(record.getName()))
                 .thenReturn(Optional.of(new Recipe(record)));
 
-        jsonMvc.perform(get("/recipe/find/" + record.getName()))
+        jsonMvc.perform(get("/recipes/find/" + record.getName()))
                 .andExpect(status().isOk())
                 .andExpect(content().json(asJson(
                         responseMapFor(record.getName(), false)), true));
@@ -154,7 +152,7 @@ class RecipeControllerTest {
         when(recipes.create(request))
                 .thenReturn(recipe);
 
-        jsonMvc.perform(post("/recipe")
+        jsonMvc.perform(post("/recipes")
                 .content(asJson(request)))
                 .andExpect(status().isCreated())
                 .andExpect(header().string(LOCATION, endpointWithId()))
@@ -183,7 +181,7 @@ class RecipeControllerTest {
         when(recipes.create(request))
                 .thenReturn(recipe);
 
-        jsonMvc.perform(post("/recipe")
+        jsonMvc.perform(post("/recipes")
                 .content(asJson(request)))
                 .andExpect(status().isCreated())
                 .andExpect(header().string(LOCATION, endpointWithId()))

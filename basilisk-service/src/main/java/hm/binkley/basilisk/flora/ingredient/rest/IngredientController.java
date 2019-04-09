@@ -27,7 +27,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.ResponseEntity.created;
 
-@RequestMapping("/ingredient")
+@RequestMapping("/ingredients")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @RestController
 @Validated
@@ -75,7 +75,7 @@ public class IngredientController {
         ingredient.save();
         final var response = UnusedIngredientResponse.of(ingredient);
 
-        return created(URI.create("/ingredient/" + response.getId()))
+        return created(URI.create("/ingredients/" + response.getId()))
                 .body(response);
     }
 

@@ -30,7 +30,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.ResponseEntity.created;
 
-@RequestMapping("/recipe")
+@RequestMapping("/recipes")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @RestController
 @Validated
@@ -76,7 +76,7 @@ public class RecipeController {
         final var response = toResponse(domain);
         logger.info(CREATED_RECIPE, response);
 
-        return created(URI.create("/recipe/" + response.getId()))
+        return created(URI.create("/recipes/" + response.getId()))
                 .body(response);
     }
 

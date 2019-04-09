@@ -45,9 +45,7 @@ class ChefControllerTest {
     @MockBean
     private Chefs chefs;
 
-    private static String endpointWithId() {
-        return "/chef/" + CHEF_ID;
-    }
+    private static String endpointWithId() { return "/chefs/" + CHEF_ID; }
 
     private static Map<String, Object> responseMap() {
         return Map.of(
@@ -62,7 +60,7 @@ class ChefControllerTest {
         when(chefs.all())
                 .thenReturn(Stream.of(new Chef(savedChefRecord())));
 
-        jsonMvc.perform(get("/chef"))
+        jsonMvc.perform(get("/chefs"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(asJson(Set.of(
                         responseMap()))));
@@ -93,7 +91,7 @@ class ChefControllerTest {
         when(chefs.byCode(CHEF_CODE))
                 .thenReturn(Optional.of(new Chef(savedChefRecord())));
 
-        jsonMvc.perform(get("/chef/with-code/" + CHEF_CODE))
+        jsonMvc.perform(get("/chefs/with-code/" + CHEF_CODE))
                 .andExpect(status().isOk())
                 .andExpect(content().json(asJson(responseMap())));
     }
@@ -101,7 +99,7 @@ class ChefControllerTest {
     @Test
     void shouldNotGetByCode()
             throws Exception {
-        jsonMvc.perform(get("/chef/with-code/" + CHEF_CODE))
+        jsonMvc.perform(get("/chefs/with-code/" + CHEF_CODE))
                 .andExpect(status().isNotFound());
     }
 
@@ -111,7 +109,7 @@ class ChefControllerTest {
         when(chefs.byName(CHEF_NAME))
                 .thenReturn(Optional.of(new Chef(savedChefRecord())));
 
-        jsonMvc.perform(get("/chef/with-name/" + CHEF_NAME))
+        jsonMvc.perform(get("/chefs/with-name/" + CHEF_NAME))
                 .andExpect(status().isOk())
                 .andExpect(content().json(asJson(responseMap())));
     }
@@ -119,7 +117,7 @@ class ChefControllerTest {
     @Test
     void shouldNotGetByName()
             throws Exception {
-        jsonMvc.perform(get("/chef/with-name/" + CHEF_NAME))
+        jsonMvc.perform(get("/chefs/with-name/" + CHEF_NAME))
                 .andExpect(status().isNotFound());
     }
 
@@ -138,7 +136,7 @@ class ChefControllerTest {
         doAnswer(simulateRecordSave(CHEF_ID, CHEF_RECIEVED_AT))
                 .when(unsaved).save();
 
-        jsonMvc.perform(post("/chef")
+        jsonMvc.perform(post("/chefs")
                 .content(asJson(request)))
                 .andExpect(status().isCreated())
                 .andExpect(header().string(LOCATION, endpointWithId()))

@@ -1,7 +1,7 @@
 description: Make a chef
 request:
   method: POST
-  url: /chef
+  url: /chefs
   headers:
     Content-Type: application/json;charset=UTF-8
   body:
@@ -11,7 +11,7 @@ response:
   status: 201
   headers:
     Content-Type: application/json;charset=UTF-8
-    Location: /chef/1
+    Location: /chefs/1
   body:
     id: 1
     code: "CAN"

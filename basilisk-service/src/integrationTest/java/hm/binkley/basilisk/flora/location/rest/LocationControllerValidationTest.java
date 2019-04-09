@@ -39,7 +39,7 @@ class LocationControllerValidationTest {
     @Test
     void shouldRejectShortNames()
             throws Exception {
-        problemMvc.perform(get("/location/with-name/F"))
+        problemMvc.perform(get("/locations/with-name/F"))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath(violationField,
                         equalTo("getByName.name")))
@@ -57,7 +57,7 @@ class LocationControllerValidationTest {
     @Test
     void shouldRejectShortRequestNames()
             throws Exception {
-        problemMvc.perform(post("/location")
+        problemMvc.perform(post("/locations")
                 .content(asJson(LocationRequest.builder()
                         .name("F")
                         .build())))

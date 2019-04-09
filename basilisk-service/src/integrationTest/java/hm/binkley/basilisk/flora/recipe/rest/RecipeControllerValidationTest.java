@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ProblemWebMvcTest(RecipeController.class)
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 class RecipeControllerValidationTest {
-    private static final String ROOT = "/recipe";
+    private static final String ROOT = "/recipes";
     private static final String FIRST_FIELD = "$.violations[0].field";
     private static final String FIRST_MESSAGE = "$.violations[0].message";
     private static final String STATUS = "$.status";
@@ -49,7 +49,7 @@ class RecipeControllerValidationTest {
     @Test
     void shouldRejectShortNames()
             throws Exception {
-        problemMvc.perform(get("/recipe/find/F"))
+        problemMvc.perform(get("/recipes/find/F"))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath(FIRST_FIELD,
                         equalTo("getByName.name")))

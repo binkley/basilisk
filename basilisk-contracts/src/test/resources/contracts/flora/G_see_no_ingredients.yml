@@ -1,7 +1,7 @@
 description: Find no ingredients
 request:
   method: GET
-  url: /ingredient
+  url: /ingredients
   headers:
     Content-Type: application/json;charset=UTF-8
 response:

@@ -1,7 +1,7 @@
 description: Make a recipe with no ingredients
 request:
   method: POST
-  url: /ingredient
+  url: /ingredients
   headers:
     Content-Type: application/json;charset=UTF-8
   body:
@@ -14,7 +14,7 @@ response:
   status: 201
   headers:
     Content-Type: application/json;charset=UTF-8
-    Location: /ingredient/1
+    Location: /ingredients/1
   body:
     id: 1
     code: "EGG#123"

@@ -56,7 +56,7 @@ class SourceControllerTest {
     private Locations locations;
 
     private static String endpointWithId() {
-        return "/source/" + SOURCE_ID;
+        return "/sources/" + SOURCE_ID;
     }
 
     private static Map<String, Object> responseMap() {
@@ -84,7 +84,7 @@ class SourceControllerTest {
         when(sources.all()).thenReturn(
                 Stream.of(new Source(savedSourceRecord(), locations)));
 
-        jsonMvc.perform(get("/source"))
+        jsonMvc.perform(get("/sources"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(asJson(List.of(
                         responseMap())), true));
@@ -116,7 +116,7 @@ class SourceControllerTest {
         when(sources.byName(record.getName())).thenReturn(
                 Optional.of(new Source(record, locations)));
 
-        jsonMvc.perform(get("/source/find/" + record.getName()))
+        jsonMvc.perform(get("/sources/find/" + record.getName()))
                 .andExpect(status().isOk())
                 .andExpect(content().json(asJson(responseMap()), true));
     }
@@ -125,7 +125,7 @@ class SourceControllerTest {
     void shouldNotGetByName()
             throws Exception {
         final var record = savedSourceRecord();
-        jsonMvc.perform(get("/source/find/" + record.getName()))
+        jsonMvc.perform(get("/sources/find/" + record.getName()))
                 .andExpect(status().isNotFound());
     }
 
@@ -150,7 +150,7 @@ class SourceControllerTest {
         doAnswer(simulateRecordSave(LOCATION_ID, LOCATION_RECEIVED_AT))
                 .when(unsavedLocation).save();
 
-        jsonMvc.perform(post("/source")
+        jsonMvc.perform(post("/sources")
                 .content(asJson(request)))
                 .andExpect(status().isCreated())
                 .andExpect(header().string(LOCATION, endpointWithId()))
@@ -184,7 +184,7 @@ class SourceControllerTest {
         when(locations.byId(LOCATION_ID))
                 .thenReturn(Optional.of(location));
 
-        jsonMvc.perform(post("/source")
+        jsonMvc.perform(post("/sources")
                 .content(asJson(request)))
                 .andExpect(status().isCreated())
                 .andExpect(header().string(LOCATION, endpointWithId()))

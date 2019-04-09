@@ -2,7 +2,7 @@
 description: Make a recipe with some ingredients
 request:
   method: POST
-  url: /recipe
+  url: /recipes
   headers:
     Content-Type: application/json;charset=UTF-8
   body:
@@ -19,7 +19,7 @@ response:
   status: 201
   headers:
     Content-Type: application/json;charset=UTF-8
-    Location: /recipe/1
+    Location: /recipes/1
   body:
     id: 1
     code: "SCE#456"
