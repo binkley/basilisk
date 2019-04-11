@@ -33,6 +33,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -129,6 +130,45 @@ class KindsControllerTest {
                         LOCATION, "/kinds/get/" + kindCode))
                 .andExpect(content().json(from(
                         "kinds-controller-test-post-one-response.json"),
+                        true));
+
+        verify(kind).save();
+    }
+
+    @Test
+    void shouldPutOneNew()
+            throws Exception {
+        doReturn(Optional.empty()).when(kinds).byCode(kindCode);
+        doReturn(kind).when(kinds).unsaved(kindCode, kindCoolness);
+        doReturn(kind).when(kind).save();
+
+        controller.perform(put("/kinds/put/" + kindCode)
+                .content(from(
+                        "kinds-controller-test-put-one-new-request.json"))
+                .contentType(APPLICATION_JSON_UTF8)) // TODO: Waste of typing
+                .andExpect(status().isCreated())
+                .andExpect(content().json(from(
+                        "kinds-controller-test-put-one-new-response.json"),
+                        true));
+
+        verify(kind).save();
+    }
+
+    @Test
+    void shouldPutOneExisting()
+            throws Exception {
+        doReturn(kind).when(kinds).unsaved(kindCode, kindCoolness);
+        doReturn(kind).when(kind).save();
+
+        controller.perform(put("/kinds/put/" + kindCode)
+                .content(from(
+                        "kinds-controller-test-put-one-existing-request"
+                                + ".json"))
+                .contentType(APPLICATION_JSON_UTF8)) // TODO: Waste of typing
+                .andExpect(status().isOk())
+                .andExpect(content().json(from(
+                        "kinds-controller-test-put-one-existing-response"
+                                + ".json"),
                         true));
 
         verify(kind).save();

@@ -29,6 +29,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -111,6 +112,45 @@ class NearsControllerTest {
                         LOCATION, "/nears/get/" + nearCode))
                 .andExpect(content().json(from(
                         "nears-controller-test-post-one-response.json"),
+                        true));
+
+        verify(near).save();
+    }
+
+    @Test
+    void shouldPutOneNew()
+            throws Exception {
+        doReturn(Optional.empty()).when(nears).byCode(nearCode);
+        doReturn(near).when(nears).unsaved(nearCode);
+        doReturn(near).when(near).save();
+
+        controller.perform(put("/nears/put/" + nearCode)
+                .content(from(
+                        "nears-controller-test-put-one-new-request.json"))
+                .contentType(APPLICATION_JSON_UTF8)) // TODO: Waste of typing
+                .andExpect(status().isCreated())
+                .andExpect(content().json(from(
+                        "nears-controller-test-put-one-new-response.json"),
+                        true));
+
+        verify(near).save();
+    }
+
+    @Test
+    void shouldPutOneExisting()
+            throws Exception {
+        doReturn(near).when(nears).unsaved(nearCode);
+        doReturn(near).when(near).save();
+
+        controller.perform(put("/nears/put/" + nearCode)
+                .content(from(
+                        "nears-controller-test-put-one-existing-request"
+                                + ".json"))
+                .contentType(APPLICATION_JSON_UTF8)) // TODO: Waste of typing
+                .andExpect(status().isOk())
+                .andExpect(content().json(from(
+                        "nears-controller-test-put-one-existing-response"
+                                + ".json"),
                         true));
 
         verify(near).save();
