@@ -152,6 +152,7 @@ Other relationships:
 * [Spring Data JDBC upsert](#spring-data-jdbc-upsert)
 * Example [natural key](#natural-keys) (ongoing to add these to more types)
 * Example [injected logger](#injected-logger)
+* [Etags](basilisk-service/src/main/java/hm/binkley/basilisk/configuration/EtagConfiguration.java)
 
 [[TOC]](#basilisk)
 
