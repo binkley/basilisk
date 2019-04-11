@@ -195,20 +195,20 @@ Some reading:
 #### Example complex cases
 
 - Test cases:
-  * [`ConditionsTest`](basilisk-persistence/src/test/java/hm/binkley/basilisk/store/x/ConditionsTest.java)
-  * [`RepositoryTest`](basilisk-persistence/src/databaseTest/java/hm/binkley/basilisk/store/x/RepositoryTest.java)
+  * [`ConditionsTest`](basilisk-service/src/test/java/hm/binkley/basilisk/x/ConditionsTest.java)
+  * [`RepositoryTest`](basilisk-service/src/databaseTest/java/hm/binkley/basilisk/x/store/RepositoriesTest.java)
 - Many-to-one, value-to-entity:
-  [`Middle`](basilisk-persistence/src/main/java/hm/binkley/basilisk/store/x/Middle.java)
+  [`Middle`](basilisk-service/src/main/java/hm/binkley/basilisk/x/middle/Middle.java)
   to
-  [`Bottom`](basilisk-persistence/src/main/java/hm/binkley/basilisk/store/x/Bottom.java)
+  [`Bottom`](basilisk-service/src/main/java/hm/binkley/basilisk/x/middle/Bottom.java)
 - Many-to-one, entity-to-entity:
-  [`Top`](basilisk-persistence/src/main/java/hm/binkley/basilisk/store/x/Top.java)
+  [`Top`](basilisk-service/src/main/java/hm/binkley/basilisk/x/top/Top.java)
   to
-  [`Middle`](basilisk-persistence/src/main/java/hm/binkley/basilisk/store/x/Middle.java)
+  [`Middle`](basilisk-service/src/main/java/hm/binkley/basilisk/x/middle/Middle.java)
 - One-to-one, entity-to-entity:
-  [`Kind`](basilisk-persistence/src/main/java/hm/binkley/basilisk/store/x/Kind.java)
+  [`Kind`](basilisk-service/src/main/java/hm/binkley/basilisk/x/kind/Kind.java)
   to
-  [`Middle`](basilisk-persistence/src/main/java/hm/binkley/basilisk/store/x/Middle.java)
+  [`Middle`](basilisk-service/src/main/java/hm/binkley/basilisk/x/middle/Middle.java)
   
 See
 [_Spring Data JDBC, References, and Aggregates_](https://spring.io/blog/2018/09/24/spring-data-jdbc-references-and-aggregates)
@@ -217,30 +217,30 @@ for more details.
 #### Patterns to aid with Spring Data JDBC
 
 - **repository** -
-  [`MiddleRepository`](basilisk-persistence/src/main/java/hm/binkley/basilisk/store/x/MiddleRepository.java)
+  [`MiddleRepository`](basilisk-service/src/main/java/hm/binkley/basilisk/x/middle/store/MiddleRepository.java)
   - Repositories are the key feature of Spring Data JDBC.  These are enhanced
   with a helper `readAll()` method to provide a streaming view of records (and
   an example of _default methods_ on interfaces)
 - **record** -
-  [`MiddleRecord`](basilisk-persistence/src/main/java/hm/binkley/basilisk/store/x/MiddleRecord.java)
+  [`MiddleRecord`](basilisk-service/src/main/java/hm/binkley/basilisk/x/middle/store/MiddleRecord.java)
   - Records directly support Spring Data JDBC; annotations and other
   implementation details go here.  These are injected with a "store" reference
   to give a partial "active record" pattern (still, business logic, and
-  persistence should be kept separate by distinguishing records from domain
+  service should be kept separate by distinguishing records from domain
   objects)
 - **store** -
-  [`MiddleStore`](basilisk-persistence/src/main/java/hm/binkley/basilisk/store/x/MiddleStore.java)
+  [`MiddleStore`](basilisk-service/src/main/java/hm/binkley/basilisk/x/middle/store/MiddleStore.java)
   - Stores are light wrappers around repositories, managing the abstraction.
   In principle, one could replace Spring Data JDBC with, say, Spring Data JPA
   or jOOQ, and need only update the store.  These talk to their own repository
   only; for other records, they delegate to their matching factory
 - **domain object** -
-  [`Middle`](basilisk-persistence/src/main/java/hm/binkley/basilisk/store/x/Middle.java)
-  - Domain objects abstract business logic from persistence, and are light
+  [`Middle`](basilisk-service/src/main/java/hm/binkley/basilisk/x/middle/Middle.java)
+  - Domain objects abstract business logic from service, and are light
   wrappers around records.  These implement policy, such as if mutation should
-  trigger an immediate persistence write or not
+  trigger an immediate service write or not
 - **factory**
-  [`Middles`](basilisk-persistence/src/main/java/hm/binkley/basilisk/store/x/Middles.java)
+  [`Middles`](basilisk-service/src/main/java/hm/binkley/basilisk/x/middle/Middles.java)
   - Factories manage domain object searching and creation, and are light
   wrappers around stores, translating records into domain objects.  These talk
   to their own store only; for other domain objects they talk to the
@@ -721,7 +721,7 @@ See
 
 To avoid leaking database connections, or holding table/row locks overlong,
 use
-[auto-closing streams](basilisk-persistence/src/main/java/hm/binkley/basilisk/store/AutoClosingStream.java)
+[auto-closing streams](basilisk-persistence/src/main/java/hm/binkley/basilisk/AutoClosingStream.java)
 in _Store_ objects, to wrap streams returned from Spring Data JDBC.
 
 ### Natural keys
