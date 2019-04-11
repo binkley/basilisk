@@ -5,7 +5,6 @@ import hm.binkley.basilisk.x.near.Near;
 import hm.binkley.basilisk.x.near.Nears;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -88,7 +87,6 @@ class NearsControllerTest {
                         true));
     }
 
-    @Disabled("TODO: Implement general 404 handling")
     @Test
     void shouldNotGetOne()
             throws Exception {
@@ -129,7 +127,6 @@ class NearsControllerTest {
         verify(near).delete();
     }
 
-    @Disabled("TODO: Implement general 404 handling")
     @Test
     void shouldNotDeleteOne()
             throws Exception {
