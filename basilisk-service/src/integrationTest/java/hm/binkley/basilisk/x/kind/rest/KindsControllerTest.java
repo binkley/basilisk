@@ -3,7 +3,6 @@ package hm.binkley.basilisk.x.kind.rest;
 import hm.binkley.basilisk.configuration.JsonWebMvcTest;
 import hm.binkley.basilisk.x.kind.Kind;
 import hm.binkley.basilisk.x.kind.Kinds;
-import hm.binkley.basilisk.x.kind.store.KindRecord;
 import hm.binkley.basilisk.x.near.Near;
 import hm.binkley.basilisk.x.near.Nears;
 import lombok.RequiredArgsConstructor;
@@ -16,20 +15,23 @@ import org.springframework.core.io.ClassRelativeResourceLoader;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.stream.Stream;
 
 import static hm.binkley.basilisk.x.TestFixtures.fixedKind;
-import static hm.binkley.basilisk.x.TestFixtures.fixedKindRecord;
 import static hm.binkley.basilisk.x.TestFixtures.fixedNear;
-import static hm.binkley.basilisk.x.TestFixtures.fixedNearRecord;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.LOCATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -47,20 +49,25 @@ class KindsControllerTest {
     private Nears nears;
 
     private Near near;
-    private KindRecord kindRecord;
+    private String nearCode;
     private Kind kind;
+    private String kindCode;
+    private BigDecimal kindCoolness;
 
     @BeforeEach
     void setUp() {
-        final var nearRecord = fixedNearRecord();
         near = fixedNear();
-        kindRecord = fixedKindRecord();
+        nearCode = near.getCode();
+        near = spy(near);
         kind = fixedKind(nears);
+        kindCode = kind.getCode();
+        kindCoolness = kind.getCoolness();
+        kind = spy(kind);
 
         lenient().doReturn(Optional.of(near))
-                .when(nears).byCode(nearRecord.code);
+                .when(nears).byCode(nearCode);
         lenient().doReturn(Optional.of(kind))
-                .when(kinds).byCode(kindRecord.code);
+                .when(kinds).byCode(kindCode);
     }
 
     @Test
@@ -93,7 +100,7 @@ class KindsControllerTest {
             throws Exception {
         kind.addNear(near);
 
-        controller.perform(get("/kinds/get/" + kindRecord.code))
+        controller.perform(get("/kinds/get/" + kindCode))
                 .andExpect(status().isOk())
                 .andExpect(content().json(from(
                         "kinds-controller-test-get-one-response.json"),
@@ -114,18 +121,43 @@ class KindsControllerTest {
     @Test
     void shouldPostOne()
             throws Exception {
-        doReturn(fixedKind(nears)).when(kinds).unsaved(
-                kindRecord.code, kindRecord.coolness);
+        doReturn(kind).when(kinds).unsaved(kindCode, kindCoolness);
 
         controller.perform(post("/kinds/post")
                 .content(from("kinds-controller-test-post-one-request.json"))
                 .contentType(APPLICATION_JSON_UTF8)) // TODO: Waste of typing
                 .andExpect(status().isCreated())
                 .andExpect(header().string(
-                        LOCATION, "/kinds/get/" + kindRecord.code))
+                        LOCATION, "/kinds/get/" + kindCode))
                 .andExpect(content().json(from(
                         "kinds-controller-test-post-one-response.json"),
                         true));
+
+        verify(kind).save();
+    }
+
+    @Test
+    void shouldDeleteOne()
+            throws Exception {
+        doReturn(kind).when(kind).delete();
+
+        controller.perform(delete("/kinds/delete/" + kindCode))
+                .andExpect(status().isNoContent());
+
+        verify(kind).delete();
+    }
+
+    @Disabled("TODO: Implement general 404 handling")
+    @Test
+    void shouldNotDeleteOne()
+            throws Exception {
+        final var code = "ABC";
+        when(kinds.byCode(code)).thenReturn(Optional.empty());
+
+        controller.perform(delete("/kinds/delete/" + code))
+                .andExpect(status().isNotFound());
+
+        verify(kind, never()).delete();
     }
 
     private String from(final String jsonFile)

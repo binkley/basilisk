@@ -3,7 +3,6 @@ package hm.binkley.basilisk.x.near.rest;
 import hm.binkley.basilisk.configuration.JsonWebMvcTest;
 import hm.binkley.basilisk.x.near.Near;
 import hm.binkley.basilisk.x.near.Nears;
-import hm.binkley.basilisk.x.near.store.NearRecord;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -19,13 +18,16 @@ import java.util.Scanner;
 import java.util.stream.Stream;
 
 import static hm.binkley.basilisk.x.TestFixtures.fixedNear;
-import static hm.binkley.basilisk.x.TestFixtures.fixedNearRecord;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.LOCATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -40,16 +42,16 @@ class NearsControllerTest {
     @MockBean
     private Nears nears;
 
-    private NearRecord nearRecord;
+    private String nearCode;
     private Near near;
 
     @BeforeEach
     void setUp() {
-        nearRecord = fixedNearRecord();
-        near = fixedNear();
-
-        lenient().doReturn(Optional.of(near))
-                .when(nears).byCode(nearRecord.code);
+        final var near = fixedNear();
+        nearCode = near.getCode();
+        this.near = spy(near);
+        lenient().doReturn(Optional.of(this.near))
+                .when(nears).byCode(nearCode);
     }
 
     @Test
@@ -79,10 +81,7 @@ class NearsControllerTest {
     @Test
     void shouldGetOne()
             throws Exception {
-        when(nears.byCode(nearRecord.code))
-                .thenReturn(Optional.of(near));
-
-        controller.perform(get("/nears/get/" + nearRecord.code))
+        controller.perform(get("/nears/get/" + near.getCode()))
                 .andExpect(status().isOk())
                 .andExpect(content().json(from(
                         "nears-controller-test-get-one-response.json"),
@@ -103,17 +102,44 @@ class NearsControllerTest {
     @Test
     void shouldPostOne()
             throws Exception {
-        doReturn(near).when(nears).unsaved(nearRecord.code);
+        doReturn(near).when(nears).unsaved(nearCode);
+        doReturn(near).when(near).save();
 
         controller.perform(post("/nears/post")
                 .content(from("nears-controller-test-post-one-request.json"))
                 .contentType(APPLICATION_JSON_UTF8)) // TODO: Waste of typing
                 .andExpect(status().isCreated())
                 .andExpect(header().string(
-                        LOCATION, "/nears/get/" + nearRecord.code))
+                        LOCATION, "/nears/get/" + nearCode))
                 .andExpect(content().json(from(
                         "nears-controller-test-post-one-response.json"),
                         true));
+
+        verify(near).save();
+    }
+
+    @Test
+    void shouldDeleteOne()
+            throws Exception {
+        doReturn(near).when(near).delete();
+
+        controller.perform(delete("/nears/delete/" + nearCode))
+                .andExpect(status().isNoContent());
+
+        verify(near).delete();
+    }
+
+    @Disabled("TODO: Implement general 404 handling")
+    @Test
+    void shouldNotDeleteOne()
+            throws Exception {
+        final var code = "ABC";
+        when(nears.byCode(code)).thenReturn(Optional.empty());
+
+        controller.perform(delete("/nears/delete/" + code))
+                .andExpect(status().isNotFound());
+
+        verify(near, never()).delete();
     }
 
     private String from(final String jsonFile)

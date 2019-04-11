@@ -15,7 +15,7 @@ import static org.zalando.problem.Status.UNPROCESSABLE_ENTITY;
 @ControllerAdvice
 @Generated
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class BasiliskExceptionHandling
+public class ExceptionHandling
         implements ProblemHandling, SecurityAdviceTrait {
     private final ServerProperties server;
 
