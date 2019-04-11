@@ -1,0 +1,15 @@
+description: Make a near
+request:
+  method: POST
+  url: /nears/post
+  headers:
+    Content-Type: application/json;charset=UTF-8
+  body:
+    code: "NER"
+response:
+  status: 201
+  headers:
+    Content-Type: application/json;charset=UTF-8
+    Location: /nears/get/NER
+  body:
+    code: "NER"

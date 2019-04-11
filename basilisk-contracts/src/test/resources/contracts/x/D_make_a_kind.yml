@@ -1,0 +1,17 @@
+description: Make a kind
+request:
+  method: POST
+  url: /kinds/post
+  headers:
+    Content-Type: application/json;charset=UTF-8
+  body:
+    code: "KIN"
+    coolness: 2.3
+response:
+  status: 201
+  headers:
+    Content-Type: application/json;charset=UTF-8
+    Location: /kinds/get/KIN
+  body:
+    code: "KIN"
+    coolness: 2.3

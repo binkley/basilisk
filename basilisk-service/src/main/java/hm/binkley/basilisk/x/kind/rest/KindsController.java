@@ -33,7 +33,6 @@ public class KindsController {
                 .collect(toList());
     }
 
-    /** @todo Cleanest mapping NoSuchElementException -> 404 */
     @GetMapping("/get/{code}")
     public KindResponse get(@PathVariable("code") final String code) {
         return KindResponse.of(kinds.byCode(code).orElseThrow());
@@ -50,7 +49,6 @@ public class KindsController {
                 .body(KindResponse.of(saved));
     }
 
-    /** @todo Cleanest mapping NoSuchElementException -> 404 */
     @DeleteMapping("/delete/{code}")
     @ResponseStatus(NO_CONTENT)
     public void delete(@PathVariable("code") final String code) {
