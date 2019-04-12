@@ -10,6 +10,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.util.concurrent.atomic.AtomicReference;
 
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.http.HttpHeaders.ETAG;
@@ -65,13 +66,6 @@ class BasiliskLiveTest {
     }
 
     @Test
-    void shouldFindRestApi() {
-        client.get().uri("/chefs")
-                .exchange()
-                .expectStatus().isOk();
-    }
-
-    @Test
     void shouldUseEtags() {
         final var etag = new AtomicReference<String>();
         client.get().uri("/chefs")
@@ -82,5 +76,12 @@ class BasiliskLiveTest {
                 .header(IF_NONE_MATCH, etag.get())
                 .exchange()
                 .expectStatus().isNotModified();
+    }
+
+    @Test
+    void shouldProvideTracingHeaders() {
+        client.get().uri("/chefs")
+                .exchange()
+                .expectHeader().value("X-B3-TraceId", notNullValue());
     }
 }

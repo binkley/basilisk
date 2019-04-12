@@ -12,6 +12,8 @@ configurations {
 }
 
 dependencies {
+    implementation "org.springframework.cloud:spring-cloud-starter-sleuth"
+
     runtimeOnly "org.zalando:logbook-spring-boot-starter"
     runtimeOnly "org.jolokia:jolokia-core"
 

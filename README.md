@@ -153,6 +153,7 @@ Other relationships:
 * Example [natural key](#natural-keys) (ongoing to add these to more types)
 * Example [injected logger](#injected-logger)
 * [Etags](basilisk-service/src/main/java/hm/binkley/basilisk/configuration/EtagConfiguration.java)
+* [X-B3 headers](basilisk-service/src/main/java/hm/binkley/basilisk/rest/TraceResponseFilter.java)
 
 [[TOC]](#basilisk)
 
