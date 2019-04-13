@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.net.URI;
 import java.util.List;
@@ -27,6 +29,7 @@ import static org.springframework.http.ResponseEntity.ok;
 @RequestMapping("/nears")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @RestController
+@Validated
 @Transactional
 public class NearsController {
     private final Nears nears;
@@ -46,7 +49,7 @@ public class NearsController {
     /** @todo 200 vs 201 */
     @PostMapping("/post")
     public ResponseEntity<NearResponse> post(
-            @RequestBody final NearRequest near) {
+            @RequestBody final @Valid NearRequest near) {
         final var saved = nears.unsaved(near.getCode()).save();
 
         return created(URI.create("/nears/get/" + saved.getCode()))
@@ -56,7 +59,7 @@ public class NearsController {
     /** @todo Validation that code == near.code */
     @PutMapping("/put/{code}")
     public ResponseEntity<NearResponse> put(
-            @RequestBody final NearRequest near,
+            @RequestBody final @Valid NearRequest near,
             @PathVariable("code") final @NotNull String code) {
         final var exists = nears.byCode(code).isPresent();
         final var saved = nears.unsaved(near.getCode()).save();
