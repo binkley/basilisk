@@ -19,6 +19,16 @@ public final class TestJson {
             RETAIN_CLASS_REFERENCE);
     private static final Pattern capitals = Pattern.compile("([A-Z])");
 
+    public static String readTestJsonRequest()
+            throws IOException {
+        return readTestJson("request");
+    }
+
+    public static String readTestJsonResponse()
+            throws IOException {
+        return readTestJson("response");
+    }
+
     public static String readTestJson(final String tag)
             throws IOException {
         final StackFrame testMethodFrame = stackWalker.walk(frames -> frames

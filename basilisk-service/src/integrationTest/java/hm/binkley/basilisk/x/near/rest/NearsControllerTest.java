@@ -8,16 +8,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.core.io.ClassRelativeResourceLoader;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.io.IOException;
 import java.util.Optional;
-import java.util.Scanner;
 import java.util.stream.Stream;
 
+import static hm.binkley.basilisk.TestJson.readTestJsonRequest;
+import static hm.binkley.basilisk.TestJson.readTestJsonResponse;
 import static hm.binkley.basilisk.x.TestFixtures.fixedNear;
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
@@ -61,9 +59,7 @@ class NearsControllerTest {
 
         controller.perform(get("/nears/get"))
                 .andExpect(status().isOk())
-                .andExpect(content().json(from(
-                        "nears-controller-test-get-none-response.json"),
-                        true));
+                .andExpect(content().json(readTestJsonResponse(), true));
     }
 
     @Test
@@ -73,9 +69,7 @@ class NearsControllerTest {
 
         controller.perform(get("/nears/get"))
                 .andExpect(status().isOk())
-                .andExpect(content().json(from(
-                        "nears-controller-test-get-all-response.json"),
-                        true));
+                .andExpect(content().json(readTestJsonResponse(), true));
     }
 
     @Test
@@ -83,9 +77,7 @@ class NearsControllerTest {
             throws Exception {
         controller.perform(get("/nears/get/" + near.getCode()))
                 .andExpect(status().isOk())
-                .andExpect(content().json(from(
-                        "nears-controller-test-get-one-response.json"),
-                        true));
+                .andExpect(content().json(readTestJsonResponse(), true));
     }
 
     @Test
@@ -105,14 +97,12 @@ class NearsControllerTest {
         doReturn(near).when(near).save();
 
         controller.perform(post("/nears/post")
-                .content(from("nears-controller-test-post-one-request.json"))
+                .content(readTestJsonRequest())
                 .contentType(APPLICATION_JSON_UTF8)) // TODO: Waste of typing
                 .andExpect(status().isCreated())
                 .andExpect(header().string(
                         LOCATION, "/nears/get/" + nearCode))
-                .andExpect(content().json(from(
-                        "nears-controller-test-post-one-response.json"),
-                        true));
+                .andExpect(content().json(readTestJsonResponse(), true));
 
         verify(near).save();
     }
@@ -125,13 +115,10 @@ class NearsControllerTest {
         doReturn(near).when(near).save();
 
         controller.perform(put("/nears/put/" + nearCode)
-                .content(from(
-                        "nears-controller-test-put-one-new-request.json"))
+                .content(readTestJsonRequest())
                 .contentType(APPLICATION_JSON_UTF8)) // TODO: Waste of typing
                 .andExpect(status().isCreated())
-                .andExpect(content().json(from(
-                        "nears-controller-test-put-one-new-response.json"),
-                        true));
+                .andExpect(content().json(readTestJsonResponse(), true));
 
         verify(near).save();
     }
@@ -143,15 +130,10 @@ class NearsControllerTest {
         doReturn(near).when(near).save();
 
         controller.perform(put("/nears/put/" + nearCode)
-                .content(from(
-                        "nears-controller-test-put-one-existing-request"
-                                + ".json"))
+                .content(readTestJsonRequest())
                 .contentType(APPLICATION_JSON_UTF8)) // TODO: Waste of typing
                 .andExpect(status().isOk())
-                .andExpect(content().json(from(
-                        "nears-controller-test-put-one-existing-response"
-                                + ".json"),
-                        true));
+                .andExpect(content().json(readTestJsonResponse(), true));
 
         verify(near).save();
     }
@@ -177,15 +159,5 @@ class NearsControllerTest {
                 .andExpect(status().isNotFound());
 
         verify(near, never()).delete();
-    }
-
-    private String from(final String jsonFile)
-            throws IOException {
-        final var loader = new ClassRelativeResourceLoader(getClass());
-        // It's a Jedi mind trick
-        return new Scanner(
-                loader.getResource(jsonFile).readableChannel(), UTF_8)
-                .useDelimiter("\\A")
-                .next();
     }
 }

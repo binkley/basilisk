@@ -50,8 +50,7 @@ class NearsControllerValidationTest {
                 .content(readTestJson("request"))
                 .contentType(APPLICATION_JSON_UTF8))
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(content()
-                        .contentType(APPLICATION_PROBLEM_JSON));
+                .andExpect(content().contentType(APPLICATION_PROBLEM_JSON));
     }
 
     @Test
@@ -61,7 +60,6 @@ class NearsControllerValidationTest {
                 .content(readTestJson("request"))
                 .contentType(APPLICATION_JSON_UTF8))
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(content()
-                        .contentType(APPLICATION_PROBLEM_JSON));
+                .andExpect(content().contentType(APPLICATION_PROBLEM_JSON));
     }
 }

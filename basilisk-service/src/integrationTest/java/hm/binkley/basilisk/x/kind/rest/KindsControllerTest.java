@@ -10,18 +10,17 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.core.io.ClassRelativeResourceLoader;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Optional;
-import java.util.Scanner;
 import java.util.stream.Stream;
 
+import static hm.binkley.basilisk.TestJson.readTestJson;
+import static hm.binkley.basilisk.TestJson.readTestJsonRequest;
+import static hm.binkley.basilisk.TestJson.readTestJsonResponse;
 import static hm.binkley.basilisk.x.TestFixtures.fixedKind;
 import static hm.binkley.basilisk.x.TestFixtures.fixedNear;
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
@@ -49,7 +48,6 @@ class KindsControllerTest {
     private Nears nears;
 
     private Near near;
-    private String nearCode;
     private Kind kind;
     private String kindCode;
     private BigDecimal kindCoolness;
@@ -57,7 +55,7 @@ class KindsControllerTest {
     @BeforeEach
     void setUp() {
         near = fixedNear();
-        nearCode = near.getCode();
+        final var nearCode = near.getCode();
         near = spy(near);
         kind = fixedKind(nears);
         kindCode = kind.getCode();
@@ -77,9 +75,7 @@ class KindsControllerTest {
 
         controller.perform(get("/kinds/get"))
                 .andExpect(status().isOk())
-                .andExpect(content().json(from(
-                        "kinds-controller-test-get-none-response.json"),
-                        true));
+                .andExpect(content().json(readTestJsonResponse(), true));
     }
 
     @Test
@@ -90,9 +86,7 @@ class KindsControllerTest {
 
         controller.perform(get("/kinds/get"))
                 .andExpect(status().isOk())
-                .andExpect(content().json(from(
-                        "kinds-controller-test-get-all-response.json"),
-                        true));
+                .andExpect(content().json(readTestJsonResponse(), true));
     }
 
     @Test
@@ -102,9 +96,7 @@ class KindsControllerTest {
 
         controller.perform(get("/kinds/get/" + kindCode))
                 .andExpect(status().isOk())
-                .andExpect(content().json(from(
-                        "kinds-controller-test-get-one-response.json"),
-                        true));
+                .andExpect(content().json(readTestJsonResponse(), true));
     }
 
     @Test
@@ -123,14 +115,12 @@ class KindsControllerTest {
         doReturn(kind).when(kinds).unsaved(kindCode, kindCoolness);
 
         controller.perform(post("/kinds/post")
-                .content(from("kinds-controller-test-post-one-request.json"))
+                .content(readTestJsonRequest())
                 .contentType(APPLICATION_JSON_UTF8)) // TODO: Waste of typing
                 .andExpect(status().isCreated())
                 .andExpect(header().string(
                         LOCATION, "/kinds/get/" + kindCode))
-                .andExpect(content().json(from(
-                        "kinds-controller-test-post-one-response.json"),
-                        true));
+                .andExpect(content().json(readTestJsonResponse(), true));
 
         verify(kind).save();
     }
@@ -143,13 +133,10 @@ class KindsControllerTest {
         doReturn(kind).when(kind).save();
 
         controller.perform(put("/kinds/put/" + kindCode)
-                .content(from(
-                        "kinds-controller-test-put-one-new-request.json"))
+                .content(readTestJson("request"))
                 .contentType(APPLICATION_JSON_UTF8)) // TODO: Waste of typing
                 .andExpect(status().isCreated())
-                .andExpect(content().json(from(
-                        "kinds-controller-test-put-one-new-response.json"),
-                        true));
+                .andExpect(content().json(readTestJsonResponse(), true));
 
         verify(kind).save();
     }
@@ -161,15 +148,10 @@ class KindsControllerTest {
         doReturn(kind).when(kind).save();
 
         controller.perform(put("/kinds/put/" + kindCode)
-                .content(from(
-                        "kinds-controller-test-put-one-existing-request"
-                                + ".json"))
+                .content(readTestJsonRequest())
                 .contentType(APPLICATION_JSON_UTF8)) // TODO: Waste of typing
                 .andExpect(status().isOk())
-                .andExpect(content().json(from(
-                        "kinds-controller-test-put-one-existing-response"
-                                + ".json"),
-                        true));
+                .andExpect(content().json(readTestJsonResponse(), true));
 
         verify(kind).save();
     }
@@ -195,15 +177,5 @@ class KindsControllerTest {
                 .andExpect(status().isNotFound());
 
         verify(kind, never()).delete();
-    }
-
-    private String from(final String jsonFile)
-            throws IOException {
-        final var loader = new ClassRelativeResourceLoader(getClass());
-        // It's a Jedi mind trick
-        return new Scanner(
-                loader.getResource(jsonFile).readableChannel(), UTF_8)
-                .useDelimiter("\\A")
-                .next();
     }
 }
