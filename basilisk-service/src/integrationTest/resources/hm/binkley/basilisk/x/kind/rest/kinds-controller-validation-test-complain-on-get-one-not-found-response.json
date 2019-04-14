@@ -1,0 +1,9 @@
+{
+  "type": "https://binkley.hm/basilisk/not-found",
+  "title": "Not Found",
+  "status": 404,
+  "detail": "Kind not found: KIN",
+  "instance": "https://binkley.hm/basilisk/not-found/kind/KIN",
+  "domain": "kind",
+  "code": "KIN"
+}

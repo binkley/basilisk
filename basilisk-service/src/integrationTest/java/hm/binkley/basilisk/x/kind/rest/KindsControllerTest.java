@@ -16,14 +16,12 @@ import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static hm.binkley.basilisk.TestJson.readTestJson;
 import static hm.binkley.basilisk.TestJson.readTestJsonRequest;
 import static hm.binkley.basilisk.TestJson.readTestJsonResponse;
 import static hm.binkley.basilisk.x.TestFixtures.fixedKind;
 import static hm.binkley.basilisk.x.TestFixtures.fixedNear;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -100,16 +98,6 @@ class KindsControllerTest {
     }
 
     @Test
-    void shouldNotGetOne()
-            throws Exception {
-        final var code = "KIN";
-        when(kinds.byCode(code)).thenReturn(Optional.empty());
-
-        controller.perform(get("/kinds/get/" + code))
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
     void shouldPostOne()
             throws Exception {
         doReturn(kind).when(kinds).unsaved(kindCode, kindCoolness);
@@ -133,7 +121,7 @@ class KindsControllerTest {
         doReturn(kind).when(kind).save();
 
         controller.perform(put("/kinds/put/" + kindCode)
-                .content(readTestJson("request"))
+                .content(readTestJsonRequest())
                 .contentType(APPLICATION_JSON_UTF8)) // TODO: Waste of typing
                 .andExpect(status().isCreated())
                 .andExpect(content().json(readTestJsonResponse(), true));
@@ -157,6 +145,35 @@ class KindsControllerTest {
     }
 
     @Test
+    void shouldPostNearsAdd()
+            throws Exception {
+        doReturn(kind).when(kind).save();
+
+        controller.perform(post("/kinds/post/" + kindCode + "/nears/add")
+                .content(readTestJsonRequest())
+                .contentType(APPLICATION_JSON_UTF8)) // TODO: Waste of typing
+                .andExpect(status().isOk())
+                .andExpect(content().json(readTestJsonResponse(), true));
+
+        verify(kind).save();
+    }
+
+    @Test
+    void shouldPostNearsRemove()
+            throws Exception {
+        kind.addNear(near);
+        doReturn(kind).when(kind).save();
+
+        controller.perform(post("/kinds/post/" + kindCode + "/nears/remove")
+                .content(readTestJsonRequest())
+                .contentType(APPLICATION_JSON_UTF8)) // TODO: Waste of typing
+                .andExpect(status().isOk())
+                .andExpect(content().json(readTestJsonResponse(), true));
+
+        verify(kind).save();
+    }
+
+    @Test
     void shouldDeleteOne()
             throws Exception {
         doReturn(kind).when(kind).delete();
@@ -165,17 +182,5 @@ class KindsControllerTest {
                 .andExpect(status().isNoContent());
 
         verify(kind).delete();
-    }
-
-    @Test
-    void shouldNotDeleteOne()
-            throws Exception {
-        final var code = "ABC";
-        when(kinds.byCode(code)).thenReturn(Optional.empty());
-
-        controller.perform(delete("/kinds/delete/" + code))
-                .andExpect(status().isNotFound());
-
-        verify(kind, never()).delete();
     }
 }

@@ -1,0 +1,15 @@
+{
+  "type": "https://zalando.github.io/problem/constraint-violation",
+  "status": 422,
+  "violations": [
+    {
+      "field": "code",
+      "message": "must not be empty"
+    },
+    {
+      "field": "coolness",
+      "message": "must not be null"
+    }
+  ],
+  "title": "Constraint Violation"
+}

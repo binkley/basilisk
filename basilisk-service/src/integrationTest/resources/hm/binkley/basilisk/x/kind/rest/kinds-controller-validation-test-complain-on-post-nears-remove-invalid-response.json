@@ -1,0 +1,11 @@
+{
+  "type": "https://zalando.github.io/problem/constraint-violation",
+  "status": 422,
+  "violations": [
+    {
+      "field": "nearCodes[0]",
+      "message": "near not found: NER"
+    }
+  ],
+  "title": "Constraint Violation"
+}

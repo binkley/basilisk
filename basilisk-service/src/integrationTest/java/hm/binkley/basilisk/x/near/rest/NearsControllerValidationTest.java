@@ -1,6 +1,7 @@
 package hm.binkley.basilisk.x.near.rest;
 
 import hm.binkley.basilisk.configuration.JsonConfiguration;
+import hm.binkley.basilisk.configuration.ProblemConfiguration;
 import hm.binkley.basilisk.configuration.ProblemWebMvcTest;
 import hm.binkley.basilisk.x.near.Nears;
 import lombok.RequiredArgsConstructor;
@@ -13,18 +14,21 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Optional;
 
-import static hm.binkley.basilisk.TestJson.readTestJson;
+import static hm.binkley.basilisk.TestJson.readTestJsonRequest;
+import static hm.binkley.basilisk.TestJson.readTestJsonResponse;
 import static hm.binkley.basilisk.x.TestFixtures.fixedNear;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.http.MediaType.APPLICATION_PROBLEM_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Import(JsonConfiguration.class)
+@Import({JsonConfiguration.class, ProblemConfiguration.class})
 @ProblemWebMvcTest(NearsController.class)
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 class NearsControllerValidationTest {
@@ -47,7 +51,7 @@ class NearsControllerValidationTest {
     void shouldComplainOnPostOneInvalid()
             throws Exception {
         controller.perform(post("/nears/post")
-                .content(readTestJson("request"))
+                .content(readTestJsonRequest())
                 .contentType(APPLICATION_JSON_UTF8))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(content().contentType(APPLICATION_PROBLEM_JSON));
@@ -57,9 +61,21 @@ class NearsControllerValidationTest {
     void shouldComplainOnPutOneInvalid()
             throws Exception {
         controller.perform(put("/nears/put/" + nearCode)
-                .content(readTestJson("request"))
+                .content(readTestJsonRequest())
                 .contentType(APPLICATION_JSON_UTF8))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(content().contentType(APPLICATION_PROBLEM_JSON));
+    }
+
+    @Test
+    void shouldComplainOnDeleteNotFound()
+            throws Exception {
+        when(nears.byCode(nearCode))
+                .thenReturn(Optional.empty());
+
+        controller.perform(delete("/nears/delete/" + nearCode))
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentType(APPLICATION_PROBLEM_JSON))
+                .andExpect(content().json(readTestJsonResponse(), true));
     }
 }

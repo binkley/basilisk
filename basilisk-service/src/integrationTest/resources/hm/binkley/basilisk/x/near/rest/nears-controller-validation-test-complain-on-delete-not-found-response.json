@@ -1,0 +1,9 @@
+{
+  "type": "https://binkley.hm/basilisk/not-found",
+  "title": "Not Found",
+  "status": 404,
+  "detail": "Near not found: NER",
+  "instance": "https://binkley.hm/basilisk/not-found/near/NER",
+  "domain": "near",
+  "code": "NER"
+}

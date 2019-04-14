@@ -21,6 +21,7 @@ import javax.validation.constraints.NotNull;
 import java.net.URI;
 import java.util.List;
 
+import static hm.binkley.basilisk.x.rest.NotFoundException.nearNotFound;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.ResponseEntity.created;
@@ -29,6 +30,7 @@ import static org.springframework.http.ResponseEntity.ok;
 @RequestMapping("/nears")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @RestController
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 @Validated
 @Transactional
 public class NearsController {
@@ -73,6 +75,6 @@ public class NearsController {
     @DeleteMapping("/delete/{code}")
     @ResponseStatus(NO_CONTENT)
     public void delete(@PathVariable("code") final String code) {
-        nears.byCode(code).orElseThrow().delete();
+        nears.byCode(code).orElseThrow(nearNotFound(code)).delete();
     }
 }
