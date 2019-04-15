@@ -4,6 +4,7 @@ import hm.binkley.basilisk.x.kind.Kinds;
 import hm.binkley.basilisk.x.near.Nears;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -25,9 +26,9 @@ import java.util.Optional;
 
 import static hm.binkley.basilisk.x.rest.NotFoundException.kindNotFound;
 import static java.util.stream.Collectors.toList;
+import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
-import static org.springframework.http.ResponseEntity.created;
-import static org.springframework.http.ResponseEntity.ok;
+import static org.springframework.http.HttpStatus.OK;
 
 @RequestMapping("/kinds")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -52,15 +53,10 @@ public class KindsController {
                 .orElseThrow(kindNotFound(code)));
     }
 
-    /** @todo 200 vs 201 */
     @PostMapping("/post")
     public ResponseEntity<KindResponse> post(
             @RequestBody final @Valid KindRequest kind) {
-        final var saved = kinds.unsaved(kind.getCode(), kind.getCoolness())
-                .save();
-
-        return created(URI.create("/kinds/get/" + saved.getCode()))
-                .body(KindResponse.of(saved));
+        return makeOne(kind);
     }
 
     /** @todo Validation that code == kind.code */
@@ -68,14 +64,7 @@ public class KindsController {
     public ResponseEntity<KindResponse> put(
             @PathVariable("code") final @NotNull String code,
             @RequestBody final @Valid KindRequest kind) {
-        final var exists = kinds.byCode(code).isPresent();
-        final var saved = kinds.unsaved(kind.getCode(), kind.getCoolness())
-                .save();
-
-        return exists
-                ? ok(KindResponse.of(saved))
-                : created(URI.create("/kinds/get/" + saved.getCode()))
-                        .body(KindResponse.of(saved));
+        return makeOne(kind);
     }
 
     /** @todo 422 for near already in kind? */
@@ -110,5 +99,17 @@ public class KindsController {
     @ResponseStatus(NO_CONTENT)
     public void delete(@PathVariable("code") final String code) {
         kinds.byCode(code).orElseThrow(kindNotFound(code)).delete();
+    }
+
+    private ResponseEntity<KindResponse> makeOne(final KindRequest kind) {
+        final var exists = kinds.byCode(kind.getCode()).isPresent();
+        final var saved = kinds.unsaved(kind.getCode(), kind.getCoolness())
+                .save();
+
+        final var headers = new HttpHeaders();
+        headers.setLocation(URI.create("/kinds/get/" + saved.getCode()));
+
+        return new ResponseEntity<>(KindResponse.of(saved), headers,
+                exists ? OK : CREATED);
     }
 }

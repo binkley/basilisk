@@ -32,8 +32,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @JsonWebMvcTest(NearsController.class)
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 class NearsControllerTest {
     private final MockMvc controller;
 
@@ -91,8 +92,9 @@ class NearsControllerTest {
     }
 
     @Test
-    void shouldPostOne()
+    void shouldPostOneNew()
             throws Exception {
+        doReturn(Optional.empty()).when(nears).byCode(nearCode);
         doReturn(near).when(nears).unsaved(nearCode);
         doReturn(near).when(near).save();
 
@@ -100,6 +102,24 @@ class NearsControllerTest {
                 .content(readTestJsonRequest())
                 .contentType(APPLICATION_JSON_UTF8)) // TODO: Waste of typing
                 .andExpect(status().isCreated())
+                .andExpect(header().string(
+                        LOCATION, "/nears/get/" + nearCode))
+                .andExpect(content().json(readTestJsonResponse(), true));
+
+        verify(near).save();
+    }
+
+    @Test
+    void shouldPostOneExisting()
+            throws Exception {
+        doReturn(Optional.of(near)).when(nears).byCode(nearCode);
+        doReturn(near).when(nears).unsaved(nearCode);
+        doReturn(near).when(near).save();
+
+        controller.perform(post("/nears/post")
+                .content(readTestJsonRequest())
+                .contentType(APPLICATION_JSON_UTF8)) // TODO: Waste of typing
+                .andExpect(status().isOk())
                 .andExpect(header().string(
                         LOCATION, "/nears/get/" + nearCode))
                 .andExpect(content().json(readTestJsonResponse(), true));
@@ -118,6 +138,8 @@ class NearsControllerTest {
                 .content(readTestJsonRequest())
                 .contentType(APPLICATION_JSON_UTF8)) // TODO: Waste of typing
                 .andExpect(status().isCreated())
+                .andExpect(header().string(
+                        LOCATION, "/nears/get/" + nearCode))
                 .andExpect(content().json(readTestJsonResponse(), true));
 
         verify(near).save();
@@ -126,6 +148,7 @@ class NearsControllerTest {
     @Test
     void shouldPutOneExisting()
             throws Exception {
+        doReturn(Optional.of(near)).when(nears).byCode(nearCode);
         doReturn(near).when(nears).unsaved(nearCode);
         doReturn(near).when(near).save();
 
@@ -133,6 +156,8 @@ class NearsControllerTest {
                 .content(readTestJsonRequest())
                 .contentType(APPLICATION_JSON_UTF8)) // TODO: Waste of typing
                 .andExpect(status().isOk())
+                .andExpect(header().string(
+                        LOCATION, "/nears/get/" + nearCode))
                 .andExpect(content().json(readTestJsonResponse(), true));
 
         verify(near).save();

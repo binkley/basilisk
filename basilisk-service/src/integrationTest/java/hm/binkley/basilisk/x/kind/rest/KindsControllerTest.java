@@ -35,8 +35,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @JsonWebMvcTest(KindsController.class)
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 class KindsControllerTest {
     private final MockMvc controller;
 
@@ -98,14 +99,34 @@ class KindsControllerTest {
     }
 
     @Test
-    void shouldPostOne()
+    void shouldPostOneNew()
             throws Exception {
+        doReturn(Optional.empty()).when(kinds).byCode(kindCode);
         doReturn(kind).when(kinds).unsaved(kindCode, kindCoolness);
+        doReturn(kind).when(kind).save();
 
         controller.perform(post("/kinds/post")
                 .content(readTestJsonRequest())
                 .contentType(APPLICATION_JSON_UTF8)) // TODO: Waste of typing
                 .andExpect(status().isCreated())
+                .andExpect(header().string(
+                        LOCATION, "/kinds/get/" + kindCode))
+                .andExpect(content().json(readTestJsonResponse(), true));
+
+        verify(kind).save();
+    }
+
+    @Test
+    void shouldPostOneExisting()
+            throws Exception {
+        doReturn(Optional.of(kind)).when(kinds).byCode(kindCode);
+        doReturn(kind).when(kinds).unsaved(kindCode, kindCoolness);
+        doReturn(kind).when(kind).save();
+
+        controller.perform(post("/kinds/post")
+                .content(readTestJsonRequest())
+                .contentType(APPLICATION_JSON_UTF8)) // TODO: Waste of typing
+                .andExpect(status().isOk())
                 .andExpect(header().string(
                         LOCATION, "/kinds/get/" + kindCode))
                 .andExpect(content().json(readTestJsonResponse(), true));
@@ -124,6 +145,8 @@ class KindsControllerTest {
                 .content(readTestJsonRequest())
                 .contentType(APPLICATION_JSON_UTF8)) // TODO: Waste of typing
                 .andExpect(status().isCreated())
+                .andExpect(header().string(
+                        LOCATION, "/kinds/get/" + kindCode))
                 .andExpect(content().json(readTestJsonResponse(), true));
 
         verify(kind).save();
@@ -139,6 +162,8 @@ class KindsControllerTest {
                 .content(readTestJsonRequest())
                 .contentType(APPLICATION_JSON_UTF8)) // TODO: Waste of typing
                 .andExpect(status().isOk())
+                .andExpect(header().string(
+                        LOCATION, "/kinds/get/" + kindCode))
                 .andExpect(content().json(readTestJsonResponse(), true));
 
         verify(kind).save();

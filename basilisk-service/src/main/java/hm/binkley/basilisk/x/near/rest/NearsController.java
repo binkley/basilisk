@@ -3,6 +3,7 @@ package hm.binkley.basilisk.x.near.rest;
 import hm.binkley.basilisk.x.near.Nears;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -23,9 +24,9 @@ import java.util.List;
 
 import static hm.binkley.basilisk.x.rest.NotFoundException.nearNotFound;
 import static java.util.stream.Collectors.toList;
+import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
-import static org.springframework.http.ResponseEntity.created;
-import static org.springframework.http.ResponseEntity.ok;
+import static org.springframework.http.HttpStatus.OK;
 
 @RequestMapping("/nears")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -48,14 +49,10 @@ public class NearsController {
         return NearResponse.of(nears.byCode(code).orElseThrow());
     }
 
-    /** @todo 200 vs 201 */
     @PostMapping("/post")
     public ResponseEntity<NearResponse> post(
             @RequestBody final @Valid NearRequest near) {
-        final var saved = nears.unsaved(near.getCode()).save();
-
-        return created(URI.create("/nears/get/" + saved.getCode()))
-                .body(NearResponse.of(saved));
+        return makeOne(near);
     }
 
     /** @todo Validation that code == near.code */
@@ -63,18 +60,23 @@ public class NearsController {
     public ResponseEntity<NearResponse> put(
             @RequestBody final @Valid NearRequest near,
             @PathVariable("code") final @NotNull String code) {
-        final var exists = nears.byCode(code).isPresent();
-        final var saved = nears.unsaved(near.getCode()).save();
-
-        return exists
-                ? ok(NearResponse.of(saved))
-                : created(URI.create("/nears/get/" + saved.getCode()))
-                        .body(NearResponse.of(saved));
+        return makeOne(near);
     }
 
     @DeleteMapping("/delete/{code}")
     @ResponseStatus(NO_CONTENT)
     public void delete(@PathVariable("code") final String code) {
         nears.byCode(code).orElseThrow(nearNotFound(code)).delete();
+    }
+
+    private ResponseEntity<NearResponse> makeOne(final NearRequest near) {
+        final var exists = nears.byCode(near.getCode()).isPresent();
+        final var saved = nears.unsaved(near.getCode()).save();
+
+        final var headers = new HttpHeaders();
+        headers.setLocation(URI.create("/nears/get/" + saved.getCode()));
+
+        return new ResponseEntity<>(NearResponse.of(saved), headers,
+                exists ? OK : CREATED);
     }
 }
