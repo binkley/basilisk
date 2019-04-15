@@ -46,7 +46,8 @@ public class NearsController {
 
     @GetMapping("/get/{code}")
     public NearResponse get(@PathVariable("code") final String code) {
-        return NearResponse.of(nears.byCode(code).orElseThrow());
+        return NearResponse.of(nears.byCode(code)
+                .orElseThrow(nearNotFound(code)));
     }
 
     @PostMapping("/post")

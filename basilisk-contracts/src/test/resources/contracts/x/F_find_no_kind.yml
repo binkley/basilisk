@@ -1,0 +1,16 @@
+description: Make a near
+request:
+  method: GET
+  url: /kinds/get/NON
+response:
+  status: 404
+  headers:
+    Content-Type: application/problem+json
+  body:
+    code: "NON"
+    domain: "kind"
+    detail: "Kind not found: NON"
+    instance: "https://binkley.hm/basilisk/not-found/kind/NON"
+    status: 404
+    title: "Not Found"
+    type: "https://binkley.hm/basilisk/not-found"

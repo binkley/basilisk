@@ -1,0 +1,16 @@
+description: Make a near
+request:
+  method: GET
+  url: /nears/get/FAR
+response:
+  status: 404
+  headers:
+    Content-Type: application/problem+json
+  body:
+    code: "FAR"
+    domain: "near"
+    detail: "Near not found: FAR"
+    instance: "https://binkley.hm/basilisk/not-found/near/FAR"
+    status: 404
+    title: "Not Found"
+    type: "https://binkley.hm/basilisk/not-found"

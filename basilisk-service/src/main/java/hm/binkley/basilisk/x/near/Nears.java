@@ -17,6 +17,10 @@ public class Nears {
         return bind(store.unsaved(code));
     }
 
+    public boolean exists(final String code) {
+        return store.exists(code);
+    }
+
     public Optional<Near> byCode(final String code) {
         return store.byCode(code)
                 .map(this::bind);

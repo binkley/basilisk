@@ -61,6 +61,8 @@ class KindsControllerTest {
         kindCoolness = kind.getCoolness();
         kind = spy(kind);
 
+        lenient().doReturn(true)
+                .when(nears).exists(nearCode);
         lenient().doReturn(Optional.of(near))
                 .when(nears).byCode(nearCode);
         lenient().doReturn(Optional.of(kind))

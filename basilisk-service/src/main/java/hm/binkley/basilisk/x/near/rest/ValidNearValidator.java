@@ -15,6 +15,6 @@ public class ValidNearValidator
     @Override
     public boolean isValid(final String code,
             final ConstraintValidatorContext context) {
-        return nears.byCode(code).isPresent();
+        return nears.exists(code);
     }
 }

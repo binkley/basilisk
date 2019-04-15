@@ -18,6 +18,10 @@ public class NearStore {
         return bind(NearRecord.unsaved(code));
     }
 
+    public boolean exists(final String code) {
+        return springData.existsById(code);
+    }
+
     public Optional<NearRecord> byCode(final String code) {
         requireNonNull(code);
         return springData.findById(code)

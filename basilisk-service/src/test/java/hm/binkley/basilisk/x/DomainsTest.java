@@ -9,6 +9,8 @@ import hm.binkley.basilisk.x.middle.store.MiddleRecord;
 import hm.binkley.basilisk.x.near.Near;
 import hm.binkley.basilisk.x.near.Nears;
 import hm.binkley.basilisk.x.near.store.NearRecord;
+import hm.binkley.basilisk.x.near.store.NearRepository;
+import hm.binkley.basilisk.x.near.store.NearStore;
 import hm.binkley.basilisk.x.side.Side;
 import hm.binkley.basilisk.x.side.Sides;
 import hm.binkley.basilisk.x.side.store.SideRecord;
@@ -27,6 +29,20 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 class DomainsTest {
+    @Test
+    void shouldExistOrNot() {
+        final var nearRepository = mock(NearRepository.class);
+        final var nearStore = new NearStore(nearRepository);
+        final var nears = new Nears(nearStore);
+
+        assertThat(nears.exists("LALA")).isFalse();
+
+        final var nearCode = "NER";
+        when(nearRepository.existsById(nearCode)).thenReturn(true);
+
+        assertThat(nears.exists(nearCode)).isTrue();
+    }
+
     @Test
     void shouldRollUpFromBottom() {
         final var nearCode = "NER";
