@@ -4,24 +4,27 @@ import brave.Span;
 import brave.Tracer;
 import brave.propagation.B3Propagation;
 import brave.propagation.TraceContext;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.filter.GenericFilterBean;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.function.Function;
+
+import static hm.binkley.basilisk.rest.TraceResponseFilter.SleuthHeader.TraceId;
 
 /**
  * @todo Use {@link B3Propagation} injector and extractor, rather than doing
  * this manually
  */
 @RequiredArgsConstructor
+@SuppressFBWarnings("HRS_REQUEST_PARAMETER_TO_HTTP_HEADER")
 public class TraceResponseFilter
-        extends GenericFilterBean {
+        extends OncePerRequestFilter {
     private final Tracer tracer;
 
     private static String flags(final TraceContext context) {
@@ -30,8 +33,8 @@ public class TraceResponseFilter
     }
 
     @Override
-    public void doFilter(final ServletRequest request,
-            final ServletResponse response, final FilterChain chain)
+    public void doFilterInternal(final HttpServletRequest request,
+            final HttpServletResponse response, final FilterChain chain)
             throws IOException, ServletException {
         final Span span = tracer.currentSpan();
         if (null == span) {
@@ -39,16 +42,18 @@ public class TraceResponseFilter
             return;
         }
 
-        addTraceHeaders((HttpServletResponse) response, span.context());
+        // OK, we _really_ need to use the propagation framework
+        TraceId.copyFrom(request, response);
+        addTraceHeaders(response, span.context());
 
         chain.doFilter(request, response);
     }
 
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis") // TODO: Why?
-    private void addTraceHeaders(final HttpServletResponse httpResponse,
+    private void addTraceHeaders(final HttpServletResponse response,
             final TraceContext context) {
         for (final SleuthHeader header : SleuthHeader.values()) {
-            header.addTo(httpResponse, context);
+            header.addTo(response, context);
         }
     }
 
@@ -63,11 +68,23 @@ public class TraceResponseFilter
 
         private final Function<TraceContext, Object> read;
 
+        void copyFrom(final HttpServletRequest request,
+                final HttpServletResponse response) {
+            final String requestValue = request.getHeader(toString());
+            if (null != requestValue) {
+                response.setHeader(toString(), requestValue);
+            }
+        }
+
         void addTo(final HttpServletResponse response,
                 final TraceContext context) {
-            final Object value = read.apply(context);
-            if (null != value) {
-                response.addHeader(toString(), value.toString());
+            if (null != response.getHeader(toString())) {
+                return;
+            }
+
+            final Object traceValue = read.apply(context);
+            if (null != traceValue) {
+                response.addHeader(toString(), traceValue.toString());
             }
         }
 

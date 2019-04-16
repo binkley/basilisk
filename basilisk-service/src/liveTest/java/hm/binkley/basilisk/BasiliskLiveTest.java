@@ -10,6 +10,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.util.concurrent.atomic.AtomicReference;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
@@ -19,6 +20,7 @@ import static org.springframework.http.HttpHeaders.IF_NONE_MATCH;
 @AutoConfigureEmbeddedDatabase
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @SpringBootTest(webEnvironment = RANDOM_PORT)
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 @TestInstance(PER_CLASS)
 class BasiliskLiveTest {
     private final WebTestClient client;
@@ -83,5 +85,14 @@ class BasiliskLiveTest {
         client.get().uri("/chefs")
                 .exchange()
                 .expectHeader().value("X-B3-TraceId", notNullValue());
+    }
+
+    @Test
+    void shouldPreserveTracingHeaders() {
+        final var traceId = "XB3";
+        client.get().uri("/chefs")
+                .header("X-B3-TraceId", traceId)
+                .exchange()
+                .expectHeader().value("X-B3-TraceId", equalTo(traceId));
     }
 }

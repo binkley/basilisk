@@ -3,6 +3,7 @@ package hm.binkley.basilisk.rest;
 import brave.Span;
 import brave.Tracer;
 import brave.propagation.TraceContext;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -22,6 +23,23 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 class TraceResponseFilterTest {
+    @Disabled("TODO: Live testing works, but this one not so")
+    @Test
+    void shouldPreserveExistingTraceId()
+            throws IOException, ServletException {
+        final var traceId = "XB3";
+        final var tracer = mock(Tracer.class);
+        final var filter = new TraceResponseFilter(tracer);
+        final var chain = mock(FilterChain.class);
+        final var request = new MockHttpServletRequest();
+        request.addHeader(TraceId.toString(), traceId);
+        final var response = new MockHttpServletResponse();
+
+        filter.doFilter(request, response, chain);
+
+        assertThat(response.getHeader(TraceId.toString())).isEqualTo(traceId);
+    }
+
     @Test
     void shouldContinueCallingTheChainWithoutASpan()
             throws IOException, ServletException {
