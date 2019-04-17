@@ -22,8 +22,8 @@ public final class Location
         return record.getName();
     }
 
-    public Location applyInto(final Consumer<LocationRecord> addInto) {
-        addInto.accept(record);
+    public Location insertInto(final Consumer<LocationRecord> into) {
+        into.accept(record);
         return this;
     }
 }

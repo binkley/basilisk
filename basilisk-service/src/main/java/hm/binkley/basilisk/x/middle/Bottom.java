@@ -16,8 +16,8 @@ public final class Bottom {
 
     public String getFoo() { return record.foo; }
 
-    public Bottom applyTo(final Consumer<BottomRecord> user) {
-        user.accept(record);
+    public Bottom insertInto(final Consumer<BottomRecord> into) {
+        into.accept(record);
         return this;
     }
 }

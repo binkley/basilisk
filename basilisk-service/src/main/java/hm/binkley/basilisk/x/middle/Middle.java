@@ -79,7 +79,7 @@ public final class Middle
     }
 
     public Middle attachToKind(final @NotNull Kind kind) {
-        kind.applyTo(record::defineKind);
+        kind.insertInto(record::defineKind);
         return this;
     }
 
@@ -99,7 +99,7 @@ public final class Middle
     }
 
     public Middle addBottom(final @NotNull Bottom bottom) {
-        bottom.applyTo(record::addBottom);
+        bottom.insertInto(record::addBottom);
         return this;
     }
 
@@ -109,17 +109,17 @@ public final class Middle
     }
 
     public Middle removeBottom(final @NotNull Bottom bottom) {
-        bottom.applyTo(record::removeBottom);
+        bottom.insertInto(record::removeBottom);
         return this;
     }
 
     public Middle addNear(final @NotNull Near near) {
-        near.applyInto(record::addNear);
+        near.insertInto(record::addNear);
         return this;
     }
 
     public Middle removeNear(final @NotNull Near near) {
-        near.applyInto(record::removeNear);
+        near.insertInto(record::removeNear);
         return this;
     }
 
@@ -133,7 +133,7 @@ public final class Middle
         return this;
     }
 
-    public Middle applyInto(final Consumer<MiddleRecord> into) {
+    public Middle insertInto(final Consumer<MiddleRecord> into) {
         into.accept(record);
         return this;
     }

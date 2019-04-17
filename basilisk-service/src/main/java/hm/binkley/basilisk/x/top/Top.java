@@ -98,22 +98,22 @@ public final class Top
     }
 
     public Top addMiddle(final Middle middle) {
-        middle.applyInto(record::addMiddle);
+        middle.insertInto(record::addMiddle);
         return this;
     }
 
     public Top removeMiddle(final Middle middle) {
-        middle.applyInto(record::removeMiddle);
+        middle.insertInto(record::removeMiddle);
         return this;
     }
 
     public Top addNear(final @NotNull Near near) {
-        near.applyInto(record::addNear);
+        near.insertInto(record::addNear);
         return this;
     }
 
     public Top removeNear(final @NotNull Near near) {
-        near.applyInto(record::removeNear);
+        near.insertInto(record::removeNear);
         return this;
     }
 }

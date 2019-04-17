@@ -49,17 +49,17 @@ public final class Kind
     }
 
     public Kind addNear(final Near near) {
-        near.applyInto(record::addNear);
+        near.insertInto(record::addNear);
         return this;
     }
 
     public Kind removeNear(final Near near) {
-        near.applyInto(record::removeNear);
+        near.insertInto(record::removeNear);
         return this;
     }
 
-    public Kind applyTo(final Consumer<KindRecord> applyTo) {
-        applyTo.accept(record);
+    public Kind insertInto(final Consumer<KindRecord> into) {
+        into.accept(record);
         return this;
     }
 }

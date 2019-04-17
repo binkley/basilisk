@@ -27,7 +27,7 @@ public final class Near
         return this;
     }
 
-    public Near applyInto(final Consumer<NearRecord> into) {
+    public Near insertInto(final Consumer<NearRecord> into) {
         into.accept(record);
         return this;
     }

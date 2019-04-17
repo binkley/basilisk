@@ -42,7 +42,7 @@ public final class Source
     }
 
     public Source addAvailableAt(final Location location) {
-        location.applyInto(record::addAvailableAt);
+        location.insertInto(record::addAvailableAt);
         return this;
     }
 
@@ -52,7 +52,7 @@ public final class Source
     }
 
     public Source removeAvailableAt(final Location location) {
-        location.applyInto(record::removeAvailableAt);
+        location.insertInto(record::removeAvailableAt);
         return this;
     }
 }
