@@ -102,7 +102,8 @@ class RepositoriesTest {
                 .attachToSide(unsavedSide)
                 .addBottom(bottomFoo)
                 .addNear(unsavedMiddleNear);
-        final var unsavedTop = tops.unsaved(topCode, topName, unsavedSide)
+        final var unsavedTop = tops.unsaved(
+                topCode, topName, unsavedSide, false)
                 .addMiddle(unsavedMiddle)
                 .addNear(unsavedTopNear);
 
@@ -400,7 +401,7 @@ class RepositoriesTest {
     }
 
     private Top newTop() {
-        return tops.unsaved(topCode, topName, newSide());
+        return tops.unsaved(topCode, topName, newSide(), false);
     }
 
     private void assertBottomCount(final int total) {

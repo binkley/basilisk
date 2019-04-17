@@ -58,6 +58,8 @@ public final class Top
         return sides.byCode(record.sideCode).orElseThrow();
     }
 
+    public boolean isPlanned() { return record.planned; }
+
     @Override
     public Stream<Near> getOwnNears() {
         return record.nears.stream()

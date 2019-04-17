@@ -27,19 +27,21 @@ public class TopRecord {
     @Column("top_code")
     public Set<MiddleRef> middles = new LinkedHashSet<>();
     public @NotNull String sideCode;
+    public boolean planned;
     @Column("top_code")
     public Set<NearRef> nears = new LinkedHashSet<>();
     @Transient
     public TopStore store;
 
     public static TopRecord unsaved(final String code, final String name,
-            final SideRecord side) {
+            final SideRecord side, final boolean planned) {
         checkCode(code);
         check(side);
         final var unsaved = new TopRecord();
         unsaved.code = code;
         unsaved.name = name;
         unsaved.sideCode = side.save().code;
+        unsaved.planned = planned;
         return unsaved;
     }
 

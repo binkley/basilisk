@@ -21,9 +21,10 @@ public class Tops {
     private final Nears nears;
 
     public Top unsaved(
-            final String code, final String name, final Side side) {
+            final String code, final String name, final Side side,
+            final boolean planned) {
         return side.applyTo(sideRecord ->
-                bind(store.unsaved(code, name, sideRecord)));
+                bind(store.unsaved(code, name, sideRecord, planned)));
     }
 
     public Optional<Top> byCode(final String code) {

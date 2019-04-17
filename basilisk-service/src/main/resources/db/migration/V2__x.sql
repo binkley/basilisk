@@ -16,7 +16,8 @@ CREATE TABLE X.TOP
     code      VARCHAR NOT NULL PRIMARY KEY,
     -- Example of mandatory shared relationship
     side_code VARCHAR NOT NULL REFERENCES X.SIDE (code),
-    name      VARCHAR NOT NULL UNIQUE
+    name      VARCHAR NOT NULL UNIQUE,
+    planned   BOOLEAN NOT NULL
 );
 
 CREATE TABLE X.KIND

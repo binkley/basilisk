@@ -66,7 +66,7 @@ class DomainsTest {
 
         final var topCode = "TOP";
         final var top = new Top(TopRecord.unsaved(
-                topCode, "TWIRL", sideRecord),
+                topCode, "TWIRL", sideRecord, false),
                 mock(Middles.class), sides, nears);
 
         assertThat(top.getCode()).isEqualTo(topCode);
@@ -107,7 +107,7 @@ class DomainsTest {
         final var middles = mock(Middles.class);
         final var nears = mock(Nears.class);
         final var top = new Top(TopRecord.unsaved(
-                topCode, "TWIRL", sideRecord),
+                topCode, "TWIRL", sideRecord, false),
                 middles, sides, nears);
 
         assertThat(top.getNetNears().map(Near::getCode)).isEmpty();
@@ -171,7 +171,7 @@ class DomainsTest {
 
         final var topCode = "TOP";
         final var top = new Top(TopRecord.unsaved(
-                topCode, "TWIRL", sideRecord),
+                topCode, "TWIRL", sideRecord, false),
                 middles, sides, nears);
         top.addMiddle(middleA).addMiddle(middleB).addMiddle(middleC);
 
