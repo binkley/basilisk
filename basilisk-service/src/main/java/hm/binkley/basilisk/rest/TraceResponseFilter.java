@@ -15,8 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.function.Function;
 
-import static hm.binkley.basilisk.rest.TraceResponseFilter.SleuthHeader.TraceId;
-
 /**
  * @todo Use {@link B3Propagation} injector and extractor, rather than doing
  * this manually
@@ -42,50 +40,47 @@ public class TraceResponseFilter
             return;
         }
 
-        // OK, we _really_ need to use the propagation framework
-        TraceId.copyFrom(request, response);
-        addTraceHeaders(response, span.context());
-
         chain.doFilter(request, response);
+
+        addTraceHeaders(request, span.context(), response);
     }
 
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis") // TODO: Why?
-    private void addTraceHeaders(final HttpServletResponse response,
-            final TraceContext context) {
+    private void addTraceHeaders(final HttpServletRequest request,
+            final TraceContext context, final HttpServletResponse response) {
         for (final SleuthHeader header : SleuthHeader.values()) {
-            header.addTo(response, context);
+            header.addTo(request, response, context);
         }
     }
 
     // Grrr ... why aren't these public constants from Brave or Sleuth?
     @RequiredArgsConstructor
     public enum SleuthHeader {
-        TraceId(TraceContext::traceIdString),
+        TraceId(TraceContext::traceIdString) {
+            @Override
+            void addTo(final HttpServletRequest request,
+                    final HttpServletResponse response,
+                    final TraceContext context) {
+                final var requestValue = request.getHeader(toString());
+                final var traceValue = read.apply(context);
+                response.setHeader(toString(), null == requestValue
+                        ? String.valueOf(traceValue)
+                        : requestValue);
+            }
+        },
         SpanId(TraceContext::spanIdString),
         ParentSpanId(TraceContext::parentIdString),
         Sampled(TraceContext::sampled),
         Flags(TraceResponseFilter::flags);
 
-        private final Function<TraceContext, Object> read;
+        protected final Function<TraceContext, Object> read;
 
-        void copyFrom(final HttpServletRequest request,
-                final HttpServletResponse response) {
-            final String requestValue = request.getHeader(toString());
-            if (null != requestValue) {
-                response.setHeader(toString(), requestValue);
-            }
-        }
-
-        void addTo(final HttpServletResponse response,
+        void addTo(final HttpServletRequest request,
+                final HttpServletResponse response,
                 final TraceContext context) {
-            if (null != response.getHeader(toString())) {
-                return;
-            }
-
-            final Object traceValue = read.apply(context);
-            if (null != traceValue) {
-                response.addHeader(toString(), traceValue.toString());
-            }
+            final var traceValue = read.apply(context);
+            response.setHeader(toString(),
+                    null == traceValue ? null : String.valueOf(traceValue));
         }
 
         @Override

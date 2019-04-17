@@ -89,7 +89,7 @@ class BasiliskLiveTest {
 
     @Test
     void shouldPreserveTracingHeaders() {
-        final var traceId = "XB3";
+        final var traceId = "1234";
         client.get().uri("/chefs")
                 .header("X-B3-TraceId", traceId)
                 .exchange()
