@@ -8,27 +8,23 @@ import hm.binkley.basilisk.x.middle.store.MiddleRecord.NearRef;
 import hm.binkley.basilisk.x.near.HasNears;
 import hm.binkley.basilisk.x.near.Near;
 import hm.binkley.basilisk.x.near.Nears;
-import hm.binkley.basilisk.x.side.Side;
-import hm.binkley.basilisk.x.side.Sides;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-@EqualsAndHashCode(exclude = {"kinds", "sides", "nears"})
+@EqualsAndHashCode(exclude = {"kinds", "nears"})
 @RequiredArgsConstructor
-@ToString(exclude = {"kinds", "sides", "nears"})
+@ToString(exclude = {"kinds", "nears"})
 public final class Middle
         implements HasNears {
     private final @NotNull MiddleRecord record;
     private final @NotNull Kinds kinds;
-    private final @NotNull Sides sides;
     private final @NotNull Nears nears;
 
     public String getCode() { return record.code; }
@@ -41,20 +37,9 @@ public final class Middle
                 .orElse(null);
     }
 
-    public Instant getTime() {
-        return getSide()
-                .map(Side::getTime)
-                .orElse(null);
-    }
-
     public Optional<Kind> getKind() {
         return Optional.ofNullable(record.kindCode)
                 .flatMap(kinds::byCode);
-    }
-
-    public Optional<Side> getSide() {
-        return Optional.ofNullable(record.sideCode)
-                .flatMap(sides::byCode);
     }
 
     public Stream<Bottom> getBottoms() {
@@ -87,16 +72,6 @@ public final class Middle
 
     public Middle detachFromKind() {
         record.detachFromKind();
-        return this;
-    }
-
-    public Middle attachToSide(final @NotNull Side side) {
-        side.applyTo(record::attachToSide);
-        return this;
-    }
-
-    public Middle detachFromSide() {
-        record.detachFromSide();
         return this;
     }
 

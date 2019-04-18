@@ -5,17 +5,10 @@ CREATE TABLE X.NEAR
     code VARCHAR NOT NULL PRIMARY KEY
 );
 
-CREATE TABLE X.SIDE
-(
-    code VARCHAR     NOT NULL PRIMARY KEY,
-    time TIMESTAMPTZ NOT NULL
-);
-
 CREATE TABLE X.TOP
 (
     code                VARCHAR NOT NULL PRIMARY KEY,
     -- Example of mandatory shared relationship
-    side_code           VARCHAR NOT NULL REFERENCES X.SIDE (code),
     name                VARCHAR NOT NULL UNIQUE,
     -- Example of optional shared relationships
     estimated_near_code VARCHAR REFERENCES X.NEAR (code),
@@ -33,8 +26,6 @@ CREATE TABLE X.MIDDLE
     code      VARCHAR NOT NULL PRIMARY KEY,
     -- Example of optional relationship
     kind_code VARCHAR REFERENCES X.KIND (code),
-    -- Example of optional shared relationship
-    side_code VARCHAR REFERENCES X.SIDE (code),
     mid       INT     NOT NULL
 );
 

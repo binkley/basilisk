@@ -4,7 +4,6 @@ import hm.binkley.basilisk.x.kind.Kinds;
 import hm.binkley.basilisk.x.middle.store.MiddleRecord;
 import hm.binkley.basilisk.x.middle.store.MiddleStore;
 import hm.binkley.basilisk.x.near.Nears;
-import hm.binkley.basilisk.x.side.Sides;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -16,7 +15,6 @@ import java.util.stream.Stream;
 public class Middles {
     private final MiddleStore store;
     private final Kinds kinds;
-    private final Sides sides;
     private final Nears nears;
 
     public Middle unsaved(final String code, final int mid) {
@@ -44,6 +42,6 @@ public class Middles {
     }
 
     private Middle bind(final MiddleRecord record) {
-        return new Middle(record, kinds, sides, nears);
+        return new Middle(record, kinds, nears);
     }
 }

@@ -2,7 +2,6 @@ package hm.binkley.basilisk.x.middle.store;
 
 import hm.binkley.basilisk.x.kind.store.KindRecord;
 import hm.binkley.basilisk.x.near.store.NearRecord;
-import hm.binkley.basilisk.x.side.store.SideRecord;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -25,7 +24,6 @@ public class MiddleRecord {
     @Id
     public @NotNull String code;
     public String kindCode;
-    public String sideCode;
     public int mid;
     @Column("middle_code")
     public Set<BottomRecord> bottoms = new LinkedHashSet<>();
@@ -65,21 +63,6 @@ public class MiddleRecord {
         return this;
     }
 
-    public MiddleRecord attachToSide(final @NotNull SideRecord side) {
-        check(side);
-        sideCode = side.save().code;
-        return this;
-    }
-
-    @SuppressWarnings("PMD.NullAssignment")
-    public MiddleRecord detachFromSide() {
-        if (null == sideCode) {
-            throw new IllegalStateException("Absent side");
-        }
-        sideCode = null;
-        return this;
-    }
-
     public MiddleRecord addBottom(final @NotNull BottomRecord bottom) {
         check(bottom);
         if (!bottoms.add(bottom))
@@ -95,7 +78,7 @@ public class MiddleRecord {
     }
 
     public MiddleRecord addNear(final NearRecord near) {
-        check(near);
+        checkNear(near);
         final var ref = NearRef.of(near);
         if (!nears.add(ref))
             throw new IllegalStateException("Duplicate: " + near);
@@ -103,7 +86,7 @@ public class MiddleRecord {
     }
 
     public MiddleRecord removeNear(final NearRecord near) {
-        check(near);
+        checkNear(near);
         final var ref = NearRef.of(near);
         if (!nears.remove(ref))
             throw new NoSuchElementException("Absent: " + near);
@@ -125,11 +108,7 @@ public class MiddleRecord {
                     "Mismatched: " + bottom + "; " + this);
     }
 
-    private void check(final SideRecord side) {
-        requireNonNull(side);
-    }
-
-    private void check(final NearRecord near) {
+    private void checkNear(final NearRecord near) {
         requireNonNull(near);
     }
 

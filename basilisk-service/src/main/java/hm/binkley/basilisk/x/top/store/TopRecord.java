@@ -2,7 +2,6 @@ package hm.binkley.basilisk.x.top.store;
 
 import hm.binkley.basilisk.x.middle.store.MiddleRecord;
 import hm.binkley.basilisk.x.near.store.NearRecord;
-import hm.binkley.basilisk.x.side.store.SideRecord;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -27,7 +26,6 @@ public class TopRecord {
     public String name;
     @Column("top_code")
     public Set<MiddleRef> middles = new LinkedHashSet<>();
-    public @NotNull String sideCode;
     public String estimatedNearCode;
     public String plannedNearCode;
     @Column("top_code")
@@ -35,22 +33,15 @@ public class TopRecord {
     @Transient
     public TopStore store;
 
-    public static TopRecord unsaved(final String code, final String name,
-            final SideRecord side) {
+    public static TopRecord unsaved(final String code, final String name) {
         checkCode(code);
-        check(side);
         final var unsaved = new TopRecord();
         unsaved.code = code;
         unsaved.name = name;
-        unsaved.sideCode = side.save().code;
         return unsaved;
     }
 
     private static void checkCode(final String code) { requireNonNull(code);}
-
-    private static void check(final SideRecord side) {
-        requireNonNull(side);
-    }
 
     public TopRecord addMiddle(final MiddleRecord middle) {
         check(middle);

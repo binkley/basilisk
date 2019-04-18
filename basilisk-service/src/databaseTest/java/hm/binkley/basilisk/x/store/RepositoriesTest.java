@@ -16,10 +16,6 @@ import hm.binkley.basilisk.x.near.Nears;
 import hm.binkley.basilisk.x.near.store.NearRecord;
 import hm.binkley.basilisk.x.near.store.NearRepository;
 import hm.binkley.basilisk.x.near.store.NearStore;
-import hm.binkley.basilisk.x.side.Side;
-import hm.binkley.basilisk.x.side.Sides;
-import hm.binkley.basilisk.x.side.store.SideRepository;
-import hm.binkley.basilisk.x.side.store.SideStore;
 import hm.binkley.basilisk.x.top.Top;
 import hm.binkley.basilisk.x.top.Tops;
 import hm.binkley.basilisk.x.top.store.TopRepository;
@@ -35,7 +31,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -51,8 +46,6 @@ import static org.mockito.Mockito.when;
 class RepositoriesTest {
     private static final String nearCode = "NER";
     private static final String bottomFoo = "BAR";
-    private static final String sideCode = "SID";
-    private static final Instant sideTime = Instant.ofEpochSecond(1_000_000);
     private static final String kindCode = "KIN";
     private static final BigDecimal kindCoolness = new BigDecimal("2.3");
     private static final String middleCode = "MID";
@@ -68,11 +61,8 @@ class RepositoriesTest {
     private final KindRepository kindRepository;
     @Spy
     private final MiddleRepository middleRepository;
-    @Spy
-    private final SideRepository sideRepository;
 
     private Nears nears;
-    private Sides sides;
     private Kinds kinds;
     private Middles middles;
     private Tops tops;
@@ -84,11 +74,10 @@ class RepositoriesTest {
     @BeforeEach
     void setUp() {
         nears = new Nears(new NearStore(nearRepository));
-        sides = new Sides(new SideStore(sideRepository));
         kinds = new Kinds(new KindStore(kindRepository), nears);
         middles = new Middles(new MiddleStore(middleRepository),
-                kinds, sides, nears);
-        tops = new Tops(new TopStore(topRepository), middles, sides, nears);
+                kinds, nears);
+        tops = new Tops(new TopStore(topRepository), middles, nears);
     }
 
     @Test
@@ -96,16 +85,14 @@ class RepositoriesTest {
         final var unsavedKindNear = nears.unsaved("KNR");
         final var unsavedMiddleNear = nears.unsaved("MNR");
         final var unsavedTopNear = nears.unsaved("TNR");
-        final var unsavedSide = sides.unsaved(sideCode, sideTime);
         final var unsavedKind = kinds.unsaved(kindCode, kindCoolness)
                 .addNear(unsavedKindNear);
         final var unsavedMiddle = middles.unsaved(middleCode, middleMid)
                 .attachToKind(unsavedKind)
-                .attachToSide(unsavedSide)
                 .addBottom(bottomFoo)
                 .addNear(unsavedMiddleNear);
         final var unsavedTop = tops.unsaved(
-                topCode, topName, unsavedSide)
+                topCode, topName)
                 .addMiddle(unsavedMiddle)
                 .addNear(unsavedTopNear);
 
@@ -114,15 +101,10 @@ class RepositoriesTest {
 
         assertThat(readBackTop).isEqualTo(unsavedTop);
         assertThat(readBackTop.getName()).isEqualTo(topName);
-        final var readBackSide = readBackTop.getSide();
-        assertThat(readBackSide).isEqualTo(unsavedSide);
-        assertThat(readBackSide.getTime()).isEqualTo(sideTime);
         final var readBackMiddle = readBackTop.getMiddles()
                 .findFirst()
                 .orElseThrow();
         assertThat(readBackMiddle).isEqualTo(unsavedMiddle);
-        assertThat(readBackMiddle.getSide()
-                .orElseThrow()).isEqualTo(readBackSide);
         assertThat(readBackMiddle.getMid()).isEqualTo(middleMid);
         assertThat(readBackMiddle.getBottoms()
                 .findFirst()
@@ -137,7 +119,6 @@ class RepositoriesTest {
         assertThat(readBackKindNear).isEqualTo(unsavedKindNear);
 
         assertBottomCount(1);
-        assertSideCount(1);
         assertMiddleCounts(1, 0);
         assertKindCount(1);
         assertTopCount(1);
@@ -161,14 +142,6 @@ class RepositoriesTest {
 
         assertMiddleCounts(0, 0);
 
-        final var side = newSide().save();
-
-        assertSideCount(1);
-
-        side.delete();
-
-        assertSideCount(0);
-
         final var kind = newKind().save();
 
         assertKindCount(1);
@@ -187,16 +160,6 @@ class RepositoriesTest {
     }
 
     @Test
-    void shouldSaveDateTimeTypes() {
-        final var unsaved = newSide();
-
-        final var saved = unsaved.save();
-
-        assertThat(saved).isEqualTo(unsaved);
-        assertSideCount(1);
-    }
-
-    @Test
     void shouldGracefullyCopeWithNoKind() {
         final var kind = newKind().save();
         final var middle = newMiddle()
@@ -210,20 +173,6 @@ class RepositoriesTest {
 
         assertThat(middle.getKind()).isEmpty();
         assertThat(middle.getCoolness()).isNull();
-    }
-
-    @Test
-    void shouldGracefullyCopeWithNoSide() {
-        final var side = newSide().save();
-        final var middle = newMiddle()
-                .attachToSide(side).save();
-
-        assertThat(middle.getSide().orElseThrow()).isEqualTo(side);
-
-        middle.detachFromSide().save();
-        side.delete();
-
-        assertThat(middle.getSide()).isEmpty();
     }
 
     @Test
@@ -404,10 +353,6 @@ class RepositoriesTest {
         return nears.unsaved(nearCode);
     }
 
-    private Side newSide() {
-        return sides.unsaved(sideCode, sideTime);
-    }
-
     private Middle newMiddle() {
         return middles.unsaved(middleCode, middleMid);
     }
@@ -417,15 +362,11 @@ class RepositoriesTest {
     }
 
     private Top newTop() {
-        return tops.unsaved(topCode, topName, newSide());
+        return tops.unsaved(topCode, topName);
     }
 
     private void assertBottomCount(final int total) {
         assertThat(middleRepository.findAllBottoms()).hasSize(total);
-    }
-
-    private void assertSideCount(final int total) {
-        assertThat(sides.all()).hasSize(total);
     }
 
     private void assertMiddleCounts(final int owned, final int free) {

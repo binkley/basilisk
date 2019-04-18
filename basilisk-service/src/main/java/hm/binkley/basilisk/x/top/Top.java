@@ -5,8 +5,6 @@ import hm.binkley.basilisk.x.middle.Middles;
 import hm.binkley.basilisk.x.near.HasNears;
 import hm.binkley.basilisk.x.near.Near;
 import hm.binkley.basilisk.x.near.Nears;
-import hm.binkley.basilisk.x.side.Side;
-import hm.binkley.basilisk.x.side.Sides;
 import hm.binkley.basilisk.x.top.store.TopRecord;
 import hm.binkley.basilisk.x.top.store.TopRecord.NearRef;
 import lombok.EqualsAndHashCode;
@@ -14,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import javax.validation.constraints.NotNull;
-import java.time.Instant;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
@@ -26,14 +23,13 @@ import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toList;
 
-@EqualsAndHashCode(exclude = {"middles", "sides", "nears"})
+@EqualsAndHashCode(exclude = {"middles", "nears"})
 @RequiredArgsConstructor
-@ToString(exclude = {"middles", "sides", "nears"})
+@ToString(exclude = {"middles", "nears"})
 public final class Top
         implements HasNears {
     private final @NotNull TopRecord record;
     private final @NotNull Middles middles;
-    private final @NotNull Sides sides;
     private final @NotNull Nears nears;
 
     private static Collector<Near, ?, Set<Near>> toSortedSet() {
@@ -45,18 +41,10 @@ public final class Top
 
     public String getName() { return record.name; }
 
-    public Instant getTime() {
-        return getSide().getTime();
-    }
-
     public Stream<Middle> getMiddles() {
         return record.middles.stream()
                 .map(ref -> middles.byCode(ref.middleCode))
                 .map(Optional::orElseThrow);
-    }
-
-    public Side getSide() {
-        return sides.byCode(record.sideCode).orElseThrow();
     }
 
     public boolean isPlanned() { return null != record.plannedNearCode; }

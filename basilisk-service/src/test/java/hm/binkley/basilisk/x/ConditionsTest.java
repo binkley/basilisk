@@ -15,11 +15,6 @@ import hm.binkley.basilisk.x.near.Nears;
 import hm.binkley.basilisk.x.near.store.NearRecord;
 import hm.binkley.basilisk.x.near.store.NearRepository;
 import hm.binkley.basilisk.x.near.store.NearStore;
-import hm.binkley.basilisk.x.side.Side;
-import hm.binkley.basilisk.x.side.Sides;
-import hm.binkley.basilisk.x.side.store.SideRecord;
-import hm.binkley.basilisk.x.side.store.SideRepository;
-import hm.binkley.basilisk.x.side.store.SideStore;
 import hm.binkley.basilisk.x.top.Top;
 import hm.binkley.basilisk.x.top.Tops;
 import hm.binkley.basilisk.x.top.store.TopRepository;
@@ -32,7 +27,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -46,8 +40,6 @@ class ConditionsTest {
     @Mock
     private final NearRepository nearRepository;
     @Mock
-    private final SideRepository sideRepository;
-    @Mock
     private final TopRepository topRepository;
     @Mock
     private final KindRepository kindRepository;
@@ -55,7 +47,6 @@ class ConditionsTest {
     private final MiddleRepository middleRepository;
 
     private Nears nears;
-    private Sides sides;
     private Kinds kinds;
     private Middles middles;
     private Tops tops;
@@ -67,20 +58,16 @@ class ConditionsTest {
     @BeforeEach
     void setUp() {
         nears = new Nears(new NearStore(nearRepository));
-        sides = new Sides(new SideStore(sideRepository));
         kinds = new Kinds(new KindStore(kindRepository), nears);
         middles = new Middles(new MiddleStore(middleRepository),
-                kinds, sides, nears);
-        tops = new Tops(new TopStore(topRepository), middles, sides, nears);
+                kinds, nears);
+        tops = new Tops(new TopStore(topRepository), middles, nears);
     }
 
     @Test
     void shouldComplainOnMissingNaturalKey() {
         assertThatThrownBy(() ->
-                sides.unsaved(null, Instant.ofEpochSecond(1_000_000)))
-                .isInstanceOf(NullPointerException.class);
-        assertThatThrownBy(() ->
-                tops.unsaved(null, "TWIRL", newSide()))
+                tops.unsaved(null, "TWIRL"))
                 .isInstanceOf(NullPointerException.class);
         assertThatThrownBy(() ->
                 kinds.unsaved(null, new BigDecimal("2.3")))
@@ -92,8 +79,6 @@ class ConditionsTest {
 
     @Test
     void shouldComplainOnMissingNear() {
-        doAnswer(invocation -> invocation.getArgument(0))
-                .when(sideRepository).save(any(SideRecord.class));
         final var top = newTop();
         final var middle = newMiddle();
         final var kind = newKind();
@@ -110,8 +95,6 @@ class ConditionsTest {
     void shouldComplainOnDuplicateNear() {
         doAnswer(invocation -> invocation.getArgument(0))
                 .when(nearRepository).save(any(NearRecord.class));
-        doAnswer(invocation -> invocation.getArgument(0))
-                .when(sideRepository).save(any(SideRecord.class));
         final var near = nears.unsaved("NER");
         final var top = newTop().addNear(near);
         final var middle = newMiddle().addNear(near);
@@ -129,8 +112,6 @@ class ConditionsTest {
     void shouldComplainOnAbsentNear() {
         doAnswer(invocation -> invocation.getArgument(0))
                 .when(nearRepository).save(any(NearRecord.class));
-        doAnswer(invocation -> invocation.getArgument(0))
-                .when(sideRepository).save(any(SideRecord.class));
         final var near = nears.unsaved("NER");
         final var top = newTop();
         final var middle = newMiddle();
@@ -142,16 +123,6 @@ class ConditionsTest {
                 .isInstanceOf(NoSuchElementException.class);
         assertThatThrownBy(() -> kind.removeNear(near))
                 .isInstanceOf(NoSuchElementException.class);
-    }
-
-    @Test
-    void shouldComplainOnMissingSide() {
-        final var middle = newMiddle();
-
-        assertThatThrownBy(() -> tops.unsaved("TOP", "TWIRL", null))
-                .isInstanceOf(NullPointerException.class);
-        assertThatThrownBy(() -> middle.attachToSide(null))
-                .isInstanceOf(NullPointerException.class);
     }
 
     @Test
@@ -167,14 +138,6 @@ class ConditionsTest {
         final var middle = newMiddle();
 
         assertThatThrownBy(middle::detachFromKind)
-                .isInstanceOf(IllegalStateException.class);
-    }
-
-    @Test
-    void shouldComplainOnAbsentSide() {
-        final var middle = newMiddle();
-
-        assertThatThrownBy(middle::detachFromSide)
                 .isInstanceOf(IllegalStateException.class);
     }
 
@@ -216,8 +179,6 @@ class ConditionsTest {
 
     @Test
     void shouldComplainOnMissingMiddle() {
-        doAnswer(invocation -> invocation.getArgument(0))
-                .when(sideRepository).save(any(SideRecord.class));
         final var top = newTop();
 
         assertThatThrownBy(() -> top.addNear(null))
@@ -229,17 +190,11 @@ class ConditionsTest {
     @Test
     void shouldComplainOnAbsentMiddle() {
         doAnswer(invocation -> invocation.getArgument(0))
-                .when(sideRepository).save(any(SideRecord.class));
-        doAnswer(invocation -> invocation.getArgument(0))
                 .when(middleRepository).save(any(MiddleRecord.class));
         final var top = newTop();
 
         assertThatThrownBy(() -> top.removeMiddle(newMiddle()))
                 .isInstanceOf(NoSuchElementException.class);
-    }
-
-    private Side newSide() {
-        return sides.unsaved("SID", Instant.ofEpochMilli(1_000_000));
     }
 
     private Kind newKind() {
@@ -251,6 +206,6 @@ class ConditionsTest {
     }
 
     private Top newTop() {
-        return tops.unsaved("TOP", "TWIRL", newSide());
+        return tops.unsaved("TOP", "TWIRL");
     }
 }

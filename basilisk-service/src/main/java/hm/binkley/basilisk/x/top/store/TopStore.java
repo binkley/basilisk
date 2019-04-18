@@ -1,6 +1,5 @@
 package hm.binkley.basilisk.x.top.store;
 
-import hm.binkley.basilisk.x.side.store.SideRecord;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -15,9 +14,8 @@ import static java.util.Objects.requireNonNull;
 public class TopStore {
     private final TopRepository springData;
 
-    public TopRecord unsaved(final String code, final String name,
-            final SideRecord side) {
-        return bind(TopRecord.unsaved(code, name, side));
+    public TopRecord unsaved(final String code, final String name) {
+        return bind(TopRecord.unsaved(code, name));
     }
 
     public Optional<TopRecord> byCode(final String code) {
@@ -32,7 +30,7 @@ public class TopStore {
     }
 
     public TopRecord save(final TopRecord record) {
-        springData.upsert(record.code, record.name, record.sideCode,
+        springData.upsert(record.code, record.name,
                 record.estimatedNearCode, record.plannedNearCode);
         return springData.save(record);
     }
