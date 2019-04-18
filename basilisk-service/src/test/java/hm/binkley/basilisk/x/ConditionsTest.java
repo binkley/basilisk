@@ -80,7 +80,7 @@ class ConditionsTest {
                 sides.unsaved(null, Instant.ofEpochSecond(1_000_000)))
                 .isInstanceOf(NullPointerException.class);
         assertThatThrownBy(() ->
-                tops.unsaved(null, "TWIRL", newSide(), false))
+                tops.unsaved(null, "TWIRL", newSide()))
                 .isInstanceOf(NullPointerException.class);
         assertThatThrownBy(() ->
                 kinds.unsaved(null, new BigDecimal("2.3")))
@@ -148,7 +148,7 @@ class ConditionsTest {
     void shouldComplainOnMissingSide() {
         final var middle = newMiddle();
 
-        assertThatThrownBy(() -> tops.unsaved("TOP", "TWIRL", null, false))
+        assertThatThrownBy(() -> tops.unsaved("TOP", "TWIRL", null))
                 .isInstanceOf(NullPointerException.class);
         assertThatThrownBy(() -> middle.attachToSide(null))
                 .isInstanceOf(NullPointerException.class);
@@ -251,6 +251,6 @@ class ConditionsTest {
     }
 
     private Top newTop() {
-        return tops.unsaved("TOP", "TWIRL", newSide(), false);
+        return tops.unsaved("TOP", "TWIRL", newSide());
     }
 }

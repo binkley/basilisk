@@ -8,6 +8,7 @@ import hm.binkley.basilisk.x.near.Nears;
 import hm.binkley.basilisk.x.side.Side;
 import hm.binkley.basilisk.x.side.Sides;
 import hm.binkley.basilisk.x.top.store.TopRecord;
+import hm.binkley.basilisk.x.top.store.TopRecord.NearRef;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
@@ -58,18 +59,36 @@ public final class Top
         return sides.byCode(record.sideCode).orElseThrow();
     }
 
-    public boolean isPlanned() { return record.planned; }
+    public boolean isPlanned() { return null != record.plannedNearCode; }
+
+    public Optional<Near> getEstimatedNear() {
+        return Optional.ofNullable(record.estimatedNearCode)
+                .map(nears::byCode)
+                .map(Optional::orElseThrow);
+    }
+
+    public Optional<Near> getPlannedNear() {
+        // It is optional to have a planned near, but it if present, the
+        // planned near must exist
+        return Optional.ofNullable(record.plannedNearCode)
+                .map(nears::byCode)
+                .map(Optional::orElseThrow);
+    }
 
     @Override
     public Stream<Near> getOwnNears() {
         return record.nears.stream()
-                .map(ref -> nears.byCode(ref.nearCode))
+                .map(NearRef::getNearCode)
+                .map(nears::byCode)
                 .map(Optional::orElseThrow);
     }
 
     @Override
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     public Stream<Near> getNetNears() {
+        if (isPlanned())
+            return getPlannedNear().stream();
+
         if (record.hasNears())
             return getOwnNears();
 
@@ -87,6 +106,16 @@ public final class Top
                 .collect(() -> first.collect(toSortedSet()),
                         Set::retainAll, Set::retainAll)
                 .stream();
+    }
+
+    public Top estimateWith(final Near near) {
+        near.insertInto(record::estimateNear);
+        return this;
+    }
+
+    public Top planWith(final Near near) {
+        near.insertInto(record::planNear);
+        return this;
     }
 
     public Top save() {

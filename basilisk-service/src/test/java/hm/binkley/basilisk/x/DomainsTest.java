@@ -29,6 +29,13 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 class DomainsTest {
+    private static final String nearCode = "NER";
+    private static final String middleCode = "MID";
+    private static final String kindCode = "KIN";
+    private static final String sideCode = "SID";
+    private static final String topCode = "TOP";
+    private static final String topName = "TWIRL";
+
     @Test
     void shouldExistOrNot() {
         final var nearRepository = mock(NearRepository.class);
@@ -37,7 +44,6 @@ class DomainsTest {
 
         assertThat(nears.exists("LALA")).isFalse();
 
-        final var nearCode = "NER";
         when(nearRepository.existsById(nearCode)).thenReturn(true);
 
         assertThat(nears.exists(nearCode)).isTrue();
@@ -45,7 +51,6 @@ class DomainsTest {
 
     @Test
     void shouldRollUpFromBottom() {
-        final var nearCode = "NER";
         final var nearRecord = spy(NearRecord.unsaved(nearCode));
         doReturn(nearRecord).when(nearRecord).save();
         final var near = new Near(nearRecord);
@@ -54,7 +59,6 @@ class DomainsTest {
 
         assertThat(near.getCode()).isEqualTo(nearCode);
 
-        final var sideCode = "SID";
         final var sideRecord = spy(SideRecord.unsaved(
                 sideCode, Instant.ofEpochMilli(1_000_000)));
         doReturn(sideRecord).when(sideRecord).save();
@@ -64,15 +68,14 @@ class DomainsTest {
 
         assertThat(side.getCode()).isEqualTo(sideCode);
 
-        final var topCode = "TOP";
+        final var topCode = DomainsTest.topCode;
         final var top = new Top(TopRecord.unsaved(
-                topCode, "TWIRL", sideRecord, false),
+                topCode, topName, sideRecord),
                 mock(Middles.class), sides, nears);
 
         assertThat(top.getCode()).isEqualTo(topCode);
         assertThat(top.getTime()).isEqualTo(sideRecord.time);
 
-        final var kindCode = "KIN";
         final var kindRecord = spy(KindRecord.unsaved(
                 kindCode, new BigDecimal("2.3")));
         doReturn(kindRecord).when(kindRecord).save();
@@ -82,7 +85,6 @@ class DomainsTest {
 
         assertThat(kind.getCode()).isEqualTo(kindCode);
 
-        final var middleCode = "MID";
         final var middle = new Middle(MiddleRecord.unsaved(
                 middleCode, 222), kinds, sides, nears)
                 .attachToKind(kind)
@@ -95,7 +97,7 @@ class DomainsTest {
 
     @Test
     void shouldBeEmpty() {
-        final var sideCode = "SID";
+        final var sideCode = DomainsTest.sideCode;
         final var sideRecord = spy(SideRecord.unsaved(
                 sideCode, Instant.ofEpochMilli(1_000_000)));
         doReturn(sideRecord).when(sideRecord).save();
@@ -103,11 +105,11 @@ class DomainsTest {
         final var sides = mock(Sides.class);
         when(sides.byCode(sideCode)).thenReturn(Optional.of(side));
 
-        final var topCode = "TOP";
+        final var topCode = DomainsTest.topCode;
         final var middles = mock(Middles.class);
         final var nears = mock(Nears.class);
         final var top = new Top(TopRecord.unsaved(
-                topCode, "TWIRL", sideRecord, false),
+                topCode, topName, sideRecord),
                 middles, sides, nears);
 
         assertThat(top.getNetNears().map(Near::getCode)).isEmpty();
@@ -115,7 +117,7 @@ class DomainsTest {
 
     @Test
     void shouldIntersect() {
-        final var nearCodeA = "NER";
+        final var nearCodeA = nearCode;
         final var nearRecordA = spy(NearRecord.unsaved(nearCodeA));
         doReturn(nearRecordA).when(nearRecordA).save();
         final var nearA = new Near(nearRecordA);
@@ -131,7 +133,7 @@ class DomainsTest {
         when(nears.byCode(nearRecordC.code)).thenReturn(Optional.of(nearC));
 
         final var kindRecordA = spy(KindRecord.unsaved(
-                "KIN", new BigDecimal("2.3")));
+                kindCode, new BigDecimal("2.3")));
         doReturn(kindRecordA).when(kindRecordA).save();
         final var kindA = new Kind(kindRecordA, nears);
         kindA.addNear(nearA).addNear(nearB);
@@ -141,7 +143,7 @@ class DomainsTest {
         final var sides = mock(Sides.class);
 
         // Inherits nears from kind
-        final var middleRecordA = spy(MiddleRecord.unsaved("MID", 222));
+        final var middleRecordA = spy(MiddleRecord.unsaved(middleCode, 222));
         doReturn(middleRecordA).when(middleRecordA).save();
         final var middleA = new Middle(middleRecordA, kinds, sides, nears);
         middleA.attachToKind(kindA);
@@ -162,20 +164,48 @@ class DomainsTest {
         when(middles.byCode(middleRecordC.code))
                 .thenReturn(Optional.of(middleC));
 
-        final var sideCode = "SID";
+        final var sideCode = DomainsTest.sideCode;
         final var sideRecord = spy(SideRecord.unsaved(
                 sideCode, Instant.ofEpochMilli(1_000_000)));
         doReturn(sideRecord).when(sideRecord).save();
         final var side = new Side(sideRecord);
         when(sides.byCode(sideCode)).thenReturn(Optional.of(side));
 
-        final var topCode = "TOP";
+        final var topCode = DomainsTest.topCode;
         final var top = new Top(TopRecord.unsaved(
-                topCode, "TWIRL", sideRecord, false),
+                topCode, topName, sideRecord),
                 middles, sides, nears);
         top.addMiddle(middleA).addMiddle(middleB).addMiddle(middleC);
 
         assertThat(top.getNetNears().map(Near::getCode))
                 .containsExactly(nearCodeA);
+    }
+
+    @Test
+    void shouldPreferPlannedNearButShowEsitmated() {
+        final var nears = mock(Nears.class);
+        final var estimatedNearRecord = spy(NearRecord.unsaved("FAR"));
+        doReturn(estimatedNearRecord).when(estimatedNearRecord).save();
+        final var estimatedNear = new Near(estimatedNearRecord);
+        doReturn(Optional.of(estimatedNear)).when(nears)
+                .byCode(estimatedNearRecord.code);
+        final var plannedNearRecord = spy(NearRecord.unsaved(nearCode));
+        doReturn(plannedNearRecord).when(plannedNearRecord).save();
+        final var plannedNear = new Near(plannedNearRecord);
+        doReturn(Optional.of(plannedNear)).when(nears)
+                .byCode(plannedNearRecord.code);
+        final var sideRecord = spy(SideRecord.unsaved(
+                sideCode, Instant.ofEpochSecond(1_000_000)));
+        doReturn(sideRecord).when(sideRecord).save();
+
+        final var top = new Top(
+                TopRecord.unsaved(topCode, topName, sideRecord)
+                        .estimateNear(estimatedNearRecord)
+                        .planNear(plannedNearRecord),
+                mock(Middles.class), mock(Sides.class), nears);
+
+        assertThat(top.getEstimatedNear()).contains(estimatedNear);
+        assertThat(top.getPlannedNear()).contains(plannedNear);
+        assertThat(top.getNetNears()).containsOnly(plannedNear);
     }
 }

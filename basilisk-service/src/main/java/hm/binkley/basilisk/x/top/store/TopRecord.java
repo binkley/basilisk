@@ -4,6 +4,7 @@ import hm.binkley.basilisk.x.middle.store.MiddleRecord;
 import hm.binkley.basilisk.x.near.store.NearRecord;
 import hm.binkley.basilisk.x.side.store.SideRecord;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
@@ -27,21 +28,21 @@ public class TopRecord {
     @Column("top_code")
     public Set<MiddleRef> middles = new LinkedHashSet<>();
     public @NotNull String sideCode;
-    public boolean planned;
+    public String estimatedNearCode;
+    public String plannedNearCode;
     @Column("top_code")
     public Set<NearRef> nears = new LinkedHashSet<>();
     @Transient
     public TopStore store;
 
     public static TopRecord unsaved(final String code, final String name,
-            final SideRecord side, final boolean planned) {
+            final SideRecord side) {
         checkCode(code);
         check(side);
         final var unsaved = new TopRecord();
         unsaved.code = code;
         unsaved.name = name;
         unsaved.sideCode = side.save().code;
-        unsaved.planned = planned;
         return unsaved;
     }
 
@@ -83,6 +84,18 @@ public class TopRecord {
         return this;
     }
 
+    public TopRecord estimateNear(final NearRecord near) {
+        check(near);
+        estimatedNearCode = near.save().code;
+        return this;
+    }
+
+    public TopRecord planNear(final NearRecord near) {
+        check(near);
+        plannedNearCode = near.save().code;
+        return this;
+    }
+
     public boolean hasNears() { return !nears.isEmpty(); }
 
     public TopRecord save() { return store.save(this); }
@@ -98,6 +111,7 @@ public class TopRecord {
     }
 
     @EqualsAndHashCode
+    @Getter
     @Table("X.TOP_MIDDLE")
     @ToString
     public static class MiddleRef {
@@ -111,6 +125,7 @@ public class TopRecord {
     }
 
     @EqualsAndHashCode
+    @Getter
     @Table("X.TOP_NEAR")
     @ToString
     public static class NearRef {

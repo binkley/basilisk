@@ -4,6 +4,7 @@ import hm.binkley.basilisk.x.kind.store.KindRecord;
 import hm.binkley.basilisk.x.near.store.NearRecord;
 import hm.binkley.basilisk.x.side.store.SideRecord;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
@@ -133,6 +134,7 @@ public class MiddleRecord {
     }
 
     @EqualsAndHashCode
+    @Getter
     @Table("X.MIDDLE_NEAR")
     @ToString
     public static class NearRef {

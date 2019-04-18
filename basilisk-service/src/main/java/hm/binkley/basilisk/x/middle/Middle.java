@@ -4,6 +4,7 @@ import hm.binkley.basilisk.x.kind.Kind;
 import hm.binkley.basilisk.x.kind.Kinds;
 import hm.binkley.basilisk.x.middle.store.BottomRecord;
 import hm.binkley.basilisk.x.middle.store.MiddleRecord;
+import hm.binkley.basilisk.x.middle.store.MiddleRecord.NearRef;
 import hm.binkley.basilisk.x.near.HasNears;
 import hm.binkley.basilisk.x.near.Near;
 import hm.binkley.basilisk.x.near.Nears;
@@ -64,7 +65,8 @@ public final class Middle
     @Override
     public Stream<Near> getOwnNears() {
         return record.nears.stream()
-                .map(ref -> nears.byCode(ref.nearCode))
+                .map(NearRef::getNearCode)
+                .map(nears::byCode)
                 .map(Optional::orElseThrow);
     }
 

@@ -13,11 +13,13 @@ CREATE TABLE X.SIDE
 
 CREATE TABLE X.TOP
 (
-    code      VARCHAR NOT NULL PRIMARY KEY,
+    code                VARCHAR NOT NULL PRIMARY KEY,
     -- Example of mandatory shared relationship
-    side_code VARCHAR NOT NULL REFERENCES X.SIDE (code),
-    name      VARCHAR NOT NULL UNIQUE,
-    planned   BOOLEAN NOT NULL
+    side_code           VARCHAR NOT NULL REFERENCES X.SIDE (code),
+    name                VARCHAR NOT NULL UNIQUE,
+    -- Example of optional shared relationships
+    estimated_near_code VARCHAR REFERENCES X.NEAR (code),
+    planned_near_code   VARCHAR REFERENCES X.NEAR (code)
 );
 
 CREATE TABLE X.KIND

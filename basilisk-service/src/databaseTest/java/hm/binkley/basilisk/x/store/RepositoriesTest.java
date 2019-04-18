@@ -11,6 +11,7 @@ import hm.binkley.basilisk.x.middle.Middles;
 import hm.binkley.basilisk.x.middle.store.BottomRecord;
 import hm.binkley.basilisk.x.middle.store.MiddleRepository;
 import hm.binkley.basilisk.x.middle.store.MiddleStore;
+import hm.binkley.basilisk.x.near.Near;
 import hm.binkley.basilisk.x.near.Nears;
 import hm.binkley.basilisk.x.near.store.NearRecord;
 import hm.binkley.basilisk.x.near.store.NearRepository;
@@ -48,6 +49,7 @@ import static org.mockito.Mockito.when;
 @SuppressWarnings("PMD")
 @Transactional
 class RepositoriesTest {
+    private static final String nearCode = "NER";
     private static final String bottomFoo = "BAR";
     private static final String sideCode = "SID";
     private static final Instant sideTime = Instant.ofEpochSecond(1_000_000);
@@ -103,7 +105,7 @@ class RepositoriesTest {
                 .addBottom(bottomFoo)
                 .addNear(unsavedMiddleNear);
         final var unsavedTop = tops.unsaved(
-                topCode, topName, unsavedSide, false)
+                topCode, topName, unsavedSide)
                 .addMiddle(unsavedMiddle)
                 .addNear(unsavedTopNear);
 
@@ -175,7 +177,7 @@ class RepositoriesTest {
 
         assertKindCount(0);
 
-        final var near = nears.unsaved("NER").save();
+        final var near = nears.unsaved(nearCode).save();
 
         assertNearCount(1);
 
@@ -375,17 +377,31 @@ class RepositoriesTest {
     }
 
     @Test
+    void shouldSaveTopHavingEstimatedNear() {
+        newTop().estimateWith(newNear()).save();
+    }
+
+    @Test
+    void shouldSaveTopHavingPlannedNear() {
+        newTop().planWith(newNear()).save();
+    }
+
+    @Test
     void whereDoesThisTestGo() {
         final var kindRecord = KindRecord.unsaved(
                 "KIN", new BigDecimal("2.3"));
         assertThat(kindRecord.hasNears()).isFalse();
-        final var nearRecord = NearRecord.unsaved("NER");
+        final var nearRecord = NearRecord.unsaved(nearCode);
         final var nearStore = mock(NearStore.class);
         when(nearStore.save(nearRecord))
                 .thenReturn(nearRecord);
         nearRecord.store = nearStore;
         kindRecord.addNear(nearRecord);
         assertThat(kindRecord.hasNears()).isTrue();
+    }
+
+    private Near newNear() {
+        return nears.unsaved(nearCode);
     }
 
     private Side newSide() {
@@ -401,7 +417,7 @@ class RepositoriesTest {
     }
 
     private Top newTop() {
-        return tops.unsaved(topCode, topName, newSide(), false);
+        return tops.unsaved(topCode, topName, newSide());
     }
 
     private void assertBottomCount(final int total) {

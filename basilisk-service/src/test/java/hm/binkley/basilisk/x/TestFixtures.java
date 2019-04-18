@@ -5,10 +5,13 @@ import hm.binkley.basilisk.x.kind.store.KindRecord;
 import hm.binkley.basilisk.x.near.Near;
 import hm.binkley.basilisk.x.near.Nears;
 import hm.binkley.basilisk.x.near.store.NearRecord;
+import hm.binkley.basilisk.x.side.store.SideRecord;
+import hm.binkley.basilisk.x.top.store.TopRecord;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.time.Instant;
 
 import static lombok.AccessLevel.PRIVATE;
 import static org.mockito.Mockito.lenient;
@@ -19,6 +22,14 @@ public final class TestFixtures {
     public static NearRecord fixedNearRecord() {
         final var record = spy(new NearRecord());
         record.code = "NER";
+        lenient().doReturn(record).when(record).save();
+        return record;
+    }
+
+    public static SideRecord fixedSideRecord() {
+        final var record = spy(new SideRecord());
+        record.code = "SID";
+        record.time = Instant.ofEpochSecond(1_000_000);
         lenient().doReturn(record).when(record).save();
         return record;
     }
@@ -37,5 +48,14 @@ public final class TestFixtures {
 
     public static Near fixedNear() {
         return new Near(fixedNearRecord());
+    }
+
+    public static TopRecord fixedTopRecord() {
+        final var record = spy(new TopRecord());
+        record.code = "TOP";
+        record.name = "TWIRL";
+        record.sideCode = fixedSideRecord().code;
+        lenient().doReturn(record).when(record).save();
+        return record;
     }
 }
