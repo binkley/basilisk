@@ -10,6 +10,7 @@ import hm.binkley.basilisk.x.top.store.TopRecord.NearRef;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+import one.util.streamex.StreamEx;
 
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
@@ -21,7 +22,7 @@ import java.util.stream.Stream;
 
 import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.toCollection;
-import static java.util.stream.Collectors.toList;
+import static one.util.streamex.MoreCollectors.intersecting;
 
 @EqualsAndHashCode(exclude = {"middles", "nears"})
 @RequiredArgsConstructor
@@ -32,8 +33,17 @@ public final class Top
     private final @NotNull Middles middles;
     private final @NotNull Nears nears;
 
-    private static Collector<Near, ?, Set<Near>> toSortedSet() {
+    private static <T extends Comparable<T>> Collector<T, ?, Set<T>> toSortedSet() {
         return toCollection(TreeSet::new);
+    }
+
+    private static <T extends Comparable<T>>
+    Stream<T> sortedIntersectionOfNonEmpty(final Stream<Stream<T>> streams) {
+        return StreamEx.of(streams)
+                .map(stream -> stream.collect(toSortedSet()))
+                .filter(not(Collection::isEmpty))
+                .collect(intersecting())
+                .stream();
     }
 
     /** @todo More elegant way than exposing this details? */
@@ -81,19 +91,9 @@ public final class Top
             return getOwnNears();
 
         // TODO: Better solution for intersection of streams
-        final var remaining = getMiddles()
-                .map(Middle::getNetNears)
-                .collect(toList());
-        if (remaining.isEmpty()) return Stream.empty();
-        final var first = remaining.remove(0);
-        if (remaining.isEmpty()) return first;
-
-        return remaining.stream()
-                .map(s -> s.collect(toSortedSet()))
-                .filter(not(Collection::isEmpty))
-                .collect(() -> first.collect(toSortedSet()),
-                        Set::retainAll, Set::retainAll)
-                .stream();
+        // TODO: Avoid collecting
+        return sortedIntersectionOfNonEmpty(getMiddles()
+                .map(Middle::getNetNears));
     }
 
     public Top estimateWith(final Near near) {

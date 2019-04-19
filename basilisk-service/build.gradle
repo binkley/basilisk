@@ -2,6 +2,7 @@ apply from: "${project.rootDir}/spring-boot.gradle"
 
 dependencies {
     implementation project(":basilisk-persistence")
+    implementation "one.util:streamex:0.6.8"
 
     testImplementation project(":basilisk-persistence-testing")
 }
