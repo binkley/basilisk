@@ -86,7 +86,7 @@ class DomainsTest {
                 topCode, topName),
                 middles, nears);
 
-        assertThat(top.getNetNears().map(Near::getCode)).isEmpty();
+        assertThat(top.getPlannedNears().map(Near::getCode)).isEmpty();
     }
 
     @Test
@@ -142,7 +142,7 @@ class DomainsTest {
                 middles, nears);
         top.addMiddle(middleA).addMiddle(middleB).addMiddle(middleC);
 
-        assertThat(top.getNetNears().map(Near::getCode))
+        assertThat(top.getPlannedNears().map(Near::getCode))
                 .containsExactly(nearCodeA);
     }
 
@@ -168,6 +168,6 @@ class DomainsTest {
 
         assertThat(top.getEstimatedNear()).contains(estimatedNear);
         assertThat(top.getPlannedNear()).contains(plannedNear);
-        assertThat(top.getNetNears()).containsOnly(plannedNear);
+        assertThat(top.getPlannedNears()).containsOnly(plannedNear);
     }
 }

@@ -288,32 +288,32 @@ class RepositoriesTest {
                 .addMiddle(middle)
                 .save();
 
-        assertThat(top.getNetNears()).containsExactly(kindNear);
+        assertThat(top.getPlannedNears()).containsExactly(kindNear);
 
         final var middleNear = nears.unsaved("MNR");
         middle.addNear(middleNear).save();
 
-        assertThat(top.getNetNears()).containsExactly(middleNear);
+        assertThat(top.getPlannedNears()).containsExactly(middleNear);
 
         final var topNear = nears.unsaved("TNR");
         top.addNear(topNear).save();
 
-        assertThat(top.getNetNears()).containsExactly(topNear);
+        assertThat(top.getPlannedNears()).containsExactly(topNear);
 
         kind.removeNear(kindNear).save();
 
         assertThat(kind.getOwnNears()).isEmpty();
-        assertThat(top.getNetNears()).containsExactly(topNear);
+        assertThat(top.getPlannedNears()).containsExactly(topNear);
 
         middle.removeNear(middleNear).save();
 
         assertThat(middle.getOwnNears()).isEmpty();
-        assertThat(top.getNetNears()).containsExactly(topNear);
+        assertThat(top.getPlannedNears()).containsExactly(topNear);
 
         top.removeNear(topNear).save();
 
         assertThat(top.getOwnNears()).isEmpty();
-        assertThat(top.getNetNears()).isEmpty();
+        assertThat(top.getPlannedNears()).isEmpty();
     }
 
     @Test

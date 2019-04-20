@@ -83,7 +83,7 @@ public final class Top
 
     @Override
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
-    public Stream<Near> getNetNears() {
+    public Stream<Near> getPlannedNears() {
         if (isPlanned())
             return getPlannedNear().stream();
 
@@ -93,7 +93,7 @@ public final class Top
         // TODO: Better solution for intersection of streams
         // TODO: Avoid collecting
         return sortedIntersectionOfNonEmpty(getMiddles()
-                .map(Middle::getNetNears));
+                .map(Middle::getPlannedNears));
     }
 
     public Top estimateWith(final Near near) {

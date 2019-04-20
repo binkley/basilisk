@@ -22,7 +22,7 @@ public final class KindResponse {
                 kind.getOwnNears()
                         .map(NearResponse::of)
                         .collect(toCollection(TreeSet::new)),
-                kind.getNetNears()
+                kind.getPlannedNears()
                         .map(NearResponse::of)
                         .collect(toCollection(TreeSet::new)));
     }

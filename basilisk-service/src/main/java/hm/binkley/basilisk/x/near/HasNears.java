@@ -5,5 +5,5 @@ import java.util.stream.Stream;
 public interface HasNears {
     Stream<Near> getOwnNears();
 
-    Stream<Near> getNetNears();
+    Stream<Near> getPlannedNears();
 }

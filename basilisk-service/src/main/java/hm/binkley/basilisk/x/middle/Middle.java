@@ -56,12 +56,12 @@ public final class Middle
     }
 
     @Override
-    public Stream<Near> getNetNears() {
+    public Stream<Near> getPlannedNears() {
         if (record.hasNears())
             return getOwnNears();
 
         return getKind()
-                .map(Kind::getNetNears)
+                .map(Kind::getPlannedNears)
                 .orElse(Stream.empty());
     }
 

@@ -34,7 +34,7 @@ public final class Kind
     }
 
     @Override
-    public Stream<Near> getNetNears() {
+    public Stream<Near> getPlannedNears() {
         return getOwnNears();
     }
 
