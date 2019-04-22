@@ -15,6 +15,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Documented
 @Constraint(validatedBy = ValidNearValidator.class)
 @Retention(RUNTIME)
+@SuppressWarnings("unused")
 @Target({FIELD, METHOD, PARAMETER, TYPE_USE})
 public @interface ValidNear {
     String message() default "near not found: ${validatedValue}";
