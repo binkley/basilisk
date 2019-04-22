@@ -59,18 +59,17 @@ public final class Top
 
     public boolean isPlanned() { return null != record.plannedNearCode; }
 
-    public Optional<Near> getEstimatedNear() {
-        return Optional.ofNullable(record.estimatedNearCode)
-                .map(nears::byCode)
-                .map(Optional::orElseThrow);
-    }
-
     public Optional<Near> getPlannedNear() {
         // It is optional to have a planned near, but it if present, the
         // planned near must exist
         return Optional.ofNullable(record.plannedNearCode)
                 .map(nears::byCode)
                 .map(Optional::orElseThrow);
+    }
+
+    @Override
+    public boolean hasOwnNears() {
+        return !record.nears.isEmpty();
     }
 
     @Override
@@ -82,23 +81,9 @@ public final class Top
     }
 
     @Override
-    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
-    public Stream<Near> getPlannedNears() {
-        if (isPlanned())
-            return getPlannedNear().stream();
-
-        if (record.hasNears())
-            return getOwnNears();
-
-        // TODO: Better solution for intersection of streams
-        // TODO: Avoid collecting
+    public Stream<Near> getOthersNears() {
         return sortedIntersectionOfNonEmpty(getMiddles()
-                .map(Middle::getPlannedNears));
-    }
-
-    public Top estimateWith(final Near near) {
-        near.insertInto(record::estimateNear);
-        return this;
+                .map(Middle::getEstimatedNears));
     }
 
     public Top planWith(final Near near) {

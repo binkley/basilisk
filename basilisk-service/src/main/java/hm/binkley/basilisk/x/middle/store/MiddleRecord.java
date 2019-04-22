@@ -93,10 +93,6 @@ public class MiddleRecord {
         return this;
     }
 
-    public boolean hasNears() {
-        return !nears.isEmpty();
-    }
-
     private void check(final KindRecord kind) {
         requireNonNull(kind);
     }

@@ -48,6 +48,11 @@ public final class Middle
     }
 
     @Override
+    public boolean hasOwnNears() {
+        return !record.nears.isEmpty();
+    }
+
+    @Override
     public Stream<Near> getOwnNears() {
         return record.nears.stream()
                 .map(NearRef::getNearCode)
@@ -56,12 +61,9 @@ public final class Middle
     }
 
     @Override
-    public Stream<Near> getPlannedNears() {
-        if (record.hasNears())
-            return getOwnNears();
-
+    public Stream<Near> getOthersNears() {
         return getKind()
-                .map(Kind::getPlannedNears)
+                .map(Kind::getEstimatedNears)
                 .orElse(Stream.empty());
     }
 

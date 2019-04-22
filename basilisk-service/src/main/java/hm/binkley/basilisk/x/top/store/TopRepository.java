@@ -11,17 +11,13 @@ public interface TopRepository
     @Query("SELECT * FROM X.TOP")
     Stream<TopRecord> readAll();
 
-    @Query("INSERT INTO X.TOP (code, name,"
-            + " estimated_near_code, planned_near_code)"
-            + " VALUES (:code, :name,"
-            + " :estimatedNearCode, :plannedNearCode)"
+    @Query("INSERT INTO X.TOP (code, name, planned_near_code)"
+            + " VALUES (:code, :name, :plannedNearCode)"
             + " ON CONFLICT (code) DO UPDATE"
-            + " SET (name, estimated_near_code, planned_near_code)"
-            + " = (excluded.name,"
-            + " excluded.estimated_near_code, excluded.planned_near_code)"
+            + " SET (name, planned_near_code)"
+            + " = (excluded.name, excluded.planned_near_code)"
             + " RETURNING *")
     <S extends TopRecord> S upsert(
             @Param("code") String code, @Param("name") String name,
-            @Param("estimatedNearCode") String estimatedNearCode,
             @Param("plannedNearCode") String plannedNearCode);
 }

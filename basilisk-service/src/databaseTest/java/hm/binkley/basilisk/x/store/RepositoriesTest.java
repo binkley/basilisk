@@ -288,32 +288,32 @@ class RepositoriesTest {
                 .addMiddle(middle)
                 .save();
 
-        assertThat(top.getPlannedNears()).containsExactly(kindNear);
+        assertThat(top.getEstimatedNears()).containsExactly(kindNear);
 
         final var middleNear = nears.unsaved("MNR");
         middle.addNear(middleNear).save();
 
-        assertThat(top.getPlannedNears()).containsExactly(middleNear);
+        assertThat(top.getEstimatedNears()).containsExactly(middleNear);
 
         final var topNear = nears.unsaved("TNR");
         top.addNear(topNear).save();
 
-        assertThat(top.getPlannedNears()).containsExactly(topNear);
+        assertThat(top.getEstimatedNears()).containsExactly(topNear);
 
         kind.removeNear(kindNear).save();
 
         assertThat(kind.getOwnNears()).isEmpty();
-        assertThat(top.getPlannedNears()).containsExactly(topNear);
+        assertThat(top.getEstimatedNears()).containsExactly(topNear);
 
         middle.removeNear(middleNear).save();
 
         assertThat(middle.getOwnNears()).isEmpty();
-        assertThat(top.getPlannedNears()).containsExactly(topNear);
+        assertThat(top.getEstimatedNears()).containsExactly(topNear);
 
         top.removeNear(topNear).save();
 
         assertThat(top.getOwnNears()).isEmpty();
-        assertThat(top.getPlannedNears()).isEmpty();
+        assertThat(top.getEstimatedNears()).isEmpty();
     }
 
     @Test
@@ -323,11 +323,6 @@ class RepositoriesTest {
 
         assertThatThrownBy(() -> top.addMiddle(middle))
                 .isInstanceOf(IllegalStateException.class);
-    }
-
-    @Test
-    void shouldSaveTopHavingEstimatedNear() {
-        newTop().estimateWith(newNear()).save();
     }
 
     @Test

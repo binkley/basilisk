@@ -30,8 +30,7 @@ public class TopStore {
     }
 
     public TopRecord save(final TopRecord record) {
-        springData.upsert(record.code, record.name,
-                record.estimatedNearCode, record.plannedNearCode);
+        springData.upsert(record.code, record.name, record.plannedNearCode);
         return springData.save(record);
     }
 

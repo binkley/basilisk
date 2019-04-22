@@ -7,12 +7,11 @@ CREATE TABLE X.NEAR
 
 CREATE TABLE X.TOP
 (
-    code                VARCHAR NOT NULL PRIMARY KEY,
+    code              VARCHAR NOT NULL PRIMARY KEY,
     -- Example of mandatory shared relationship
-    name                VARCHAR NOT NULL UNIQUE,
+    name              VARCHAR NOT NULL UNIQUE,
     -- Example of optional shared relationships
-    estimated_near_code VARCHAR REFERENCES X.NEAR (code),
-    planned_near_code   VARCHAR REFERENCES X.NEAR (code)
+    planned_near_code VARCHAR REFERENCES X.NEAR (code)
 );
 
 CREATE TABLE X.KIND

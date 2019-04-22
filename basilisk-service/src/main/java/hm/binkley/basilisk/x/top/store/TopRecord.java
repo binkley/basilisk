@@ -26,7 +26,6 @@ public class TopRecord {
     public String name;
     @Column("top_code")
     public Set<MiddleRef> middles = new LinkedHashSet<>();
-    public String estimatedNearCode;
     public String plannedNearCode;
     @Column("top_code")
     public Set<NearRef> nears = new LinkedHashSet<>();
@@ -75,19 +74,11 @@ public class TopRecord {
         return this;
     }
 
-    public TopRecord estimateNear(final NearRecord near) {
-        check(near);
-        estimatedNearCode = near.save().code;
-        return this;
-    }
-
     public TopRecord planNear(final NearRecord near) {
         check(near);
         plannedNearCode = near.save().code;
         return this;
     }
-
-    public boolean hasNears() { return !nears.isEmpty(); }
 
     public TopRecord save() { return store.save(this); }
 

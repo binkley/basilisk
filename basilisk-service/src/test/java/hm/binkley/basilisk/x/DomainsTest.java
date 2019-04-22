@@ -46,26 +46,18 @@ class DomainsTest {
 
     @Test
     void shouldRollUpFromBottom() {
-        final var nearRecord = spy(NearRecord.unsaved(nearCode));
-        doReturn(nearRecord).when(nearRecord).save();
-        final var near = new Near(nearRecord);
         final var nears = mock(Nears.class);
-        when(nears.byCode(nearRecord.code)).thenReturn(Optional.of(near));
+        final var near = nearOf(nearCode, nears);
 
         assertThat(near.getCode()).isEqualTo(nearCode);
 
-        final var topCode = DomainsTest.topCode;
         final var top = new Top(TopRecord.unsaved(topCode, topName),
                 mock(Middles.class), nears);
 
         assertThat(top.getCode()).isEqualTo(topCode);
 
-        final var kindRecord = spy(KindRecord.unsaved(
-                kindCode, new BigDecimal("2.3")));
-        doReturn(kindRecord).when(kindRecord).save();
-        final var kind = new Kind(kindRecord, nears);
         final var kinds = mock(Kinds.class);
-        when(kinds.byCode(kindRecord.code)).thenReturn(Optional.of(kind));
+        final var kind = kindOf(kindCode, kinds, nears);
 
         assertThat(kind.getCode()).isEqualTo(kindCode);
 
@@ -74,100 +66,101 @@ class DomainsTest {
                 .attachToKind(kind);
 
         assertThat(middle.getCode()).isEqualTo(middleCode);
-        assertThat(middle.getCoolness()).isEqualTo(kindRecord.coolness);
+        assertThat(middle.getCoolness()).isEqualTo(kind.getCoolness());
     }
 
     @Test
     void shouldHaveNoNetNears() {
-        final var topCode = DomainsTest.topCode;
         final var middles = mock(Middles.class);
         final var nears = mock(Nears.class);
-        final var top = new Top(TopRecord.unsaved(
-                topCode, topName),
+        final var top = new Top(TopRecord.unsaved(topCode, topName),
                 middles, nears);
 
-        assertThat(top.getPlannedNears().map(Near::getCode)).isEmpty();
+        assertThat(top.getEstimatedNears().map(Near::getCode)).isEmpty();
     }
 
     @Test
     void shouldIntersect() {
-        final var nearCodeA = nearCode;
-        final var nearRecordA = spy(NearRecord.unsaved(nearCodeA));
-        doReturn(nearRecordA).when(nearRecordA).save();
-        final var nearA = new Near(nearRecordA);
         final var nears = mock(Nears.class);
-        when(nears.byCode(nearRecordA.code)).thenReturn(Optional.of(nearA));
-        final var nearRecordB = spy(NearRecord.unsaved("FAR"));
-        doReturn(nearRecordB).when(nearRecordB).save();
-        final var nearB = new Near(nearRecordB);
-        when(nears.byCode(nearRecordB.code)).thenReturn(Optional.of(nearB));
-        final var nearRecordC = spy(NearRecord.unsaved("CLO"));
-        doReturn(nearRecordC).when(nearRecordC).save();
-        final var nearC = new Near(nearRecordC);
-        when(nears.byCode(nearRecordC.code)).thenReturn(Optional.of(nearC));
+        final var nearA = nearOf(nearCode, nears);
+        final var nearB = nearOf("FAR", nears);
+        final var nearC = nearOf("CLO", nears);
 
-        final var kindRecordA = spy(KindRecord.unsaved(
-                kindCode, new BigDecimal("2.3")));
-        doReturn(kindRecordA).when(kindRecordA).save();
-        final var kindA = new Kind(kindRecordA, nears);
-        kindA.addNear(nearA).addNear(nearB);
         final var kinds = mock(Kinds.class);
-        when(kinds.byCode(kindRecordA.code)).thenReturn(Optional.of(kindA));
+        final Kind kind = kindOf(kindCode, kinds, nears);
+        kind.addNear(nearA).addNear(nearB); // Kind knows of near A & B
 
-        // Inherits nears from kind
-        final var middleRecordA = spy(MiddleRecord.unsaved(middleCode, 222));
-        doReturn(middleRecordA).when(middleRecordA).save();
-        final var middleA = new Middle(middleRecordA, kinds, nears);
-        middleA.attachToKind(kindA);
         final var middles = mock(Middles.class);
-        when(middles.byCode(middleRecordA.code))
-                .thenReturn(Optional.of(middleA));
+        // Inherits nears from kind
+        final Middle middleA = middleOf(middleCode, middles, nears, kinds);
+        middleA.attachToKind(kind);
         // Overrides nears
-        final var middleRecordB = spy(MiddleRecord.unsaved("CEN", 222));
-        doReturn(middleRecordB).when(middleRecordB).save();
-        final var middleB = new Middle(middleRecordB, kinds, nears);
-        middleB.addNear(nearA).addNear(nearC);
-        when(middles.byCode(middleRecordB.code))
-                .thenReturn(Optional.of(middleB));
+        final Middle middleB = middleOf("CEN", middles, nears, kinds);
+        middleB.addNear(nearA).addNear(nearC); // Middle B know of near A & C
         // Has no kind or overrides -- ignored
-        final var middleRecordC = spy(MiddleRecord.unsaved("INN", 222));
-        doReturn(middleRecordC).when(middleRecordC).save();
-        final var middleC = new Middle(middleRecordC, kinds, nears);
-        when(middles.byCode(middleRecordC.code))
-                .thenReturn(Optional.of(middleC));
+        final Middle middleC = middleOf("INN", middles, nears, kinds);
 
-        final var topCode = DomainsTest.topCode;
-        final var top = new Top(TopRecord.unsaved(
-                topCode, topName),
+        final var top = new Top(TopRecord.unsaved(topCode, topName),
                 middles, nears);
         top.addMiddle(middleA).addMiddle(middleB).addMiddle(middleC);
 
-        assertThat(top.getPlannedNears().map(Near::getCode))
-                .containsExactly(nearCodeA);
+        assertThat(kind.getEstimatedNears().map(Near::getCode))
+                .containsExactly(nearA.getCode(), nearB.getCode());
+        assertThat(kind.getOthersNears()).isEmpty();
+        assertThat(top.isPlanned()).isFalse();
+        assertThat(top.getEstimatedNears().map(Near::getCode))
+                .containsExactly(nearCode);
     }
 
     @Test
     void shouldPreferPlannedNearButShowEsitmated() {
         final var nears = mock(Nears.class);
-        final var estimatedNearRecord = spy(NearRecord.unsaved("FAR"));
-        doReturn(estimatedNearRecord).when(estimatedNearRecord).save();
-        final var estimatedNear = new Near(estimatedNearRecord);
-        doReturn(Optional.of(estimatedNear)).when(nears)
-                .byCode(estimatedNearRecord.code);
-        final var plannedNearRecord = spy(NearRecord.unsaved(nearCode));
-        doReturn(plannedNearRecord).when(plannedNearRecord).save();
-        final var plannedNear = new Near(plannedNearRecord);
-        doReturn(Optional.of(plannedNear)).when(nears)
-                .byCode(plannedNearRecord.code);
 
-        final var top = new Top(
-                TopRecord.unsaved(topCode, topName)
-                        .estimateNear(estimatedNearRecord)
-                        .planNear(plannedNearRecord),
-                mock(Middles.class), nears);
+        final var estimatedNear = nearOf("FAR", nears);
+        final var plannedNear = nearOf(nearCode, nears);
 
-        assertThat(top.getEstimatedNear()).contains(estimatedNear);
+        final var kinds = mock(Kinds.class);
+        final var middles = mock(Middles.class);
+
+        final var middle = middleOf(middleCode, middles, nears, kinds)
+                .addNear(estimatedNear);
+
+        final var top = new Top(TopRecord.unsaved(topCode, topName),
+                middles, nears)
+                .addMiddle(middle)
+                .planWith(plannedNear);
+
+        assertThat(top.isPlanned()).isTrue();
+        assertThat(top.getEstimatedNears()).containsOnly(estimatedNear);
         assertThat(top.getPlannedNear()).contains(plannedNear);
-        assertThat(top.getPlannedNears()).containsOnly(plannedNear);
+    }
+
+    private Near nearOf(final String nearCode, final Nears nears) {
+        final var record = spy(NearRecord.unsaved(
+                nearCode));
+        doReturn(record).when(record).save();
+        final var near = new Near(record);
+        when(nears.byCode(record.code)).thenReturn(Optional.of(near));
+        return near;
+    }
+
+    private Kind kindOf(final String kindCode, final Kinds kinds,
+            final Nears nears) {
+        final var record = spy(KindRecord.unsaved(
+                kindCode, new BigDecimal("2.3")));
+        doReturn(record).when(record).save();
+        final var kind = new Kind(record, nears);
+        when(kinds.byCode(record.code)).thenReturn(Optional.of(kind));
+        return kind;
+    }
+
+    private Middle middleOf(final String middleCode, final Middles middles,
+            final Nears nears, final Kinds kinds) {
+        final var record = spy(MiddleRecord.unsaved(
+                middleCode, 222));
+        doReturn(record).when(record).save();
+        final var middle = new Middle(record, kinds, nears);
+        when(middles.byCode(record.code)).thenReturn(Optional.of(middle));
+        return middle;
     }
 }
