@@ -1,11 +1,13 @@
 # Enable these to see SQL statements (DEBUG) and their parameters (TRACE)
 logging:
   level:
+    hm.binkley.basilisk: INFO
+    root: WARN
     #    org.springframework.jdbc.core:
     #      JdbcTemplate: DEBUG
     #      StatementCreatorUtils: TRACE
-    hm.binkley.basilisk: INFO
-    root: WARN
+    #    org.springframework.jdbc.datasource:
+    #      DataSourceTransactionManager: TRACE
 
 spring:
   datasource:

@@ -16,6 +16,11 @@ logging:
   level:
     hm.binkley.basilisk: INFO
     root: WARN
+    #    org.springframework.jdbc.core:
+    #      JdbcTemplate: DEBUG
+    #      StatementCreatorUtils: TRACE
+    #    org.springframework.jdbc.datasource:
+    #      DataSourceTransactionManager: TRACE
 
 management:
   endpoints:
