@@ -17,7 +17,13 @@ public class Kinds {
     private final Nears nears;
 
     public Kind unsaved(final String code, final BigDecimal coolness) {
-        return bind(store.unsaved(code, coolness));
+        return unsavedSequenced(code, coolness, 0);
+    }
+
+    public Kind unsavedSequenced(
+            final String code, final BigDecimal coolness,
+            final long sequenceNumber) {
+        return bind(store.unsaved(code, coolness, sequenceNumber));
     }
 
     public Optional<Kind> byCode(final String code) {

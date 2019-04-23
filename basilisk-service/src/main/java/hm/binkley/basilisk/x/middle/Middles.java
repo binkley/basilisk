@@ -19,8 +19,14 @@ public class Middles {
     private final Nears nears;
 
     public Middle unsaved(final String code, final Side side, final int mid) {
+        return unsavedSequenced(code, side, mid, 0);
+    }
+
+    public Middle unsavedSequenced(
+            final String code, final Side side, final int mid,
+            final long sequenceNumber) {
         return side.applyInto(sideRecord ->
-                bind(store.unsaved(code, sideRecord, mid)));
+                bind(store.unsaved(code, sideRecord, mid, sequenceNumber)));
     }
 
     public Optional<Middle> byCode(final String code) {

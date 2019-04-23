@@ -16,17 +16,25 @@ import static java.util.Objects.requireNonNull;
 public class NearRecord {
     @Id
     public @NotNull String code;
+    public Long sequenceNumber;
     @Transient
     public NearStore store;
 
-    public static NearRecord unsaved(final String code) {
+    public static NearRecord unsaved(
+            final String code, final long sequenceNumber) {
         checkCode(code);
+        checkSequenceNumber(sequenceNumber);
         final var unsaved = new NearRecord();
         unsaved.code = code;
+        unsaved.sequenceNumber = sequenceNumber;
         return unsaved;
     }
 
     private static void checkCode(final String code) { requireNonNull(code);}
+
+    private static void checkSequenceNumber(final long sequenceNumber) {
+        if (0 > sequenceNumber) throw new IllegalArgumentException();
+    }
 
     public NearRecord save() {
         return store.save(this);

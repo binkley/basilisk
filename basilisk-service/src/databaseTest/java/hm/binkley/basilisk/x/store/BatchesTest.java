@@ -68,14 +68,14 @@ class BatchesTest {
     void shouldUpdateInTheFaceOfDanger() {
         final var sideCode = "SID";
         doThrow(UncategorizedSQLException.class).when(sideSpringData)
-                .upsert(sideCode);
+                .upsert(sideCode, 0);
         final var middleCode = "MID";
-        final var middleMide = 222;
+        final var middleMid = 222;
         doThrow(UncategorizedSQLException.class).when(middleSpringData)
-                .upsert(middleCode, null, middleMide);
+                .upsert(middleCode, null, middleMid, 0);
 
         final var side = upsertSide(sideCode);
-        upsertMiddle(middleCode, side, middleMide);
+        upsertMiddle(middleCode, side, middleMid);
 
         final var topCode = "TOP";
         final var topName = "TWIRL";

@@ -11,9 +11,8 @@ public interface NearRepository
     @Query("SELECT * FROM X.NEAR")
     Stream<NearRecord> readAll();
 
-    @Query("INSERT INTO X.NEAR (code)"
-            + " VALUES (:code)"
-            + " ON CONFLICT (code) DO NOTHING"
-            + " RETURNING *")
-    <S extends NearRecord> S upsert(@Param("code") String code);
+    @Query("SELECT * FROM X.upsert_near(:code, :sequenceNumber)")
+    <S extends NearRecord> S upsert(
+            @Param("code") String code,
+            @Param("sequenceNumber") long sequenceNumber);
 }

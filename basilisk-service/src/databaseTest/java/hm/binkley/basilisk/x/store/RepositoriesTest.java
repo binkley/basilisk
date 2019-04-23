@@ -341,9 +341,9 @@ class RepositoriesTest {
     @Test
     void whereDoesThisTestGo() {
         final var kindRecord = KindRecord.unsaved(
-                "KIN", new BigDecimal("2.3"));
+                "KIN", new BigDecimal("2.3"), 0);
         assertThat(kindRecord.hasNears()).isFalse();
-        final var nearRecord = NearRecord.unsaved(nearCode);
+        final var nearRecord = NearRecord.unsaved(nearCode, 0);
         final var nearStore = mock(NearStore.class);
         when(nearStore.save(nearRecord))
                 .thenReturn(nearRecord);

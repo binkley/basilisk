@@ -25,19 +25,27 @@ public class KindRecord {
     public BigDecimal coolness;
     @Column("kind_code")
     public Set<NearRef> nears = new LinkedHashSet<>();
+    public long sequenceNumber;
     @Transient
     public KindStore store;
 
     public static KindRecord unsaved(
-            final String code, final BigDecimal coolness) {
+            final String code, final BigDecimal coolness,
+            final long sequenceNumber) {
         checkCode(code);
+        checkSequenceNumber(sequenceNumber);
         final var unsaved = new KindRecord();
         unsaved.code = code;
         unsaved.coolness = coolness;
+        unsaved.sequenceNumber = sequenceNumber;
         return unsaved;
     }
 
     private static void checkCode(final String code) { requireNonNull(code);}
+
+    private static void checkSequenceNumber(final long sequenceNumber) {
+        if (0 > sequenceNumber) throw new IllegalArgumentException();
+    }
 
     public KindRecord save() {
         return store.save(this);

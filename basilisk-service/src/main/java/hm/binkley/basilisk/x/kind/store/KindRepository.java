@@ -12,12 +12,9 @@ public interface KindRepository
     @Query("SELECT * FROM X.KIND")
     Stream<KindRecord> readAll();
 
-    @Query("INSERT INTO X.KIND (code, coolness)"
-            + " VALUES (:code, :coolness)"
-            + " ON CONFLICT (code) DO UPDATE"
-            + " SET coolness = excluded.coolness"
-            + " RETURNING *")
+    @Query("SELECT * FROM X.upsert_kind(:code, :coolness, :sequenceNumber)")
     <S extends KindRecord> S upsert(
             @Param("code") String code,
-            @Param("coolness") BigDecimal coolness);
+            @Param("coolness") BigDecimal coolness,
+            @Param("sequenceNumber") long sequenceNumber);
 }

@@ -1,7 +1,5 @@
-package hm.binkley.basilisk.x.top.store;
+package hm.binkley.basilisk.x.side.store;
 
-import hm.binkley.basilisk.x.side.store.SideRepository;
-import hm.binkley.basilisk.x.side.store.SideStore;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,23 +18,19 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @DataJdbcTest
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Transactional
-class TopStoreTest {
-    private final TopRepository springData;
-    private final SideRepository sideSpringData;
+class SideStoreTest {
+    private final SideRepository springData;
 
-    private TopStore store;
-    private SideStore sideStore;
+    private SideStore store;
 
     @BeforeEach
     void setUp() {
-        store = new TopStore(springData);
-        sideStore = new SideStore(sideSpringData);
+        store = new SideStore(springData);
     }
 
     @Test
     void shouldRoundTrip() {
-        final var unsaved = store.unsaved(
-                "MID", sideStore.unsaved("SID", 0), "TWIRL", 0);
+        final var unsaved = store.unsaved("NER", 0);
 
         final var saved = unsaved.save();
 
@@ -45,14 +39,12 @@ class TopStoreTest {
 
     @Test
     void shouldRejectStaleUpdates() {
-        final var code = "TOP";
-        final var side = sideStore.unsaved("SID", 0);
-        final var name = "TWIRL";
-        store.unsaved(code, side, name, 2).save();
-        store.unsaved(code, side, name, 0).save();
+        final var code = "NER";
+        store.unsaved(code, 2).save();
+        store.unsaved(code, 0).save();
 
         assertThatThrownBy(() ->
-                store.unsaved(code, side, name, 1).save())
+                store.unsaved(code, 1).save())
                 .isInstanceOf(UncategorizedSQLException.class);
     }
 }

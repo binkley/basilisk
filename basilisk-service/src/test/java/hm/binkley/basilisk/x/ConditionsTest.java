@@ -42,6 +42,15 @@ import static org.mockito.Mockito.lenient;
 @RequiredArgsConstructor
 @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
 class ConditionsTest {
+    private static final String nearCode = "NER";
+    private static final String sideCode = "SID";
+    private static final String kindCode = "KIN";
+    private static final BigDecimal kindCoolness = new BigDecimal("2.3");
+    private static final String middleCode = "MID";
+    private static final int middleMid = 222;
+    private static final String topCode = "TOP";
+    private static final String topName = "TWIRL";
+
     @Mock
     private final NearRepository nearSpringData;
     @Mock
@@ -79,13 +88,16 @@ class ConditionsTest {
                 sides.unsaved(null))
                 .isInstanceOf(NullPointerException.class);
         assertThatThrownBy(() ->
-                tops.unsaved(null, newSide(), "TWIRL"))
+                tops.unsaved(null, newSide(), topName))
                 .isInstanceOf(NullPointerException.class);
         assertThatThrownBy(() ->
-                kinds.unsaved(null, new BigDecimal("2.3")))
+                kinds.unsaved(null, kindCoolness))
                 .isInstanceOf(NullPointerException.class);
         assertThatThrownBy(() ->
-                middles.unsaved(null, newSide(), 222))
+                middles.unsaved(null, newSide(), middleMid))
+                .isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() ->
+                tops.unsaved(null, newSide(), topName))
                 .isInstanceOf(NullPointerException.class);
     }
 
@@ -107,7 +119,7 @@ class ConditionsTest {
     void shouldComplainOnDuplicateNear() {
         doAnswer(invocation -> invocation.getArgument(0))
                 .when(nearSpringData).save(any(NearRecord.class));
-        final var near = nears.unsaved("NER");
+        final var near = nears.unsaved(nearCode);
         final var top = newTop().addNear(near);
         final var middle = newMiddle().addNear(near);
         final var kind = newKind().addNear(near);
@@ -124,7 +136,7 @@ class ConditionsTest {
     void shouldComplainOnAbsentNear() {
         doAnswer(invocation -> invocation.getArgument(0))
                 .when(nearSpringData).save(any(NearRecord.class));
-        final var near = nears.unsaved("NER");
+        final var near = nears.unsaved(nearCode);
         final var top = newTop();
         final var middle = newMiddle();
         final var kind = newKind();
@@ -183,7 +195,7 @@ class ConditionsTest {
     void shouldComplainOnMismatchedBottomAfterSave() {
         final var side = newSide();
         final var middle = side.applyInto(sideRecord ->
-                MiddleRecord.unsaved("MID", sideRecord, 222));
+                MiddleRecord.unsaved(middleCode, sideRecord, middleMid, 0));
         final var bottom = BottomRecord.unsaved("BAR");
         bottom.middleCode = middle.code + "-X";
 
@@ -211,8 +223,28 @@ class ConditionsTest {
                 .isInstanceOf(NoSuchElementException.class);
     }
 
+    @Test
+    void shouldComplainOnImpossibleUpdates() {
+        assertThatThrownBy(() ->
+                nears.unsavedSequenced(nearCode, -1))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() ->
+                sides.unsavedSequenced(sideCode, -1))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() ->
+                kinds.unsavedSequenced(kindCode, kindCoolness, -1))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() ->
+                middles.unsavedSequenced(middleCode, newSide(), middleMid,
+                        -1))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() ->
+                tops.unsavedSequenced(topCode, newSide(), topName, -1))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
     private Side newSide() {
-        final var side = sides.unsaved("SID");
+        final var side = sides.unsaved(sideCode);
         side.applyInto(record ->
                 lenient().when(sideSpringData.save(record))
                         .thenReturn(record));
@@ -220,14 +252,14 @@ class ConditionsTest {
     }
 
     private Kind newKind() {
-        return kinds.unsaved("KIN", new BigDecimal("2.3"));
+        return kinds.unsaved(kindCode, kindCoolness);
     }
 
     private Middle newMiddle() {
-        return middles.unsaved("MID", newSide(), 222);
+        return middles.unsaved(middleCode, newSide(), middleMid);
     }
 
     private Top newTop() {
-        return tops.unsaved("TOP", newSide(), "TWIRL");
+        return tops.unsaved(topCode, newSide(), topName);
     }
 }

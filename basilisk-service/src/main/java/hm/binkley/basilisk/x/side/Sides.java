@@ -14,7 +14,12 @@ public class Sides {
     private final SideStore store;
 
     public Side unsaved(final String code) {
-        return bind(store.unsaved(code));
+        return unsavedSequenced(code, 0);
+    }
+
+    public Side unsavedSequenced(final String code,
+            final long sequenceNumber) {
+        return bind(store.unsaved(code, sequenceNumber));
     }
 
     public Optional<Side> byCode(final String code) {

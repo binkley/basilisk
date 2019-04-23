@@ -16,8 +16,10 @@ public class MiddleStore {
     private final MiddleRepository springData;
 
     public MiddleRecord unsaved(
-            final String code, final SideRecord side, final int mid) {
-        return bind(MiddleRecord.unsaved(code, side, mid));
+            final String code, final SideRecord side, final int mid,
+            final long sequenceNumber) {
+        return bind(MiddleRecord.unsaved(
+                code, side, mid, sequenceNumber));
     }
 
     public Optional<MiddleRecord> byCode(final String code) {
@@ -42,7 +44,8 @@ public class MiddleStore {
     }
 
     public MiddleRecord save(final MiddleRecord record) {
-        springData.upsert(record.code, record.kindCode, record.mid);
+        springData.upsert(record.code, record.kindCode, record.mid,
+                record.sequenceNumber);
         return springData.save(record);
     }
 

@@ -14,7 +14,12 @@ public class Nears {
     private final NearStore store;
 
     public Near unsaved(final String code) {
-        return bind(store.unsaved(code));
+        return unsavedSequenced(code, 0);
+    }
+
+    public Near unsavedSequenced(
+            final String code, final long sequenceNumber) {
+        return bind(store.unsaved(code, sequenceNumber));
     }
 
     public boolean exists(final String code) {

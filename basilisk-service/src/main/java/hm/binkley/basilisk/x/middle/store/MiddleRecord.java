@@ -33,20 +33,28 @@ public class MiddleRecord {
     public Set<BottomRecord> bottoms = new LinkedHashSet<>();
     @Column("middle_code")
     public Set<NearRef> nears = new LinkedHashSet<>();
+    public long sequenceNumber;
     @Transient
     public MiddleStore store;
 
     public static MiddleRecord unsaved(
-            final String code, final SideRecord side, final int mid) {
+            final String code, final SideRecord side, final int mid,
+            final long sequenceNumber) {
         checkCode(code);
+        checkSequenceNumber(sequenceNumber);
         final var unsaved = new MiddleRecord();
         unsaved.code = code;
         unsaved.side.add(SideRef.of(side));
         unsaved.mid = mid;
+        unsaved.sequenceNumber = sequenceNumber;
         return unsaved;
     }
 
     private static void checkCode(final String code) { requireNonNull(code);}
+
+    private static void checkSequenceNumber(final long sequenceNumber) {
+        if (0 > sequenceNumber) throw new IllegalArgumentException();
+    }
 
     public MiddleRecord save() {
         return store.save(this);

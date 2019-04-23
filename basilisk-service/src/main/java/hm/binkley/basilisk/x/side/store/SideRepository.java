@@ -11,9 +11,8 @@ public interface SideRepository
     @Query("SELECT * FROM X.SIDE")
     Stream<SideRecord> readAll();
 
-    @Query("INSERT INTO X.SIDE (code)"
-            + " VALUES (:code)"
-            + " ON CONFLICT (code) DO NOTHING"
-            + " RETURNING *")
-    <S extends SideRecord> S upsert(@Param("code") String code);
+    @Query("SELECT * FROM X.upsert_side(:code, :sequenceNumber)")
+    <S extends SideRecord> S upsert(
+            @Param("code") String code,
+            @Param("sequenceNumber") long sequenceNumber);
 }

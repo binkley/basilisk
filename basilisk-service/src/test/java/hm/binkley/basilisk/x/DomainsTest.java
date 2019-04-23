@@ -59,7 +59,7 @@ class DomainsTest {
         assertThat(near.getCode()).isEqualTo(nearCode);
 
         final var top = side.applyInto(sideRecord ->
-                new Top(TopRecord.unsaved(topCode, sideRecord, topName),
+                new Top(TopRecord.unsaved(topCode, sideRecord, topName, 0),
                         mock(Middles.class), nears));
 
         assertThat(top.getCode()).isEqualTo(topCode);
@@ -71,7 +71,7 @@ class DomainsTest {
 
         final var middle = side.applyInto(sideRecord ->
                 new Middle(MiddleRecord.unsaved(
-                        middleCode, sideRecord, 222), kinds, nears)
+                        middleCode, sideRecord, 222, 0), kinds, nears)
                         .attachToKind(kind));
 
         assertThat(middle.getCode()).isEqualTo(middleCode);
@@ -89,7 +89,7 @@ class DomainsTest {
         final var middles = mock(Middles.class);
 
         final var top = side.applyInto(sideRecord ->
-                new Top(TopRecord.unsaved(topCode, sideRecord, topName),
+                new Top(TopRecord.unsaved(topCode, sideRecord, topName, 0),
                         middles, nears));
 
         assertThat(top.getEstimatedNears().map(Near::getCode)).isEmpty();
@@ -123,7 +123,7 @@ class DomainsTest {
                 "INN", side, middles, nears, kinds);
 
         final var top = side.applyInto(sideRecord ->
-                new Top(TopRecord.unsaved(topCode, sideRecord, topName),
+                new Top(TopRecord.unsaved(topCode, sideRecord, topName, 0),
                         middles, nears));
         top.addMiddle(middleA).addMiddle(middleB).addMiddle(middleC);
 
@@ -153,7 +153,7 @@ class DomainsTest {
                 .addNear(estimatedNear);
 
         final var top = side.applyInto(sideRecord ->
-                new Top(TopRecord.unsaved(topCode, sideRecord, topName),
+                new Top(TopRecord.unsaved(topCode, sideRecord, topName, 0),
                         middles, nears)
                         .addMiddle(middle)
                         .planWith(plannedNear));
@@ -164,7 +164,7 @@ class DomainsTest {
     }
 
     private Near nearOf(final String nearCode, final Nears nears) {
-        final var record = spy(NearRecord.unsaved(nearCode));
+        final var record = spy(NearRecord.unsaved(nearCode, 0));
         doReturn(record).when(record).save();
         final var near = new Near(record);
         when(nears.byCode(record.code)).thenReturn(Optional.of(near));
@@ -172,7 +172,7 @@ class DomainsTest {
     }
 
     private Side sideOf(final String sideCode, final Sides sides) {
-        final var record = spy(SideRecord.unsaved(sideCode));
+        final var record = spy(SideRecord.unsaved(sideCode, 0));
         doReturn(record).when(record).save();
         final var side = new Side(record);
         when(sides.byCode(record.code)).thenReturn(Optional.of(side));
@@ -182,7 +182,7 @@ class DomainsTest {
     private Kind kindOf(final String kindCode, final Kinds kinds,
             final Nears nears) {
         final var record = spy(KindRecord.unsaved(
-                kindCode, new BigDecimal("2.3")));
+                kindCode, new BigDecimal("2.3"), 0));
         doReturn(record).when(record).save();
         final var kind = new Kind(record, nears);
         when(kinds.byCode(record.code)).thenReturn(Optional.of(kind));
@@ -192,7 +192,7 @@ class DomainsTest {
     private Middle middleOf(final String middleCode, final Side side,
             final Middles middles, final Nears nears, final Kinds kinds) {
         final var record = side.applyInto(sideRecord ->
-                spy(MiddleRecord.unsaved(middleCode, sideRecord, 222)));
+                spy(MiddleRecord.unsaved(middleCode, sideRecord, 222, 0)));
         doReturn(record).when(record).save();
         final var middle = new Middle(record, kinds, nears);
         when(middles.byCode(record.code)).thenReturn(Optional.of(middle));

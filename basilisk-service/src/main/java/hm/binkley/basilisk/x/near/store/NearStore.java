@@ -3,6 +3,7 @@ package hm.binkley.basilisk.x.near.store;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import javax.validation.constraints.NotNull;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -14,8 +15,9 @@ import static java.util.Objects.requireNonNull;
 public class NearStore {
     private final NearRepository springData;
 
-    public NearRecord unsaved(final String code) {
-        return bind(NearRecord.unsaved(code));
+    public NearRecord unsaved(
+            final @NotNull String code, final long sequenceNumber) {
+        return bind(NearRecord.unsaved(code, sequenceNumber));
     }
 
     public boolean exists(final String code) {
@@ -34,7 +36,7 @@ public class NearStore {
     }
 
     public NearRecord save(final NearRecord record) {
-        springData.upsert(record.code);
+        springData.upsert(record.code, record.sequenceNumber);
         return springData.save(record);
     }
 

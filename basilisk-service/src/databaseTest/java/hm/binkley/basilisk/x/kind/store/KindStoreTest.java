@@ -1,7 +1,5 @@
-package hm.binkley.basilisk.x.top.store;
+package hm.binkley.basilisk.x.kind.store;
 
-import hm.binkley.basilisk.x.side.store.SideRepository;
-import hm.binkley.basilisk.x.side.store.SideStore;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,6 +10,8 @@ import org.springframework.jdbc.UncategorizedSQLException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -20,23 +20,19 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @DataJdbcTest
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Transactional
-class TopStoreTest {
-    private final TopRepository springData;
-    private final SideRepository sideSpringData;
+class KindStoreTest {
+    private final KindRepository springData;
 
-    private TopStore store;
-    private SideStore sideStore;
+    private KindStore store;
 
     @BeforeEach
     void setUp() {
-        store = new TopStore(springData);
-        sideStore = new SideStore(sideSpringData);
+        store = new KindStore(springData);
     }
 
     @Test
     void shouldRoundTrip() {
-        final var unsaved = store.unsaved(
-                "MID", sideStore.unsaved("SID", 0), "TWIRL", 0);
+        final var unsaved = store.unsaved("KID", new BigDecimal("2.3"), 0);
 
         final var saved = unsaved.save();
 
@@ -45,14 +41,13 @@ class TopStoreTest {
 
     @Test
     void shouldRejectStaleUpdates() {
-        final var code = "TOP";
-        final var side = sideStore.unsaved("SID", 0);
-        final var name = "TWIRL";
-        store.unsaved(code, side, name, 2).save();
-        store.unsaved(code, side, name, 0).save();
+        final var code = "NER";
+        final var coolness = new BigDecimal("2.3");
+        store.unsaved(code, coolness, 2).save();
+        store.unsaved(code, coolness, 0).save();
 
         assertThatThrownBy(() ->
-                store.unsaved(code, side, name, 1).save())
+                store.unsaved(code, coolness, 1).save())
                 .isInstanceOf(UncategorizedSQLException.class);
     }
 }

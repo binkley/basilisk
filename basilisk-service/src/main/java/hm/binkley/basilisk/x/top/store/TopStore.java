@@ -16,8 +16,9 @@ public class TopStore {
     private final TopRepository springData;
 
     public TopRecord unsaved(
-            final String code, final SideRecord side, final String name) {
-        return bind(TopRecord.unsaved(code, side, name));
+            final String code, final SideRecord side, final String name,
+            final long sequenceNumber) {
+        return bind(TopRecord.unsaved(code, side, name, sequenceNumber));
     }
 
     public Optional<TopRecord> byCode(final String code) {
@@ -32,7 +33,8 @@ public class TopStore {
     }
 
     public TopRecord save(final TopRecord record) {
-        springData.upsert(record.code, record.name, record.plannedNearCode);
+        springData.upsert(record.code, record.name, record.plannedNearCode,
+                record.sequenceNumber);
         return springData.save(record);
     }
 

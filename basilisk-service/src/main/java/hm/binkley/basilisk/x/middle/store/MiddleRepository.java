@@ -25,12 +25,11 @@ public interface MiddleRepository
     @Query("SELECT * FROM X.BOTTOM")
     Stream<BottomRecord> findAllBottoms();
 
-    @Query("INSERT INTO X.MIDDLE (code, kind_code, mid)"
-            + " VALUES (:code, :kindCode, :mid)"
-            + " ON CONFLICT (code) DO UPDATE"
-            + " SET (kind_code, mid) = (excluded.kind_code, excluded.mid)"
-            + " RETURNING *")
+    @Query("SELECT * FROM X.upsert_middle(:code, :kindCode, :mid,"
+            + " :sequenceNumber)")
     <S extends MiddleRecord> S upsert(
-            @Param("code") String code, @Param("kindCode") String kindCode,
-            @Param("mid") Integer mid);
+            @Param("code") String code,
+            @Param("kindCode") String kindCode,
+            @Param("mid") Integer mid,
+            @Param("sequenceNumber") long sequenceNumber);
 }

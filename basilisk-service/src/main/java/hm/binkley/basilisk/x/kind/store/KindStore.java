@@ -15,8 +15,9 @@ import static java.util.Objects.requireNonNull;
 public class KindStore {
     private final KindRepository springData;
 
-    public KindRecord unsaved(final String code, final BigDecimal coolness) {
-        return bind(KindRecord.unsaved(code, coolness));
+    public KindRecord unsaved(final String code, final BigDecimal coolness,
+            final long sequenceNumber) {
+        return bind(KindRecord.unsaved(code, coolness, sequenceNumber));
     }
 
     public Optional<KindRecord> byCode(final String code) {
@@ -31,7 +32,8 @@ public class KindStore {
     }
 
     public KindRecord save(final KindRecord record) {
-        springData.upsert(record.code, record.coolness);
+        springData.upsert(
+                record.code, record.coolness, record.sequenceNumber);
         return springData.save(record);
     }
 

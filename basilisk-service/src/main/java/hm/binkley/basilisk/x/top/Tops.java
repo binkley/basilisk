@@ -20,8 +20,14 @@ public class Tops {
 
     public Top unsaved(
             final String code, final Side side, final String name) {
+        return unsavedSequenced(code, side, name, 0);
+    }
+
+    public Top unsavedSequenced(
+            final String code, final Side side, final String name,
+            final long sequenceNumber) {
         return side.applyInto(sideRecord ->
-                bind(store.unsaved(code, sideRecord, name)));
+                bind(store.unsaved(code, sideRecord, name, sequenceNumber)));
     }
 
     public Optional<Top> byCode(final String code) {

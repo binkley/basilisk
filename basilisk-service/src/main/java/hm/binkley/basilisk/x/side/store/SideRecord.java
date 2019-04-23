@@ -16,17 +16,25 @@ import static java.util.Objects.requireNonNull;
 public class SideRecord {
     @Id
     public @NotNull String code;
+    public long sequenceNumber;
     @Transient
     public SideStore store;
 
-    public static SideRecord unsaved(final String code) {
+    public static SideRecord unsaved(
+            final String code, final long sequenceNumber) {
         checkCode(code);
+        checkSequenceNumber(sequenceNumber);
         final var unsaved = new SideRecord();
         unsaved.code = code;
+        unsaved.sequenceNumber = sequenceNumber;
         return unsaved;
     }
 
     private static void checkCode(final String code) { requireNonNull(code);}
+
+    private static void checkSequenceNumber(final long sequenceNumber) {
+        if (0 > sequenceNumber) throw new IllegalArgumentException();
+    }
 
     public SideRecord save() {
         return store.save(this);

@@ -33,20 +33,28 @@ public class TopRecord {
     public String plannedNearCode;
     @Column("top_code")
     public Set<NearRef> nears = new LinkedHashSet<>();
+    public long sequenceNumber;
     @Transient
     public TopStore store;
 
     public static TopRecord unsaved(
-            final String code, final SideRecord side, final String name) {
+            final String code, final SideRecord side, final String name,
+            final long sequenceNumber) {
         checkCode(code);
+        checkSequenceNumber(sequenceNumber);
         final var unsaved = new TopRecord();
         unsaved.code = code;
         unsaved.side.add(SideRef.of(side));
         unsaved.name = name;
+        unsaved.sequenceNumber = sequenceNumber;
         return unsaved;
     }
 
     private static void checkCode(final String code) { requireNonNull(code);}
+
+    private static void checkSequenceNumber(final long sequenceNumber) {
+        if (0 > sequenceNumber) throw new IllegalArgumentException();
+    }
 
     public TopRecord addMiddle(final MiddleRecord middle) {
         check(middle);

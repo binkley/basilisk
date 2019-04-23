@@ -14,8 +14,9 @@ import static java.util.Objects.requireNonNull;
 public class SideStore {
     private final SideRepository springData;
 
-    public SideRecord unsaved(final String code) {
-        return bind(SideRecord.unsaved(code));
+    public SideRecord unsaved(
+            final String code, final long sequenceNumber) {
+        return bind(SideRecord.unsaved(code, sequenceNumber));
     }
 
     public Optional<SideRecord> byCode(final String code) {
@@ -30,7 +31,7 @@ public class SideStore {
     }
 
     public SideRecord save(final SideRecord record) {
-        springData.upsert(record.code);
+        springData.upsert(record.code, record.sequenceNumber);
         return springData.save(record);
     }
 
