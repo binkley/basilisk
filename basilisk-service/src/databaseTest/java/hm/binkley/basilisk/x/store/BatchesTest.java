@@ -7,7 +7,6 @@ import hm.binkley.basilisk.x.middle.Middle;
 import hm.binkley.basilisk.x.middle.Middles;
 import hm.binkley.basilisk.x.middle.store.MiddleRepository;
 import hm.binkley.basilisk.x.middle.store.MiddleStore;
-import hm.binkley.basilisk.x.near.Near;
 import hm.binkley.basilisk.x.near.Nears;
 import hm.binkley.basilisk.x.near.store.NearRepository;
 import hm.binkley.basilisk.x.near.store.NearStore;
@@ -27,9 +26,9 @@ import org.springframework.jdbc.UncategorizedSQLException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
 import static org.springframework.transaction.annotation.Propagation.NESTED;
 
 @ActiveProfiles("test")
@@ -71,16 +70,18 @@ class BatchesTest {
         doThrow(UncategorizedSQLException.class).when(sideSpringData)
                 .upsert(sideCode);
         final var middleCode = "MID";
-        final var middleMid = 222;
+        final var middleMide = 222;
         doThrow(UncategorizedSQLException.class).when(middleSpringData)
-                .upsert(middleCode, null, middleMid);
+                .upsert(middleCode, null, middleMide);
 
         final var side = upsertSide(sideCode);
-        upsertMiddle(middleCode, side, middleMid);
-        final var top = upsertTop("TOP", side, "TWIRL");
+        upsertMiddle(middleCode, side, middleMide);
 
-        verify(topSpringData).upsert(top.getCode(), top.getName(),
-                top.getPlannedNear().map(Near::getCode).orElse(null));
+        final var topCode = "TOP";
+        final var topName = "TWIRL";
+        final var top = upsertTop(topCode, side, topName);
+
+        assertThat(top).isEqualTo(tops.unsaved(topCode, side, topName));
     }
 
     @Transactional(propagation = NESTED)
