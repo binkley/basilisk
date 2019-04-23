@@ -2,6 +2,7 @@ package hm.binkley.basilisk.x.top;
 
 import hm.binkley.basilisk.x.middle.Middles;
 import hm.binkley.basilisk.x.near.Nears;
+import hm.binkley.basilisk.x.side.Side;
 import hm.binkley.basilisk.x.top.store.TopRecord;
 import hm.binkley.basilisk.x.top.store.TopStore;
 import lombok.RequiredArgsConstructor;
@@ -18,8 +19,9 @@ public class Tops {
     private final Nears nears;
 
     public Top unsaved(
-            final String code, final String name) {
-        return bind(store.unsaved(code, name));
+            final String code, final Side side, final String name) {
+        return side.applyInto(sideRecord ->
+                bind(store.unsaved(code, sideRecord, name)));
     }
 
     public Optional<Top> byCode(final String code) {

@@ -4,6 +4,7 @@ import hm.binkley.basilisk.x.kind.Kinds;
 import hm.binkley.basilisk.x.middle.store.MiddleRecord;
 import hm.binkley.basilisk.x.middle.store.MiddleStore;
 import hm.binkley.basilisk.x.near.Nears;
+import hm.binkley.basilisk.x.side.Side;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -17,8 +18,9 @@ public class Middles {
     private final Kinds kinds;
     private final Nears nears;
 
-    public Middle unsaved(final String code, final int mid) {
-        return bind(store.unsaved(code, mid));
+    public Middle unsaved(final String code, final Side side, final int mid) {
+        return side.applyInto(sideRecord ->
+                bind(store.unsaved(code, sideRecord, mid)));
     }
 
     public Optional<Middle> byCode(final String code) {

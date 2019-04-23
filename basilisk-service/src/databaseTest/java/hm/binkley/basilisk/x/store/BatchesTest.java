@@ -11,6 +11,10 @@ import hm.binkley.basilisk.x.near.Near;
 import hm.binkley.basilisk.x.near.Nears;
 import hm.binkley.basilisk.x.near.store.NearRepository;
 import hm.binkley.basilisk.x.near.store.NearStore;
+import hm.binkley.basilisk.x.side.Side;
+import hm.binkley.basilisk.x.side.Sides;
+import hm.binkley.basilisk.x.side.store.SideRepository;
+import hm.binkley.basilisk.x.side.store.SideStore;
 import hm.binkley.basilisk.x.top.Top;
 import hm.binkley.basilisk.x.top.Tops;
 import hm.binkley.basilisk.x.top.store.TopRepository;
@@ -33,21 +37,26 @@ import static org.springframework.transaction.annotation.Propagation.NESTED;
 @DataJdbcTest
 @Transactional
 class BatchesTest {
-    private final TopRepository topSpringData;
+    private final SideRepository sideSpringData;
     private final MiddleRepository middleSpringData;
+    private final TopRepository topSpringData;
 
-    private final Tops tops;
+    private final Sides sides;
     private final Middles middles;
+    private final Tops tops;
 
     @Autowired
-    BatchesTest(final TopRepository topSpringData,
+    BatchesTest(final SideRepository sideSpringData,
             final MiddleRepository middleSpringData,
+            final TopRepository topSpringData,
             final KindRepository kindSpringData,
             final NearRepository nearSpringData) {
-        this.topSpringData = spy(topSpringData);
+        this.sideSpringData = spy(sideSpringData);
         this.middleSpringData = spy(middleSpringData);
+        this.topSpringData = spy(topSpringData);
 
         final var nears = new Nears(new NearStore(nearSpringData));
+        sides = new Sides(new SideStore(sideSpringData));
         final var kinds = new Kinds(new KindStore(kindSpringData),
                 nears);
         middles = new Middles(new MiddleStore(this.middleSpringData),
@@ -58,21 +67,25 @@ class BatchesTest {
 
     @Test
     void shouldUpdateInTheFaceOfDanger() {
+        final var sideCode = "SID";
+        doThrow(UncategorizedSQLException.class).when(sideSpringData)
+                .upsert(sideCode);
         final var middleCode = "MID";
         final var middleMid = 222;
         doThrow(UncategorizedSQLException.class).when(middleSpringData)
                 .upsert(middleCode, null, middleMid);
 
-        upsertMiddle(middleCode, middleMid);
-        final var top = upsertTop("TOP", "TWIRL");
+        final var side = upsertSide(sideCode);
+        upsertMiddle(middleCode, side, middleMid);
+        final var top = upsertTop("TOP", side, "TWIRL");
 
         verify(topSpringData).upsert(top.getCode(), top.getName(),
                 top.getPlannedNear().map(Near::getCode).orElse(null));
     }
 
     @Transactional(propagation = NESTED)
-    Middle upsertMiddle(final String code, final Integer mid) {
-        final var unsaved = middles.unsaved(code, mid);
+    Side upsertSide(final String code) {
+        final var unsaved = sides.unsaved(code);
         try {
             return unsaved.save();
         } catch (final UncategorizedSQLException e) {
@@ -81,7 +94,18 @@ class BatchesTest {
     }
 
     @Transactional(propagation = NESTED)
-    Top upsertTop(final String code, final String name) {
-        return tops.unsaved(code, name).save();
+    Middle upsertMiddle(
+            final String code, final Side side, final Integer mid) {
+        final var unsaved = middles.unsaved(code, side, mid);
+        try {
+            return unsaved.save();
+        } catch (final UncategorizedSQLException e) {
+            return unsaved;
+        }
+    }
+
+    @Transactional(propagation = NESTED)
+    Top upsertTop(final String code, final Side side, final String name) {
+        return tops.unsaved(code, side, name).save();
     }
 }

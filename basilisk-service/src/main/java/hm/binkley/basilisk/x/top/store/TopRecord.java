@@ -2,6 +2,7 @@ package hm.binkley.basilisk.x.top.store;
 
 import hm.binkley.basilisk.x.middle.store.MiddleRecord;
 import hm.binkley.basilisk.x.near.store.NearRecord;
+import hm.binkley.basilisk.x.side.store.SideRecord;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -23,6 +24,9 @@ import static java.util.Objects.requireNonNull;
 public class TopRecord {
     @Id
     public @NotNull String code;
+    /** @todo Spring Data JDBC mechanistically wants a Set here */
+    @Column("top_code")
+    public Set<SideRef> side = new LinkedHashSet<>();
     public String name;
     @Column("top_code")
     public Set<MiddleRef> middles = new LinkedHashSet<>();
@@ -32,10 +36,12 @@ public class TopRecord {
     @Transient
     public TopStore store;
 
-    public static TopRecord unsaved(final String code, final String name) {
+    public static TopRecord unsaved(
+            final String code, final SideRecord side, final String name) {
         checkCode(code);
         final var unsaved = new TopRecord();
         unsaved.code = code;
+        unsaved.side.add(SideRef.of(side));
         unsaved.name = name;
         return unsaved;
     }
@@ -90,6 +96,20 @@ public class TopRecord {
 
     private void check(final NearRecord near) {
         requireNonNull(near);
+    }
+
+    @EqualsAndHashCode
+    @Getter
+    @Table("X.TOP_SIDE")
+    @ToString
+    public static class SideRef {
+        public String sideCode;
+
+        public static SideRef of(final SideRecord side) {
+            final var ref = new SideRef();
+            ref.sideCode = side.save().code;
+            return ref;
+        }
     }
 
     @EqualsAndHashCode

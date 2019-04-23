@@ -1,5 +1,6 @@
 package hm.binkley.basilisk.x.middle.store;
 
+import hm.binkley.basilisk.x.side.store.SideRecord;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -14,8 +15,9 @@ import static java.util.Objects.requireNonNull;
 public class MiddleStore {
     private final MiddleRepository springData;
 
-    public MiddleRecord unsaved(final String code, final int mid) {
-        return bind(MiddleRecord.unsaved(code, mid));
+    public MiddleRecord unsaved(
+            final String code, final SideRecord side, final int mid) {
+        return bind(MiddleRecord.unsaved(code, side, mid));
     }
 
     public Optional<MiddleRecord> byCode(final String code) {

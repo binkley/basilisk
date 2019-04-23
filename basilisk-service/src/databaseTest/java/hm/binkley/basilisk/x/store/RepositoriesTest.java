@@ -16,6 +16,10 @@ import hm.binkley.basilisk.x.near.Nears;
 import hm.binkley.basilisk.x.near.store.NearRecord;
 import hm.binkley.basilisk.x.near.store.NearRepository;
 import hm.binkley.basilisk.x.near.store.NearStore;
+import hm.binkley.basilisk.x.side.Side;
+import hm.binkley.basilisk.x.side.Sides;
+import hm.binkley.basilisk.x.side.store.SideRepository;
+import hm.binkley.basilisk.x.side.store.SideStore;
 import hm.binkley.basilisk.x.top.Top;
 import hm.binkley.basilisk.x.top.Tops;
 import hm.binkley.basilisk.x.top.store.TopRepository;
@@ -45,6 +49,7 @@ import static org.mockito.Mockito.when;
 @Transactional
 class RepositoriesTest {
     private static final String nearCode = "NER";
+    private static final String sideCode = "SID";
     private static final String bottomFoo = "BAR";
     private static final String kindCode = "KIN";
     private static final BigDecimal kindCoolness = new BigDecimal("2.3");
@@ -54,15 +59,18 @@ class RepositoriesTest {
     private static final String topName = "TWIRL";
 
     @Spy
-    private final NearRepository nearRepository;
+    private final NearRepository nearSpringData;
     @Spy
-    private final TopRepository topRepository;
+    private final SideRepository sideSpringData;
     @Spy
-    private final KindRepository kindRepository;
+    private final TopRepository topSpringData;
     @Spy
-    private final MiddleRepository middleRepository;
+    private final KindRepository kindSpringData;
+    @Spy
+    private final MiddleRepository middleSpringData;
 
     private Nears nears;
+    private Sides sides;
     private Kinds kinds;
     private Middles middles;
     private Tops tops;
@@ -73,11 +81,12 @@ class RepositoriesTest {
 
     @BeforeEach
     void setUp() {
-        nears = new Nears(new NearStore(nearRepository));
-        kinds = new Kinds(new KindStore(kindRepository), nears);
-        middles = new Middles(new MiddleStore(middleRepository),
+        nears = new Nears(new NearStore(nearSpringData));
+        sides = new Sides(new SideStore(sideSpringData));
+        kinds = new Kinds(new KindStore(kindSpringData), nears);
+        middles = new Middles(new MiddleStore(middleSpringData),
                 kinds, nears);
-        tops = new Tops(new TopStore(topRepository), middles, nears);
+        tops = new Tops(new TopStore(topSpringData), middles, nears);
     }
 
     @Test
@@ -85,19 +94,25 @@ class RepositoriesTest {
         final var unsavedKindNear = nears.unsaved("KNR");
         final var unsavedMiddleNear = nears.unsaved("MNR");
         final var unsavedTopNear = nears.unsaved("TNR");
+        final var unsavedSide = sides.unsaved(sideCode);
         final var unsavedKind = kinds.unsaved(kindCode, kindCoolness)
                 .addNear(unsavedKindNear);
-        final var unsavedMiddle = middles.unsaved(middleCode, middleMid)
+        final var unsavedMiddle = middles.unsaved(
+                middleCode, unsavedSide, middleMid)
                 .attachToKind(unsavedKind)
                 .addBottom(bottomFoo)
                 .addNear(unsavedMiddleNear);
         final var unsavedTop = tops.unsaved(
-                topCode, topName)
+                topCode, unsavedSide, topName)
                 .addMiddle(unsavedMiddle)
                 .addNear(unsavedTopNear);
 
         final var savedTop = unsavedTop.save();
         final var readBackTop = tops.byCode(savedTop.getCode()).orElseThrow();
+
+        final var readBackSide = sides.byCode(unsavedSide.getCode())
+                .orElseThrow();
+        assertThat(readBackSide).isEqualTo(unsavedSide);
 
         assertThat(readBackTop).isEqualTo(unsavedTop);
         assertThat(readBackTop.getName()).isEqualTo(topName);
@@ -127,35 +142,28 @@ class RepositoriesTest {
     @Test
     void shouldDelete() {
         final var top = newTop().save();
-
         assertTopCount(1);
-
         top.delete();
-
         assertTopCount(0);
 
         final var middle = newMiddle().save();
-
         assertMiddleCounts(0, 1);
-
         middle.delete();
-
         assertMiddleCounts(0, 0);
 
         final var kind = newKind().save();
-
         assertKindCount(1);
-
         kind.delete();
-
         assertKindCount(0);
 
+        final var side = sides.unsaved(sideCode).save();
+        assertSideCount(1);
+        side.delete();
+        assertSideCount(0);
+
         final var near = nears.unsaved(nearCode).save();
-
         assertNearCount(1);
-
         near.delete();
-
         assertNearCount(0);
     }
 
@@ -348,8 +356,10 @@ class RepositoriesTest {
         return nears.unsaved(nearCode);
     }
 
+    private Side newSide() { return sides.unsaved(sideCode); }
+
     private Middle newMiddle() {
-        return middles.unsaved(middleCode, middleMid);
+        return middles.unsaved(middleCode, newSide(), middleMid);
     }
 
     private Kind newKind() {
@@ -357,11 +367,19 @@ class RepositoriesTest {
     }
 
     private Top newTop() {
-        return tops.unsaved(topCode, topName);
+        return tops.unsaved(topCode, newSide(), topName);
+    }
+
+    private void assertNearCount(final int total) {
+        assertThat(nears.all()).hasSize(total);
+    }
+
+    private void assertSideCount(final int total) {
+        assertThat(sides.all()).hasSize(total);
     }
 
     private void assertBottomCount(final int total) {
-        assertThat(middleRepository.findAllBottoms()).hasSize(total);
+        assertThat(middleSpringData.findAllBottoms()).hasSize(total);
     }
 
     private void assertMiddleCounts(final int owned, final int free) {
@@ -376,9 +394,5 @@ class RepositoriesTest {
 
     private void assertTopCount(final int total) {
         assertThat(tops.all()).hasSize(total);
-    }
-
-    private void assertNearCount(final int total) {
-        assertThat(nears.all()).hasSize(total);
     }
 }
