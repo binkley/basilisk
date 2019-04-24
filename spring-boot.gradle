@@ -18,7 +18,10 @@ flyway {
     url = "jdbc:postgresql://localhost:5432/basilisk"
     user = "basilisk"
     password = ""
-    schemas = ["FLORA", "X"]
+    // NB - Postgres is case-insensitive unless quoted
+    // The migration scripts are not quoting, but Flyway plugin does quote,
+    // so match the expected case in the DB
+    schemas = ["flora", "x"]
     configurations = ["flywayMigration"]
 }
 
