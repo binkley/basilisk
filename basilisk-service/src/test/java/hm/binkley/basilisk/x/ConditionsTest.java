@@ -48,6 +48,7 @@ class ConditionsTest {
     private static final BigDecimal kindCoolness = new BigDecimal("2.3");
     private static final String middleCode = "MID";
     private static final int middleMid = 222;
+    private static final String bottomFoo = "BAR";
     private static final String topCode = "TOP";
     private static final String topName = "TWIRL";
 
@@ -69,7 +70,7 @@ class ConditionsTest {
     private Tops tops;
 
     private static Bottom newBottom() {
-        return new Bottom(BottomRecord.unsaved("BAR"));
+        return new Bottom(BottomRecord.unsaved(bottomFoo));
     }
 
     @BeforeEach
@@ -196,7 +197,7 @@ class ConditionsTest {
         final var side = newSide();
         final var middle = side.applyInto(sideRecord ->
                 MiddleRecord.unsaved(middleCode, sideRecord, middleMid, 0));
-        final var bottom = BottomRecord.unsaved("BAR");
+        final var bottom = BottomRecord.unsaved(bottomFoo);
         bottom.middleCode = middle.code + "-X";
 
         assertThatThrownBy(() -> middle.addBottom(bottom))

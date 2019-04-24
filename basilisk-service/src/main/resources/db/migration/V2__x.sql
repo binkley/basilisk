@@ -17,10 +17,23 @@ BEGIN
 END;
 $$;
 
+CREATE FUNCTION update_timestamp()
+    RETURNS TRIGGER
+    LANGUAGE plpgsql
+AS
+$$
+BEGIN
+    NEW.updated_at = NOW();
+    RETURN NEW;
+END;
+$$;
+
 CREATE TABLE X.NEAR
 (
-    code            VARCHAR NOT NULL PRIMARY KEY,
-    sequence_number BIGINT  NOT NULL
+    code            VARCHAR     NOT NULL PRIMARY KEY,
+    sequence_number BIGINT      NOT NULL,
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 CREATE TRIGGER near_sequence_number_trigger
@@ -28,6 +41,12 @@ CREATE TRIGGER near_sequence_number_trigger
     ON X.NEAR
     FOR EACH ROW
 EXECUTE PROCEDURE X.update_sequence_number();
+
+CREATE TRIGGER near_updated_at_trigger
+    BEFORE UPDATE
+    ON X.NEAR
+    FOR EACH ROW
+EXECUTE PROCEDURE update_timestamp();
 
 CREATE FUNCTION X.upsert_near(_code X.NEAR.code%TYPE,
                               _sequence_number X.NEAR.sequence_number%TYPE)
@@ -46,8 +65,10 @@ $$;
 
 CREATE TABLE X.SIDE
 (
-    code            VARCHAR NOT NULL PRIMARY KEY,
-    sequence_number BIGINT  NOT NULL
+    code            VARCHAR     NOT NULL PRIMARY KEY,
+    sequence_number BIGINT      NOT NULL,
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 CREATE TRIGGER side_sequence_number_trigger
@@ -55,6 +76,12 @@ CREATE TRIGGER side_sequence_number_trigger
     ON X.SIDE
     FOR EACH ROW
 EXECUTE PROCEDURE X.update_sequence_number();
+
+CREATE TRIGGER side_updated_at_trigger
+    BEFORE UPDATE
+    ON X.SIDE
+    FOR EACH ROW
+EXECUTE PROCEDURE update_timestamp();
 
 CREATE FUNCTION X.upsert_side(_code X.SIDE.code%TYPE,
                               _sequence_number X.SIDE.sequence_number%TYPE)
@@ -73,10 +100,12 @@ $$;
 
 CREATE TABLE X.TOP
 (
-    code              VARCHAR NOT NULL PRIMARY KEY,
-    name              VARCHAR NOT NULL UNIQUE,
+    code              VARCHAR     NOT NULL PRIMARY KEY,
+    name              VARCHAR     NOT NULL UNIQUE,
     planned_near_code VARCHAR REFERENCES X.NEAR (code),
-    sequence_number   BIGINT  NOT NULL
+    sequence_number   BIGINT      NOT NULL,
+    created_at        TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at        TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 CREATE TRIGGER top_sequence_number_trigger
@@ -84,6 +113,12 @@ CREATE TRIGGER top_sequence_number_trigger
     ON X.TOP
     FOR EACH ROW
 EXECUTE PROCEDURE X.update_sequence_number();
+
+CREATE TRIGGER top_updated_at_trigger
+    BEFORE UPDATE
+    ON X.TOP
+    FOR EACH ROW
+EXECUTE PROCEDURE update_timestamp();
 
 CREATE FUNCTION X.upsert_top(_code X.TOP.code%TYPE,
                              _name X.TOP.name%TYPE,
@@ -107,9 +142,11 @@ $$;
 
 CREATE TABLE X.KIND
 (
-    code            VARCHAR NOT NULL PRIMARY KEY,
-    coolness        NUMERIC NOT NULL,
-    sequence_number BIGINT  NOT NULL
+    code            VARCHAR     NOT NULL PRIMARY KEY,
+    coolness        NUMERIC     NOT NULL,
+    sequence_number BIGINT      NOT NULL,
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 CREATE TRIGGER kind_sequence_number_trigger
@@ -117,6 +154,12 @@ CREATE TRIGGER kind_sequence_number_trigger
     ON X.KIND
     FOR EACH ROW
 EXECUTE PROCEDURE X.update_sequence_number();
+
+CREATE TRIGGER kind_updated_at_trigger
+    BEFORE UPDATE
+    ON X.KIND
+    FOR EACH ROW
+EXECUTE PROCEDURE update_timestamp();
 
 CREATE FUNCTION X.upsert_kind(_code X.KIND.code%TYPE,
                               _coolness X.KIND.coolness%TYPE,
@@ -137,11 +180,13 @@ $$;
 
 CREATE TABLE X.MIDDLE
 (
-    code            VARCHAR NOT NULL PRIMARY KEY,
+    code            VARCHAR     NOT NULL PRIMARY KEY,
     -- Example of optional relationship
     kind_code       VARCHAR REFERENCES X.KIND (code),
-    mid             INT     NOT NULL,
-    sequence_number BIGINT  NOT NULL
+    mid             INT         NOT NULL,
+    sequence_number BIGINT      NOT NULL,
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 CREATE TRIGGER middle_sequence_number_trigger
@@ -149,6 +194,12 @@ CREATE TRIGGER middle_sequence_number_trigger
     ON X.MIDDLE
     FOR EACH ROW
 EXECUTE PROCEDURE X.update_sequence_number();
+
+CREATE TRIGGER middle_updated_at_trigger
+    BEFORE UPDATE
+    ON X.MIDDLE
+    FOR EACH ROW
+EXECUTE PROCEDURE update_timestamp();
 
 CREATE FUNCTION X.upsert_middle(_code X.MIDDLE.code%TYPE,
                                 _kind_code X.MIDDLE.kind_code%TYPE,
