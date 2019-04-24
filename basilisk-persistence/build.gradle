@@ -1,9 +1,5 @@
-plugins {
-    // TODO: How to pick up version from Spring Boot deps?
-    id "org.flywaydb.flyway" version "5.2.4"
-}
-
 apply plugin: "org.springframework.boot"
+apply plugin: "org.flywaydb.flyway"
 
 flyway {
     url = "jdbc:postgresql:basilisk"

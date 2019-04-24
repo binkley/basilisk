@@ -1,4 +1,5 @@
 apply plugin: "org.springframework.boot"
+apply plugin: "org.flywaydb.flyway"
 
 testSets {
     integrationTest { extendsFrom unitTest }
@@ -7,11 +8,23 @@ testSets {
 }
 
 configurations {
+    flywayMigration
+
     all*.exclude module: 'junit'
     all*.exclude module: 'slf4j-simple'
 }
 
+flyway {
+    url = "jdbc:postgresql://localhost:5432/basilisk"
+    user = "basilisk"
+    password = ""
+    schemas = ["FLORA", "X"]
+    configurations = ["flywayMigration"]
+}
+
 dependencies {
+    flywayMigration "org.postgresql:postgresql"
+
     implementation "org.springframework.cloud:spring-cloud-starter-sleuth"
 
     runtimeOnly "org.zalando:logbook-spring-boot-starter"

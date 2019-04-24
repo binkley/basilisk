@@ -16,6 +16,7 @@ buildscript {
         classpath "net.ltgt.gradle:gradle-apt-plugin:0.21"
         classpath "gradle.plugin.com.github.spotbugs:spotbugs-gradle-plugin:1.7.1"
         classpath "com.google.guava:guava:27.1-jre" // For SpotBugs
+        classpath "gradle.plugin.com.boxfuse.client:gradle-plugin-publishing:5.2.4"
     }
 }
 
@@ -43,6 +44,10 @@ allprojects {
     group = "hm.binkley"
     version = "0"
 
+    ext {
+        flywayVersion = "5.2.4"
+    }
+
     repositories {
         mavenCentral()
         jcenter()
@@ -55,6 +60,14 @@ allprojects {
                 rules.all(ignoreNonReleaseVersions)
             }
         }
+    }
+
+    task checkstyle {
+        group = "Verification"
+        description = "Checks Java coding style."
+
+        dependsOn tasks.withType(Checkstyle)
+        finalizedBy buildDashboard
     }
 
     //noinspection GroovyAssignabilityCheck
