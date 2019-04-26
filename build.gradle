@@ -136,8 +136,6 @@ subprojects {
         compileOnly "com.github.spotbugs:spotbugs-annotations:${spotbugsVersion}"
 
         implementation "org.springframework.boot:spring-boot-starter-actuator"
-        implementation "org.springframework.boot:spring-boot-starter-aop"
-        implementation "org.springframework:spring-aspects"
         implementation "org.springframework.boot:spring-boot-starter-data-jdbc"
         implementation "org.springframework.boot:spring-boot-starter-data-rest"
         implementation "org.springframework.boot:spring-boot-starter-hateoas"
