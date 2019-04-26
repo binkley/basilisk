@@ -1,23 +1,17 @@
 package hm.binkley.basilisk.x.near.store;
 
-import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
+import hm.binkley.basilisk.store.BasiliskDatabaseTest;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
 import org.springframework.jdbc.UncategorizedSQLException;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@ActiveProfiles("test")
-@AutoConfigureEmbeddedDatabase
-@DataJdbcTest
+@BasiliskDatabaseTest
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-@Transactional
 class NearStoreTest {
     private final NearRepository springData;
 

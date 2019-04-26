@@ -1,25 +1,19 @@
 package hm.binkley.basilisk.x.top.store;
 
+import hm.binkley.basilisk.store.BasiliskDatabaseTest;
 import hm.binkley.basilisk.x.side.store.SideRepository;
 import hm.binkley.basilisk.x.side.store.SideStore;
-import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
 import org.springframework.jdbc.UncategorizedSQLException;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@ActiveProfiles("test")
-@AutoConfigureEmbeddedDatabase
-@DataJdbcTest
+@BasiliskDatabaseTest
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-@Transactional
 class TopStoreTest {
     private final TopRepository springData;
     private final SideRepository sideSpringData;
