@@ -10,7 +10,8 @@ BEGIN
         NEW.sequence_number = OLD.sequence_number;
     ELSIF NEW.sequence_number < OLD.sequence_number THEN
         RAISE EXCEPTION 'Upsert is out of date: % (current is %)',
-            NEW.sequence_number, OLD.sequence_number;
+            NEW.sequence_number, OLD.sequence_number
+            USING ERRCODE = 'STALE';
     END IF;
 
     RETURN NEW;

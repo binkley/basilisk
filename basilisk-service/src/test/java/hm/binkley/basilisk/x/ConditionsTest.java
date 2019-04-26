@@ -1,5 +1,6 @@
 package hm.binkley.basilisk.x;
 
+import hm.binkley.basilisk.x.batch.Batches;
 import hm.binkley.basilisk.x.kind.Kind;
 import hm.binkley.basilisk.x.kind.Kinds;
 import hm.binkley.basilisk.x.kind.store.KindRepository;
@@ -29,10 +30,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.transaction.PlatformTransactionManager;
 
 import java.math.BigDecimal;
 import java.util.NoSuchElementException;
 
+import static hm.binkley.basilisk.x.TestFixtures.fixedMiddle;
+import static hm.binkley.basilisk.x.TestFixtures.fixedSide;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
@@ -53,6 +57,8 @@ class ConditionsTest {
     private static final String topName = "TWIRL";
 
     @Mock
+    private final PlatformTransactionManager transactionManager;
+    @Mock
     private final NearRepository nearSpringData;
     @Mock
     private final SideRepository sideSpringData;
@@ -68,6 +74,7 @@ class ConditionsTest {
     private Kinds kinds;
     private Middles middles;
     private Tops tops;
+    private Batches batches;
 
     private static Bottom newBottom() {
         return new Bottom(BottomRecord.unsaved(bottomFoo));
@@ -81,6 +88,7 @@ class ConditionsTest {
         middles = new Middles(new MiddleStore(middleSpringData),
                 kinds, nears);
         tops = new Tops(new TopStore(topSpringData), middles, nears);
+        batches = new Batches(transactionManager);
     }
 
     @Test
@@ -242,6 +250,16 @@ class ConditionsTest {
         assertThatThrownBy(() ->
                 tops.unsavedSequenced(topCode, newSide(), topName, -1))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void shouldComplainOnBadBatches() {
+        assertThatThrownBy(() ->
+                batches.unsaved(null, null, fixedMiddle(kinds, nears)))
+                .isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() ->
+                batches.unsaved(fixedSide(), null, null))
+                .isInstanceOf(NullPointerException.class);
     }
 
     private Side newSide() {
