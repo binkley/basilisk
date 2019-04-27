@@ -63,12 +63,13 @@ class BatchesTest {
                 .save();
         top = tops.unsavedSequenced("TOP", side, "TWIRL", sequenceNumber)
                 .save();
-        middle = middles.unsavedSequenced("MID", side, 222, sequenceNumber);
+        middle = middles.unsavedSequenced("MID", side, 222, sequenceNumber)
+                .save();
     }
 
     @Test
     void shouldSaveMiddleWithStaleSideAndTop() {
-        final var updatedMid = middle.getMid();
+        final var updatedMid = middle.getMid() + 1;
 
         batches.unsaved(
                 sides.unsavedSequenced(side.getCode(),
@@ -85,7 +86,7 @@ class BatchesTest {
 
     @Test
     void shouldSaveMiddleWithStaleSideAndNoTop() {
-        final var updatedMid = middle.getMid();
+        final var updatedMid = middle.getMid() + 1;
 
         batches.unsaved(
                 sides.unsavedSequenced(side.getCode(),
@@ -101,7 +102,7 @@ class BatchesTest {
 
     @Test
     void shouldIgnoreBatchWithStaleStaleSideTopAndMiddle() {
-        final var updatedMid = middle.getMid();
+        final var updatedMid = middle.getMid() + 1;
 
         batches.unsaved(
                 sides.unsavedSequenced(side.getCode(),
