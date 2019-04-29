@@ -43,16 +43,6 @@ public final class Kind
         return Stream.empty();
     }
 
-    public Kind save() {
-        record.save();
-        return this;
-    }
-
-    public Kind delete() {
-        record.delete();
-        return this;
-    }
-
     public Kind addNear(final Near near) {
         near.insertInto(record::addNear);
         return this;
@@ -60,6 +50,16 @@ public final class Kind
 
     public Kind removeNear(final Near near) {
         near.insertInto(record::removeNear);
+        return this;
+    }
+
+    public Kind save() {
+        record.save();
+        return this;
+    }
+
+    public Kind delete() {
+        record.delete();
         return this;
     }
 

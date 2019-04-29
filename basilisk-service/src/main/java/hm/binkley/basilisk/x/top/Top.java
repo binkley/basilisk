@@ -91,16 +91,6 @@ public final class Top
         return this;
     }
 
-    public Top save() {
-        record.save();
-        return this;
-    }
-
-    public Top delete() {
-        record.delete();
-        return this;
-    }
-
     public Top addMiddle(final Middle middle) {
         middle.insertInto(record::addMiddle);
         return this;
@@ -118,6 +108,16 @@ public final class Top
 
     public Top removeNear(final @NotNull Near near) {
         near.insertInto(record::removeNear);
+        return this;
+    }
+
+    public Top save() {
+        record.save();
+        return this;
+    }
+
+    public Top delete() {
+        record.delete();
         return this;
     }
 }
