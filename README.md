@@ -154,6 +154,7 @@ Other relationships:
 * Example [injected logger](#injected-logger)
 * [Etags](basilisk-service/src/main/java/hm/binkley/basilisk/configuration/EtagConfiguration.java)
 * [X-B3 headers](basilisk-service/src/main/java/hm/binkley/basilisk/rest/TraceResponseFilter.java)
+* [Feign logging](#feign-logging)
 
 [[TOC]](#basilisk)
 
@@ -751,3 +752,26 @@ place where a non-`List` collection is returned in a REST response, and in
 tests.
 
 [[TOC]](#basilisk)
+
+### Feign logging
+
+See
+[`LogbookFeignLogger`](basilisk-service/src/main/java/hm/binkley/basilisk/LogbookFeignLogger.java),
+[`FeignConfiguration`](basilisk-service/src/main/java/hm/binkley/basilisk/configuration/FeignConfiguration.java),
+[`bootstrap.yml`](basilisk-service/src/main/resources/bootstrap.yml),
+[`application.yml`](basilisk-service/src/main/resources/application.yml), and
+[`logback-spring.xml`](basilisk-service/src/main/resources/logback-spring.xml)
+for logging Feign in the same format as logging REST calls to the service.
+
+Key features:
+
+* Application name appears in logging in first log lines (`bootstrap.yml`)
+* Pretty logging for local development, Logstash JSON for production ("json"
+  profile with `logback-spring.xml`) 
+* All date-time logging in UTC
+* No FILE appender for logging, just CONSOLE (but see
+  "org/springframework/boot/logging/logback/base.xml" for adding one)
+* `logging.debug` property to see how Logback configures
+* When using "json" profile, JSON as the log message is embedded in the
+  overall log line, not quoted
+* Suppress HTTP trace logging for "uninteresting" endpoints (e.g., health)

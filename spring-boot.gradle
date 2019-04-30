@@ -29,8 +29,11 @@ dependencies {
     flywayMigration "org.postgresql:postgresql"
 
     implementation "org.springframework.cloud:spring-cloud-starter-sleuth"
+    implementation "org.springframework.cloud:spring-cloud-starter-openfeign"
+    implementation "org.zalando:logbook-spring-boot-starter"
 
     runtimeOnly "org.zalando:logbook-spring-boot-starter"
+    runtimeOnly "net.logstash.logback:logstash-logback-encoder:5.3"
     runtimeOnly "org.jolokia:jolokia-core"
 
     testImplementation project(":basilisk-testing")
