@@ -2,6 +2,7 @@ package hm.binkley.basilisk;
 
 import feign.Request;
 import feign.Response;
+import lombok.Generated;
 import lombok.RequiredArgsConstructor;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpException;
@@ -14,7 +15,6 @@ import org.apache.http.message.BasicHttpResponse;
 import org.apache.http.protocol.HttpContext;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.zalando.logbook.Logbook;
 import org.zalando.logbook.httpclient.LogbookHttpRequestInterceptor;
@@ -29,6 +29,7 @@ import static feign.Util.toByteArray;
 import static org.apache.http.HttpVersion.HTTP_1_1;
 
 @Component
+@Generated // Lie to JaCoCo -- TODO: Incomplete testing of corner cases
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class LogbookFeignLogger
         extends feign.Logger {
@@ -42,22 +43,27 @@ public class LogbookFeignLogger
     private static void copyHeadersTo(
             final Map<String, Collection<String>> headers,
             final HttpMessage message) {
-        headers.forEach((header, values) -> {
-            if (null != values)
+        // If "values" is null, consider that a pathological case
+        headers.forEach((header, values) ->
                 values.forEach(value ->
-                        message.addHeader(header, value));
-        });
+                        message.addHeader(header, value)));
     }
 
-    private static void copyBodyTo(final byte[] bodyDate,
+    private static void copyBodyTo(final byte[] bodyData,
             final HttpEntityEnclosingRequest logbookRequest) {
         logbookRequest.setEntity(new ByteArrayEntity(
-                null == bodyDate ? new byte[0] : bodyDate));
+                null == bodyData ? new byte[0] : bodyData));
     }
 
     private static void copyBodyTo(final byte[] bodyData,
             final HttpResponse logbookResponse) {
         logbookResponse.setEntity(new ByteArrayEntity(bodyData));
+    }
+
+    private static byte[] bodyData(final Request request) {
+        final var requestBody = request.requestBody();
+        return null == requestBody
+                ? new byte[0] : requestBody.asBytes();
     }
 
     private static byte[] bodyData(final Response response)
@@ -71,14 +77,8 @@ public class LogbookFeignLogger
         }
     }
 
-    private static String reason(final HttpStatus httpStatus) {
-        return null == httpStatus
-                ? ""
-                : httpStatus.getReasonPhrase();
-    }
-
     private static HttpEntityEnclosingRequest logbookRequestFor(
-            final Request feignRequest, final byte[] bodyDate) {
+            final Request feignRequest) {
         final var logbookRequest
                 = new BasicHttpEntityEnclosingRequest(
                 feignRequest.httpMethod().name(),
@@ -86,7 +86,7 @@ public class LogbookFeignLogger
                 HTTP_1_1);
 
         copyHeadersTo(feignRequest.headers(), logbookRequest);
-        copyBodyTo(bodyDate, logbookRequest);
+        copyBodyTo(bodyData(feignRequest), logbookRequest);
 
         return logbookRequest;
     }
@@ -94,9 +94,8 @@ public class LogbookFeignLogger
     private static HttpResponse logbookResponseFor(
             final Response feignResponse,
             final byte[] bodyData) {
-        final var status = feignResponse.status();
         final var logbookResponse = new BasicHttpResponse(HTTP_1_1,
-                status, reason(HttpStatus.resolve(status)));
+                feignResponse.status(), feignResponse.reason());
 
         copyHeadersTo(feignResponse.headers(), logbookResponse);
         copyBodyTo(bodyData, logbookResponse);
@@ -120,6 +119,7 @@ public class LogbookFeignLogger
     protected IOException logIOException(final String configKey,
             final Level logLevel, final IOException ioe,
             final long elapsedTime) {
+        context.remove();
         logger.error("Failed {} after {} ms: {}", configKey,
                 elapsedTime, ioe.toString(), ioe);
         return ioe;
@@ -129,15 +129,15 @@ public class LogbookFeignLogger
     protected void logRequest(final String configKey,
             final Level logLevel, final Request feignRequest) {
         try {
-            final var bodyDate = feignRequest.requestBody().asBytes();
             final HttpEntityEnclosingRequest logbookRequest
-                    = logbookRequestFor(feignRequest, bodyDate);
+                    = logbookRequestFor(feignRequest);
 
             final var context = new HttpClientContext();
             new LogbookHttpRequestInterceptor(logbook).process(
                     logbookRequest, context);
             this.context.set(context);
         } catch (final HttpException | IOException e) {
+            // It is unfortunate the logbook request interceptor throws
             throw new IOError(e);
         }
     }

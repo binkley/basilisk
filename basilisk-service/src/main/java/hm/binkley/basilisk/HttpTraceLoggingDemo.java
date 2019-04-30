@@ -36,5 +36,6 @@ public class HttpTraceLoggingDemo
         client.send(request, BodyHandlers.ofString());
 
         jsonPlaceholder.getTodo(1);
+        jsonPlaceholder.deleteTodo(1);
     }
 }

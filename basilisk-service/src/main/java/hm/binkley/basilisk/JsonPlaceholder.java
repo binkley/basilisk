@@ -4,6 +4,7 @@ import lombok.Generated;
 import lombok.Getter;
 import lombok.ToString;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -12,6 +13,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface JsonPlaceholder {
     @GetMapping(path = "/todos/{id}", produces = "application/json")
     TodoResponse getTodo(@RequestParam("id") final int id);
+
+    @DeleteMapping(path = "/todos/{id}")
+    void deleteTodo(@RequestParam("id") final int id);
 
     @Generated // Lie to JaCoCo
     @Getter
