@@ -2,7 +2,6 @@ package hm.binkley.basilisk;
 
 import feign.Request;
 import feign.Response;
-import lombok.Generated;
 import lombok.RequiredArgsConstructor;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpException;
@@ -30,7 +29,6 @@ import static feign.Util.toByteArray;
 import static org.apache.http.HttpVersion.HTTP_1_1;
 
 @Component
-@Generated // Lie to JaCoCo -- TODO: not effectively testable?
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class LogbookFeignLogger
         extends feign.Logger {
