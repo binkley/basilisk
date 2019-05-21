@@ -26,10 +26,6 @@ public class ExceptionHandling
         implements ProblemHandling, SecurityAdviceTrait {
     private final ServerProperties server;
 
-    private static boolean includeStackTrace(final ServerProperties server) {
-        return ALWAYS == server.getError().getIncludeStacktrace();
-    }
-
     @Override
     public StatusType defaultConstraintViolationStatus() {
         return UNPROCESSABLE_ENTITY;
@@ -38,6 +34,10 @@ public class ExceptionHandling
     @Override
     public boolean isCausalChainsEnabled() {
         return includeStackTrace(server);
+    }
+
+    static boolean includeStackTrace(final ServerProperties server) {
+        return ALWAYS == server.getError().getIncludeStacktrace();
     }
 
     @ExceptionHandler
