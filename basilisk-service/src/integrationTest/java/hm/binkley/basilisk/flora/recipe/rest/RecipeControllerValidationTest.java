@@ -34,7 +34,7 @@ class RecipeControllerValidationTest {
     private static final String FIRST_FIELD = "$.violations[0].field";
     private static final String FIRST_MESSAGE = "$.violations[0].message";
     private static final String STATUS = "$.status";
-    private static final String STACK_TRACE = "$.stackTrace";
+    private static final String STACK_TRACE = "$.stack-trace";
 
     private final MockMvc problemMvc;
     private final ObjectMapper objectMapper;
@@ -56,7 +56,7 @@ class RecipeControllerValidationTest {
                 .andExpect(jsonPath(FIRST_MESSAGE,
                         equalTo("length must be between 3 and 32")))
                 .andExpect(jsonPath(STATUS,
-                        equalTo(UNPROCESSABLE_ENTITY.name())))
+                        equalTo(UNPROCESSABLE_ENTITY.value())))
                 .andExpect(jsonPath(STACK_TRACE).doesNotExist());
 
         verifyNoMoreInteractions(recipes);
@@ -77,10 +77,15 @@ class RecipeControllerValidationTest {
                 .andExpect(jsonPath(FIRST_MESSAGE,
                         equalTo("length must be between 3 and 8")))
                 .andExpect(jsonPath(STATUS,
-                        equalTo(UNPROCESSABLE_ENTITY.name())))
+                        equalTo(UNPROCESSABLE_ENTITY.value())))
                 .andExpect(jsonPath(STACK_TRACE).doesNotExist());
 
         verifyNoMoreInteractions(recipes);
+    }
+
+    private String asJson(final Object o)
+            throws JsonProcessingException {
+        return objectMapper.writeValueAsString(o);
     }
 
     @Test
@@ -98,7 +103,7 @@ class RecipeControllerValidationTest {
                 .andExpect(jsonPath(FIRST_MESSAGE,
                         equalTo("length must be between 3 and 32")))
                 .andExpect(jsonPath(STATUS,
-                        equalTo(UNPROCESSABLE_ENTITY.name())))
+                        equalTo(UNPROCESSABLE_ENTITY.value())))
                 .andExpect(jsonPath(STACK_TRACE).doesNotExist());
 
         verifyNoMoreInteractions(recipes);
@@ -119,14 +124,9 @@ class RecipeControllerValidationTest {
                 .andExpect(jsonPath(FIRST_MESSAGE,
                         equalTo("must not be null")))
                 .andExpect(jsonPath(STATUS,
-                        equalTo(UNPROCESSABLE_ENTITY.name())))
+                        equalTo(UNPROCESSABLE_ENTITY.value())))
                 .andExpect(jsonPath(STACK_TRACE).doesNotExist());
 
         verifyNoMoreInteractions(recipes);
-    }
-
-    private String asJson(final Object o)
-            throws JsonProcessingException {
-        return objectMapper.writeValueAsString(o);
     }
 }

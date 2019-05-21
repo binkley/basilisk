@@ -30,6 +30,7 @@ class ChefControllerValidationTest {
     private static final String violationField = "$.violations[0].field";
     private static final String violationMessage = "$.violations[0].message";
     private static final String violationStatus = "$.status";
+    private static final String stackTrace = "$.stack-trace";
 
     private final MockMvc problemMvc;
     private final ObjectMapper objectMapper;
@@ -48,10 +49,8 @@ class ChefControllerValidationTest {
                 .andExpect(jsonPath(violationMessage,
                         equalTo("length must be between 3 and 32")))
                 .andExpect(jsonPath(violationStatus,
-                        equalTo(UNPROCESSABLE_ENTITY.name())))
-        // TODO: Turn off stack traces
-        //      .andExpect(jsonPath("$.stackTrace").doesNotExist())
-        ;
+                        equalTo(UNPROCESSABLE_ENTITY.value())))
+                .andExpect(jsonPath(stackTrace).doesNotExist());
 
         verifyNoMoreInteractions(chefs);
     }
@@ -67,10 +66,8 @@ class ChefControllerValidationTest {
                 .andExpect(jsonPath(violationMessage,
                         equalTo("length must be between 3 and 32")))
                 .andExpect(jsonPath(violationStatus,
-                        equalTo(UNPROCESSABLE_ENTITY.name())))
-        // TODO: Turn off stack traces
-        //      .andExpect(jsonPath("$.stackTrace").doesNotExist())
-        ;
+                        equalTo(UNPROCESSABLE_ENTITY.value())))
+                .andExpect(jsonPath(stackTrace).doesNotExist());
 
         verifyNoMoreInteractions(chefs);
     }
@@ -89,12 +86,15 @@ class ChefControllerValidationTest {
                 .andExpect(jsonPath(violationMessage,
                         equalTo("length must be between 3 and 8")))
                 .andExpect(jsonPath(violationStatus,
-                        equalTo(UNPROCESSABLE_ENTITY.name())))
-        // TODO: Turn off stack traces
-        //      .andExpect(jsonPath("$.stackTrace").doesNotExist())
-        ;
+                        equalTo(UNPROCESSABLE_ENTITY.value())))
+                .andExpect(jsonPath(stackTrace).doesNotExist());
 
         verifyNoMoreInteractions(chefs);
+    }
+
+    private String asJson(final Object o)
+            throws JsonProcessingException {
+        return objectMapper.writeValueAsString(o);
     }
 
     @Test
@@ -111,16 +111,9 @@ class ChefControllerValidationTest {
                 .andExpect(jsonPath(violationMessage,
                         equalTo("length must be between 3 and 32")))
                 .andExpect(jsonPath(violationStatus,
-                        equalTo(UNPROCESSABLE_ENTITY.name())))
-        // TODO: Turn off stack traces
-        //      .andExpect(jsonPath("$.stackTrace").doesNotExist())
-        ;
+                        equalTo(UNPROCESSABLE_ENTITY.value())))
+                .andExpect(jsonPath(stackTrace).doesNotExist());
 
         verifyNoMoreInteractions(chefs);
-    }
-
-    private String asJson(final Object o)
-            throws JsonProcessingException {
-        return objectMapper.writeValueAsString(o);
     }
 }

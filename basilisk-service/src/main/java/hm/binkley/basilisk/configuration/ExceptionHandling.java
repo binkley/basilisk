@@ -1,10 +1,14 @@
 package hm.binkley.basilisk.configuration;
 
+import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import lombok.Generated;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -15,16 +19,63 @@ import org.zalando.problem.spring.web.advice.security.SecurityAdviceTrait;
 
 import java.util.NoSuchElementException;
 
+import static java.util.Collections.singleton;
 import static org.springframework.boot.autoconfigure.web.ErrorProperties.IncludeStacktrace.ALWAYS;
+import static org.springframework.core.NestedExceptionUtils.getMostSpecificCause;
+import static org.zalando.problem.Status.BAD_REQUEST;
 import static org.zalando.problem.Status.NOT_FOUND;
 import static org.zalando.problem.Status.UNPROCESSABLE_ENTITY;
 
 @ControllerAdvice
 @Generated
+@Import(ProblemConfiguration.class)
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class ExceptionHandling
         implements ProblemHandling, SecurityAdviceTrait {
     private final ServerProperties server;
+
+    @Override
+    public ResponseEntity<Problem> handleMessageNotReadableException(
+            final HttpMessageNotReadableException exception,
+            final NativeWebRequest request) {
+        if (exception.getCause() instanceof MismatchedInputException)
+            return handleMismatchedInputException(
+                    (MismatchedInputException) exception.getCause(), request);
+
+        return create(BAD_REQUEST, exception, request);
+    }
+
+    @ExceptionHandler(MismatchedInputException.class)
+    public ResponseEntity<Problem> handleMismatchedInputException(
+            final MismatchedInputException e,
+            final NativeWebRequest request) {
+        return newConstraintViolationProblem(e, singleton(createViolation(
+                new FieldError("n/a", jsonFieldPath(e),
+                        e.getTargetType().getName() + ": "
+                                + getMostSpecificCause(e).getMessage()))),
+                request);
+    }
+
+    private static String jsonFieldPath(final MismatchedInputException e) {
+        final var pit = e.getPath().iterator();
+        if (!pit.hasNext())
+            throw new IllegalStateException(
+                    "JSON parsing failure without any JSON", e);
+
+        final var jsonPath = new StringBuilder();
+        jsonPath.append(pit.next().getFieldName());
+
+        while (pit.hasNext()) {
+            final var part = pit.next();
+            final var fieldName = part.getFieldName();
+            if (null == fieldName)
+                jsonPath.append("[").append(part.getIndex()).append("]");
+            else
+                jsonPath.append(".").append(fieldName);
+        }
+
+        return jsonPath.toString();
+    }
 
     @Override
     public StatusType defaultConstraintViolationStatus() {

@@ -46,10 +46,8 @@ class LocationControllerValidationTest {
                 .andExpect(jsonPath(violationMessage,
                         equalTo("length must be between 3 and 32")))
                 .andExpect(jsonPath(violationStatus,
-                        equalTo(UNPROCESSABLE_ENTITY.name())))
-        // TODO: Turn off stack traces
-        //      .andExpect(jsonPath("$.stackTrace").doesNotExist())
-        ;
+                        equalTo(UNPROCESSABLE_ENTITY.value())))
+                .andExpect(jsonPath("$.stack-trace").doesNotExist());
 
         verifyNoMoreInteractions(locations);
     }
@@ -67,10 +65,8 @@ class LocationControllerValidationTest {
                 .andExpect(jsonPath(violationMessage,
                         equalTo("length must be between 3 and 32")))
                 .andExpect(jsonPath(violationStatus,
-                        equalTo(UNPROCESSABLE_ENTITY.name())))
-        // TODO: Turn off stack traces
-        //      .andExpect(jsonPath("$.stackTrace").doesNotExist())
-        ;
+                        equalTo(UNPROCESSABLE_ENTITY.value())))
+                .andExpect(jsonPath("$.stack-trace").doesNotExist());
 
         verifyNoMoreInteractions(locations);
     }
