@@ -1,4 +1,6 @@
 import com.github.spotbugs.SpotBugsTask
+import java.nio.file.Files
+import java.nio.file.Paths
 
 import static org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
 
@@ -25,6 +27,10 @@ plugins {
     id "build-dashboard"
     id "com.dorongold.task-tree" version "1.3.1"
     id "jacoco"
+}
+
+gradle.afterProject { project ->
+    linkPrePush(project)
 }
 
 apply plugin: BasePlugin
@@ -274,4 +280,11 @@ check {
 wrapper {
     distributionType = Wrapper.DistributionType.ALL
     gradleVersion = "5.4.1"
+}
+
+static void linkPrePush(project) {
+    def link = Paths.get("${project.rootDir}", ".git", "hooks", "pre-push")
+    def target = Paths.get("${project.rootDir}", "pre-push")
+    if (Files.exists(link)) Files.delete(link)
+    Files.createSymbolicLink(link, target)
 }
