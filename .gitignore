@@ -1,6 +1,4 @@
 /.gradle/
 /.idea/
-# TODO: Annoying, but needed for current IntelliJ 2019.1
-/classes/
 build/
 out/
