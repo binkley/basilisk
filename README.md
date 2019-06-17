@@ -4,6 +4,7 @@
 
 Demonstrate Java 11, Spring Boot 2, Spring Data JDBC, JUnit 5, et al
 
+* [Building](#building)
 * [Model](#model)
 * [Features](#features)
 * [Feedback](#feedback)
@@ -14,6 +15,15 @@ Demonstrate Java 11, Spring Boot 2, Spring Data JDBC, JUnit 5, et al
 
 (Jump down [past "Model"](#features), to features, testing, etc.  Model is
 under construction.)
+
+## Building
+
+```
+$ ./gradlew clean build
+```
+
+On Git push, the build is first run before actual pushing.  If the build
+fails, the push does not complete.
 
 <img src="https://www.featurepics.com/StockImage/20070125/yellow-rose-of-texas-stock-image-200039.jpg" alt="Yellow Rose of Texas" width="25%" align="right"/>
 
