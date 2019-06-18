@@ -3,6 +3,17 @@
     <include
             resource="org/springframework/boot/logging/logback/defaults.xml"/>
 
+    <springProperty
+            scope="context"
+            name="spring.application.name"
+            source="spring.application.name"
+            defaultValue="MISCONFIGURED_BOOTSTRAP_YML"/>
+    <springProperty
+            scope="context"
+            name="environment"
+            source="environment"
+            defaultValue="local"/>
+
     <springProfile name="!json">
         <include
                 resource="org/springframework/boot/logging/logback/console-appender.xml"/>
@@ -13,10 +24,6 @@
     </springProfile>
 
     <springProfile name="json">
-        <springProperty name="spring.application.name"
-                        source="spring.application.name"/>
-        <springProperty name="environment" source="environment"/>
-
         <appender name="JSON" class="ch.qos.logback.core.ConsoleAppender">
             <encoder
                     class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
@@ -28,9 +35,9 @@
                     <pattern>
                         <pattern>
                             {
-                            "service": "${spring.application.name:-}",
+                            "service": "${spring.application.name}",
                             "message": "#tryJson{%message}",
-                            "environment": "${environment:-}"
+                            "environment": "${environment}"
                             }
                         </pattern>
                     </pattern>
@@ -38,9 +45,16 @@
                     <threadName/>
                     <logLevel/>
                     <logLevelValue/>
-                    <tags/>
                     <mdc/>
-                    <stackTrace/>
+                    <tags/>
+                    <stackHash/>
+                    <stackTrace>
+                        <throwableConverter
+                                class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
+                            <maxDepthPerThrowable>3</maxDepthPerThrowable>
+                            <rootCauseFirst>true</rootCauseFirst>
+                        </throwableConverter>
+                    </stackTrace>
                 </providers>
             </encoder>
         </appender>

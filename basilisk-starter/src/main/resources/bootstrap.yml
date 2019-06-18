@@ -1,0 +1,8 @@
+# Just enough to suppress initial Spring Boot messages
+logging:
+  level:
+    root: WARN
+
+spring:
+  application:
+    name: loggy

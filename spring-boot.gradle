@@ -28,6 +28,7 @@ flyway {
 dependencies {
     flywayMigration "org.postgresql:postgresql"
 
+    implementation project(":basilisk-starter")
     implementation "org.springframework.cloud:spring-cloud-starter-sleuth"
     implementation "org.springframework.cloud:spring-cloud-starter-openfeign"
     implementation "org.zalando:logbook-spring-boot-starter"

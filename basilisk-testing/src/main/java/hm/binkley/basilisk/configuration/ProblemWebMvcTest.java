@@ -1,5 +1,6 @@
 package hm.binkley.basilisk.configuration;
 
+import lombok.Generated;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
@@ -24,6 +25,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @ActiveProfiles("validation-test")
 @Documented
 @Import(ProblemMockMvcConfiguration.class)
+@Generated // Lie to JaCoCo
 @Retention(RUNTIME)
 @Target(TYPE)
 @WebMvcTest

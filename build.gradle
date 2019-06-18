@@ -100,7 +100,7 @@ allprojects {
 subprojects {
     ext {
         logbookVersion = "1.13.0"
-        pmdVersion = "6.11.0"
+        pmdVersion = "6.15.0"
         postgresVersion = "11.2.0"
         spotbugsVersion = "3.1.12"
         springBootAdminVersion = "2.1.4"
@@ -111,7 +111,8 @@ subprojects {
 
     ext["assertj.version"] = "3.12.2"
     ext["junit-jupiter.version"] = "5.4.2"
-    ext["mockito.version"] = "2.27.0"
+    ext["lombok.version"] = "1.18.8"
+    ext["mockito.version"] = "2.28.2"
 
     apply plugin: JavaPlugin
     apply plugin: "net.ltgt.apt"

@@ -1,5 +1,6 @@
 package hm.binkley.basilisk.configuration;
 
+import lombok.Generated;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -15,6 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 @Configuration
+@Generated // Lie to JaCoCo
 public class ProblemMockMvcConfiguration {
     @Bean
     @Primary
