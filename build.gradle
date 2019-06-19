@@ -7,18 +7,20 @@ import static org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
 
 buildscript {
     repositories {
+        gradlePluginPortal()
         mavenCentral()
         jcenter()
     }
 
     dependencies {
         classpath "io.spring.gradle:dependency-management-plugin:1.0.8.RELEASE"
-        classpath "org.springframework.boot:spring-boot-gradle-plugin:2.1.5.RELEASE"
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:2.1.6.RELEASE"
         classpath "org.springframework.cloud:spring-cloud-contract-gradle-plugin:2.1.1.RELEASE"
         classpath "org.unbroken-dome.gradle-plugins:gradle-testsets-plugin:2.1.1"
         classpath "net.ltgt.gradle:gradle-apt-plugin:0.21"
         classpath "gradle.plugin.com.github.spotbugs:spotbugs-gradle-plugin:2.0.0"
         classpath "com.google.guava:guava:28.0-jre" // For SpotBugs
+        // TODO: Need gradle plugin publishing?
         classpath "gradle.plugin.com.boxfuse.client:gradle-plugin-publishing:5.2.4"
     }
 }
@@ -100,11 +102,13 @@ allprojects {
 subprojects {
     ext {
         logbookVersion = "1.13.0"
+        logstashLogbackVersion = "6.1"
         pmdVersion = "6.15.0"
         postgresVersion = "11.2.0"
+        problemVersion = "0.24.0"
         spotbugsVersion = "3.1.12"
         springBootAdminVersion = "2.1.4"
-        springBootVersion = "2.1.4.RELEASE"
+        springBootVersion = "2.1.6.RELEASE"
         springCloudVersion = "Greenwich.SR1"
         swaggerVersion = "2.9.2"
     }
@@ -150,7 +154,7 @@ subprojects {
         implementation "org.springframework.boot:spring-boot-starter-hateoas"
         implementation "org.springframework.boot:spring-boot-starter-security"
         implementation "org.springframework.boot:spring-boot-starter-validation"
-        implementation "org.zalando:problem-spring-web:0.24.0"
+        implementation "org.zalando:problem-spring-web:${problemVersion}"
         implementation "io.springfox:springfox-swagger2:${swaggerVersion}"
         implementation "de.codecentric:spring-boot-admin-starter-client"
         implementation "de.codecentric:spring-boot-admin-starter-server"
