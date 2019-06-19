@@ -1,5 +1,6 @@
 package hm.binkley.basilisk.configuration;
 
+import lombok.Generated;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -11,6 +12,7 @@ import org.zalando.problem.spring.web.advice.security.SecurityProblemSupport;
 
 @Configuration
 @EnableWebSecurity
+@Generated // Lie to JaCoCo
 @Import(SecurityProblemSupport.class)
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class SecurityConfiguration

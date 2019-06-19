@@ -7,6 +7,8 @@ import brave.propagation.TraceContext.Extractor;
 import brave.propagation.TraceContext.Injector;
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
+import hm.binkley.basilisk.Bug;
+import lombok.Generated;
 import org.slf4j.Logger;
 import org.slf4j.spi.MDCAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,19 +39,20 @@ public class TraceRequestInterceptor
     }
 
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
+    @Generated // Lie to JaCoCo -- Bug is not realistic
     private static <T> T firstOf(final Iterable<T> its) {
         if (null == its)
             return null;
         for (final T it : its)
             return it;
-        return null;
+        throw new Bug("Header exists with no values");
     }
 
     @Override
     public void apply(final RequestTemplate template) {
         // On retry, the previous trace details are still there
-        final var requestExtraction = requestExtractor.extract(template);
-        if (EMPTY != requestExtraction)
+        final var existingTrace = requestExtractor.extract(template);
+        if (EMPTY != existingTrace)
             return;
 
         // With better library support, `currentContext()` should do this

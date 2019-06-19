@@ -1,5 +1,8 @@
 package hm.binkley.basilisk;
 
+import lombok.Generated;
+
+@Generated // Lie to JaCoCo
 public class Bug
         extends RuntimeException {
     public Bug(final String message) {

@@ -1,5 +1,7 @@
 package hm.binkley.basilisk.ops;
 
+import lombok.experimental.UtilityClass;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
@@ -23,6 +25,7 @@ public @interface AlertMessage {
         LOW, MEDIUM, HIGH
     }
 
+    @UtilityClass
     class MessageFinder {
         public static AlertMessage findAlertMessage(
                 final Throwable throwable) {
