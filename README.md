@@ -1,5 +1,9 @@
 <img src="basil-lips.jpg" alt="Image of basil lips" align="right"/>
 
+*THIS REPO IS AN OLDER VERSION; THE LATEST VERSION IS IN ELSEWHERE*
+
+(See [Kotlin Mironaut version](https://github.com/binkley/basilisk-kt)).
+
 # Basilisk
 
 Demonstrate Java 11, Spring Boot 2, Spring Data JDBC, JUnit 5, et al
